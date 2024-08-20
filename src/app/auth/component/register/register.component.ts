@@ -11,6 +11,8 @@ import { AuthService } from 'src/app/core/auth/auth.service';
 })
 export class RegisterComponent {
   registerForm: FormGroup;
+  hidePassword: boolean = true;
+  hidePasswordConfirm: boolean = true;
 
   constructor(
     private authService: AuthService,
@@ -21,12 +23,13 @@ export class RegisterComponent {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6), this.passwordValidator]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required]],
       fullName: ['', [Validators.required]],
       phone: ['', [Validators.required]],
       address: ['', [Validators.required]],
-      roleName: ['', [Validators.required]]
-    });
+      roleName: ['ADMIN']
+    },);
   }
 
   get username() {
@@ -41,6 +44,9 @@ export class RegisterComponent {
     return this.registerForm.get('password');
   }
 
+  get confirmPassword() {
+    return this.registerForm.get('confirmPassword');
+  }
   get fullName() {
     return this.registerForm.get('fullName');
   }
@@ -57,9 +63,28 @@ export class RegisterComponent {
     return this.registerForm.get('roleName');
   }
 
+  passwordMatchValidation(): boolean {
+    const password = this.registerForm.get('password')?.value;
+    const confirmPassword = this.registerForm.get('confirmPassword')?.value;
+    return password === confirmPassword;
+  }
+
+  togglePasswordVisibility() {
+    this.hidePassword = !this.hidePassword;
+  }
+
+  togglePasswordConfirmVisibility() {
+    this.hidePasswordConfirm = !this.hidePasswordConfirm;
+  }
+
   onSubmit() {
     if (this.registerForm.invalid) {
       this.toastr.error('Please fix the validation errors.');
+      return;
+    }
+
+    if (!this.passwordMatchValidation()) {
+      this.toastr.error('Passwords do not match.');
       return;
     }
 
@@ -79,12 +104,5 @@ export class RegisterComponent {
     );
   }
 
-  private passwordValidator(control: AbstractControl): { [key: string]: boolean } | null {
-    const passwordPattern =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
-    if (!passwordPattern.test(control.value)) {
-      return { invalidPassword: true };
-    }
-    return null;
-  }
+  
 }

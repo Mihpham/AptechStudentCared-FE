@@ -11,6 +11,7 @@ import { AuthService } from 'src/app/core/auth/auth.service';
 })
 export class LoginComponent {
   loginForm: FormGroup;
+  hidePassword: boolean = true;
 
   constructor(
     private authService: AuthService,
@@ -20,7 +21,7 @@ export class LoginComponent {
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required]]
     });
   }
 
@@ -30,6 +31,10 @@ export class LoginComponent {
 
   get password() {
     return this.loginForm.get('password');
+  }
+
+  togglePasswordVisibility() {
+    this.hidePassword = !this.hidePassword;
   }
 
   onSubmit() {
