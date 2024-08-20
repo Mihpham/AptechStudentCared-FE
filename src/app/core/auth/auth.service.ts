@@ -41,6 +41,19 @@ export class AuthService {
     );
   }
 
+
+  resetPasswordOtp(otp: string, email: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/reset-password-otp`, { otp, email });
+  }
+
+  resetPassword(newPassword: string, confirmPassword: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/reset-password`, { newPassword, confirmPassword });
+  }
+
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/forgot-password`, { email });
+  }
+
   setToken(token: string) {
     this.token = token;
     localStorage.setItem('token', token);
