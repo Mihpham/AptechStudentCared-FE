@@ -3,7 +3,6 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/core/auth/auth.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-register',
@@ -12,6 +11,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class RegisterComponent {
   registerForm: FormGroup;
+  hidePassword: boolean = true;
+  hidePasswordConfirm: boolean = true;
 
   constructor(
     private authService: AuthService,
@@ -22,12 +23,13 @@ export class RegisterComponent {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6), this.passwordValidator]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required]],
       fullName: ['', [Validators.required]],
       phone: ['', [Validators.required]],
       address: ['', [Validators.required]],
-      roleName: ['', [Validators.required]]
-    });
+      roleName: ['ADMIN']
+    },);
   }
 
   get username() {
@@ -42,6 +44,9 @@ export class RegisterComponent {
     return this.registerForm.get('password');
   }
 
+  get confirmPassword() {
+    return this.registerForm.get('confirmPassword');
+  }
   get fullName() {
     return this.registerForm.get('fullName');
   }
@@ -58,9 +63,28 @@ export class RegisterComponent {
     return this.registerForm.get('roleName');
   }
 
+  passwordMatchValidation(): boolean {
+    const password = this.registerForm.get('password')?.value;
+    const confirmPassword = this.registerForm.get('confirmPassword')?.value;
+    return password === confirmPassword;
+  }
+
+  togglePasswordVisibility() {
+    this.hidePassword = !this.hidePassword;
+  }
+
+  togglePasswordConfirmVisibility() {
+    this.hidePasswordConfirm = !this.hidePasswordConfirm;
+  }
+
   onSubmit() {
     if (this.registerForm.invalid) {
       this.toastr.error('Please fix the validation errors.');
+      return;
+    }
+
+    if (!this.passwordMatchValidation()) {
+      this.toastr.error('Passwords do not match.');
       return;
     }
 
@@ -80,43 +104,5 @@ export class RegisterComponent {
     );
   }
 
-  private passwordValidator(control: AbstractControl): { [key: string]: boolean } | null {
-    const passwordPattern =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
-    if (!passwordPattern.test(control.value)) {
-      return { invalidPassword: true };
-    }
-    return null;
-  hidePassword: boolean = true;
-  hideConfirmPassword: boolean = true;
-
-  constructor(private fb: FormBuilder) {
-    this.registerForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]],
-      fullName: ['', Validators.required],
-      phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10,11}$/)]],
-      address: ['', Validators.required]
-    });
-  }
-
-
-  togglePasswordVisibility() {
-    this.hidePassword = !this.hidePassword;
-  }
-
-  toggleConfirmPasswordVisibility() {
-    this.hideConfirmPassword = !this.hideConfirmPassword;
-  }
-
-  onSubmit() {
-    if (this.registerForm.valid) {
-      console.log('Form Submitted', this.registerForm.value);
-      // Handle the form submission logic, e.g., send data to the backend
-    } else {
-      console.log('Form is invalid');
-    }
-  }
+  
 }

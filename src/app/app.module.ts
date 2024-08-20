@@ -53,7 +53,7 @@ export function tokenGetter() {
     }),
     ToastrModule.forRoot({
       positionClass: 'toast-top-right', // Vị trí hiển thị thông báo
-      timeOut: 3000, // Thời gian hiển thị thông báo (3 giây)
+      timeOut: 5000, // Thời gian hiển thị thông báo (5 giây)
       progressBar: true, // Hiển thị thanh tiến trình
       closeButton: true // Hiển thị nút đóng
     })
