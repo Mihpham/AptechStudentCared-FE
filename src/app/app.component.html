@@ -1,3 +1,7 @@
-<h1 class="text-3xl font-bold underline">
-  Hello world!
-</h1>
+<div *ngIf="isAuthenticated()">
+  <app-navbar></app-navbar>
+  <app-sidebar></app-sidebar>
+</div>
+<div class="">
+  <router-outlet></router-outlet>
+</div>

@@ -1,5 +1,52 @@
-<form (submit)="onLogin()">
-    <input [(ngModel)]="credentials.username" placeholder="Username" required />
-    <input [(ngModel)]="credentials.password" type="password" placeholder="Password" required />
-    <button type="submit">Login</button>
-  </form>
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4 max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+  
+  <!-- Email Input -->
+  <div>
+    <label for="email" class="block text-gray-700 text-sm font-medium mb-1">Email</label>
+    <input 
+      id="email"
+      formControlName="email" 
+      type="email" 
+      placeholder="Enter your email" 
+      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="text-red-500 text-sm mt-1">
+      <div *ngIf="email?.errors?.['required']">Email is required.</div>
+      <div *ngIf="email?.errors?.['email']">Invalid email format.</div>
+    </div>
+  </div>
+  
+  <!-- Password Input -->
+  <div>
+    <label for="password" class="block text-gray-700 text-sm font-medium mb-1">Password</label>
+    <input 
+      id="password"
+      formControlName="password" 
+      type="password" 
+      placeholder="Enter your password" 
+      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="text-red-500 text-sm mt-1">
+      <div *ngIf="password?.errors?.['required']">Password is required.</div>
+      <div *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters long.</div>
+      <div *ngIf="password?.errors?.['invalidPassword']">Password must contain uppercase, lowercase, number, and special character.</div>
+    </div>
+  </div>
+  
+  <!-- Submit Button -->
+  <div class="flex items-center justify-between">
+    <button 
+      type="submit" 
+      [disabled]="loginForm.invalid"
+      class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 disabled:bg-blue-300 disabled:cursor-not-allowed">
+      Login
+    </button>
+  </div>
+  
+  <!-- Register Link -->
+  <div class="text-center mt-4">
+    <a 
+      routerLink="auth/register" 
+      class="text-blue-500 hover:underline">
+      Register Now!
+    </a>
+  </div>
+</form>
