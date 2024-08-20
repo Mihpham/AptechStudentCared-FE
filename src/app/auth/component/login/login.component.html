@@ -1,5 +1,47 @@
-<form (submit)="onLogin()">
-    <input [(ngModel)]="credentials.username" placeholder="Username" required />
-    <input [(ngModel)]="credentials.password" type="password" placeholder="Password" required />
-    <button type="submit">Login</button>
-  </form>
+<div class="bg-cover bg-center flex justify-center items-center h-screen"
+  style="background-image: url('assets/images/background-image.jpg');">
+  <div class="w-full flex justify-center items-center p-4">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-3xl flex flex-col md:flex-row items-center space-x-8">
+      <div class="flex-shrink-0 md:w-1/2 mb-6 md:mb-0">
+        <img src="assets/images/image-login.png" alt="Technology background"
+          class="object-cover w-full border border-gray-300 rounded-md">
+      </div>
+      <div class="md:w-1/2 flex flex-col justify-center">
+        <div class="text-center mb-6">
+          <img src="assets/images/logo.png" alt="Aptech Logo" class="mx-auto mb-4">
+          <h2 class="text-2xl font-bold mb-2">Hey, Hello 👋</h2>
+          <p class="text-gray-600 text-sm">Please provide your login credentials</p>
+        </div>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="mb-4">
+            <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+            <input formControlName="email" type="email" id="email"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+              placeholder="Username@gmail.com" required>
+          </div>
+          <div class="mb-4 relative">
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <input formControlName="password" [type]="hidePassword ? 'password' : 'text'" id="password"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+              placeholder="***************" required>
+            <span (click)="togglePasswordVisibility()"
+              class="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+              style="top: 50%; transform: translateY(-20%);">
+              {{ hidePassword ? '🙈' : '🙉' }}
+            </span>
+          </div>
+          <div class="flex justify-between items-center mb-4">
+            <div class="flex items-center">
+              <input type="checkbox" id="remember-me"
+                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+              <label for="remember-me" class="ml-2 text-sm text-gray-600">Remember me</label>
+            </div>
+            <a href="#" class="text-sm text-blue-600 hover:underline">Forgot password?</a>
+          </div>
+          <button type="submit"
+            class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

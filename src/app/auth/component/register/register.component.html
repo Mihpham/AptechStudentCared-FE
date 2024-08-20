@@ -1,5 +1,68 @@
-<form (submit)="onRegister()">
-      <input [(ngModel)]="userData.username" placeholder="Username" required />
-      <input [(ngModel)]="userData.password" type="password" placeholder="Password" required />
-      <button type="submit">Register</button>
-</form>
+<div class="bg-cover bg-center flex justify-center items-center h-screen"
+  style="background-image: url('assets/images/background-image.jpg');">
+  <div class="w-full flex justify-center items-center p-4">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-3xl flex flex-col md:flex-row items-center space-x-8">
+      <div class="flex-shrink-0 md:w-1/2 mb-6 md:mb-0">
+        <img src="assets/images/image-login.png" alt="Technology background"
+          class="object-cover w-full border border-gray-300 rounded-md">
+      </div>
+      <div class="md:w-1/2 flex flex-col justify-center">
+        <div class="text-center mb-6">
+          <img src="assets/images/logo.png" alt="Aptech Logo" class="mx-auto mb-4">
+          <h2 class="text-2xl font-bold mb-2">Create Your Account</h2>
+          <p class="text-gray-600 text-sm">Please fill in the details to register</p>
+        </div>
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+          <div class="mb-4">
+            <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+            <input formControlName="email" type="email" id="email"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+              placeholder="Username@gmail.com" required>
+          </div>
+          <div class="mb-4 relative">
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <input formControlName="password" [type]="hidePassword ? 'password' : 'text'" id="password"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+              placeholder="Password" required>
+            <span (click)="togglePasswordVisibility()"
+              class="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+              style="top: 50%; transform: translateY(-20%);">
+              {{ hidePassword ? '🙈' : '🙉' }}
+            </span>
+          </div>
+          <div class="mb-4 relative">
+            <label for="confirm-password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+            <input formControlName="confirmPassword" [type]="hideConfirmPassword ? 'password' : 'text'" id="confirm-password"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+              placeholder="Confirm Password" required>
+            <span (click)="toggleConfirmPasswordVisibility()"
+              class="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+              style="top: 50%; transform: translateY(-20%);">
+              {{ hideConfirmPassword ? '🙈' : '🙉' }}
+            </span>
+          </div>
+          <div class="mb-4">
+            <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
+            <input formControlName="fullName" type="text" id="fullName"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+              placeholder="Full Name" required>
+          </div>
+          <div class="mb-4">
+            <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+            <input formControlName="phone" type="text" id="phone"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+              placeholder="Phone Number" required>
+          </div>
+          <div class="mb-4">
+            <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+            <input formControlName="address" type="text" id="address"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+              placeholder="Address" required>
+          </div>
+          <button type="submit"
+            class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Register</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

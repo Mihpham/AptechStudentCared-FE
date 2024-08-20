@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from 'src/app/core/auth/auth.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-register',
@@ -7,12 +7,37 @@ import { AuthService } from 'src/app/core/auth/auth.service';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
+  registerForm: FormGroup;
+  hidePassword: boolean = true;
+  hideConfirmPassword: boolean = true;
 
-  userData = { username: '', password: '' };
+  constructor(private fb: FormBuilder) {
+    this.registerForm = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required]],
+      fullName: ['', Validators.required],
+      phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10,11}$/)]],
+      address: ['', Validators.required]
+    });
+  }
 
-  constructor(private authService: AuthService) {}
 
-  onRegister() {
-    this.authService.register(this.userData);
+  togglePasswordVisibility() {
+    this.hidePassword = !this.hidePassword;
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.hideConfirmPassword = !this.hideConfirmPassword;
+  }
+
+  onSubmit() {
+    if (this.registerForm.valid) {
+      console.log('Form Submitted', this.registerForm.value);
+      // Handle the form submission logic, e.g., send data to the backend
+    } else {
+      console.log('Form is invalid');
+    }
   }
 }
