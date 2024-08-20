@@ -9,18 +9,18 @@ import { StudentComponent } from './features/student/student.component';
 import { SroComponent } from './features/sro/sro.component';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'admin', component: AdminComponent, canActivate: [AuthGuard], data: { role: 'Admin' }},
+  { path: 'auth/login', component: LoginComponent },
+  { path: 'auth/register', component: RegisterComponent },
+  { path: 'admin', component: AdminComponent, canActivate: [AuthGuard], data: { role: 'ADMIN' }},
+  { path: 'teacher', component: TeacherComponent, canActivate: [AuthGuard], data: { role: 'TEACHER' }},
+  { path: 'student', component: StudentComponent, canActivate: [AuthGuard], data: { role: 'USER' }},
   { path: 'sro', component: SroComponent, canActivate: [AuthGuard], data: { role: 'SRO' }},
-  { path: 'teacher', component: TeacherComponent, canActivate: [AuthGuard], data: { role: 'Teacher' }},
-  { path: 'student', component: StudentComponent, canActivate: [AuthGuard], data: { role: 'Student' }},
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: '**', redirectTo: '/login' }
+  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
+  { path: '**', redirectTo: 'auth/login' }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes)],  
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

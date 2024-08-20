@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../auth.service';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from 'src/app/core/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -10,44 +11,94 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  hidePassword: boolean = true;
 
   constructor(
-    private fb: FormBuilder,
     private authService: AuthService,
+    private fb: FormBuilder,
+    private router: Router,
     private toastr: ToastrService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
-  togglePasswordVisibility(): void {
-    this.hidePassword = !this.hidePassword;
+  get email() {
+    return this.loginForm.get('email');
   }
 
-  onSubmit(): void {
-    if (this.loginForm.valid) {
-      const { email, password } = this.loginForm.value;
+  get password() {
+    return this.loginForm.get('password');
+  }
 
-      this.authService.login(email, password).subscribe({
-        next: (response) => {
-          if (response.result) {
-            const token = response.token;
-            localStorage.setItem('authToken', token);
-            this.toastr.success('Đăng nhập thành công!', 'Thành công');
-          } else {
-            this.toastr.error('Đăng nhập thất bại. Vui lòng kiểm tra thông tin và thử lại.', 'Lỗi');
-          }
-        },
-        error: (error) => {
-          console.error('Đăng nhập thất bại:', error);
-          this.toastr.error('Đăng nhập thất bại. Vui lòng kiểm tra thông tin và thử lại.', 'Lỗi');
-        }
-      });
-    } else {
-      this.toastr.warning('Vui lòng điền đầy đủ thông tin.', 'Cảnh báo');
+  onSubmit() {
+    if (this.loginForm.invalid) {
+      this.toastr.error('Please fix the validation errors.');
+      return;
     }
+
+    this.authService.login(this.loginForm.value).subscribe(
+      response => {
+        if (response) {
+          this.handleLoginResponse(response);
+        } else {
+          this.toastr.error('Login failed. Please check your credentials.');
+        }
+      },
+      error => {
+        console.error('Login failed:', error);
+        this.toastr.error('Login failed. Please try again later.');
+      }
+    );
+  }
+
+  private handleLoginResponse(response: any) {
+    const token = response?.jwt;
+    const role = response?.role;
+
+    if (token && token.split('.').length === 3) {
+      this.authService.setToken(token); 
+      this.authService.setRole(role);
+      this.toastr.success('Logged in successfully');
+
+      let returnUrl = '/';
+      switch (role) {
+        case 'ADMIN':
+          returnUrl = 'admin';
+          break;
+        case 'SRO':
+          returnUrl = 'sro';
+          break;
+        case 'TEACHER':
+          returnUrl = 'teacher';
+          break;
+        case 'STUDENT':
+          returnUrl = 'student';
+          break;
+      }
+      this.router.navigate([returnUrl]);
+    } else {
+      console.error('Invalid token format:', token);
+      this.toastr.error('Invalid token received');
+    }
+  }
+
+  passwordValidator(
+    control: AbstractControl
+  ): { [key: string]: boolean } | null {
+    const passwordPattern =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    if (!passwordPattern.test(control.value)) {
+      return { invalidPassword: true };
+    }
+    return null;
+  }
+  emailValidator(control: AbstractControl): { [key: string]: boolean } | null {
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailPattern.test(control.value)) {
+      return { invalidEmail: true };
+    }
+    return null;
   }
 }

@@ -13,6 +13,8 @@ import { AdminComponent } from './features/admin/admin.component';
 import { SroComponent } from './features/sro/sro.component';
 import { TeacherComponent } from './features/teacher/teacher.component';
 import { StudentComponent } from './features/student/student.component';
+import { NavbarComponent } from './layout/components/navbar/navbar.component';
+import { SidebarComponent } from './layout/components/sidebar/sidebar.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -24,7 +26,9 @@ export function tokenGetter() {
     AdminComponent,
     SroComponent,
     TeacherComponent,
-    StudentComponent
+    StudentComponent,
+    NavbarComponent,
+    SidebarComponent
   ],
   imports: [
     BrowserModule,
@@ -33,7 +37,13 @@ export function tokenGetter() {
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot({
+      positionClass: 'toast-top-right',
+      preventDuplicates: true,
+      timeOut: 2000,
+      closeButton: true,
+      progressBar: true,
+    }),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
