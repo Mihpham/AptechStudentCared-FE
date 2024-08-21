@@ -22,12 +22,8 @@ export class AppComponent {
     return this.authService.isAuthenticated();
   }
 
-  isAdminPage(): boolean {
-    return this.router.url.includes('/admin');
-  }
-
   isLoginPage(): boolean {
-    return this.router.url.includes('/login');
+    return this.router.url.includes('/auth/login');
   }
 
   is404Page(): boolean {
