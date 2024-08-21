@@ -1,6 +1,4 @@
-<app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
-
-<div *ngIf="isAuthenticated() && !isLoading" class="flex" [ngClass]="darkModeService.darkModeSignal()">
+<div *ngIf="isAuthenticated()" class="flex" [ngClass]="darkModeService.darkModeSignal()">
   <aside [ngClass]="{'sidebar-collapsed': collapsed, 'sidebar-expanded': !collapsed}" class="sidebar bg-gray-200 h-screen p-4">
     <app-sidebar [collapsed]="collapsed" (toggle)="handleToggleSidebar()"></app-sidebar>
   </aside>
@@ -12,6 +10,6 @@
   </div>
 </div>
 
-<div *ngIf="!isAuthenticated() && !isLoading">
+<div *ngIf="!isAuthenticated()">
   <router-outlet></router-outlet>
 </div>

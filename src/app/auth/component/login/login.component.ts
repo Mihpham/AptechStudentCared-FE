@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -9,7 +9,7 @@ import { AuthService } from 'src/app/core/auth/auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   hidePassword: boolean = true;
 
@@ -23,6 +23,29 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     });
+  }
+
+  ngOnInit(): void {
+    // Redirect to the dashboard if already logged in
+    if (this.authService.isAuthenticated()) {
+      const role = this.authService.getRole();
+      let returnUrl = '/';
+      switch (role) {
+        case 'ADMIN':
+          returnUrl = '/admin/dashboard';
+          break;
+        case 'SRO':
+          returnUrl = '/sro';
+          break;
+        case 'TEACHER':
+          returnUrl = '/teacher';
+          break;
+        case 'STUDENT':
+          returnUrl = '/student';
+          break;
+      }
+      this.router.navigate([returnUrl]);
+    }
   }
 
   get email() {
@@ -89,16 +112,6 @@ export class LoginComponent {
     }
   }
 
-  passwordValidator(
-    control: AbstractControl
-  ): { [key: string]: boolean } | null {
-    const passwordPattern =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
-    if (!passwordPattern.test(control.value)) {
-      return { invalidPassword: true };
-    }
-    return null;
-  }
   emailValidator(control: AbstractControl): { [key: string]: boolean } | null {
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     if (!emailPattern.test(control.value)) {

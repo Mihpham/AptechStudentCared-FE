@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { ToastrService } from 'ngx-toastr';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -18,25 +19,31 @@ export class AuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    // Check if the user is authenticated
-    if (this.authService.isAuthenticated()) {
-      const expectedRole = route.data['role'] as string;
-      const userRole = this.authService.getRole();
-  
-      // Check if the user's role matches the expected role for the route
+    const isLoggedIn = this.authService.isAuthenticated();
+    const userRole = this.authService.getRole();
+    const expectedRole = route.data['role'] as string;
+
+    // Nếu người dùng đã đăng nhập và cố gắng truy cập trang login, chuyển hướng đến dashboard
+    if (isLoggedIn && state.url.includes('auth/login')) {
+      this.router.navigate(['/admin/dashboard']);
+      return false;
+    }
+
+    // Kiểm tra xem người dùng có đăng nhập hay không
+    if (isLoggedIn) {
+      // Kiểm tra vai trò của người dùng
       if (userRole && userRole === expectedRole) {
         return true;
       } else {
         this.toastr.error('You do not have permission to access this page');
-        // Redirect to access-denied page
         this.router.navigate(['/access-denied']);
         return false;
       }
+    } else {
+      // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
+      this.toastr.warning('Please log in to access this page');
+      this.router.navigate(['/auth/login']);
+      return false;
     }
-
-    // If not authenticated, redirect to login page with a message
-    this.toastr.warning('Please log in to access this page');
-    this.router.navigate(['auth/login']);
-    return false;
   }
 }
