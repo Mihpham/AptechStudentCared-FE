@@ -83,7 +83,7 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     this.toastr.success('Logged out successfully');
-    this.router.navigate(['/login']);
+    this.router.navigate(['auth/login']);
   }
 
   refreshToken(): Observable<any> {

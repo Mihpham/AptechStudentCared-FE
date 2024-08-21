@@ -1,10 +1,73 @@
-<div class="w-64 bg-gray-200 h-full fixed top-0 left-0 p-4">
-    <div class="text-lg font-bold mb-4">Sidebar</div>
-    <ul>
-      <li><a routerLink="/" class="block p-2 mb-2 hover:bg-gray-300 rounded">Dashboard</a></li>
-      <li><a routerLink="/profile" class="block p-2 mb-2 hover:bg-gray-300 rounded">Profile</a></li>
-      <li><a routerLink="/settings" class="block p-2 mb-2 hover:bg-gray-300 rounded">Settings</a></li>
-      <li><a routerLink="/reports" class="block p-2 mb-2 hover:bg-gray-300 rounded">Reports</a></li>
-    </ul>
+<nav class="bg-white h-screen w-48 shadow-md fixed top-0 left-0">
+  <div class="flex items-center justify-center py-4">
+    <img src="assets/images/logo.png" alt="Aptech Logo" class="mx-auto mb-4 w-36">
   </div>
-  
+  <ul class="space-y-2">
+    <li>
+      <a routerLink="/dashboard" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+        <i class="fas fa-tachometer-alt w-6 h-6 mr-3"></i>
+        <span>Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/class" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+        <i class="fas fa-chalkboard-teacher w-6 h-6 mr-3"></i>
+        <span>Class</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/student" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+        <i class="fas fa-user-graduate w-6 h-6 mr-3"></i>
+        <span>Student</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/exam-mark" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+        <i class="fas fa-file-alt w-6 h-6 mr-3"></i>
+        <span>Exam Mark</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/teacher" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+        <i class="fas fa-chalkboard w-6 h-6 mr-3"></i>
+        <span>Teacher</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/sro" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+        <i class="fas fa-id-badge w-6 h-6 mr-3"></i>
+        <span>SRO</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/accounts" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+        <i class="fas fa-book w-6 h-6 mr-3"></i>
+        <span>Accounts</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/attendance" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+        <i class="fas fa-calendar-check w-6 h-6 mr-3"></i>
+        <span>Attendance</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/calendar" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+        <i class="fas fa-calendar-alt w-6 h-6 mr-3"></i>
+        <span>Calendar</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/course" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+        <i class="fas fa-book-open w-6 h-6 mr-3"></i>
+        <span>Course</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/subject" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+        <i class="fas fa-book-reader w-6 h-6 mr-3"></i>
+        <span>Subject</span>
+      </a>
+    </li>
+  </ul>
+</nav>

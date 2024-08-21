@@ -39,7 +39,7 @@ export class AuthGuard implements CanActivate {
 
     // If not authenticated, redirect to login page with a message
     this.toastr.warning('Please log in to access this page');
-    this.router.navigate(['/login']);
+    this.router.navigate(['auth/login']);
     return false;
   }
 }
