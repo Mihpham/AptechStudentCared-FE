@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -10,6 +10,8 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { NavbarComponent } from './layout/components/navbar/navbar.component';
 import { SidebarComponent } from './layout/components/sidebar/sidebar.component';
+import { PagesModule } from './features/pages/pages.module';
+import { SharedModule } from './shared/shared.module';
 import { ProfileComponent } from './features/profile/profile.component';
 
 export function tokenGetter() {
@@ -21,6 +23,7 @@ export function tokenGetter() {
     AppComponent,
     NavbarComponent,
     SidebarComponent,
+    
     ProfileComponent
   ],
   imports: [
@@ -29,6 +32,8 @@ export function tokenGetter() {
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    PagesModule,
+    SharedModule,
     ToastrModule.forRoot({
       positionClass: 'toast-top-right',
       preventDuplicates: true,
@@ -44,6 +49,7 @@ export function tokenGetter() {
       }
     }),
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [],
   bootstrap: [AppComponent]
 })

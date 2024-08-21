@@ -12,6 +12,7 @@ export class NavbarComponent implements OnInit {
   isLoggedIn: boolean = false;
   isDropdownOpen = false;
   isMobileMenuOpen = false;
+  showLogoutConfirm = false; // Add this property to handle the logout confirmation modal
 
   darkModeService = inject(DarkModeService);
 
@@ -32,10 +33,10 @@ export class NavbarComponent implements OnInit {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
-  toggleMobileMenu () : void {
+  toggleMobileMenu(): void {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
-  
+
   @HostListener('document:click', ['$event'])
   closeDropdown(event: Event) {
     const targetElement = event.target as HTMLElement;
@@ -48,7 +49,17 @@ export class NavbarComponent implements OnInit {
   }
 
   logout() {
+    this.showLogoutConfirm = true; // Show the confirmation modal instead of logging out immediately
+  }
+
+  cancelLogout() {
+    this.showLogoutConfirm = false;
+  }
+
+  confirmLogout() {
+    this.showLogoutConfirm = false;
     this.authService.logout();
     this.router.navigate(['/auth/login']);
+    window.location.reload(); // Reload the page to clear any state
   }
 }
