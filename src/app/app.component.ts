@@ -10,20 +10,29 @@ import { DarkModeService } from './core/services/dark-mode.service';
 })
 export class AppComponent {
   title = 'school_management';
+  collapsed = false;
 
   constructor(
     private router: Router,
     private authService: AuthService
-  ) {}
+  ) { }
 
   darkModeService = inject(DarkModeService);
-  
+
+  handleToggleSidebar() {
+    this.collapsed = !this.collapsed;
+  }
+
   isAuthenticated(): boolean {
     return this.authService.isAuthenticated();
   }
 
+  isAdminPage(): boolean {
+    return this.router.url.includes('/admin');
+  }
+
   isLoginPage(): boolean {
-    return this.router.url.includes('/auth/login');
+    return this.router.url.includes('/login');
   }
 
   is404Page(): boolean {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output, Input } from '@angular/core';
 import { AuthService } from 'src/app/core/auth/auth.service';
 
 @Component({
@@ -8,10 +8,22 @@ import { AuthService } from 'src/app/core/auth/auth.service';
 })
 export class SidebarComponent {
   isLoggedIn: boolean = false;
+  @Input() collapsed: boolean = false;
+  @Output() toggle = new EventEmitter<void>();
+  openDropdown: string | null = null;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
     this.isLoggedIn = this.authService.isAuthenticated();
+  }
+
+
+  toggleSidebar() {
+    this.toggle.emit();
+  }
+
+  isOpen(dropdown: string): boolean {
+    return this.openDropdown === dropdown;
   }
 }
