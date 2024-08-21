@@ -11,7 +11,8 @@ import { NotAuthComponent } from './features/pages/not-auth/not-auth.component';
 const routes: Routes = [
   //lazy loading routes
   { path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule) },
-  { path: 'admin', component: AdminComponent, canActivate: [AuthGuard], data: { role: 'ADMIN' }},
+  { path: 'admin', loadChildren: () => import('./features/admin-management/admin-management.module').then(m => m.AdminManagementModule),
+     component: AdminComponent, canActivate: [AuthGuard], data: { role: 'ADMIN' }},
   { path: 'teacher', component: TeacherComponent, canActivate: [AuthGuard], data: { role: 'TEACHER' }},
   { path: 'student', component: StudentComponent, canActivate: [AuthGuard], data: { role: 'USER' }},
   { path: 'sro', component: SroComponent, canActivate: [AuthGuard], data: { role: 'SRO' }},

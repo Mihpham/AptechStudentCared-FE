@@ -70,7 +70,7 @@ export class LoginComponent {
       let returnUrl = '/';
       switch (role) {
         case 'ADMIN':
-          returnUrl = 'admin';
+          returnUrl = 'admin/dashboard';
           break;
         case 'SRO':
           returnUrl = 'sro';
