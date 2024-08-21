@@ -12,7 +12,7 @@ import { NavbarComponent } from './layout/components/navbar/navbar.component';
 import { SidebarComponent } from './layout/components/sidebar/sidebar.component';
 import { PagesModule } from './features/pages/pages.module';
 import { SharedModule } from './shared/shared.module';
-import { ProfileComponent } from './features/profile/profile.component';
+import { ProfileModule } from './features/profile/profile.module';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -23,8 +23,6 @@ export function tokenGetter() {
     AppComponent,
     NavbarComponent,
     SidebarComponent,
-    
-    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -34,6 +32,7 @@ export function tokenGetter() {
     BrowserAnimationsModule,
     PagesModule,
     SharedModule,
+    ProfileModule,
     ToastrModule.forRoot({
       positionClass: 'toast-top-right',
       preventDuplicates: true,

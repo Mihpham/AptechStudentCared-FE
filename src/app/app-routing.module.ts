@@ -7,6 +7,7 @@ import { StudentComponent } from './features/student-management/student.componen
 import { SroComponent } from './features/sro-management/sro.component';
 import { ErrorComponent } from './features/pages/error/error.component';
 import { NotAuthComponent } from './features/pages/not-auth/not-auth.component';
+import { ProfileComponent } from './features/profile/profile.component';
 
 const routes: Routes = [
   //lazy loading routes
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'student', component: StudentComponent, canActivate: [AuthGuard], data: { role: 'USER' }},
   { path: 'sro', component: SroComponent, canActivate: [AuthGuard], data: { role: 'SRO' }},
   { path: 'access-denied', component: NotAuthComponent }, // Route for access denied
+  { path: 'profile', component: ProfileComponent },
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
   { path: 'error', component: ErrorComponent },
   { path: '**', redirectTo: 'auth/login' }

@@ -1,1 +1,32 @@
-<p>profile works!</p>
+<!-- src/app/features/profile/components/profile.component.html -->
+<div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">User Profile</h2>
+  
+    <div class="space-y-4">
+      <div class="flex items-center">
+        <span class="font-semibold text-gray-700 dark:text-gray-300 w-32">Full Name:</span>
+        <span class="text-gray-900 dark:text-white">{{ userProfile?.fullName }}</span>
+      </div>
+  
+      <div class="flex items-center">
+        <span class="font-semibold text-gray-700 dark:text-gray-300 w-32">Email:</span>
+        <span class="text-gray-900 dark:text-white">{{ userProfile?.email }}</span>
+      </div>
+  
+      <div class="flex items-center">
+        <span class="font-semibold text-gray-700 dark:text-gray-300 w-32">Phone:</span>
+        <span class="text-gray-900 dark:text-white">{{ userProfile?.phone }}</span>
+      </div>
+  
+      <div class="flex items-center">
+        <span class="font-semibold text-gray-700 dark:text-gray-300 w-32">Address:</span>
+        <span class="text-gray-900 dark:text-white">{{ userProfile?.address }}</span>
+      </div>
+  
+      <div class="flex items-center">
+        <span class="font-semibold text-gray-700 dark:text-gray-300 w-32">Role:</span>
+        <span class="text-gray-900 dark:text-white">{{ userProfile?.roleName }}</span>
+      </div>
+    </div>
+  </div>
+  
