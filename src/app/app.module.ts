@@ -40,23 +40,18 @@ export function tokenGetter() {
     ToastrModule.forRoot({
       positionClass: 'toast-top-right',
       preventDuplicates: true,
-      timeOut: 2000,
+      timeOut: 5000,
       closeButton: true,
       progressBar: true,
     }),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        allowedDomains: ['localhost:4200'],
-        disallowedRoutes: ['localhost:4200/api/auth']
+        allowedDomains: ['localhost:1010'],
+        disallowedRoutes: ['localhost:1010/api/auth']
       }
     }),
-    ToastrModule.forRoot({
-      positionClass: 'toast-top-right', // Vị trí hiển thị thông báo
-      timeOut: 5000, // Thời gian hiển thị thông báo (5 giây)
-      progressBar: true, // Hiển thị thanh tiến trình
-      closeButton: true // Hiển thị nút đóng
-    })
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

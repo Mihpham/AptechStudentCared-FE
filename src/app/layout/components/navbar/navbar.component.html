@@ -1,44 +1,39 @@
 <nav class="bg-blue-200 text-black flex items-center justify-between p-4 dark:bg-slate-600">
   <div class="flex items-center">
     <div class="relative">
-      <input type="text" placeholder="Search Dashboard" class="pl-10 pr-4 py-2 rounded-full bg-gray-100 text-black focus:outline-none" />
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-           class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-        <path stroke-linecap="round" stroke-linejoin="round"
-              d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1 0 3 10.5a7.5 7.5 0 0 0 13.65 6.15Z" />
-      </svg>
+      <i class="fa-solid fa-magnifying-glass absolute left-2 top-1/2 transform -translate-y-1/2"></i>
+      <input type="text" placeholder="Search Dashboard" class="pl-11 pr-12 py-2 rounded-lg bg-gray-100 text-black focus:outline-none cursor-pointer" />
     </div>
   </div>
 
   <div class="flex items-center space-x-4 relative">
     <div class="flex items-center">
       <!-- Dark Mode Toggle Button -->
-      <span *ngIf="darkModeService.darkModeSignal() === 'dark'" (click)="toggleDarkMode()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 dark:text-black">
+      <button (click)="toggleDarkMode()" aria-label="Toggle Dark Mode">
+        <svg *ngIf="darkModeService.darkModeSignal() === 'dark'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 dark:text-black">
           <path stroke-linecap="round" stroke-linejoin="round"
                 d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
         </svg>
-      </span>
-      <span *ngIf="darkModeService.darkModeSignal() !== 'dark'" (click)="toggleDarkMode()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <svg *ngIf="darkModeService.darkModeSignal() !== 'dark'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round"
                 d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
         </svg>
-      </span>
+      </button>
     </div>
+
     <!-- Dropdown Trigger -->
     <div class="flex items-center space-x-2 cursor-pointer" (click)="toggleDropdown()">
       <div class="text-right hidden md:block">
-        <div class="font-semibold">Admin</div>
-        <div class="text-sm text-gray-600 ">Senior Admin</div>
+        <div class="text-sm text-gray-600 dark:text-white">Senior Admin</div>
+        <div class="font-semibold dark:text-white">Admin</div>
       </div>
-      <img src="assets\images\image-login.png" alt="Admin Avatar" class="w-10 h-10 rounded-full" />
+      <img src="assets/images/image-login.png" alt="Admin Avatar" class="w-10 h-10 rounded-full" />
     </div>
 
     <!-- Dropdown Menu -->
-    <div *ngIf="isDropdownOpen" class="absolute right-0 mt-36 w-48 bg-white rounded-md shadow-lg py-2">
-      <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
-      <button (click)="logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</button>
+    <div *ngIf="isDropdownOpen" class="absolute right-0 mt-12 w-48 h-20 bg-white rounded-md shadow-lg py-2 dark:bg-gray-800">
+      <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Profile</a>
+      <a (click)="logout()" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Logout</a>
     </div>
   </div>
 </nav>
