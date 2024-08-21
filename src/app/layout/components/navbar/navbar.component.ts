@@ -41,6 +41,7 @@ export class NavbarComponent implements OnInit {
   closeDropdown(event: Event) {
     const targetElement = event.target as HTMLElement;
 
+    // Kiểm tra nếu click xảy ra bên ngoài dropdown hoặc trigger
     if (!targetElement.closest('.relative')) {
       this.isDropdownOpen = false;
       this.isMobileMenuOpen = false;
