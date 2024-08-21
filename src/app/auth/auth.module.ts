@@ -9,7 +9,6 @@ import { ResetPasswordComponent } from './component/reset-password/reset-passwor
 import { ResetPasswordSuccessComponent } from './component/reset-password-success/reset-password-success.component';
 import { AuthRoutingModule } from './auth-routing.module';
 
-
 @NgModule({
 
   declarations: [

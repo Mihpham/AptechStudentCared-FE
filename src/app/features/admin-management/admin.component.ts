@@ -6,5 +6,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent {
-
-}
+  isLoading = true;
+  
+  loadData() {
+    setTimeout(() => this.isLoading = false) , 3000
+  }
+} 

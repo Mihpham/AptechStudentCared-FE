@@ -59,6 +59,5 @@ export class NavbarComponent implements OnInit {
     this.showLogoutConfirm = false;
     this.authService.logout();
     this.router.navigate(['/auth/login']);
-    window.location.reload(); // Reload the page to clear any state
   }
 }
