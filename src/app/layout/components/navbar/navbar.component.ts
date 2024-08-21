@@ -11,7 +11,7 @@ import { DarkModeService } from 'src/app/core/services/dark-mode.service';
 export class NavbarComponent implements OnInit {
   isLoggedIn: boolean = false;
   isDropdownOpen = false;
-
+  isMobileMenuOpen = false;
 
   darkModeService = inject(DarkModeService);
 
@@ -32,14 +32,18 @@ export class NavbarComponent implements OnInit {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
   
+  toggleMobileMenu () : void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
   @HostListener('document:click', ['$event'])
   closeDropdown(event: Event) {
     const targetElement = event.target as HTMLElement;
 
-    // Kiểm tra nếu click xảy ra bên ngoài dropdown hoặc trigger
     if (!targetElement.closest('.relative')) {
       this.isDropdownOpen = false;
+      this.isMobileMenuOpen = false;
     }
+    
   }
 
   logout() {

@@ -9,10 +9,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthModule } from './auth/auth.module';
-import { AdminComponent } from './features/admin/admin.component';
-import { SroComponent } from './features/sro/sro.component';
-import { TeacherComponent } from './features/teacher/teacher.component';
-import { StudentComponent } from './features/student/student.component';
+import { AdminComponent } from './features/admin-management/admin.component';
+import { SroComponent } from './features/sro-management/sro.component';
+import { TeacherComponent } from './features/teacher-management/teacher.component';
+import { StudentComponent } from './features/student-management/student.component';
 import { NavbarComponent } from './layout/components/navbar/navbar.component';
 import { SidebarComponent } from './layout/components/sidebar/sidebar.component';
 
