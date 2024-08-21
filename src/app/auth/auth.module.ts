@@ -4,10 +4,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RegisterComponent } from './component/register/register.component';
 import { LoginComponent } from './component/login/login.component';
 import { ForgotPasswordComponent } from './component/forgot-password/forgot-password.component';
-import { AuthRoutingModule } from './auth-routing.module';
 import { ResetPasswordOtpComponent } from './component/reset-password-otp/reset-password-otp.component';
 import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
 import { ResetPasswordSuccessComponent } from './component/reset-password-success/reset-password-success.component';
+import { AuthRoutingModule } from './auth-routing.module';
 
 
 @NgModule({
@@ -23,7 +23,7 @@ import { ResetPasswordSuccessComponent } from './component/reset-password-succes
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule, 
+    ReactiveFormsModule,
     AuthRoutingModule
   ],
   providers: [],

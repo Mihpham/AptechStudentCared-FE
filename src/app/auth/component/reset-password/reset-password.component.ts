@@ -9,7 +9,8 @@ import { AuthService } from 'src/app/core/auth/auth.service';
 })
 export class ResetPasswordComponent {
   resetPasswordForm: FormGroup;
-
+  hidePassword: boolean = true;
+  hidePasswordConfirm: boolean = true;
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.resetPasswordForm = this.fb.group({
       newPassword: ['', Validators.required],
@@ -24,5 +25,13 @@ export class ResetPasswordComponent {
         this.router.navigate(['/reset-password-success']);
       });
     }
+  }
+
+  togglePasswordVisibility() {
+    this.hidePassword = !this.hidePassword;
+  }
+  
+  togglePasswordConfirmVisibility() {
+    this.hidePasswordConfirm = !this.hidePasswordConfirm;
   }
 }

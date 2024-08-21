@@ -1,6 +1,20 @@
-<div *ngIf="isAuthenticated()">
-  <app-navbar></app-navbar>
-  <app-sidebar></app-sidebar>
+<div
+  *ngIf="isAuthenticated()"
+  class="dark:bg-slate-800"
+  class="flex"
+  [ngClass]="darkModeService.darkModeSignal()"
+>
+  <ng-container *ngIf="isAdminPage()">
+    <aside class="bg-gray-200 w-64 h-screen p-4">
+      <app-sidebar></app-sidebar>
+    </aside>
+    <div class="flex-1 flex flex-col">
+      <app-navbar></app-navbar>
+      <main class="flex-1 p-4">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </ng-container>
 </div>
 <div class="">
   <router-outlet></router-outlet>

@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './core/auth/auth.service';
+import { DarkModeService } from './core/services/dark-mode.service';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,8 @@ export class AppComponent {
     private authService: AuthService
   ) {}
 
+  darkModeService = inject(DarkModeService);
+  
   isAuthenticated(): boolean {
     return this.authService.isAuthenticated();
   }

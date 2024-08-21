@@ -1,3 +1,3 @@
 export const AuthEnvironment = {
-    apiUrl: 'http://localhost:8080/auth'
+    apiUrl: 'http://localhost:1010/auth'
   };
