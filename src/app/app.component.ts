@@ -18,7 +18,13 @@ export class AppComponent {
   ) { }
 
   darkModeService = inject(DarkModeService);
+  isLoading = true;
 
+  ngOnInit() {
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 1000); 
+  }
   handleToggleSidebar() {
     this.collapsed = !this.collapsed;
   }

@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -15,6 +15,8 @@ import { TeacherComponent } from './features/teacher-management/teacher.componen
 import { StudentComponent } from './features/student-management/student.component';
 import { NavbarComponent } from './layout/components/navbar/navbar.component';
 import { SidebarComponent } from './layout/components/sidebar/sidebar.component';
+import { PagesModule } from './features/pages/pages.module';
+import { SharedModule } from './shared/shared.module';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -28,7 +30,8 @@ export function tokenGetter() {
     TeacherComponent,
     StudentComponent,
     NavbarComponent,
-    SidebarComponent
+    SidebarComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -37,6 +40,8 @@ export function tokenGetter() {
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    PagesModule,
+    SharedModule,
     ToastrModule.forRoot({
       positionClass: 'toast-top-right',
       preventDuplicates: true,
@@ -53,6 +58,7 @@ export function tokenGetter() {
     }),
     
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [],
   bootstrap: [AppComponent]
 })
