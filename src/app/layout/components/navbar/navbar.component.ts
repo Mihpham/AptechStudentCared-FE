@@ -31,24 +31,24 @@ export class NavbarComponent implements OnInit {
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
-  
+
   toggleMobileMenu () : void {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
+  
   @HostListener('document:click', ['$event'])
   closeDropdown(event: Event) {
     const targetElement = event.target as HTMLElement;
 
+    // Kiểm tra nếu click xảy ra bên ngoài dropdown hoặc trigger
     if (!targetElement.closest('.relative')) {
       this.isDropdownOpen = false;
       this.isMobileMenuOpen = false;
     }
-    
   }
 
   logout() {
     this.authService.logout();
     this.router.navigate(['/auth/login']);
-    window.location.reload();
   }
 }
