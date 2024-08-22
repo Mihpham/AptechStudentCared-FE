@@ -1,27 +1,27 @@
-<nav [ngClass]="{'sidebar-collapsed': collapsed}" class="w-48 bg-white h-screen shadow-md fixed top-0 left-0 dark:bg-black dark:text-white">
+<nav [ngClass]="{'sidebar-collapsed': collapsed}" class="w-48 bg-white h-screen shadow-md fixed top-0 left-0  dark:bg-stone-900">
   <div class="flex items-center justify-center py-4">
     <img *ngIf="!collapsed" src="assets/images/logo.png" alt="Aptech Logo" class="mx-auto mb-4 w-36">
   </div>
   <button (click)="toggleSidebar()" class="p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
-    <i class="fas fa-bars dark:text-white"></i> <!-- Icon for menu button -->
+    <i class="fas fa-bars dark:text-neutral-200"></i> <!-- Icon for menu button -->
   </button>
-  <ul class="space-y-2 dark:text-white">
+  <ul class="space-y-2 dark:text-neutral-200">
     <li>
-      <a routerLink="/admin/dashboard" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg dark:text-white ">
-        <i class="fas fa-tachometer-alt w-6 h-6 mr-3 pt-1 dark:text-white"></i>
-        <span *ngIf="!collapsed" class="dark:text-white" >Dashboard</span>
+      <a routerLink="/admin/dashboard" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 hover:dark:bg-slate-300  rounded-lg dark:text-neutral-200 ">
+        <i class="fas fa-tachometer-alt w-6 h-6 mr-3 pt-1 dark:text-neutral-200"></i>
+        <span *ngIf="!collapsed" class="dark:text-neutral-200" >Dashboard</span>
       </a>
     </li>
     <li>
       <a routerLink="/admin/class" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
-        <i class="fas fa-chalkboard-teacher w-6 h-6 mr-3 pt-1 dark:text-white"></i>
-        <span *ngIf="!collapsed" class="dark:text-white">Class</span>
+        <i class="fas fa-chalkboard-teacher w-6 h-6 mr-3 pt-1 dark:text-neutral-200"></i>
+        <span *ngIf="!collapsed" class="dark:text-neutral-200">Class</span>
       </a>
     </li>
     <li>
       <a routerLink="/admin/student" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
-        <i class="fas fa-user-graduate w-6 h-6 mr-3 pt-1 dark:text-white"></i>
-        <span *ngIf="!collapsed" class="dark:text-white">Student</span>
+        <i class="fas fa-user-graduate w-6 h-6 mr-3 pt-1 dark:text-neutral-200"></i>
+        <span *ngIf="!collapsed" class="dark:text-neutral-200">Student</span>
       </a>
       <ul *ngIf="isOpen('student')" class="absolute left-full top-0 mt-2 bg-white shadow-md rounded-lg w-48">
         <li><a routerLink="/student/list" routerLinkActive="active-link" class="block p-2 text-gray-700 hover:bg-gray-200">List</a></li>
@@ -30,50 +30,50 @@
     </li>
     <li>
       <a routerLink="/admin/exam-mark" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
-        <i class="fas fa-file-alt w-6 h-6 mr-3 pt-1 dark:text-white"></i>
-        <span *ngIf="!collapsed" class="dark:text-white">Exam Mark</span>
+        <i class="fas fa-file-alt w-6 h-6 mr-3 pt-1 dark:text-neutral-200"></i>
+        <span *ngIf="!collapsed" class="dark:text-neutral-200">Exam Mark</span>
       </a>
     </li>
     <li>
       <a routerLink="/admin/teacher" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
-        <i class="fas fa-chalkboard w-6 h-6 mr-3 pt-1 dark:text-white" ></i>
-        <span *ngIf="!collapsed" class="dark:text-white">Teacher</span>
+        <i class="fas fa-chalkboard w-6 h-6 mr-3 pt-1 dark:text-neutral-200" ></i>
+        <span *ngIf="!collapsed" class="dark:text-neutral-200">Teacher</span>
       </a>
     </li>
     <li>
       <a routerLink="/admin/sro" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
-        <i class="fas fa-id-badge w-6 h-6 mr-3 pt-1 dark:text-white"></i>
-        <span *ngIf="!collapsed" class="dark:text-white">SRO</span>
+        <i class="fas fa-id-badge w-6 h-6 mr-3 pt-1 dark:text-neutral-200"></i>
+        <span *ngIf="!collapsed" class="dark:text-neutral-200">SRO</span>
       </a>
     </li>
     <li>
       <a routerLink="/admin/accounts" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
-        <i class="fas fa-book w-6 h-6 mr-3 pt-1 dark:text-white"></i>
-        <span *ngIf="!collapsed" class="dark:text-white">Accounts</span>
+        <i class="fas fa-book w-6 h-6 mr-3 pt-1 dark:text-neutral-200"></i>
+        <span *ngIf="!collapsed" class="dark:text-neutral-200">Accounts</span>
       </a>
     </li>
     <li>
       <a routerLink="/admin/attendance" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
-        <i class="fas fa-calendar-check w-6 h-6 mr-3 pt-1 dark:text-white"></i>
-        <span *ngIf="!collapsed" class="dark:text-white">Attendance</span>
+        <i class="fas fa-calendar-check w-6 h-6 mr-3 pt-1 dark:text-neutral-200"></i>
+        <span *ngIf="!collapsed" class="dark:text-neutral-200">Attendance</span>
       </a>
     </li>
     <li>
       <a routerLink="/admin/calendar" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
-        <i class="fas fa-calendar-alt w-6 h-6 mr-3 pt-1 dark:text-white"></i>
-        <span *ngIf="!collapsed" class="dark:text-white">Calendar</span>
+        <i class="fas fa-calendar-alt w-6 h-6 mr-3 pt-1 dark:text-neutral-200"></i>
+        <span *ngIf="!collapsed" class="dark:text-neutral-200">Calendar</span>
       </a>
     </li>
     <li>
       <a routerLink="/admin/course" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
-        <i class="fas fa-book-open w-6 h-6 mr-3 pt-1 dark:text-white"></i>
-        <span *ngIf="!collapsed" class="dark:text-white">Course</span>
+        <i class="fas fa-book-open w-6 h-6 mr-3 pt-1 dark:text-neutral-200"></i>
+        <span *ngIf="!collapsed" class="dark:text-neutral-200">Course</span>
       </a>
     </li>
     <li>
       <a routerLink="/admin/subject" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
-        <i class="fas fa-book-reader w-6 h-6 mr-3 pt-1 dark:text-white"></i>
-        <span *ngIf="!collapsed" class="dark:text-white">Subject</span>
+        <i class="fas fa-book-reader w-6 h-6 mr-3 pt-1 dark:text-neutral-200"></i>
+        <span *ngIf="!collapsed" class="dark:text-neutral-200">Subject</span>
       </a>
     </li>
   </ul>
