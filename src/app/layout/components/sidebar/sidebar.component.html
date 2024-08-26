@@ -1,4 +1,4 @@
-<nav [ngClass]="{'sidebar-collapsed': collapsed}" class="w-48 bg-white h-screen shadow-md fixed top-0 left-0  dark:bg-stone-900">
+<nav [ngClass]="{'sidebar-collapsed': collapsed}" class="w-48 bg-white h-screen shadow-md fixed top-0 left-0 overflow-y-auto  dark:bg-stone-900">
   <div class="flex items-center justify-center py-4">
     <img *ngIf="!collapsed" src="assets/images/logo.png" alt="Aptech Logo" class="mx-auto mb-4 w-36">
   </div>
@@ -82,7 +82,7 @@
       </a>
     </li>
     <li>
-      <a routerLink="/admin/subject" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
+      <a routerLink="/admin/subject" routerLinkActive="active-link" class="subject-container flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg ">
         <i class="fas fa-book-reader w-6 h-6 mr-3 pt-1 dark:text-neutral-200"></i>
         <span *ngIf="!collapsed" class="dark:text-neutral-200">Subject</span>
       </a>

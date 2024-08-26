@@ -66,3 +66,23 @@ nav {
     background-color: #1E1E1E;
   }
   
+  nav::-webkit-scrollbar {
+    width: 6px; /* Độ rộng của thanh cuộn */
+}
+
+nav::-webkit-scrollbar-thumb {
+    background-color: #a0aec0; /* Màu của thanh cuộn */
+    border-radius: 10px; /* Bo tròn các góc của thanh cuộn */
+}
+
+nav::-webkit-scrollbar-thumb:hover {
+    background-color: #718096; /* Màu của thanh cuộn khi hover */
+}
+
+nav::-webkit-scrollbar-track {
+    background-color: #edf2f7; /* Màu nền của track thanh cuộn */
+}
+
+.subject-container{
+  margin-bottom: 50px;
+}
