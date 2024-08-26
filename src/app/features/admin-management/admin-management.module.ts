@@ -14,6 +14,13 @@ import { SubjectComponent } from './subject/subject.component';
 import { TeacherComponent } from '../teacher-management/teacher.component';
 import { SroComponent } from '../sro-management/sro.component';
 import { StudentComponent } from './student/student.component';
+import { StudyingComponent } from './student/studying/studying.component';
+import { DropoutComponent } from './student/dropout/dropout.component';
+import { DelayComponent } from './student/delay/delay.component';
+import { GraduatedComponent } from './student/graduated/graduated.component';
+import { StudentAllStatusesComponent } from './student/student-all-statuses/student-all-statuses.component';
+import { AttendanceRecordComponent } from './attendance/attendance-record/attendance-record.component';
+import { AttendanceClassComponent } from './attendance/attendance-class/attendance-class.component';
 
 @NgModule({
   declarations: [
@@ -26,24 +33,48 @@ import { StudentComponent } from './student/student.component';
     AttendanceComponent,
     CalendarComponent,
     CourseComponent,
-    SubjectComponent
+    SubjectComponent,
+    StudyingComponent,
+    DropoutComponent,
+    DelayComponent,
+    GraduatedComponent,
+    StudentAllStatusesComponent,
+    AttendanceRecordComponent,
+    AttendanceClassComponent
   ],
   imports: [
     CommonModule,
     RouterModule.forChild([
-      { path: '', component: AdminComponent, children: [
-        { path: 'dashboard', component: DashboardComponent },
-        { path: 'class', component: ClassComponent },
-        { path: 'student', component: StudentComponent },
-        { path: 'exam-mark', component: ExamMarkComponent },
-        { path: 'teacher', component: TeacherComponent },
-        { path: 'sro', component: SroComponent },
-        { path: 'accounts', component: AccountsComponent },
-        { path: 'attendance', component: AttendanceComponent },
-        { path: 'calendar', component: CalendarComponent },
-        { path: 'course', component: CourseComponent },
-        { path: 'subject', component: SubjectComponent },
-      ]}
+      {
+        path: '',
+        component: AdminComponent,
+        children: [
+          { path: 'dashboard', component: DashboardComponent },
+          { path: 'class', component: ClassComponent },
+          {
+            path: 'student', component: StudentComponent, children: [
+              { path: '', component: StudentAllStatusesComponent },
+              { path: 'studying', component: StudyingComponent },
+              { path: 'delay', component: DelayComponent },
+              { path: 'dropout', component: DropoutComponent },
+              { path: 'graduated', component: GraduatedComponent },
+            ]
+          },
+          { path: 'exam-mark', component: ExamMarkComponent },
+          { path: 'teacher', component: TeacherComponent },
+          { path: 'sro', component: SroComponent },
+          { path: 'accounts', component: AccountsComponent },
+          {
+            path: 'attendance', component: AttendanceComponent, children: [
+              { path: '', component: AttendanceClassComponent },
+              { path: 'attendance-record', component: AttendanceRecordComponent },
+            ]
+          },
+          { path: 'calendar', component: CalendarComponent },
+          { path: 'course', component: CourseComponent },
+          { path: 'subject', component: SubjectComponent },
+        ]
+      }
     ])
   ]
 })

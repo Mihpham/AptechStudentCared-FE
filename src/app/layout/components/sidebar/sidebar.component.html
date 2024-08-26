@@ -19,14 +19,19 @@
       </a>
     </li>
     <li>
-      <a routerLink="/admin/student" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
-        <i class="fas fa-user-graduate w-6 h-6 mr-3 pt-1 dark:text-neutral-200"></i>
-        <span *ngIf="!collapsed" class="dark:text-neutral-200">Student</span>
-      </a>
-      <ul *ngIf="isOpen('student')" class="absolute left-full top-0 mt-2 bg-white shadow-md rounded-lg w-48">
-        <li><a routerLink="/student/list" routerLinkActive="active-link" class="block p-2 text-gray-700 hover:bg-gray-200">List</a></li>
-        <li><a routerLink="/student/add" routerLinkActive="active-link" class="block p-2 text-gray-700 hover:bg-gray-200">Add</a></li>
-      </ul>
+      <div>
+        <a (click)="toggleStudentDropdown()" routerLink="/admin/student" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg cursor-pointer">
+          <i class="fas fa-user-graduate w-6 h-6 mr-3 pt-1 dark:text-neutral-200"></i>
+          <span *ngIf="!collapsed" class="dark:text-neutral-200">Student</span>
+          <i class="fas fa-chevron-down ml-auto" *ngIf="!collapsed"></i>
+        </a>
+        <ul *ngIf="isStudentDropdownOpen" class="ml-8 space-y-1">
+          <li><a *ngIf="!collapsed" routerLink="/admin/student/studying" routerLinkActive="active-link" class="block p-2 text-gray-700 hover:bg-gray-200 rounded-lg cursor-pointer mt-1">Studying</a></li>
+          <li><a *ngIf="!collapsed" routerLink="/admin/student/delay" routerLinkActive="active-link" class="block p-2 text-gray-700 hover:bg-gray-200 rounded-lg cursor-pointer">Delay</a></li>
+          <li><a *ngIf="!collapsed" routerLink="/admin/student/dropout" routerLinkActive="active-link" class="block p-2 text-gray-700 hover:bg-gray-200 rounded-lg cursor-pointer">Dropout</a></li>
+          <li><a *ngIf="!collapsed" routerLink="/admin/student/graduated" routerLinkActive="active-link" class="block p-2 text-gray-700 hover:bg-gray-200 rounded-lg cursor-pointer">Graduated</a></li>
+        </ul>
+      </div>
     </li>
     <li>
       <a routerLink="/admin/exam-mark" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
@@ -53,10 +58,16 @@
       </a>
     </li>
     <li>
-      <a routerLink="/admin/attendance" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">
-        <i class="fas fa-calendar-check w-6 h-6 mr-3 pt-1 dark:text-neutral-200"></i>
-        <span *ngIf="!collapsed" class="dark:text-neutral-200">Attendance</span>
-      </a>
+      <div>
+        <a (click)="toggleAttendanceDropdown()" routerLink="/admin/attendance" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg cursor-pointer">
+          <i class="fas fa-user-graduate w-6 h-6 mr-3 pt-1 dark:text-neutral-200"></i>
+          <span *ngIf="!collapsed" class="dark:text-neutral-200">Attendance</span>
+          <i class="fas fa-chevron-down ml-auto" *ngIf="!collapsed"></i>
+        </a>
+        <ul *ngIf="isAttendanceDropdownOpen" class="ml-8 space-y-1">
+          <li><a *ngIf="!collapsed" routerLink="/admin/attendance/attendance-record" routerLinkActive="active-link" class="block p-2 text-gray-700 hover:bg-gray-200 rounded-lg cursor-pointer mt-1">Attendance Record</a></li>
+        </ul>
+      </div>
     </li>
     <li>
       <a routerLink="/admin/calendar" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg">

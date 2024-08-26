@@ -10,7 +10,8 @@ export class SidebarComponent {
   isLoggedIn: boolean = false;
   @Input() collapsed: boolean = false;
   @Output() toggle = new EventEmitter<void>();
-  openDropdown: string | null = null;
+  isStudentDropdownOpen: boolean = false;
+  isAttendanceDropdownOpen: boolean = false;
 
   constructor(private authService: AuthService) { }
 
@@ -23,7 +24,10 @@ export class SidebarComponent {
     this.toggle.emit();
   }
 
-  isOpen(dropdown: string): boolean {
-    return this.openDropdown === dropdown;
+  toggleStudentDropdown() {
+    this.isStudentDropdownOpen = !this.isStudentDropdownOpen;
+  }
+  toggleAttendanceDropdown() {
+    this.isAttendanceDropdownOpen = !this.isAttendanceDropdownOpen;
   }
 }
