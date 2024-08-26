@@ -1,0 +1,33 @@
+<!-- src/app/features/admin-management/student/student-detail/student-detail.component.html -->
+
+<mat-dialog-content>
+    <div class="student-detail">
+      <div class="detail-container">
+        <div class="avatar-container">
+          <img [src]="student.avatar" alt="{{ student.fullName }}'s Avatar" class="avatar">
+          <h2 class="student-name">{{ student.fullName }}</h2>
+        </div>
+        <div class="student-info">
+          <h3 class="section-title">Student Information</h3>
+          <p><strong>Full Name:</strong> {{ student.fullName }}</p>
+          <p><strong>Roll Number:</strong> {{ student.rollNumber }}</p>
+          <p><strong>Class:</strong> {{ student.class }}</p>
+          <p><strong>Email:</strong> {{ student.email }}</p>
+          <p><strong>Phone Number:</strong> {{ student.phoneNumber }}</p>
+          <p><strong>Status:</strong> {{ student.status }}</p>
+  
+          <div class="guardian-info">
+            <h3 class="section-title">Guardian Information</h3>
+            <p><strong>Full Name:</strong> {{ student.guardian?.fullName }}</p>
+            <p><strong>Gender:</strong> {{ student.guardian?.gender }}</p>
+            <p><strong>Phone Number:</strong> {{ student.guardian?.phoneNumber }}</p>
+            <p><strong>Relationship:</strong> {{ student.guardian?.relationship }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button (click)="onClose()">Close</button>
+  </mat-dialog-actions>
+  

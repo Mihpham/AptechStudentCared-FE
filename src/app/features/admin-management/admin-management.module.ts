@@ -22,6 +22,15 @@ import { StudentAllStatusesComponent } from './student/student-all-statuses/stud
 import { AttendanceRecordComponent } from './attendance/attendance-record/attendance-record.component';
 import { AttendanceClassComponent } from './attendance/attendance-class/attendance-class.component';
 
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatIconModule } from '@angular/material/icon';
+import { StudentDetailDialogComponent } from './student/student-detail-dialog/student-detail-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+
 @NgModule({
   declarations: [
     AdminComponent,
@@ -40,7 +49,8 @@ import { AttendanceClassComponent } from './attendance/attendance-class/attendan
     GraduatedComponent,
     StudentAllStatusesComponent,
     AttendanceRecordComponent,
-    AttendanceClassComponent
+    AttendanceClassComponent,
+    StudentDetailDialogComponent
   ],
   imports: [
     CommonModule,
@@ -75,7 +85,14 @@ import { AttendanceClassComponent } from './attendance/attendance-class/attendan
           { path: 'subject', component: SubjectComponent },
         ]
       }
-    ])
+    ]),
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatIconModule,
+    MatDialogModule,
   ]
 })
 export class AdminManagementModule { }
