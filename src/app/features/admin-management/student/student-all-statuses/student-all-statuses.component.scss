@@ -1,0 +1,80 @@
+/* src/app/student-all-statuses/student-all-statuses.component.scss */
+
+.student-list {
+    padding: 16px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.total-students {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 16px;
+    /* Adjust gap between elements as needed */
+}
+
+.search-bar {
+    width: 300px;
+    /* Set a fixed width for the search bar */
+}
+
+.mat-row {
+    transition: background-color 0.3s ease;
+  }
+
+.mat-row:hover {
+    background-color: rgba(122, 114, 114, 0.04); /* Light gray color on hover */
+    cursor: pointer; /* Change cursor to pointer on hover */
+  }
+
+.actions {
+    display: flex;
+    gap: 8px;
+    /* Adjust gap between buttons as needed */
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.mat-icon {
+    font-size: 16px;
+}
+
+.mat-button-edit {
+    color: orange;
+}
+
+.mat-button-delete {
+    color: red;
+}
+
+/* Status Color Coding */
+.status-studying {
+    color: rgb(0, 183, 0);
+}
+
+.status-delay {
+    color: orange;
+}
+
+.status-dropout {
+    color: red;
+}
+
+.status-graduated {
+    color: blue;
+}

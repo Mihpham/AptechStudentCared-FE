@@ -23,6 +23,15 @@ import { AttendanceRecordComponent } from './attendance/attendance-record/attend
 import { AttendanceClassComponent } from './attendance/attendance-class/attendance-class.component';
 import { AdminManagementRoutingModule } from './admin-management-routing.module';
 
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatIconModule } from '@angular/material/icon';
+import { StudentDetailDialogComponent } from './student/student-detail-dialog/student-detail-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+
 @NgModule({
   declarations: [
     AdminComponent,
@@ -41,10 +50,50 @@ import { AdminManagementRoutingModule } from './admin-management-routing.module'
     GraduatedComponent,
     StudentAllStatusesComponent,
     AttendanceRecordComponent,
-    AttendanceClassComponent
+    AttendanceClassComponent,
+    StudentDetailDialogComponent
   ],
   imports: [
     CommonModule,
+    RouterModule.forChild([
+      {
+        path: '',
+        component: AdminComponent,
+        children: [
+          { path: 'dashboard', component: DashboardComponent },
+          { path: 'class', component: ClassComponent },
+          {
+            path: 'student', component: StudentComponent, children: [
+              { path: '', component: StudentAllStatusesComponent },
+              { path: 'studying', component: StudyingComponent },
+              { path: 'delay', component: DelayComponent },
+              { path: 'dropout', component: DropoutComponent },
+              { path: 'graduated', component: GraduatedComponent },
+            ]
+          },
+          { path: 'exam-mark', component: ExamMarkComponent },
+          { path: 'teacher', component: TeacherComponent },
+          { path: 'sro', component: SroComponent },
+          { path: 'accounts', component: AccountsComponent },
+          {
+            path: 'attendance', component: AttendanceComponent, children: [
+              { path: '', component: AttendanceClassComponent },
+              { path: 'attendance-record', component: AttendanceRecordComponent },
+            ]
+          },
+          { path: 'calendar', component: CalendarComponent },
+          { path: 'course', component: CourseComponent },
+          { path: 'subject', component: SubjectComponent },
+        ]
+      }
+    ]),
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatIconModule,
+    MatDialogModule,
     AdminManagementRoutingModule
   ]
 })
