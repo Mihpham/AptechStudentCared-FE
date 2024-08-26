@@ -11,21 +11,50 @@ import { ProfileComponent } from './features/profile/profile.component';
 
 const routes: Routes = [
   //lazy loading routes
-  { path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule) },
-  { path: 'admin', loadChildren: () => import('./features/admin-management/admin-management.module').then(m => m.AdminManagementModule),
-     component: AdminComponent, canActivate: [AuthGuard], data: { role: 'ADMIN' }},
-  { path: 'teacher', component: TeacherComponent, canActivate: [AuthGuard], data: { role: 'TEACHER' }},
-  { path: 'student', component: StudentComponent, canActivate: [AuthGuard], data: { role: 'USER' }},
-  { path: 'sro', component: SroComponent, canActivate: [AuthGuard], data: { role: 'SRO' }},
+  {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
+  },
+  {
+    path: 'admin',
+    canActivate: [AuthGuard],
+    data: { role: 'ADMIN' },
+    loadChildren: () =>
+      import('./features/admin-management/admin-management.module').then(
+        (m) => m.AdminManagementModule
+      ),
+  },
+  {
+    path: 'teacher',
+    component: TeacherComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'TEACHER' },
+  },
+  {
+    path: 'student',
+    component: StudentComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'USER' },
+  },
+  {
+    path: 'sro',
+    component: SroComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'SRO' },
+  },
   { path: 'access-denied', component: NotAuthComponent }, // Route for access denied
-  { path: 'profile', component: ProfileComponent },
+  {
+    path: 'profile',
+    component: ProfileComponent,
+    data: { breadcrumb: 'Profile' },
+  },
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
   { path: 'error', component: ErrorComponent },
-  { path: '**', redirectTo: 'auth/login' }
+  { path: '**', redirectTo: 'auth/login' },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],  
-  exports: [RouterModule]
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule],
 })
 export class AppRoutingModule {}

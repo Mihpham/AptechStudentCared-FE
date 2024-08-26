@@ -2,8 +2,10 @@
   <aside [ngClass]="{'sidebar-collapsed': collapsed, 'sidebar-expanded': !collapsed}" class="sidebar bg-gray-200 h-screen p-4">
     <app-sidebar [collapsed]="collapsed" (toggle)="handleToggleSidebar()"></app-sidebar>
   </aside>
+
   <div class="main-content flex-1 flex flex-col ">
     <app-navbar></app-navbar>
+    <app-breadcrumbs></app-breadcrumbs>
     <main class="flex-1 p-4 ">
       <router-outlet></router-outlet>
     </main>

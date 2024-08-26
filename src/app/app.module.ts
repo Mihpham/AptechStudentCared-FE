@@ -15,6 +15,7 @@ import { SharedModule } from './shared/shared.module';
 import { ProfileModule } from './features/profile/profile.module';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { InterceptorsModule } from './core/interceptors/interceptors.module';
+import { BreadcrumbsComponent } from './layout/components/breadcrumbs/breadcrumbs.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -25,6 +26,7 @@ export function tokenGetter() {
     AppComponent,
     NavbarComponent,
     SidebarComponent,
+    BreadcrumbsComponent,
   ],
   imports: [
     BrowserModule,
