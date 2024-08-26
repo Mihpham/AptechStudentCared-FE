@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -11,8 +11,6 @@ import { AttendanceComponent } from './attendance/attendance.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { CourseComponent } from './course/course.component';
 import { SubjectComponent } from './subject/subject.component';
-import { TeacherComponent } from '../teacher-management/teacher.component';
-import { SroComponent } from '../sro-management/sro.component';
 import { StudentComponent } from './student/student.component';
 import { StudyingComponent } from './student/studying/studying.component';
 import { DropoutComponent } from './student/dropout/dropout.component';
@@ -33,6 +31,8 @@ import { StudentDetailDialogComponent } from './student/student-detail-dialog/st
 import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+
   declarations: [
     AdminComponent,
     StudentComponent,
@@ -55,38 +55,7 @@ import { MatDialogModule } from '@angular/material/dialog';
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        component: AdminComponent,
-        children: [
-          { path: 'dashboard', component: DashboardComponent },
-          { path: 'class', component: ClassComponent },
-          {
-            path: 'student', component: StudentComponent, children: [
-              { path: '', component: StudentAllStatusesComponent },
-              { path: 'studying', component: StudyingComponent },
-              { path: 'delay', component: DelayComponent },
-              { path: 'dropout', component: DropoutComponent },
-              { path: 'graduated', component: GraduatedComponent },
-            ]
-          },
-          { path: 'exam-mark', component: ExamMarkComponent },
-          { path: 'teacher', component: TeacherComponent },
-          { path: 'sro', component: SroComponent },
-          { path: 'accounts', component: AccountsComponent },
-          {
-            path: 'attendance', component: AttendanceComponent, children: [
-              { path: '', component: AttendanceClassComponent },
-              { path: 'attendance-record', component: AttendanceRecordComponent },
-            ]
-          },
-          { path: 'calendar', component: CalendarComponent },
-          { path: 'course', component: CourseComponent },
-          { path: 'subject', component: SubjectComponent },
-        ]
-      }
-    ]),
+    AdminManagementRoutingModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
@@ -94,7 +63,6 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatPaginatorModule,
     MatIconModule,
     MatDialogModule,
-    AdminManagementRoutingModule
   ]
 })
 export class AdminManagementModule { }
