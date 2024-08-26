@@ -11,13 +11,14 @@ import { AttendanceComponent } from './attendance/attendance.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { CourseComponent } from './course/course.component';
 import { SubjectComponent } from './subject/subject.component';
-import { StudentComponent } from '../student-management/student.component';
 import { TeacherComponent } from '../teacher-management/teacher.component';
 import { SroComponent } from '../sro-management/sro.component';
+import { StudentComponent } from './student/student.component';
 
 @NgModule({
   declarations: [
     AdminComponent,
+    StudentComponent,
     DashboardComponent,
     ClassComponent,
     ExamMarkComponent,

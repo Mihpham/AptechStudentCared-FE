@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../core/auth/auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ClassComponent } from './class/class.component';
-import { StudentComponent } from './student/student.component';
 import { ExamMarkComponent } from './exam-mark/exam-mark.component';
 import { TeacherComponent } from './teacher/teacher.component';
 import { SroComponent } from './sro/sro.component';
@@ -12,6 +11,7 @@ import { AttendanceComponent } from './attendance/attendance.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { CourseComponent } from './course/course.component';
 import { SubjectComponent } from './subject/subject.component';
+import { StudentComponent } from '../student-management/student.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },

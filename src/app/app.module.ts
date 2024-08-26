@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,6 +13,8 @@ import { SidebarComponent } from './layout/components/sidebar/sidebar.component'
 import { PagesModule } from './features/pages/pages.module';
 import { SharedModule } from './shared/shared.module';
 import { ProfileModule } from './features/profile/profile.module';
+import { ErrorInterceptor } from './core/interceptors/error.interceptor';
+import { InterceptorsModule } from './core/interceptors/interceptors.module';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -33,6 +35,7 @@ export function tokenGetter() {
     PagesModule,
     SharedModule,
     ProfileModule,
+    InterceptorsModule,
     ToastrModule.forRoot({
       positionClass: 'toast-top-right',
       preventDuplicates: true,
@@ -49,7 +52,13 @@ export function tokenGetter() {
     }),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
