@@ -2,7 +2,7 @@
 
 <div class="student-list">
     <div class="total-students">
-        Total Students: <span>123</span>
+        Total Students: <span>{{dataSource.data.length}}</span>
     </div>
     <div class="header">
         <div class="header-actions">
@@ -11,9 +11,9 @@
                 <input matInput placeholder="Search" />
             </mat-form-field>
             <div class="actions">
+                <button mat-button color="primary" (click)="openAddStudentDialog()">Add</button>
                 <button mat-button color="primary">Import</button>
                 <button mat-button color="primary">Export</button>
-                <button mat-button color="primary">Add</button>
                 <button mat-button color="primary">Filter</button>
             </div>
         </div>
@@ -22,7 +22,7 @@
     <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
         <!-- Avatar Column -->
-        <ng-container matColumnDef="avatar">
+        <ng-container matColumnDef="avatar"  [ngStyle]="{'width': '60px'}">
             <mat-header-cell *matHeaderCellDef> Avatar </mat-header-cell>
             <mat-cell *matCellDef="let student">
                 <img [src]="student.avatar" class="avatar">
@@ -45,7 +45,7 @@
             <mat-cell *matCellDef="let student"> {{student.class}} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="email">
+        <ng-container matColumnDef="email"  [ngStyle]="{'width': '5000px'}">
             <mat-header-cell *matHeaderCellDef> Email </mat-header-cell>
             <mat-cell *matCellDef="let student"> {{student.email}} </mat-cell>
         </ng-container>
@@ -60,23 +60,24 @@
             <mat-cell *matCellDef="let student" [ngClass]="'status-' + student.status.toLowerCase()">
               {{student.status}}
             </mat-cell>
-          </ng-container>
+        </ng-container>
 
-          <ng-container matColumnDef="actions">
+        <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
             <mat-cell *matCellDef="let student">
-              <button mat-icon-button  class="mat-button-edit" (click)="onEdit(student)">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button  class="mat-button-delete" (click)="onDelete(student)">
-                <mat-icon>delete</mat-icon>
-              </button>
+                <button mat-icon-button class="mat-button-edit" (click)="onEdit($event, student)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button class="mat-button-delete" (click)="onDelete(student)">
+                    <mat-icon>delete</mat-icon>
+                </button>
             </mat-cell>
-          </ng-container>
+        </ng-container>
 
         <!-- Table Header and Rows -->
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"  (click)="onRowClick(row)"></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClick($event, row)"></mat-row>
     </mat-table>
+
     <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
 </div>

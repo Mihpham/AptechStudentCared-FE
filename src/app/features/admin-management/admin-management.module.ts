@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms'; 
 
 import { AdminComponent } from './admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -29,6 +30,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { StudentDetailDialogComponent } from './student/student-detail-dialog/student-detail-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { StudentAddDialogComponent } from './student/student-add-dialog/student-add-dialog.component';
+import { StudentUpdateDialogComponent } from './student/student-update-dialog/student-update-dialog.component';
 
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -51,7 +54,9 @@ import { MatDialogModule } from '@angular/material/dialog';
     StudentAllStatusesComponent,
     AttendanceRecordComponent,
     AttendanceClassComponent,
-    StudentDetailDialogComponent
+    StudentDetailDialogComponent,
+    StudentAddDialogComponent,
+    StudentUpdateDialogComponent
   ],
   imports: [
     CommonModule,
@@ -63,6 +68,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatPaginatorModule,
     MatIconModule,
     MatDialogModule,
+    ReactiveFormsModule,
   ]
 })
 export class AdminManagementModule { }
