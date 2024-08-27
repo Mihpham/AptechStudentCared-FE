@@ -29,8 +29,11 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { StudentDetailDialogComponent } from './student/student-detail-dialog/student-detail-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { StudentAddComponent } from './student/student-add/student-add.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
+  
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 
   declarations: [
@@ -51,10 +54,13 @@ import { MatDialogModule } from '@angular/material/dialog';
     StudentAllStatusesComponent,
     AttendanceRecordComponent,
     AttendanceClassComponent,
-    StudentDetailDialogComponent
+    StudentDetailDialogComponent,
+    StudentAddComponent
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     AdminManagementRoutingModule,
     MatFormFieldModule,
     MatInputModule,

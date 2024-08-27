@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { StudentDetailDialogComponent } from '../student-detail-dialog/student-detail-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
-// Import the Student interface
-import { Student } from '../model/student.model';
+import { StudentDetailDialogComponent } from '../student-detail-dialog/student-detail-dialog.component';
+import { StudentAddComponent } from '../student-add/student-add.component';
+import { StudentRequest } from '../../model/studentRequest.model';
+import { AdminService } from 'src/app/core/services/admin.service';
 
 @Component({
   selector: 'app-student-all-statuses',
@@ -13,85 +14,82 @@ import { Student } from '../model/student.model';
   styleUrls: ['./student-all-statuses.component.scss']
 })
 export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['avatar', 'rollNumber', 'fullName', 'class', 'email', 'phoneNumber', 'status', 'actions'];
-  dataSource: MatTableDataSource<Student> = new MatTableDataSource<Student>();
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator; // Use non-null assertion operator
+  students: StudentRequest[] = []; // Array to hold student data
+  totalStudents: number = 0;
 
-  // Sample data
-  students: Student[] = [
-    { avatar: 'https://i.pravatar.cc/150?img=1', rollNumber: 'S12345', fullName: 'John Doe', class: '10A', gender: 'male', email: 'john.doe@example.com', phoneNumber: '123-456-7890', status: 'Studying',guardian: {
-      fullName: 'Jane Doe',
-      gender: 'Female',
-      phoneNumber: '123-456-7891',
-      relationship: 'Mother'
-    } },
-    { avatar: 'https://i.pravatar.cc/150?img=1', rollNumber: 'S12345', fullName: 'John Doe', class: '10A', gender: 'male', email: 'john.doe@example.com', phoneNumber: '123-456-7890', status: 'Studying',guardian: {
-      fullName: 'Jane Doe',
-      gender: 'Female',
-      phoneNumber: '123-456-7891',
-      relationship: 'Mother'
-    } },
-    { avatar: 'https://i.pravatar.cc/150?img=1', rollNumber: 'S12345', fullName: 'John Doe', class: '10A', gender: 'male', email: 'john.doe@example.com', phoneNumber: '123-456-7890', status: 'Dropout',guardian: {
-      fullName: 'Jane Doe',
-      gender: 'Female',
-      phoneNumber: '123-456-7891',
-      relationship: 'Mother'
-    } },
-    { avatar: 'https://i.pravatar.cc/150?img=1', rollNumber: 'S12345', fullName: 'John Doe', class: '10A', gender: 'male', email: 'john.doe@example.com', phoneNumber: '123-456-7890', status: 'Graduated',guardian: {
-      fullName: 'Jane Doe',
-      gender: 'Female',
-      phoneNumber: '123-456-7891',
-      relationship: 'Mother'
-    } },
-    { avatar: 'https://i.pravatar.cc/150?img=1', rollNumber: 'S12345', fullName: 'John Doe', class: '10A', gender: 'male', email: 'john.doe@example.com', phoneNumber: '123-456-7890', status: 'Delay',guardian: {
-      fullName: 'Jane Doe',
-      gender: 'Female',
-      phoneNumber: '123-456-7891',
-      relationship: 'Mother'
-    } },
-    { avatar: 'https://i.pravatar.cc/150?img=1', rollNumber: 'S12345', fullName: 'John Doe', class: '10A', gender: 'male', email: 'john.doe@example.com', phoneNumber: '123-456-7890', status: 'Studying',guardian: {
-      fullName: 'Jane Doe',
-      gender: 'Female',
-      phoneNumber: '123-456-7891',
-      relationship: 'Mother'
-    } },
-    { avatar: 'https://i.pravatar.cc/150?img=1', rollNumber: 'S12345', fullName: 'John Doe', class: '10A', gender: 'male', email: 'john.doe@example.com', phoneNumber: '123-456-7890', status: 'Delay',guardian: {
-      fullName: 'Jane Doe',
-      gender: 'Female',
-      phoneNumber: '123-456-7891',
-      relationship: 'Mother'
-    } },
-    { avatar: 'https://i.pravatar.cc/150?img=1', rollNumber: 'S12345', fullName: 'John Doe', class: '10A', gender: 'male', email: 'john.doe@example.com', phoneNumber: '123-456-7890', status: 'Studying',guardian: {
-      fullName: 'Jane Doe',
-      gender: 'Female',
-      phoneNumber: '123-456-7891',
-      relationship: 'Mother'
-    } }
-  ];
-  constructor(public dialog: MatDialog) { }
+  displayedColumns: string[] = ['rollNumber', 'fullName', 'className', 'email', 'phone', 'status', 'actions'];
+  dataSource: MatTableDataSource<StudentRequest> = new MatTableDataSource<StudentRequest>();
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator; // Paginator for the table
+
+  constructor(
+    public dialog: MatDialog, // MatDialog service for opening dialogs
+    private studentService: AdminService // AdminService for student operations
+  ) { }
+
   ngOnInit(): void {
-    this.dataSource.data = this.students;
+    this.loadStudent(); // Load student data when the component initializes
   }
 
+  // Load all students from the service
+  loadStudent(): void {
+    this.studentService.getAllStudents().subscribe(
+      (data: StudentRequest[]) => {
+        this.students = data || []; 
+        this.dataSource.data = this.students; 
+        this.totalStudents = this.students.length; // Tính tổng số học sinh
+
+      },
+      (error) => {
+        console.error('Error fetching students', error); // Log errors if fetching fails
+      }
+    );
+  }
+
+
+  // Set the paginator for the table after the view initializes
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
   }
 
-  onRowClick(student: Student): void {
+  // Open the student detail dialog when a row is clicked
+  onRowClick(student: StudentRequest): void {
     this.dialog.open(StudentDetailDialogComponent, {
       width: '550px',
-      data: student
+      data: student // Pass the selected student data to the dialog
     });
   }
 
-  onEdit(student: Student): void {
-    console.log('Edit clicked:', student);
-    // Navigate to edit page or open edit dialog
+  // Open the add/edit student dialog
+  onAdd(): void {
+    const dialogRef = this.dialog.open(StudentAddComponent, {
+      width: '550px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadStudent(); // Refresh the list after a student is added or edited
+      }
+    });
   }
 
-  onDelete(student: Student): void {
+  // Placeholder method for importing students
+  onImport(): void {
+    console.log('Import clicked');
+    // Implement import logic here
+  }
+
+  // Placeholder method for exporting students
+  onExport(): void {
+    console.log('Export clicked');
+    // Implement export logic here
+  }
+
+  // Delete a student
+  onDelete(student: StudentRequest): void {
     console.log('Delete clicked:', student);
-    // Confirm and delete the student
+    // Implement delete logic here
+    // Example: Confirm deletion, call the service to delete the student, and refresh the list
   }
 }

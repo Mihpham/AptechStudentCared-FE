@@ -5,7 +5,6 @@ import { ErrorInterceptor } from './error.interceptor';
 import { LoggingInterceptor } from './logging.interceptor';
 import { CachingInterceptor } from './caching.interceptor';
 import { TimeoutInterceptor } from './timeout.interceptor';
-import { RetryInterceptor } from './retry.interceptor';
 
 @NgModule({
   providers: [
@@ -34,11 +33,7 @@ import { RetryInterceptor } from './retry.interceptor';
       useClass: TimeoutInterceptor,
       multi: true
     },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: RetryInterceptor,
-      multi: true
-    }
+  
   ]
 })
 export class InterceptorsModule { }
