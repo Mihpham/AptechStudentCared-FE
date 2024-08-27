@@ -20,7 +20,7 @@
     </li>
     <li>
       <div>
-        <a (click)="toggleStudentDropdown()" routerLink="/admin/student" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg cursor-pointer">
+        <a (click)="toggleStudentDropdown()" routerLink="/admin/student/all" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded-lg cursor-pointer">
           <i class="fas fa-user-graduate w-6 h-6 mr-3 pt-1 dark:text-neutral-200"></i>
           <span *ngIf="!collapsed" class="dark:text-neutral-200">Student</span>
           <i class="fas fa-chevron-down ml-auto" *ngIf="!collapsed"></i>

@@ -11,7 +11,6 @@ import { AttendanceComponent } from './attendance/attendance.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { CourseComponent } from './course/course.component';
 import { SubjectComponent } from './subject/subject.component';
-import { StudentComponent } from '../student-management/student.component';
 import { StudentAllStatusesComponent } from './student/student-all-statuses/student-all-statuses.component';
 import { StudyingComponent } from './student/studying/studying.component';
 import { DelayComponent } from './student/delay/delay.component';
@@ -19,6 +18,7 @@ import { DropoutComponent } from './student/dropout/dropout.component';
 import { GraduatedComponent } from './student/graduated/graduated.component';
 import { AttendanceClassComponent } from './attendance/attendance-class/attendance-class.component';
 import { AttendanceRecordComponent } from './attendance/attendance-record/attendance-record.component';
+import { StudentComponent } from './student/student.component';
 
 const routes: Routes = [
   {
@@ -40,7 +40,7 @@ const routes: Routes = [
     data: { breadcrumb: 'Student Management' },
     children: [
       {
-        path: '',
+        path: 'all',
         component: StudentAllStatusesComponent,
         data: { breadcrumb: 'All Student' },
       },
