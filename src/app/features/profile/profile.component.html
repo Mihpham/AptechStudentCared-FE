@@ -4,10 +4,10 @@
       <div class="p-4">
         
         <div class="flex items-center mb-4 pt-4">
-          <img src="https://via.placeholder.com/150" alt="User Avatar" class="rounded-full w-16 h-16">
+          <img src="assets/images/image-login.png" alt="User Avatar" class="rounded-full w-16 h-16">
           <div class="ml-4">
             <h3 class="text-lg font-bold text-gray-800">{{ userProfile?.fullName }}</h3>
-            <p class="text-gray-500">Joined 23-09-2022</p>
+            <p class="text-gray-500">Join to {{userProfile?.createdAt | date:'dd-MM-yyyy'}}</p>
           </div>
         </div>
         <div class="flex flex-wrap items-center justify-start ">

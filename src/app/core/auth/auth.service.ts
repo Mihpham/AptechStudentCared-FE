@@ -10,6 +10,8 @@ import { AuthEnvironment } from "src/app/environments/environment";
   providedIn: 'root'
 })
 export class AuthService {
+ 
+  
   private token: string | null = null;
   private role: string | null = null;
   private baseUrl = AuthEnvironment.apiUrl;
@@ -41,6 +43,10 @@ export class AuthService {
     );
   }
 
+  changePassword(currentPassword: string, newPassword: string): Observable<any> {
+    const payload = { currentPassword, newPassword };
+    return this.http.post('/api/change-password', payload); // Replace with your API endpoint
+  }
 
   resetPasswordOtp(otp: string, email: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/reset-password-otp`, { otp, email });

@@ -5,4 +5,5 @@ export interface UserProfile {
     phone: string;
     address: string;
     roleName: string;
+    createdAt: string;
   }
