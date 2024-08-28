@@ -10,7 +10,6 @@ import { StudentRequest } from '../../model/studentRequest.model';
   styleUrls: ['./student-detail-dialog.component.scss']
 })
 export class StudentDetailDialogComponent {
- imageSrc: string | null = null;
   constructor(
     public dialogRef: MatDialogRef<StudentDetailDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public student: StudentRequest
@@ -19,11 +18,11 @@ export class StudentDetailDialogComponent {
   onClose(): void {
     this.dialogRef.close();
   }
- 
 
-  handleImageError(): void {
-    this.imageSrc = null;
+  getAvatarUrl(avatarName: string | undefined): string {
+    return `/assets/images/${avatarName}`;
   }
+
 
 
 }

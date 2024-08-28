@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdminService } from 'src/app/core/services/admin.service';
 import { StudentRequest } from '../../model/studentRequest.model';
@@ -12,12 +12,11 @@ import { catchError, throwError } from 'rxjs';
   styleUrls: ['./student-add.component.scss'],
 })
 export class StudentAddComponent {
-  student : StudentRequest | undefined;
   studentForm: FormGroup;
-  availableCourses: string[] = ['Mathematics', 'Science', 'History', 'Art']; // Example courses
+  availableCourses: string[] = ['Mathematics', 'Science', 'History', 'Art'];
   imageUrl: string | ArrayBuffer | null = null;
   imageError: string | null = null;
-  
+
   constructor(
     private fb: FormBuilder,
     private studentService: AdminService,
@@ -25,25 +24,21 @@ export class StudentAddComponent {
     private dialogRef: MatDialogRef<StudentAddComponent>
   ) {
     this.studentForm = this.fb.group({
-      image: [''], // Field for image
+      image: ['avatar-default.webp'],
       rollNumber: ['', Validators.required],
       fullName: ['', [Validators.required, Validators.minLength(2)]],
       gender: ['', Validators.required],
       className: ['', Validators.required],
       dob: ['', [Validators.required, this.dateValidator]],
-      phoneNumber: [
-        '',
-        [Validators.required, Validators.pattern(/^\+?[0-9]\d{1,10}$/)],
-      ],
+      phoneNumber: ['', [Validators.required, Validators.pattern(/^\+?[0-9]\d{1,10}$/)]],
       address: ['', Validators.required],
-      courses: [[], Validators.required], // Changed to courses
+      courses: this.fb.control([], Validators.required),
       parentFullName: ['', [Validators.required, Validators.minLength(2)]],
       studentRelation: ['', Validators.required],
       parentPhone: ['', [Validators.required]],
       parentGender: ['', Validators.required],
     });
   }
-
 
   dateValidator(control: any) {
     const date = new Date(control.value);
@@ -53,14 +48,17 @@ export class StudentAddComponent {
     }
     return null;
   }
-  
 
   onCourseChange(event: any) {
     const courses = this.studentForm.get('courses')?.value || [];
+    const course = event.target.value;
+
     if (event.target.checked) {
-      courses.push(event.target.value);
+      if (!courses.includes(course)) {
+        courses.push(course);
+      }
     } else {
-      const index = courses.indexOf(event.target.value);
+      const index = courses.indexOf(course);
       if (index > -1) {
         courses.splice(index, 1);
       }
@@ -71,12 +69,11 @@ export class StudentAddComponent {
   onSubmit() {
     if (this.studentForm.valid) {
       const student: StudentRequest = this.studentForm.value;
-      console.log('Submitting student:', student);
-      this.studentService
-        .addStudent(student)
+      this.studentService.addStudent(student)
         .pipe(
           catchError((err) => {
             console.error('Error:', err);
+            this.toastr.error('Failed to add student');
             return throwError(err);
           })
         )
@@ -96,7 +93,6 @@ export class StudentAddComponent {
       this.toastr.error('Please fill out the form correctly!');
     }
   }
-
 
   onImageChange(event: Event) {
     const input = event.target as HTMLInputElement;

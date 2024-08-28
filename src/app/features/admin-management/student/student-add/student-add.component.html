@@ -3,17 +3,6 @@
   <h2 class="text-xl font-bold ">Add Student</h2>
   <hr>
   <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
-    <div>
-      <label class="block text-gray-700 text-sm mb-2">Profile Picture</label>
-      <input type="file" formControlName="image" (change)="onImageChange($event)"
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-      <div *ngIf="imageError" class="text-red-500 text-xs mt-1">
-        {{ imageError }}
-      </div>
-      <div *ngIf="imageUrl" class="mt-2">
-        <img [src]="imageUrl" alt="Preview" class="w-32 h-32 object-cover rounded border">
-      </div>
-    </div>
     <!-- Roll Number -->
     <div>
       <label class="block text-gray-700 text-sm mb-2">Roll Number</label>
@@ -43,15 +32,15 @@
       <label class="block text-gray-700 text-sm mb-2">Gender</label>
       <div class="flex items-center">
         <label class="inline-flex items-center mr-4">
-          <input formControlName="gender" type="radio" value="male" class="form-radio text-blue-600" />
+          <input formControlName="gender" type="radio" value="Male" class="form-radio text-blue-600" />
           <span class="ml-2">Male</span>
         </label>
         <label class="inline-flex items-center mr-4">
-          <input formControlName="gender" type="radio" value="female" class="form-radio text-blue-600" />
+          <input formControlName="gender" type="radio" value="Female" class="form-radio text-blue-600" />
           <span class="ml-2">Female</span>
         </label>
         <label class="inline-flex items-center">
-          <input formControlName="gender" type="radio" value="other" class="form-radio text-blue-600" />
+          <input formControlName="gender" type="radio" value="Other" class="form-radio text-blue-600" />
           <span class="ml-2">Other</span>
         </label>
       </div>
@@ -167,15 +156,15 @@
       <label class="block text-gray-700 text-sm mb-2">Parent's Gender</label>
       <div class="flex items-center">
         <label class="inline-flex items-center mr-4">
-          <input formControlName="parentGender" type="radio" value="male" class="form-radio text-blue-600" />
+          <input formControlName="parentGender" type="radio" value="Male" class="form-radio text-blue-600" />
           <span class="ml-2">Male</span>
         </label>
         <label class="inline-flex items-center mr-4">
-          <input formControlName="parentGender" type="radio" value="female" class="form-radio text-blue-600" />
+          <input formControlName="parentGender" type="radio" value="Female" class="form-radio text-blue-600" />
           <span class="ml-2">Female</span>
         </label>
         <label class="inline-flex items-center">
-          <input formControlName="parentGender" type="radio" value="other" class="form-radio text-blue-600" />
+          <input formControlName="parentGender" type="radio" value="Other" class="form-radio text-blue-600" />
           <span class="ml-2">Other</span>
         </label>
       </div>
