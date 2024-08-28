@@ -90,3 +90,17 @@
     color: #ff0000; /* Red color for visibility */
     font-weight: bold;
   }
+
+  .avatar-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .avatar-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  

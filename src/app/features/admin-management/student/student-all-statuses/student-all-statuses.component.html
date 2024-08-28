@@ -12,11 +12,8 @@
             </mat-form-field>
             <div class="actions">
                 <!-- src/app/features/admin-management/student/student-all-statuses/student-all-statuses.component.html -->
-                <input #fileInput type="file" (change)="onFileChange($event)" style="display: none;" />
+                <!-- <input #fileInput type="file" (change)="onFileChange($event)" style="display: none;" /> -->
                 <button mat-button color="primary" (click)="triggerFileInput()">Import Students</button>
-
-
-
                 <button mat-button color="primary" (click)="onExport()">Export</button>
                 <button mat-button color="primary" (click)="onAdd()">Add</button>
                 <button mat-button color="primary">Filter</button>
@@ -33,6 +30,14 @@
             No results found.
         </div>
         <!-- Other Columns -->
+        <ng-container matColumnDef="avatar">
+            <mat-header-cell *matHeaderCellDef> Avatar </mat-header-cell>
+            <mat-cell *matCellDef="let student">
+                <div class="avatar-container">
+                    <img [src]="getAvatarUrl(student.image)" alt="Student Avatar" class="avatar-image" />
+                </div>
+            </mat-cell>
+        </ng-container>
         <ng-container matColumnDef="rollNumber">
             <mat-header-cell *matHeaderCellDef> Roll Number </mat-header-cell>
             <mat-cell *matCellDef="let student"> {{student.rollNumber}} </mat-cell>
