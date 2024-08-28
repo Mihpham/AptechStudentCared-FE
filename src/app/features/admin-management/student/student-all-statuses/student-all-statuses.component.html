@@ -11,6 +11,7 @@
                 <input matInput placeholder="Search" />
             </mat-form-field>
             <div class="actions">
+                <button mat-button color="primary" (click)="openAddStudentDialog()">Add</button>
                 <button mat-button color="primary">Import</button>
                 <button mat-button color="primary">Export</button>
                 <button mat-button color="primary" (click)="onAdd()" >Add</button>
@@ -36,7 +37,7 @@
             <mat-cell *matCellDef="let student"> {{student.className}} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="email">
+        <ng-container matColumnDef="email"  [ngStyle]="{'width': '5000px'}">
             <mat-header-cell *matHeaderCellDef> Email </mat-header-cell>
             <mat-cell *matCellDef="let student"> {{student.email}} </mat-cell>
         </ng-container>
@@ -69,5 +70,6 @@
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClick(row)"></mat-row>
     </mat-table>
+
     <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
 </div>

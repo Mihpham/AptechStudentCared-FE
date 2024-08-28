@@ -1,3 +1,5 @@
+// src/app/features/admin-management/student/student-all-statuses/student-all-statuses.component.ts
+
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
