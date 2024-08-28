@@ -1,14 +1,15 @@
 export interface StudentRequest {
+  image?: string;
   rollNumber: string;
   fullName: string;
   password: string;
   gender: string;
   className: string;
-  dob: string; // Consider using Date object if needed
+  dob: string; 
   phoneNumber: string;
   email: string;
   address: string;
-  courses: Set<string>; // or string[]
+  courses: string[]; 
   status: string;
   parentFullName: string;
   studentRelation: string;

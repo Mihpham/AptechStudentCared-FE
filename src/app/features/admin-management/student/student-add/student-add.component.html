@@ -2,8 +2,18 @@
   class="p-4 max-w-lg mx-auto bg-white shadow-md rounded md:max-w-lg">
   <h2 class="text-xl font-bold ">Add Student</h2>
   <hr>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Profile Picture</label>
+      <input type="file" formControlName="image" (change)="onImageChange($event)"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+      <div *ngIf="imageError" class="text-red-500 text-xs mt-1">
+        {{ imageError }}
+      </div>
+      <div *ngIf="imageUrl" class="mt-2">
+        <img [src]="imageUrl" alt="Preview" class="w-32 h-32 object-cover rounded border">
+      </div>
+    </div>
     <!-- Roll Number -->
     <div>
       <label class="block text-gray-700 text-sm mb-2">Roll Number</label>
@@ -33,18 +43,15 @@
       <label class="block text-gray-700 text-sm mb-2">Gender</label>
       <div class="flex items-center">
         <label class="inline-flex items-center mr-4">
-          <input formControlName="gender" type="radio" value="male"
-            class="form-radio text-blue-600" />
+          <input formControlName="gender" type="radio" value="male" class="form-radio text-blue-600" />
           <span class="ml-2">Male</span>
         </label>
         <label class="inline-flex items-center mr-4">
-          <input formControlName="gender" type="radio" value="female"
-            class="form-radio text-blue-600" />
+          <input formControlName="gender" type="radio" value="female" class="form-radio text-blue-600" />
           <span class="ml-2">Female</span>
         </label>
         <label class="inline-flex items-center">
-          <input formControlName="gender" type="radio" value="other"
-            class="form-radio text-blue-600" />
+          <input formControlName="gender" type="radio" value="other" class="form-radio text-blue-600" />
           <span class="ml-2">Other</span>
         </label>
       </div>
@@ -103,12 +110,16 @@
 
     <!-- Courses -->
     <div>
-      <label class="block text-gray-700 text-sm mb-2">Course</label>
-      <input formControlName="course"
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        type="text" />
-      <div *ngIf="studentForm.get('course')?.invalid && studentForm.get('course')?.touched"
-        class="text-red-500 text-xs mt-1">Course is required.</div>
+      <label class="block text-gray-700 text-sm mb-2">Courses</label>
+      <div *ngFor="let course of availableCourses" class="flex items-center">
+        <input type="checkbox" [value]="course" (change)="onCourseChange($event)"
+          class="form-checkbox text-blue-600 mr-2" />
+        <span class="ml-2">{{ course }}</span>
+      </div>
+      <div *ngIf="studentForm.get('courses')?.invalid && studentForm.get('courses')?.touched"
+        class="text-red-500 text-xs mt-1">
+        At least one course is required.
+      </div>
     </div>
 
     <!-- Parent's Full Name -->
@@ -154,23 +165,20 @@
     <!-- Parent's Gender -->
     <div>
       <label class="block text-gray-700 text-sm mb-2">Parent's Gender</label>
-        <div class="flex items-center">
-          <label class="inline-flex items-center mr-4">
-            <input formControlName="parentGender" type="radio" value="male"
-              class="form-radio text-blue-600" />
-            <span class="ml-2">Male</span>
-          </label>
-          <label class="inline-flex items-center mr-4">
-            <input formControlName="parentGender" type="radio" value="female"
-              class="form-radio text-blue-600" />
-            <span class="ml-2">Female</span>
-          </label>
-          <label class="inline-flex items-center">
-            <input formControlName="parentGender" type="radio" value="other"
-              class="form-radio text-blue-600" />
-            <span class="ml-2">Other</span>
-          </label>
-        </div>
+      <div class="flex items-center">
+        <label class="inline-flex items-center mr-4">
+          <input formControlName="parentGender" type="radio" value="male" class="form-radio text-blue-600" />
+          <span class="ml-2">Male</span>
+        </label>
+        <label class="inline-flex items-center mr-4">
+          <input formControlName="parentGender" type="radio" value="female" class="form-radio text-blue-600" />
+          <span class="ml-2">Female</span>
+        </label>
+        <label class="inline-flex items-center">
+          <input formControlName="parentGender" type="radio" value="other" class="form-radio text-blue-600" />
+          <span class="ml-2">Other</span>
+        </label>
+      </div>
       <div *ngIf="studentForm.get('parentGender')?.invalid && studentForm.get('parentGender')?.touched"
         class="text-red-500 text-xs mt-1">
         Parent's Gender is required.

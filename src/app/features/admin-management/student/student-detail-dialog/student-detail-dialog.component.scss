@@ -1,60 +1,19 @@
-/* src/app/features/admin-management/student/student-detail/student-detail.component.scss */
-
-.student-detail {
-  .detail-container {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    flex-wrap: wrap;
-    /* Cho phép hiển thị tốt hơn khi kích thước nhỏ */
-  }
-
-  .avatar-container {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    .avatar {
-      width: 200px;
-      height: 200px;
-      border-radius: 8px;
-      object-fit: cover;
-      border: 2px solid #ddd;
-    }
-  }
-
-  .student-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-
-    .student-name {
-      text-align: center;
-      /* Căn giữa tên học sinh */
-      margin: 0 0 16px 0;
-      /* Khoảng cách dưới cùng của tên học sinh */
-      font-weight: bold;
-    }
-
-    .section-title {
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-
-    p {
-      margin: 4px 0;
-    }
-
-    .guardian-info {
-      margin-top: 16px;
-    }
-  }
+.student-detail .detail-container {
+  @apply p-4 bg-white shadow-md rounded-md max-w-lg mx-auto;
 }
 
-mat-dialog-actions {
-  display: flex;
-  justify-content: flex-end;
-  padding: 10px;
-  margin-right: 10px;
+.avatar-container {
+  @apply flex items-center justify-center mb-4;
+}
+
+.avatar {
+  @apply rounded-full w-16 h-16 object-cover;
+}
+
+.initials {
+  @apply bg-blue-500 text-white rounded-full w-16 h-16 flex items-center justify-center;
+}
+
+.student-info, .guardian-info {
+  @apply mb-4;
 }
