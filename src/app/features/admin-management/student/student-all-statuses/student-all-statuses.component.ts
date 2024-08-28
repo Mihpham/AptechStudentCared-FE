@@ -20,6 +20,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
 
   students: StudentRequest[] = []; // Array to hold student data
   totalStudents: number = 0;
+  searchTerm: string = '';
 
   displayedColumns: string[] = ['rollNumber', 'fullName', 'className', 'email', 'phone', 'status', 'actions'];
   dataSource: MatTableDataSource<StudentRequest> = new MatTableDataSource<StudentRequest>();
@@ -39,8 +40,8 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   loadStudent(): void {
     this.studentService.getAllStudents().subscribe(
       (data: StudentRequest[]) => {
-        this.students = data || []; 
-        this.dataSource.data = this.students; 
+        this.students = data || [];
+        this.dataSource.data = this.students;
         this.totalStudents = this.students.length; // Tính tổng số học sinh
 
       },
@@ -49,6 +50,23 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
       }
     );
   }
+
+  applyFilter(filterValue: string): void {
+    this.dataSource.filterPredicate = (data: StudentRequest, filter: string) => {
+      const filterLowerCase = filter.toLowerCase();
+      return data.fullName.toLowerCase().includes(filterLowerCase) ||
+        data.className.toLowerCase().includes(filterLowerCase) ||
+        data.email.toLowerCase().includes(filterLowerCase);
+    };
+
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.totalStudents = this.dataSource.filteredData.length; // Update totalStudents based on filtered data
+
+    // For debugging: Log data source lengths
+    console.log('Filtered Data Length:', this.dataSource.filteredData.length);
+    console.log('Total Students Length:', this.dataSource.data.length);
+  }
+
 
 
   // Set the paginator for the table after the view initializes

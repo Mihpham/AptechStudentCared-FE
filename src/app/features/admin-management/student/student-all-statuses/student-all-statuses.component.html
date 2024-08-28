@@ -8,19 +8,25 @@
         <div class="header-actions">
             <mat-form-field class="search-bar">
                 <mat-label>Search Students</mat-label>
-                <input matInput placeholder="Search" />
+                <input matInput placeholder="Search" [(ngModel)]="searchTerm" (ngModelChange)="applyFilter($event)" />
             </mat-form-field>
             <div class="actions">
                 <button mat-button color="primary">Import</button>
                 <button mat-button color="primary">Export</button>
-                <button mat-button color="primary" (click)="onAdd()" >Add</button>
+                <button mat-button color="primary" (click)="onAdd()">Add</button>
                 <button mat-button color="primary">Filter</button>
             </div>
         </div>
     </div>
 
-    <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <div *ngIf="dataSource.filteredData.length === 0 && dataSource.data.length > 0" class="no-results">
+        No results found.
+    </div>
 
+    <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <div *ngIf="dataSource.filteredData.length === 0 && dataSource.data.length > 0" class="no-results">
+            No results found.
+        </div>
         <!-- Other Columns -->
         <ng-container matColumnDef="rollNumber">
             <mat-header-cell *matHeaderCellDef> Roll Number </mat-header-cell>
@@ -30,13 +36,13 @@
             <mat-header-cell *matHeaderCellDef> Full Name </mat-header-cell>
             <mat-cell *matCellDef="let student"> {{student.fullName}} </mat-cell>
         </ng-container>
-   
+
         <ng-container matColumnDef="className">
             <mat-header-cell *matHeaderCellDef> Class </mat-header-cell>
             <mat-cell *matCellDef="let student"> {{student.className}} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="email"  [ngStyle]="{'width': '5000px'}">
+        <ng-container matColumnDef="email" [ngStyle]="{'width': '5000px'}">
             <mat-header-cell *matHeaderCellDef> Email </mat-header-cell>
             <mat-cell *matCellDef="let student"> {{student.email}} </mat-cell>
         </ng-container>
