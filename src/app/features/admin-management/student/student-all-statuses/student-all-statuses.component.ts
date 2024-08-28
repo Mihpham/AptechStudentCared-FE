@@ -57,17 +57,20 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   }
 
   // Open the student detail dialog when a row is clicked
-  onRowClick(student: StudentRequest): void {
-    this.dialog.open(StudentDetailDialogComponent, {
-      width: '550px',
-      data: student // Pass the selected student data to the dialog
-    });
+  onRowClick(event: MouseEvent, student: StudentRequest): void {
+    // Check if the click event is not triggered by an action button
+    if (!(event.target as HTMLElement).closest('button')) {
+      this.dialog.open(StudentDetailDialogComponent, {
+        width: '550px',
+        data: student
+      });
+    }
   }
 
   // Open the add/edit student dialog
   onAdd(): void {
     const dialogRef = this.dialog.open(StudentAddComponent, {
-      width: '550px'
+      width: '550px',
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -76,7 +79,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
       }
     });
   }
-  onUpdate(student: StudentRequest): void {
+  onUpdate(event: MouseEvent, student: StudentRequest): void {
     this.dialog.open(StudentUpdateDialogComponent, {
       width: '550px',
       data: student // Pass the selected student data to the dialog

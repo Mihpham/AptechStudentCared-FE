@@ -1,146 +1,193 @@
-<form [formGroup]="studentForm" (ngSubmit)="onSubmit()" class="p-4 max-w-lg mx-auto bg-white shadow-md rounded md:max-w-lg">
-  <h2 class="text-xl font-bold mb-4">Add Student</h2>
+<form [formGroup]="studentForm" (ngSubmit)="onSubmit()"
+  class="p-4 max-w-lg mx-auto bg-white shadow-md rounded md:max-w-lg">
+  <h2 class="text-xl font-bold ">Add Student</h2>
+  <hr>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <!-- Roll Number -->
-    <div class="mb-4">
-      <label class="block text-gray-700 text-sm font-bold mb-2">Roll Number</label>
-      <input formControlName="rollNumber" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
-      <div *ngIf="studentForm.get('rollNumber')?.invalid && studentForm.get('rollNumber')?.touched" class="text-red-500 text-xs mt-1">
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Roll Number</label>
+      <input formControlName="rollNumber"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="text" />
+      <div *ngIf="studentForm.get('rollNumber')?.invalid && studentForm.get('rollNumber')?.touched"
+        class="text-red-500 text-xs mt-1">
         Roll Number is required.
       </div>
     </div>
 
     <!-- Full Name -->
-    <div class="mb-4">
-      <label class="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
-      <input formControlName="fullName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
-      <div *ngIf="studentForm.get('fullName')?.invalid && studentForm.get('fullName')?.touched" class="text-red-500 text-xs mt-1">
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Full Name</label>
+      <input formControlName="fullName"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="text" />
+      <div *ngIf="studentForm.get('fullName')?.invalid && studentForm.get('fullName')?.touched"
+        class="text-red-500 text-xs mt-1">
         Full Name is required and must be at least 2 characters long.
       </div>
     </div>
 
     <!-- Gender -->
-    <div class="mb-4">
-      <label class="block text-gray-700 text-sm font-bold mb-2">Gender</label>
-      <select formControlName="gender" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        <option value="" disabled>Select Gender</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-        <option value="other">Other</option>
-      </select>
-      <div *ngIf="studentForm.get('gender')?.invalid && studentForm.get('gender')?.touched" class="text-red-500 text-xs mt-1">
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Gender</label>
+      <div class="flex items-center">
+        <label class="inline-flex items-center mr-4">
+          <input formControlName="gender" type="radio" value="male"
+            class="form-radio text-blue-600" />
+          <span class="ml-2">Male</span>
+        </label>
+        <label class="inline-flex items-center mr-4">
+          <input formControlName="gender" type="radio" value="female"
+            class="form-radio text-blue-600" />
+          <span class="ml-2">Female</span>
+        </label>
+        <label class="inline-flex items-center">
+          <input formControlName="gender" type="radio" value="other"
+            class="form-radio text-blue-600" />
+          <span class="ml-2">Other</span>
+        </label>
+      </div>
+      <div *ngIf="studentForm.get('gender')?.invalid && studentForm.get('gender')?.touched"
+        class="text-red-500 text-xs mt-1">
         Gender is required.
       </div>
     </div>
 
     <!-- Class Name -->
-    <div class="mb-4">
-      <label class="block text-gray-700 text-sm font-bold mb-2">Class Name</label>
-      <input formControlName="className" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
-      <div *ngIf="studentForm.get('className')?.invalid && studentForm.get('className')?.touched" class="text-red-500 text-xs mt-1">
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Class Name</label>
+      <input formControlName="className"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="text" />
+      <div *ngIf="studentForm.get('className')?.invalid && studentForm.get('className')?.touched"
+        class="text-red-500 text-xs mt-1">
         Class Name is required.
       </div>
     </div>
 
     <!-- Date of Birth -->
-    <div class="mb-4">
-      <label class="block text-gray-700 text-sm font-bold mb-2">Date of Birth</label>
-      <input formControlName="dob" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="date" />
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Date of Birth</label>
+      <input formControlName="dob"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="date" />
       <div *ngIf="studentForm.get('dob')?.invalid && studentForm.get('dob')?.touched" class="text-red-500 text-xs mt-1">
         Date of Birth is required and must be a valid date.
       </div>
     </div>
 
     <!-- Phone Number -->
-    <div class="mb-4">
-      <label class="block text-gray-700 text-sm font-bold mb-2">Phone Number</label>
-      <input formControlName="phoneNumber" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="tel" />
-      <div *ngIf="studentForm.get('phoneNumber')?.invalid && studentForm.get('phoneNumber')?.touched" class="text-red-500 text-xs mt-1">
-        Phone Number is required and must be in a valid format.
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Phone Number</label>
+      <input formControlName="phoneNumber"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="tel" />
+      <div *ngIf="studentForm.get('phoneNumber')?.invalid && studentForm.get('phoneNumber')?.touched"
+        class="text-red-500 text-xs mt-1">
+        Phone Number is required.
       </div>
     </div>
 
     <!-- Address -->
-    <div class="mb-4">
-      <label class="block text-gray-700 text-sm font-bold mb-2">Address</label>
-      <input formControlName="address" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
-      <div *ngIf="studentForm.get('address')?.invalid && studentForm.get('address')?.touched" class="text-red-500 text-xs mt-1">
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Address</label>
+      <input formControlName="address"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="text" />
+      <div *ngIf="studentForm.get('address')?.invalid && studentForm.get('address')?.touched"
+        class="text-red-500 text-xs mt-1">
         Address is required.
       </div>
     </div>
 
     <!-- Courses -->
-    <!-- Course -->
-    <div class="mb-4">
-      <label class="block text-gray-700 text-sm font-bold mb-2">Course</label>
-      <input formControlName="course" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
-      <div *ngIf="studentForm.get('course')?.invalid && studentForm.get('course')?.touched" class="text-red-500 text-xs mt-1">Course is required.</div>
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Course</label>
+      <input formControlName="course"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="text" />
+      <div *ngIf="studentForm.get('course')?.invalid && studentForm.get('course')?.touched"
+        class="text-red-500 text-xs mt-1">Course is required.</div>
     </div>
 
     <!-- Parent's Full Name -->
-    <div class="mb-4">
-      <label class="block text-gray-700 text-sm font-bold mb-2">Parent's Full Name</label>
-      <input formControlName="parentFullName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
-      <div *ngIf="studentForm.get('parentFullName')?.invalid && studentForm.get('parentFullName')?.touched" class="text-red-500 text-xs mt-1">
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Parent's Full Name</label>
+      <input formControlName="parentFullName"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="text" />
+      <div *ngIf="studentForm.get('parentFullName')?.invalid && studentForm.get('parentFullName')?.touched"
+        class="text-red-500 text-xs mt-1">
         Parent's Full Name is required and must be at least 2 characters long.
       </div>
     </div>
 
     <!-- Relation to Student -->
-    <div class="mb-4">
-      <label class="block text-gray-700 text-sm font-bold mb-2">Relation to Student</label>
-      <select formControlName="studentRelation" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Relation to Student</label>
+      <select formControlName="studentRelation"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         <option value="" disabled>Select Relationship</option>
         <option value="Father">Father</option>
         <option value="Mother">Mother</option>
         <option value="Guardian">Guardian</option>
       </select>
-      <div *ngIf="studentForm.get('studentRelation')?.invalid && studentForm.get('studentRelation')?.touched" class="text-red-500 text-xs mt-1">
+      <div *ngIf="studentForm.get('studentRelation')?.invalid && studentForm.get('studentRelation')?.touched"
+        class="text-red-500 text-xs mt-1">
         Relation to Student is required.
       </div>
     </div>
 
     <!-- Parent's Phone Number -->
-    <div class="mb-4">
-      <label class="block text-gray-700 text-sm font-bold mb-2">Parent's Phone Number</label>
-      <input formControlName="parentPhone" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="tel" />
-      <div *ngIf="studentForm.get('parentPhone')?.invalid && studentForm.get('parentPhone')?.touched" class="text-red-500 text-xs mt-1">
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Parent's Phone Number</label>
+      <input formControlName="parentPhone"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="tel" />
+      <div *ngIf="studentForm.get('parentPhone')?.invalid && studentForm.get('parentPhone')?.touched"
+        class="text-red-500 text-xs mt-1">
         Parent's Phone Number is required and must be in a valid format.
       </div>
     </div>
 
     <!-- Parent's Gender -->
-    <div class="mb-4">
-      <label class="block text-gray-700 text-sm font-bold mb-2">Parent's Gender</label>
-      <select formControlName="parentGender" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        <option value="" disabled>Select Gender</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-        <option value="other">Other</option>
-      </select>
-      <div *ngIf="studentForm.get('parentGender')?.invalid && studentForm.get('parentGender')?.touched" class="text-red-500 text-xs mt-1">
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Parent's Gender</label>
+        <div class="flex items-center">
+          <label class="inline-flex items-center mr-4">
+            <input formControlName="parentGender" type="radio" value="male"
+              class="form-radio text-blue-600" />
+            <span class="ml-2">Male</span>
+          </label>
+          <label class="inline-flex items-center mr-4">
+            <input formControlName="parentGender" type="radio" value="female"
+              class="form-radio text-blue-600" />
+            <span class="ml-2">Female</span>
+          </label>
+          <label class="inline-flex items-center">
+            <input formControlName="parentGender" type="radio" value="other"
+              class="form-radio text-blue-600" />
+            <span class="ml-2">Other</span>
+          </label>
+        </div>
+      <div *ngIf="studentForm.get('parentGender')?.invalid && studentForm.get('parentGender')?.touched"
+        class="text-red-500 text-xs mt-1">
         Parent's Gender is required.
-      </div>
-    </div>
-
-    <!-- Parent's Job -->
-    <div class="mb-4">
-      <label class="block text-gray-700 text-sm font-bold mb-2">Parent's Job</label>
-      <input formControlName="parentJob" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
-      <div *ngIf="studentForm.get('parentJob')?.invalid && studentForm.get('parentJob')?.touched" class="text-red-500 text-xs mt-1">
-        Parent's Job is required.
       </div>
     </div>
 
     <!-- Form Buttons -->
     <div class="flex items-center justify-between mt-4">
-      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
-        Add Student
-      </button>
-      <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" (click)="onCancel()">
-        Cancel
-      </button>
+      <div class="form-actions">
+        <button type="button" (click)="onCancel()"
+          class="mr-2 bg-gray-300 hover:bg-gray-400 text-white py-2 px-4 rounded">
+          Cancel
+        </button>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+          Save
+        </button>
+      </div>
     </div>
   </div>
 </form>

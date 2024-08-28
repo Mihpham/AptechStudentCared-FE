@@ -36,10 +36,9 @@ export class StudentAddComponent {
       studentRelation: ['', Validators.required],
       parentPhone: [
         '',
-        [Validators.required, Validators.pattern(/^\+?[1-9]\d{1,14}$/)],
+        [Validators.required],
       ],
       parentGender: ['', Validators.required],
-      parentJob: ['', Validators.required],
     });
   }
 
@@ -70,6 +69,7 @@ export class StudentAddComponent {
             this.toastr.success('Student added successfully');
             this.studentForm.reset();
             this.closeDialog(true);
+            
           },
           error: (err) => {
             console.error('Error:', err);
