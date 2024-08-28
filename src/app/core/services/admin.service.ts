@@ -25,6 +25,10 @@ export class AdminService {
     return this.httpService.post<StudentRequest>(`${this.baseUrl}/students/add`, students);
   }  
 
+  updateStudent(student: StudentRequest): Observable<any>{
+    return this.httpService.put<StudentRequest>(`${this.baseUrl}/students/update`, student);
+  }
+
   deleteStudent(id: number): Observable<void> {
     return this.httpService.delete<void>(`${this.baseUrl}/students/${id}`);
   }
