@@ -9,6 +9,7 @@ import { StudentDetailDialogComponent } from '../student-detail-dialog/student-d
 import { StudentAddComponent } from '../student-add/student-add.component';
 import { StudentRequest } from '../../model/studentRequest.model';
 import { AdminService } from 'src/app/core/services/admin.service';
+import { StudentUpdateDialogComponent } from '../student-update-dialog/student-update-dialog.component';
 
 @Component({
   selector: 'app-student-all-statuses',
@@ -75,7 +76,12 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
       }
     });
   }
-
+  onUpdate(student: StudentRequest): void {
+    this.dialog.open(StudentUpdateDialogComponent, {
+      width: '550px',
+      data: student // Pass the selected student data to the dialog
+    });
+  }
   // Placeholder method for importing students
   onImport(): void {
     console.log('Import clicked');

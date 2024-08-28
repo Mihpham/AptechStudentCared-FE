@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms'; 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
 
 import { AdminComponent } from './admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -31,8 +31,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { StudentDetailDialogComponent } from './student/student-detail-dialog/student-detail-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { StudentAddComponent } from './student/student-add/student-add.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { StudentUpdateDialogComponent } from './student/student-update-dialog/student-update-dialog.component';
 @NgModule({
   
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -56,7 +55,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     AttendanceRecordComponent,
     AttendanceClassComponent,
     StudentDetailDialogComponent,
-    StudentAddComponent
+    StudentAddComponent,
+    StudentUpdateDialogComponent
   ],
   imports: [
     CommonModule,
