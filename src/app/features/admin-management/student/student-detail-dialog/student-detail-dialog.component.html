@@ -1,33 +1,42 @@
-<!-- src/app/features/admin-management/student/student-detail/student-detail.component.html -->
-
-<mat-dialog-content>
-  <div class="student-detail">
-    <div class="detail-container">
-      <div class="avatar-container">
-        <h2 class="student-name">{{ student.fullName }}</h2>
-      </div>
-      <div class="student-info">
-        <h3 class="section-title">Student Information</h3>
-        <p><strong>Roll Number:</strong> {{ student.rollNumber }}</p>
-        <p><strong>Full Name:</strong> {{ student.fullName }}</p>
-        <p><strong>Class:</strong> {{ student.className }}</p>
-        <p><strong>Email:</strong> {{ student.email }}</p>
-        <p><strong>Phone Number:</strong> {{ student.phoneNumber }}</p>
-        <p><strong>Course:</strong> {{ student.courses }}</p>
-        <p><strong>Status:</strong> {{ student.status }}</p>
-
-        <div class="guardian-info">
-          <h3 class="section-title">Guardian Information</h3>
-          <p><strong>Full Name:</strong> {{ student.parentFullName }}</p>
-          <p><strong>Gender:</strong> {{ student.parentGender }}</p>
-          <p><strong>Phone Number:</strong> {{ student.parentPhone }}</p>
-          <p><strong>Relationship:</strong> {{ student.studentRelation }}</p>
-
-        </div>
-      </div>
+<div class="p-6 bg-white rounded shadow-md">
+  <div class="text-center">
+    <h2 class="text-2xl font-bold mb-4">{{ student.fullName }}</h2>
+    <div class="w-24 h-24 mx-auto rounded-full overflow-hidden bg-gray-200">
+      <!-- Image preview or fallback -->
+      <img *ngIf="imageSrc" [src]="imageSrc" alt="Student Avatar" class="w-full h-full object-cover"
+        (error)="handleImageError()" />
+      <span *ngIf="!imageSrc"
+        class="w-full h-full flex items-center justify-center text-2xl font-bold text-white bg-blue-500"> {{
+        student.fullName.charAt(0) || '?' }}
+      </span>
     </div>
   </div>
-</mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button (click)="onClose()">Close</button>
-</mat-dialog-actions>
+  <div class="mt-4">
+    <h3 class="text-lg font-semibold">Student Information</h3>
+    <p><strong>Roll Number:</strong> {{ student.rollNumber }}</p>
+    <p><strong>Full Name:</strong> {{ student.fullName }}</p>
+    <p><strong>Class:</strong> {{ student.className }}</p>
+    <p><strong>Email:</strong> {{ student.email }}</p>
+    <p><strong>Phone Number:</strong> {{ student.phoneNumber }}</p>
+    <p><strong>Course:</strong> {{ student.courses }}</p>
+    <p><strong>Address:</strong> {{ student.address }}</p>
+    <p><strong>Status:</strong> {{ student.status }}</p>
+
+    <div class="mt-4">
+      <h3 class="text-lg font-semibold">Guardian Information</h3>
+      <p><strong>Full Name:</strong> {{ student.parentFullName }}</p>
+      <p><strong>Gender:</strong> {{ student.parentGender }}</p>
+      <p><strong>Phone Number:</strong> {{ student.parentPhone }}</p>
+      <p><strong>Relationship:</strong> {{ student.studentRelation }}</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- Actions -->
+<div class="mt-4 text-center">
+  <button (click)="onClose()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+    Close
+  </button>
+</div>
+

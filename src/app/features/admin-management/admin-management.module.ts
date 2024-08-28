@@ -28,10 +28,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
-import { StudentDetailDialogComponent } from './student/student-detail-dialog/student-detail-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { StudentAddComponent } from './student/student-add/student-add.component';
 import { StudentUpdateDialogComponent } from './student/student-update-dialog/student-update-dialog.component';
+import { StudentDetailDialogComponent } from './student/student-detail-dialog/student-detail-dialog.component';
 @NgModule({
   
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
