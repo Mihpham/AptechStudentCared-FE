@@ -52,10 +52,16 @@
             <mat-cell *matCellDef="let student"> {{student.className}} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="email" [ngStyle]="{'width': '5000px'}">
+        <!-- Email Column Definition -->
+        <ng-container matColumnDef="email" class="email-label">
             <mat-header-cell *matHeaderCellDef> Email </mat-header-cell>
-            <mat-cell *matCellDef="let student"> {{student.email}} </mat-cell>
+            <mat-cell *matCellDef="let student" class="email-cell">
+                <span class="email-text" matTooltip="{{student.email}}">
+                    {{student.email}}
+                </span>
+            </mat-cell>
         </ng-container>
+
 
         <ng-container matColumnDef="phone">
             <mat-header-cell *matHeaderCellDef> Phone Number </mat-header-cell>

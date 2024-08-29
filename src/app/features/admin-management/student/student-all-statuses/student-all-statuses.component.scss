@@ -31,17 +31,20 @@
 
 .mat-table {
     table-layout: fixed;
-    width: 100%; /* Đảm bảo bảng chiếm toàn bộ chiều rộng của phần tử chứa */
-  }
+    width: 100%;
+    /* Đảm bảo bảng chiếm toàn bộ chiều rộng của phần tử chứa */
+}
 
 .mat-row {
     transition: background-color 0.3s ease;
-  }
+}
 
 .mat-row:hover {
-    background-color: rgba(122, 114, 114, 0.04); /* Light gray color on hover */
-    cursor: pointer; /* Change cursor to pointer on hover */
-  }
+    background-color: rgba(122, 114, 114, 0.04);
+    /* Light gray color on hover */
+    cursor: pointer;
+    /* Change cursor to pointer on hover */
+}
 
 .actions {
     display: flex;
@@ -87,20 +90,36 @@
 .no-results {
     text-align: center;
     margin-bottom: 10px;
-    color: #ff0000; /* Red color for visibility */
+    color: #ff0000;
+    /* Red color for visibility */
     font-weight: bold;
-  }
+}
 
-  .avatar-container {
+.avatar-container {
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  
-  .avatar-image {
+}
+
+.avatar-image {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
-  }
-  
+}
+
+.email-label .mat-cell {
+    padding-left: 0; /* Adjust or remove padding if it's too large */
+    text-align: left; /* Ensure text is aligned to the left */
+}
+
+.email-cell .email-text {
+    display: inline-block;
+    max-width: 100%; /* Ensure the text doesn't overflow */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Show ellipsis if text is too long */
+    margin-right: 0; /* Remove any unwanted margin */
+}
+
+
