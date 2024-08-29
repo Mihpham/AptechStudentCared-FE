@@ -110,9 +110,6 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
-    this.dataSource.paginator.page.subscribe(() => {
-      this.loadStudent(); // Tải lại dữ liệu khi phân trang thay đổi
-    });
   }
   
 
