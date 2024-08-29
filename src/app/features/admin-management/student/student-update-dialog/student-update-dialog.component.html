@@ -9,7 +9,6 @@
           <label for="fullName">Full Name</label>
           <input id="fullName" type="text" formControlName="fullName" placeholder="Enter full name">
         </div>
-
         <div class="form-group half-width">
           <label for="rollNumber">Roll Number</label>
           <input id="rollNumber" type="text" formControlName="rollNumber" placeholder="Enter roll number">
@@ -22,6 +21,30 @@
           <input id="className" type="text" formControlName="className" placeholder="Enter class">
         </div>
 
+        <div class="form-group half-width">
+          <label class="block text-gray-700 text-sm mb-2">Date of Birth</label>
+          <input formControlName="dob"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            type="date" />
+          <div *ngIf="studentForm.get('dob')?.invalid && studentForm.get('dob')?.touched"
+            class="text-red-500 text-xs mt-1">
+            Date of Birth is required and must be a valid date.
+          </div>
+        </div>
+        <div class="form-row">
+
+        </div>
+        <div class="form-group half-width">
+          <label>Gender</label>
+          <div class="radio-group">
+            <input type="radio" id="genderMale" formControlName="gender" value="Male">
+            <label for="genderMale">Male</label>
+            <input type="radio" id="genderFemale" formControlName="gender" value="Female">
+            <label for="genderFemale">Female</label>
+            <input type="radio" id="genderOther" formControlName="gender" value="Other">
+            <label for="genderOther">Other</label>
+          </div>
+        </div>
         <div class="form-group half-width">
           <label for="email">Email</label>
           <input id="email" type="email" formControlName="email" placeholder="Enter email">
@@ -61,17 +84,6 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Gender</label>
-        <div class="radio-group">
-          <input type="radio" id="genderMale" formControlName="gender" value="Male">
-          <label for="genderMale">Male</label>
-          <input type="radio" id="genderFemale" formControlName="gender" value="Female">
-          <label for="genderFemale">Female</label>
-          <input type="radio" id="genderOther" formControlName="gender" value="Other">
-          <label for="genderOther">Other</label>
-        </div>
-      </div>
     </section>
 
     <section class="guardian-information">
