@@ -4,6 +4,7 @@ export interface StudentResponse {
   rollNumber: string;
   fullName: string;
   email: string;
+  dob: string;
   address?: string;
   className?: string;
   gender?: string;

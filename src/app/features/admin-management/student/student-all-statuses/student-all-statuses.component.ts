@@ -61,7 +61,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
       password: '', // Set to default or handle appropriately
       gender: response.gender ?? '',   // Set default or map gender if available
       className: response.className ?? '',
-      dob: '',      // Set dob if applicable
+      dob: response.dob,      // Set dob if applicable
       phoneNumber: response.phoneNumber ?? '',
       email: response.email ?? '',
       address: response.address ?? '',
