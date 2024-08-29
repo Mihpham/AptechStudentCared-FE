@@ -76,7 +76,7 @@
                 <button mat-icon-button class="mat-button-edit " (click)="onUpdate($event, student)">
                     <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button class="mat-button-delete" (click)="onDelete(student)">
+                <button mat-icon-button class="mat-button-delete" (click)="onDelete(student.userId )">
                     <mat-icon>delete</mat-icon>
                 </button>
             </mat-cell>
@@ -87,5 +87,5 @@
         <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClick($event, row)"></mat-row>
     </mat-table>
 
-    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
 </div>

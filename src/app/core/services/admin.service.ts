@@ -1,31 +1,51 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { HttpService } from './http.service';
+import { Observable, catchError, throwError } from 'rxjs';
 import { UserEnviroment } from 'src/app/environments/environment';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { StudentResponse } from 'src/app/features/admin-management/model/studentResponse.model';
 import { StudentRequest } from 'src/app/features/admin-management/model/studentRequest.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
-
+  
   private baseUrl = UserEnviroment.apiUrl;
 
-  constructor(private httpService: HttpService) { }
+  constructor( private http : HttpClient) { }
+  
+  headers = new HttpHeaders({
+    'Content-Type': 'application/json'
+  });
 
-  getAllStudents(): Observable<StudentRequest[]> {
-    return this.httpService.get<StudentRequest[]>(`${this.baseUrl}/students`);
+ 
+  getAllStudents(): Observable<StudentResponse[]> {
+    return this.http.get<StudentResponse[]>(`${this.baseUrl}/students`);
   }
 
-  getStudentById(id: number): Observable<StudentRequest> {
-    return this.httpService.get<StudentRequest>(`${this.baseUrl}/students/${id}`);
+  addStudent(student: StudentRequest): Observable<any> {
+    return this.http.post(`${this.baseUrl}/students/add`, student, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    });
   }
 
-  addStudent(students: StudentRequest): Observable<any> {
-    return this.httpService.post<StudentRequest>(`${this.baseUrl}/students/add`, students);
-  }  
-
-  deleteStudent(id: number): Observable<void> {
-    return this.httpService.delete<void>(`${this.baseUrl}/students/${id}`);
+  getStudentById(studentId: number): Observable<StudentResponse> {
+    return this.http.get<StudentResponse>(`${this.baseUrl}/students/${studentId}`);
   }
+
+  updateStudent(studentId: number, student: StudentRequest): Observable<StudentResponse> {
+    return this.http.put<StudentResponse>(`${this.baseUrl}/students/${studentId}`, student, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    });
+  }
+
+  deleteStudent(userId: number): Observable<StudentResponse> {
+    return this.http.delete<any>(`${this.baseUrl}/students/${userId}`)
+        .pipe(
+            catchError((error: HttpErrorResponse) => {
+                console.error('Delete student failed:', error);
+                return throwError(error); // Propagate the error to be caught in the component
+            })
+        );
+}
 }

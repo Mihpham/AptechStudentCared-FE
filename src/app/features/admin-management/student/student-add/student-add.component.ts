@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdminService } from 'src/app/core/services/admin.service';
-import { StudentRequest } from '../../model/studentRequest.model';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialogRef } from '@angular/material/dialog';
 import { catchError, throwError } from 'rxjs';
+import { StudentRequest } from '../../model/studentRequest.model';
 
 @Component({
   selector: 'app-student-add',
@@ -82,7 +82,7 @@ export class StudentAddComponent {
             console.log('Response:', response);
             this.toastr.success('Student added successfully');
             this.studentForm.reset();
-            this.closeDialog(true);
+            this.closeDialog(student);
           },
           error: (err) => {
             console.error('Error:', err);
@@ -115,7 +115,7 @@ export class StudentAddComponent {
     this.closeDialog();
   }
 
-  private closeDialog(success: boolean = false): void {
-    this.dialogRef.close(success);
+  private closeDialog(newStudent?: StudentRequest): void {
+    this.dialogRef.close(newStudent); 
   }
 }

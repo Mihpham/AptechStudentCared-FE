@@ -88,3 +88,36 @@ label {
     font-size: 16px;
     cursor: pointer;
 }
+/* Ensure button visibility */
+.form-actions button {
+    background-color: #007bff; /* Add background color */
+    color: white; /* Text color */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Rounded corners */
+}
+
+.form-actions button:disabled {
+    background-color: #ccc; /* Disabled background color */
+    cursor: not-allowed; /* Change cursor to indicate disabled state */
+}
+
+/* Align buttons to the right */
+.form-actions {
+    justify-content: flex-end;
+    margin-top: 20px; /* Add space above buttons */
+}
+
+.form-actions button {
+    margin-left: 10px; /* Space between buttons */
+}
+/* Flexbox settings */
+.student-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Add gap between form rows */
+}
+
+/* Ensure there is no overflow */
+.dialog-content {
+    overflow: hidden; /* Prevent content from overflowing */
+}
