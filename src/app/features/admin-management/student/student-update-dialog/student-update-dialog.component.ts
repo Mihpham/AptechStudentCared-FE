@@ -16,6 +16,8 @@ export class StudentUpdateDialogComponent {
   imageUrl: string | ArrayBuffer | null = null;
   imageError: string | null = null;
   availableCourses: string[] = ['Mathematics', 'Science', 'History', 'Art']; // Example courses
+  selectedCourses: string[] = [];
+  isDropdownOpen: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -35,7 +37,7 @@ export class StudentUpdateDialogComponent {
       phoneNumber: [data?.phoneNumber || '', [Validators.required, Validators.pattern(/^\+?[0-9]\d{1,10}$/)]],
       address: [data?.address || '', Validators.required],
       courses: [data?.courses || [], Validators.required], // Ensure this is an array
-      status: [data?.status || 'Studying', Validators.required],
+      status: [data?.status || '', Validators.required],
       parentFullName: [data?.parentFullName || ''],
       parentGender: [data?.parentGender || 'Male'],
       parentPhone: [data?.parentPhone || ''],
@@ -51,6 +53,23 @@ export class StudentUpdateDialogComponent {
       return { invalidDate: 'Date of birth cannot be in the future.' };
     }
     return null;
+  }
+
+  onCourseToggle(course: string) {
+    if (this.selectedCourses.includes(course)) {
+      this.selectedCourses = this.selectedCourses.filter(c => c !== course);
+    } else {
+      this.selectedCourses.push(course);
+    }
+  }
+
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  onCheckboxClick(event: MouseEvent, course: string) {
+    event.stopPropagation();
+    this.onCourseToggle(course);
   }
 
   onCourseChange(event: any) {
@@ -85,24 +104,27 @@ export class StudentUpdateDialogComponent {
 
   onSubmit(): void {
     if (this.studentForm.valid) {
-      console.log('Form submitted:', this.studentForm.value);
-
-      const studentId = this.studentForm.value.userId; // Extract studentId from the form
-      const student: StudentRequest = this.studentForm.value; // Extract student details
-
+  
+      const studentId = this.studentForm.value.userId;
+      const student: StudentRequest = this.studentForm.value;
+  
       // Call the service to update the student
       this.studentService.updateStudent(studentId, student).subscribe({
         next: (response: StudentResponse) => {
-          console.log('Student updated successfully', response);
-          this.dialogRef.close(response); // Close dialog and return the response
+          this.toastr.success('Student updated successfully', 'Success');
+          this.dialogRef.close(response);
         },
         error: (error) => {
           console.error('Error updating student', error);
           this.toastr.error('Failed to update student', 'Error');
         }
       });
+    } else {
+      console.log('Form is invalid', this.studentForm.errors);
+      this.toastr.error('Please fill in all required fields correctly.', 'Form Invalid');
     }
   }
+  
 
   onCancel(): void {
     this.dialogRef.close();
