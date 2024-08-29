@@ -98,18 +98,25 @@
     </div>
 
     <!-- Courses -->
-    <div>
-      <label class="block text-gray-700 text-sm mb-2">Courses</label>
-      <div *ngFor="let course of availableCourses" class="flex items-center">
-        <input type="checkbox" [value]="course" (change)="onCourseChange($event)"
-          class="form-checkbox text-blue-600 mr-2" />
-        <span class="ml-2">{{ course }}</span>
-      </div>
-      <div *ngIf="studentForm.get('courses')?.invalid && studentForm.get('courses')?.touched"
-        class="text-red-500 text-xs mt-1">
-        At least one course is required.
+    <div class="relative">
+      <!-- Input Field -->
+      <label class="block text-gray-700 text-sm mb-2">Course</label>
+      <input type="text" [value]="selectedCourses.join(', ')" (click)="toggleDropdown()" placeholder="Select courses"
+        readonly class="form-input border rounded p-2 w-full cursor-pointer" />
+
+      <!-- Dropdown Menu -->
+      <div *ngIf="isDropdownOpen" class="absolute z-10 bg-white border border-gray-300 rounded mt-1 w-full shadow-lg">
+        <div *ngFor="let course of availableCourses" (click)="onCourseToggle(course)"
+          class="flex items-center p-2 hover:bg-gray-200 cursor-pointer">
+          <input type="checkbox" [value]="course" [checked]="selectedCourses.includes(course)"
+            class="form-checkbox text-blue-600 mr-2" (click)="onCheckboxClick($event, course)" />
+          <span>{{ course }}</span>
+        </div>
       </div>
     </div>
+
+
+
 
     <!-- Parent's Full Name -->
     <div>

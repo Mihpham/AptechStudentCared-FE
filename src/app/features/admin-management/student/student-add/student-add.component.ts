@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdminService } from 'src/app/core/services/admin.service';
 import { ToastrService } from 'ngx-toastr';
@@ -11,17 +11,19 @@ import { StudentRequest } from '../../model/studentRequest.model';
   templateUrl: './student-add.component.html',
   styleUrls: ['./student-add.component.scss'],
 })
-export class StudentAddComponent {
+export class StudentAddComponent implements AfterViewInit, OnDestroy {
   studentForm: FormGroup;
   availableCourses: string[] = ['Mathematics', 'Science', 'History', 'Art'];
-  imageUrl: string | ArrayBuffer | null = null;
-  imageError: string | null = null;
+  selectedCourses: string[] = [];
+  isDropdownOpen = false;
+  private dropdownElement: HTMLElement | null = null;
 
   constructor(
     private fb: FormBuilder,
     private studentService: AdminService,
     private toastr: ToastrService,
-    private dialogRef: MatDialogRef<StudentAddComponent>
+    private dialogRef: MatDialogRef<StudentAddComponent>,
+    private el: ElementRef
   ) {
     this.studentForm = this.fb.group({
       image: ['avatar-default.webp'],
@@ -40,6 +42,25 @@ export class StudentAddComponent {
     });
   }
 
+  ngAfterViewInit() {
+    this.dropdownElement = this.el.nativeElement.querySelector('.relative');
+  }
+
+  ngOnDestroy() {
+    // Clean up any listeners if necessary
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent) {
+    if (this.dropdownElement && !this.dropdownElement.contains(event.target as Node)) {
+      this.isDropdownOpen = false;
+    }
+  }
+
+  toggleDropdown(): void {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+  
   dateValidator(control: any) {
     const date = new Date(control.value);
     const today = new Date();
@@ -49,21 +70,20 @@ export class StudentAddComponent {
     return null;
   }
 
-  onCourseChange(event: any) {
-    const courses = this.studentForm.get('courses')?.value || [];
-    const course = event.target.value;
-
-    if (event.target.checked) {
-      if (!courses.includes(course)) {
-        courses.push(course);
-      }
+  onCourseToggle(course: string) {
+    const index = this.selectedCourses.indexOf(course);
+    if (index > -1) {
+      this.selectedCourses.splice(index, 1);
     } else {
-      const index = courses.indexOf(course);
-      if (index > -1) {
-        courses.splice(index, 1);
-      }
+      this.selectedCourses.push(course);
     }
-    this.studentForm.get('courses')?.setValue(courses);
+    this.studentForm.get('courses')?.setValue(this.selectedCourses);
+  }
+
+  onCheckboxClick(event: Event, course: string) {
+    event.stopPropagation(); // Prevents the event from bubbling up to the parent div
+    const checkbox = event.target as HTMLInputElement;
+    this.onCourseToggle(course);
   }
 
   onSubmit() {
@@ -91,23 +111,6 @@ export class StudentAddComponent {
         });
     } else {
       this.toastr.error('Please fill out the form correctly!');
-    }
-  }
-
-  onImageChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      if (file.size > 1048576) { // 1MB
-        this.imageError = 'File size should not exceed 1MB.';
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.imageUrl = reader.result;
-      };
-      reader.readAsDataURL(file);
-      this.imageError = null;
     }
   }
 

@@ -87,5 +87,5 @@
         <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClick($event, row)"></mat-row>
     </mat-table>
 
-    <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
+    <mat-paginator pageSize="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
 </div>

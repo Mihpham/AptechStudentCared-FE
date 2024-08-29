@@ -25,6 +25,8 @@ import { AdminManagementRoutingModule } from './admin-management-routing.module'
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,6 +34,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { StudentAddComponent } from './student/student-add/student-add.component';
 import { StudentUpdateDialogComponent } from './student/student-update-dialog/student-update-dialog.component';
 import { StudentDetailDialogComponent } from './student/student-detail-dialog/student-detail-dialog.component';
+
 @NgModule({
   
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -71,6 +74,8 @@ import { StudentDetailDialogComponent } from './student/student-detail-dialog/st
     MatIconModule,
     MatDialogModule,
     ReactiveFormsModule,
+    MatSelectModule,
+    MatOptionModule,
   ]
 })
 export class AdminManagementModule { }
