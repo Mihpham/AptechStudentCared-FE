@@ -59,7 +59,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
       rollNumber: response.rollNumber ?? '',
       fullName: response.fullName ?? '',
       password: '', // Set to default or handle appropriately
-      gender: '',   // Set default or map gender if available
+      gender: response.gender ?? '',   // Set default or map gender if available
       className: response.className ?? '',
       dob: '',      // Set dob if applicable
       phoneNumber: response.phoneNumber ?? '',

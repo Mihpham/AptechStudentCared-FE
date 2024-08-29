@@ -6,6 +6,7 @@ export interface StudentResponse {
   email: string;
   address?: string;
   className?: string;
+  gender?: string;
   phoneNumber?: string;
   courses: string[];
   status?: string;
