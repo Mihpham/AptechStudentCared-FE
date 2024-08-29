@@ -35,7 +35,7 @@ const routes: Routes = [
   },
   {
     path: 'student',
-    component: StudentComponent,
+    component: StudentAllStatusesComponent,
     canActivate: [AuthGuard],
     data: { breadcrumb: 'Student Management' },
     children: [

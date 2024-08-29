@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { StudentRequest } from '../../model/studentRequest.model';
+import { StudentRequest } from '../../model/student-request.model';
 // Import the Student interface
 
 

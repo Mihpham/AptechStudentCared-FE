@@ -17,6 +17,7 @@
                 <button mat-button color="primary" (click)="onExport()">Export</button>
                 <button mat-button color="primary" (click)="onAdd()">Add</button>
                 <button mat-button color="primary">Filter</button>
+                
             </div>
         </div>
     </div>
@@ -52,7 +53,7 @@
             <mat-cell *matCellDef="let student"> {{student.className}} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="email" [ngStyle]="{'width': '5000px'}">
+        <ng-container matColumnDef="email" >
             <mat-header-cell *matHeaderCellDef> Email </mat-header-cell>
             <mat-cell *matCellDef="let student"> {{student.email}} </mat-cell>
         </ng-container>

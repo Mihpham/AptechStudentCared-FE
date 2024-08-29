@@ -5,12 +5,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { StudentDetailDialogComponent } from '../student-detail-dialog/student-detail-dialog.component';
 import { StudentAddComponent } from '../student-add/student-add.component';
 import { StudentUpdateDialogComponent } from '../student-update-dialog/student-update-dialog.component';
-import { StudentRequest } from '../../model/studentRequest.model';
+import { StudentRequest } from '../../model/student-request.model';
 import { AdminService } from 'src/app/core/services/admin.service';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { ToastrService } from 'ngx-toastr';
-import { StudentResponse } from '../../model/studentResponse.model';
+import { ChangeDetectorRef } from '@angular/core';
+import { StudentResponse } from '../../model/student-response.model.';
+import Swal from 'sweetalert2';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-student-all-statuses',
@@ -18,7 +21,7 @@ import { StudentResponse } from '../../model/studentResponse.model';
   styleUrls: ['./student-all-statuses.component.scss'],
 })
 export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
-  students: StudentRequest[] = [];
+  students: StudentResponse[] = [];
   totalStudents: number = 0;
   searchTerm: string = '';
 
@@ -32,8 +35,8 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     'status',
     'actions',
   ];
-  dataSource: MatTableDataSource<StudentRequest> =
-    new MatTableDataSource<StudentRequest>();
+  dataSource: MatTableDataSource<StudentResponse> =
+    new MatTableDataSource<StudentResponse>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('fileInput') fileInput: any;
@@ -41,7 +44,8 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   constructor(
     public dialog: MatDialog,
     private studentService: AdminService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -52,56 +56,36 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     return `/assets/images/${avatarName}`;
   }
 
-  mapResponseToRequest(response: StudentResponse): StudentRequest {
-    return {
-      userId: response.userId, // Ensure this is a number
-      image: response.image ?? '',
-      rollNumber: response.rollNumber ?? '',
-      fullName: response.fullName ?? '',
-      password: '', // Set to default or handle appropriately
-      gender: '',   // Set default or map gender if available
-      className: response.className ?? '',
-      dob: '',      // Set dob if applicable
-      phoneNumber: response.phoneNumber ?? '',
-      email: response.email ?? '',
-      address: response.address ?? '',
-      courses: response.courses ?? [], // Ensure courses is an array
-      status: response.status ?? '',
-      parentFullName: response.parentFullName ?? '',
-      studentRelation: response.studentRelation ?? '',
-      parentPhone: response.parentPhone ?? '',
-      parentGender: response.parentGender ?? '',
-    };
-  }
-  
-
   loadStudent(): void {
-    this.studentService.getAllStudents().subscribe(
-      (data: StudentResponse[]) => {
-        this.students = data.map(this.mapResponseToRequest); 
-        this.dataSource.data = [...this.students]; 
-        this.totalStudents = this.students.length;
-        if (this.paginator) {
-          this.paginator.pageIndex = 0;
+    this.studentService
+      .getAllStudents()
+      .pipe(tap((data) => console.log('Data loaded:', data)))
+      .subscribe(
+        (data: StudentResponse[]) => {
+          this.students = data;
+          this.dataSource.data = [...this.students];
+          this.totalStudents = this.students.length;
+          if (this.paginator) {
+            this.paginator.pageIndex = 0;
+          }
+          this.cdr.markForCheck(); // Trigger change detection cycle
+        },
+        (error) => {
+          this.toastr.error('Failed to load students', 'Error');
+          console.error('Error fetching students', error);
         }
-      },
-      (error) => {
-        this.toastr.error('Failed to load students', 'Error');
-        console.error('Error fetching students', error);
-      }
-    );
+      );
   }
-  
 
   applyFilter(filterValue: string): void {
     this.dataSource.filterPredicate = (
-      data: StudentRequest,
+      data: StudentResponse,
       filter: string
     ) => {
       const filterLowerCase = filter.toLowerCase();
       return (
         data.fullName.toLowerCase().includes(filterLowerCase) ||
-        data.className.toLowerCase().includes(filterLowerCase) ||
+        data.className?.toLowerCase().includes(filterLowerCase) ||
         data.email.toLowerCase().includes(filterLowerCase)
       );
     };
@@ -110,11 +94,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
-    this.dataSource.paginator.page.subscribe(() => {
-      this.loadStudent(); // Tải lại dữ liệu khi phân trang thay đổi
-    });
   }
-  
 
   onRowClick(event: MouseEvent, student: StudentRequest): void {
     if (!(event.target as HTMLElement).closest('button')) {
@@ -134,35 +114,36 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
       .afterClosed()
       .subscribe((newStudent: StudentRequest | undefined) => {
         if (newStudent) {
-          this.loadStudent(); // Tải lại danh sách học sinh sau khi thêm
-          this.students.push(newStudent);
-          this.dataSource.data = [...this.students];
+          this.loadStudent();
+          this.cdr.markForCheck(); // Trigger change detection cycle
+          this.paginator.pageIndex = 0; // Update paginator
         }
       });
   }
 
-  onUpdate(event: MouseEvent, student: StudentRequest): void {
-    const dialogRef = this.dialog.open(StudentUpdateDialogComponent, {
-      width: '550px',
-      data: student,
-    });
+  
+onUpdate(event: MouseEvent, student: StudentResponse): void {
+  const dialogRef = this.dialog.open(StudentUpdateDialogComponent, {
+    width: '550px',
+    data: student,
+  });
 
-    dialogRef
-      .afterClosed()
-      .subscribe((updatedStudent: StudentRequest | undefined) => {
-        if (updatedStudent) {
-          const index = this.students.findIndex(
-            (s) => s.userId === updatedStudent.userId
-          );
-          if (index !== -1) {
-            this.students[index] = updatedStudent;
-            this.dataSource.data = [...this.students]; 
-          } else {
-            this.loadStudent(); 
-          }
-        }
-      });
-  }
+  dialogRef.afterClosed().subscribe((updatedStudent: StudentResponse | undefined) => {
+    if (updatedStudent) {
+      const index = this.students.findIndex(
+        (s) => s.userId === updatedStudent.userId
+      );
+      if (index !== -1) {
+        this.students[index] = updatedStudent;
+        this.dataSource.data = [...this.students];
+        this.cdr.markForCheck(); // Trigger change detection cycle
+        this.paginator.pageIndex = 0; // Update paginator
+      } else {
+        this.loadStudent(); // Reload students list if not found
+      }
+    }
+  });
+}
 
   onImport(): void {
     this.triggerFileInput();
@@ -188,24 +169,34 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   }
 
   onDelete(userId: number): void {
-    if (confirm('Are you sure you want to delete this student?')) {
-      this.studentService.deleteStudent(userId).subscribe({
-        next: () => {
-          this.students = this.students.filter(
-            (student) => student.userId !== userId
-          );
-          this.toastr.success('Student deleted successfully');
-          this.loadStudent(); // Reload the list of students after deletion
-        },
-        error: (err) => {
-          console.error('Error deleting student:', err);
-          const errorMessage =
-            err.error && err.error.message
-              ? err.error.message
-              : 'Failed to delete student';
-          this.toastr.error(errorMessage);
-        },
-      });
-    }
+    Swal.fire({
+      width: 350,
+      title: 'Are you sure you want to delete this student?',
+      text: 'This action cannot be undone!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.studentService.deleteStudent(userId).subscribe({
+          next: () => {
+            this.toastr.success('Student deleted successfully', 'Success');
+            this.loadStudent(); // Tải lại danh sách học sinh sau khi xóa
+            this.cdr.markForCheck(); // Trigger change detection cycle
+            this.paginator.pageIndex = 0; // Update paginator
+          },
+          error: (err) => {
+            console.error('Error deleting student:', err);
+            const errorMessage =
+              err.error && err.error.message
+                ? err.error.message
+                : 'Failed to delete student';
+            this.toastr.error(errorMessage);
+          },
+        });
+      }
+    });
   }
 }

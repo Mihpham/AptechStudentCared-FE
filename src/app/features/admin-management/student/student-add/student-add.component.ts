@@ -4,7 +4,7 @@ import { AdminService } from 'src/app/core/services/admin.service';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialogRef } from '@angular/material/dialog';
 import { catchError, throwError } from 'rxjs';
-import { StudentRequest } from '../../model/studentRequest.model';
+import { StudentRequest } from '../../model/student-request.model';
 
 @Component({
   selector: 'app-student-add',
@@ -82,7 +82,7 @@ export class StudentAddComponent {
             console.log('Response:', response);
             this.toastr.success('Student added successfully');
             this.studentForm.reset();
-            this.closeDialog(student);
+            this.dialogRef.close(this.studentForm.value);
           },
           error: (err) => {
             console.error('Error:', err);
@@ -112,10 +112,8 @@ export class StudentAddComponent {
   }
 
   onCancel(): void {
-    this.closeDialog();
+    this.dialogRef.close();
   }
 
-  private closeDialog(newStudent?: StudentRequest): void {
-    this.dialogRef.close(newStudent); 
-  }
+
 }
