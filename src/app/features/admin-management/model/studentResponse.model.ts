@@ -3,16 +3,17 @@ export interface StudentResponse {
   image?: string;
   rollNumber: string;
   fullName: string;
+  password: string;
   email: string;
   dob: string;
-  address?: string;
-  className?: string;
-  gender?: string;
-  phoneNumber?: string;
+  address: string;
+  className: string;
+  gender: string;
+  phoneNumber: string;
   courses: string[];
-  status?: string;
-  parentFullName?: string;
-  studentRelation?: string;
-  parentPhone?: string;
-  parentGender?: string;
+  status: string;
+  parentFullName: string;
+  studentRelation: string;
+  parentPhone: string;
+  parentGender: string;
 }

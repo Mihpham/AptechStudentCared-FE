@@ -1,5 +1,5 @@
 export interface StudentRequest {
-  userId?: number;
+  userId: number;
   image?: string;
   rollNumber: string;
   fullName: string;

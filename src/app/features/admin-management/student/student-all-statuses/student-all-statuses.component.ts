@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatDialog } from '@angular/material/dialog';
-import { StudentDetailDialogComponent } from '../student-detail-dialog/student-detail-dialog.component';
+import { MatTableDataSource } from '@angular/material/table';  // No need to remove this since it's used for data handling, not UI
+import { MatPaginator } from '@angular/material/paginator';  // This can be replaced with custom pagination if desired
+import { MatDialog } from '@angular/material/dialog';  // You can keep Angular Material Dialog if you still want to use it
+import { StudentDetailDialogComponent } from '../student-detail/student-detail-dialog.component';
 import { StudentAddComponent } from '../student-add/student-add.component';
 import { StudentUpdateDialogComponent } from '../student-update-dialog/student-update-dialog.component';
 import { StudentRequest } from '../../model/studentRequest.model';
@@ -11,6 +11,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { ToastrService } from 'ngx-toastr';
 import { StudentResponse } from '../../model/studentResponse.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-student-all-statuses',
@@ -18,7 +19,8 @@ import { StudentResponse } from '../../model/studentResponse.model';
   styleUrls: ['./student-all-statuses.component.scss'],
 })
 export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
-  students: StudentRequest[] = [];
+  students: StudentResponse[] = [];
+  selectedStudent: StudentRequest | undefined ;
   totalStudents: number = 0;
   searchTerm: string = '';
 
@@ -32,8 +34,8 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     'status',
     'actions',
   ];
-  dataSource: MatTableDataSource<StudentRequest> =
-    new MatTableDataSource<StudentRequest>();
+  dataSource: MatTableDataSource<StudentResponse> =
+    new MatTableDataSource<StudentResponse>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('fileInput') fileInput: any;
@@ -41,47 +43,27 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   constructor(
     public dialog: MatDialog,
     private studentService: AdminService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router : Router
   ) {}
 
   ngOnInit(): void {
-    this.loadStudent();
+    this.loadStudent(); // Load students when component initializes
   }
 
   getAvatarUrl(avatarName: string | undefined): string {
     return `/assets/images/${avatarName}`;
   }
 
-  mapResponseToRequest(response: StudentResponse): StudentRequest {
-    return {
-      userId: response.userId, // Ensure this is a number
-      image: response.image ?? '',
-      rollNumber: response.rollNumber ?? '',
-      fullName: response.fullName ?? '',
-      password: '', // Set to default or handle appropriately
-      gender: response.gender ?? '',   // Set default or map gender if available
-      className: response.className ?? '',
-      dob: response.dob,      // Set dob if applicable
-      phoneNumber: response.phoneNumber ?? '',
-      email: response.email ?? '',
-      address: response.address ?? '',
-      courses: response.courses ?? [], // Ensure courses is an array
-      status: response.status ?? '',
-      parentFullName: response.parentFullName ?? '',
-      studentRelation: response.studentRelation ?? '',
-      parentPhone: response.parentPhone ?? '',
-      parentGender: response.parentGender ?? '',
-    };
-  }
-  
-
   loadStudent(): void {
     this.studentService.getAllStudents().subscribe(
-      (data: StudentResponse[]) => {
-        this.students = data.map(this.mapResponseToRequest); 
-        this.dataSource.data = [...this.students]; 
+      (data) => {
+        console.log('Data received from API:', data);
+        this.students = data;
+        this.dataSource.data = this.students;
         this.totalStudents = this.students.length;
         if (this.paginator) {
+          this.dataSource.paginator = this.paginator;
           this.paginator.pageIndex = 0;
         }
       },
@@ -95,13 +77,13 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
 
   applyFilter(filterValue: string): void {
     this.dataSource.filterPredicate = (
-      data: StudentRequest,
+      data: StudentResponse,
       filter: string
     ) => {
       const filterLowerCase = filter.toLowerCase();
       return (
         data.fullName.toLowerCase().includes(filterLowerCase) ||
-        data.className.toLowerCase().includes(filterLowerCase) ||
+        data.className?.toLowerCase().includes(filterLowerCase) ||
         data.email.toLowerCase().includes(filterLowerCase)
       );
     };
@@ -109,36 +91,34 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+    if (this.paginator) {
+      this.dataSource.paginator = this.paginator;
+    }
   }
-  
+
 
   onRowClick(event: MouseEvent, student: StudentRequest): void {
-    if (!(event.target as HTMLElement).closest('button')) {
-      this.dialog.open(StudentDetailDialogComponent, {
-        width: '650px',
-        data: student,
-      });
-    }
+    this.router.navigate(['/admin/student/details', student.userId]);
   }
 
   onAdd(): void {
     const dialogRef = this.dialog.open(StudentAddComponent, {
       width: '550px',
     });
-
-    dialogRef
-      .afterClosed()
-      .subscribe((newStudent: StudentRequest | undefined) => {
-        if (newStudent) {
-          this.loadStudent(); // Tải lại danh sách học sinh sau khi thêm
-          this.students.push(newStudent);
-          this.dataSource.data = [...this.students];
-        }
-      });
+  
+    dialogRef.afterClosed().subscribe((newStudent: StudentRequest | undefined) => {
+      if (newStudent) {
+        this.onStudentAdded(newStudent); 
+        this.toastr.success('Student added successfully');
+      }
+    });
   }
 
-  onUpdate(event: MouseEvent, student: StudentRequest): void {
+  onStudentAdded(student: StudentRequest) {
+    this.loadStudent(); 
+  }
+  
+  onUpdate(student: StudentRequest): void {
     const dialogRef = this.dialog.open(StudentUpdateDialogComponent, {
       width: '550px',
       data: student,
@@ -161,9 +141,6 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
       });
   }
 
-  onImport(): void {
-    this.triggerFileInput();
-  }
 
   triggerFileInput(): void {
     const fileInput: HTMLInputElement | null = this.fileInput?.nativeElement;
@@ -188,11 +165,13 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     if (confirm('Are you sure you want to delete this student?')) {
       this.studentService.deleteStudent(userId).subscribe({
         next: () => {
-          this.students = this.students.filter(
-            (student) => student.userId !== userId
-          );
+          console.log(`Student with ID ${userId} deleted`);
+  
+          this.students = this.students.filter(student => student.userId !== userId);
+          this.dataSource.data = this.students;
+          this.totalStudents = this.students.length;
+
           this.toastr.success('Student deleted successfully');
-          this.loadStudent(); // Reload the list of students after deletion
         },
         error: (err) => {
           console.error('Error deleting student:', err);
@@ -205,4 +184,5 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
       });
     }
   }
+  
 }

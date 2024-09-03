@@ -1,79 +1,42 @@
-<div class="flex-1 bg-gray-50 p-6 dark:bg-slate-900">
-    
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
-        <div class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">16</span>
-            <span class="text-gray-600">Studying</span>
-        </div>
-        <div class="bg-yellow-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">4</span>
-            <span class="text-gray-600">Finished</span>
-        </div>
-        <div class="bg-yellow-200 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">16</span>
-            <span class="text-gray-600">Cancel</span>
-        </div>
-        <div class="bg-cyan-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">2</span>
-            <span class="text-gray-600">Scheduled</span>
-        </div>
-        <div class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">1</span>
-            <span class="text-gray-600">Sem 1</span>
-        </div>
-        <div class="bg-yellow-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">2</span>
-            <span class="text-gray-600">SEM 2</span>
-        </div>
-        <div class="bg-yellow-200 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">16</span>
-            <span class="text-gray-600">SEM 3</span>
-        </div>
-        <div class="bg-cyan-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">2</span>
-            <span class="text-gray-600">SEM 4</span>
-        </div>
-    </div>
-   
-    <div class="bg-white rounded-md shadow-md overflow-hidden dark:bg-black">
-        <button class="bg-gray-300 shadow-md rounded-md p-2 m-3 right-0">+ Add</button>
-        <button class="bg-gray-300 shadow-md rounded-md p-2  right-0"> > Fiuter </button>
-
-        <table class="w-full">
-            <thead>
-                <tr>
-                    <th class="px-6 py-3 text-left text-gray-500 uppercase font-semibold text-xs md:text-sm dark:text-white">Id</th>
-                    <th class="px-6 py-3 text-left text-gray-500 uppercase font-semibold text-xs md:text-sm dark:text-white">Name</th>
-                    <th class="px-6 py-3 text-left text-gray-500 uppercase font-semibold text-xs md:text-sm dark:text-white">Day</th>
-                    <th class="px-6 py-3 text-left text-gray-500 uppercase font-semibold text-xs md:text-sm dark:text-white">Hour</th>
-                    <th class="px-6 py-3 text-left text-gray-500 uppercase font-semibold text-xs md:text-sm dark:text-white">Center</th>
-                    <th class="px-6 py-3 text-left text-gray-500 uppercase font-semibold text-xs md:text-sm dark:text-white">CourseFamily</th>
-                    <th class="px-6 py-3 text-left text-gray-500 uppercase font-semibold text-xs md:text-sm dark:text-white">Admission Date</th>
-                    <th class="px-6 py-3 text-left text-gray-500 uppercase font-semibold text-xs md:text-sm dark:text-white">Status</th>
-                    <th class="px-6 py-3 text-left text-gray-500 uppercase font-semibold text-xs md:text-sm dark:text-white">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-600 text-xs md:text-sm dark:text-white">1</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-600 text-xs md:text-sm dark:text-white">C2208G1</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-600 text-xs md:text-sm dark:text-white">2,4,5,6</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-600 text-xs md:text-sm dark:text-white">10:00-12:00</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-600 text-xs md:text-sm dark:text-white">AA2HN</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-600 text-xs md:text-sm dark:text-white">ADSE, OV-7091-ADSE</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-600 text-xs md:text-sm dark:text-white">19/07/2022</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-600 text-xs md:text-sm dark:text-white">Studying</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-600 text-xs md:text-sm dark:text-white">
-                        <button mat-icon-button  class="mat-button-edit">
-                            <mat-icon>edit</mat-icon>
-                          </button>
-                          <button mat-icon-button  class="mat-button-delete">
-                            <mat-icon>delete</mat-icon>
-                          </button>
-                    </td>
-                </tr>
-                <!-- Add more rows as needed -->
-            </tbody>
-        </table>
-    </div>
-</div>
+<div class="container mx-auto mt-8 p-4">
+    <div class="mt-4">
+        <a routerLink="/admin/class/create" class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded">
+          Add New Class
+        </a>
+      </div>    
+      <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden table-auto">
+        
+      <thead class="bg-gray-800 text-white">
+        <tr>
+          <th class="py-2 px-4">ID</th>
+          <th class="py-2 px-4">Class Name</th>
+          <th class="py-2 px-4">Days</th>
+          <th class="py-2 px-4">Admission Date</th>
+          <th class="py-2 px-4">Hour</th>
+          <th class="py-2 px-4">Center</th>
+          <th class="py-2 px-4">Status</th>
+          <th class="py-2 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let classItem of classes" class="border-b">
+          <td class="py-2 px-4 text-center">{{ classItem.id }}</td>
+          <td class="py-2 px-4 text-center">{{ classItem.className }}</td>
+          <td class="py-2 px-4 text-center">{{ classItem.days }}</td>
+          <td class="py-2 px-4 text-center">{{ classItem.admissionDate | date: 'yyyy-MM-dd' }}</td>
+          <td class="py-2 px-4 text-center">{{ classItem.hour }}</td>
+          <td class="py-2 px-4 text-center">{{ classItem.center }}</td>
+          <td class="py-2 px-4 text-center">{{ classItem.status }}</td>
+          <td class="py-2 px-4 text-center">
+            <a class="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded" (click)="deleteClass(classItem.id)">
+              Delete
+            </a>
+            <a [routerLink]="['/admin/class/update', classItem.id]" class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded ml-2">
+              Edit
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

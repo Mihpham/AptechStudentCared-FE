@@ -37,6 +37,7 @@ html, body {
   transition: margin-left 0.3s ease;
 }
 
+
 .sidebar-collapsed ~ .main-content {
   margin-left: 3rem; /* Điều chỉnh khoảng cách khi sidebar thu hẹp */
 }

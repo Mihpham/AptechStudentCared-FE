@@ -13,9 +13,11 @@ import { SidebarComponent } from './layout/components/sidebar/sidebar.component'
 import { PagesModule } from './features/pages/pages.module';
 import { SharedModule } from './shared/shared.module';
 import { ProfileModule } from './features/profile/profile.module';
-import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { InterceptorsModule } from './core/interceptors/interceptors.module';
 import { BreadcrumbsComponent } from './layout/components/breadcrumbs/breadcrumbs.component';
+import { AuthService } from './core/auth/auth.service';
+import { StudentAddComponent } from './features/admin-management/student/student-add/student-add.component';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -55,11 +57,8 @@ export function tokenGetter() {
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: ErrorInterceptor,
-      multi: true
-    }
+   
+    { provide: LocationStrategy, useClass: HashLocationStrategy }
   ],
   bootstrap: [AppComponent]
 })

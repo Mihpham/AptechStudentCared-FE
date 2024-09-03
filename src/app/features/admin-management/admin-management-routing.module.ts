@@ -1,3 +1,4 @@
+// admin-management-routing.module.ts
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../core/auth/auth.guard';
@@ -7,18 +8,9 @@ import { ExamMarkComponent } from './exam-mark/exam-mark.component';
 import { TeacherComponent } from './teacher/teacher.component';
 import { SroComponent } from './sro/sro.component';
 import { AccountsComponent } from './accounts/accounts.component';
-import { AttendanceComponent } from './attendance/attendance.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { CourseComponent } from './course/course.component';
 import { SubjectComponent } from './subject/subject.component';
-import { StudentAllStatusesComponent } from './student/student-all-statuses/student-all-statuses.component';
-import { StudyingComponent } from './student/studying/studying.component';
-import { DelayComponent } from './student/delay/delay.component';
-import { DropoutComponent } from './student/dropout/dropout.component';
-import { GraduatedComponent } from './student/graduated/graduated.component';
-import { AttendanceClassComponent } from './attendance/attendance-class/attendance-class.component';
-import { AttendanceRecordComponent } from './attendance/attendance-record/attendance-record.component';
-import { StudentComponent } from './student/student.component';
 
 const routes: Routes = [
   {
@@ -29,42 +21,16 @@ const routes: Routes = [
   },
   {
     path: 'class',
-    component: ClassComponent,
+    loadChildren: () =>
+      import('./class/class-routing.module').then((m) => m.ClassRoutingModule),
     canActivate: [AuthGuard],
     data: { breadcrumb: 'Class Management' },
   },
   {
     path: 'student',
-    component: StudentComponent,
+    loadChildren: () =>
+      import('./student/student-routing.module').then((m) => m.StudentRoutingModule),
     canActivate: [AuthGuard],
-    data: { breadcrumb: 'Student Management' },
-    children: [
-      {
-        path: 'all',
-        component: StudentAllStatusesComponent,
-        data: { breadcrumb: 'All Student' },
-      },
-      {
-        path: 'studying',
-        component: StudyingComponent,
-        data: { breadcrumb: 'Student Studying' },
-      },
-      {
-        path: 'delay',
-        component: DelayComponent,
-        data: { breadcrumb: 'Student Delay' },
-      },
-      {
-        path: 'dropout',
-        component: DropoutComponent,
-        data: { breadcrumb: 'Student Drop' },
-      },
-      {
-        path: 'graduated',
-        component: GraduatedComponent,
-        data: { breadcrumb: 'Student Graduated' },
-      },
-    ],
   },
   {
     path: 'exam-mark',
@@ -92,20 +58,9 @@ const routes: Routes = [
   },
   {
     path: 'attendance',
-    component: AttendanceComponent,
+    loadChildren: () =>
+      import('./attendance/attendance-routing.module').then((m) => m.AttendanceRoutingModule),
     canActivate: [AuthGuard],
-    children: [
-      {
-        path: '',
-        component: AttendanceClassComponent,
-        data: { breadcrumb: 'Attendance' },
-      },
-      {
-        path: 'attendance-record',
-        component: AttendanceRecordComponent,
-        data: { breadcrumb: 'Attendence Record' },
-      },
-    ],
   },
   {
     path: 'calendar',

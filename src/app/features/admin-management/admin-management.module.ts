@@ -1,6 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
 
 import { AdminComponent } from './admin.component';
@@ -33,8 +32,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { StudentAddComponent } from './student/student-add/student-add.component';
 import { StudentUpdateDialogComponent } from './student/student-update-dialog/student-update-dialog.component';
-import { StudentDetailDialogComponent } from './student/student-detail-dialog/student-detail-dialog.component';
+import { StudentDetailDialogComponent } from './student/student-detail/student-detail-dialog.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { HttpClientModule } from '@angular/common/http';
+import { ClassFormComponent } from './class/class-form/class-form.component';
 
 @NgModule({
   
@@ -60,13 +61,16 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     AttendanceClassComponent,
     StudentDetailDialogComponent,
     StudentAddComponent,
-    StudentUpdateDialogComponent
+    StudentUpdateDialogComponent,
+    ClassComponent,
+    ClassFormComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     AdminManagementRoutingModule,
+    HttpClientModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
@@ -78,6 +82,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatSelectModule,
     MatOptionModule,
     MatTooltipModule,
+
   ]
 })
 export class AdminManagementModule { }
