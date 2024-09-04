@@ -36,9 +36,6 @@ import { StudentDetailDialogComponent } from './student/student-detail/student-d
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { HttpClientModule } from '@angular/common/http';
 import { ClassFormComponent } from './class/class-form/class-form.component';
-import { SubjectListComponent } from './subject/subject-list/subject-list.component';
-import { SubjectAddComponent } from './subject/subject-add/subject-add.component';
-import { SubjectUpdateComponent } from './subject/subject-update/subject-update.component';
 
 @NgModule({
   
@@ -66,10 +63,7 @@ import { SubjectUpdateComponent } from './subject/subject-update/subject-update.
     StudentAddComponent,
     StudentUpdateDialogComponent,
     ClassComponent,
-    ClassFormComponent,
-    SubjectListComponent,
-    SubjectAddComponent,
-    SubjectUpdateComponent
+    ClassFormComponent
   ],
   imports: [
     CommonModule,

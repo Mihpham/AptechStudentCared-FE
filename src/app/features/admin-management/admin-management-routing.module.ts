@@ -76,9 +76,9 @@ const routes: Routes = [
   },
   {
     path: 'subject',
-    loadChildren: () =>
-      import('./subject/subject-routing.module').then((m) => m.SubjectRoutingModule),
+    component: SubjectComponent,
     canActivate: [AuthGuard],
+    data: { breadcrumb: 'Subject Management' },
   },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'dashboard' },
