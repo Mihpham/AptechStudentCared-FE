@@ -34,6 +34,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { StudentAddComponent } from './student/student-add/student-add.component';
 import { StudentUpdateDialogComponent } from './student/student-update-dialog/student-update-dialog.component';
 import { StudentDetailDialogComponent } from './student/student-detail-dialog/student-detail-dialog.component';
+import { CourseDetailDialogComponent } from './course/course-detail-dialog/course-detail-dialog.component';
+import { CourseUpdateDialogComponent } from './course/course-update-dialog/course-update-dialog.component';
+import { CourseAddComponent } from './course/course-add/course-add.component';
 
 @NgModule({
   
@@ -57,9 +60,12 @@ import { StudentDetailDialogComponent } from './student/student-detail-dialog/st
     StudentAllStatusesComponent,
     AttendanceRecordComponent,
     AttendanceClassComponent,
-    StudentDetailDialogComponent,
     StudentAddComponent,
-    StudentUpdateDialogComponent
+    StudentDetailDialogComponent,
+    StudentUpdateDialogComponent,
+    CourseAddComponent,
+    CourseDetailDialogComponent,
+    CourseUpdateDialogComponent
   ],
   imports: [
     CommonModule,
