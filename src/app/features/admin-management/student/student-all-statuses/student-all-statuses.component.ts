@@ -118,28 +118,26 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     this.loadStudent(); 
   }
   
-  onUpdate(student: StudentRequest): void {
+  onUpdate(student: StudentRequest, event: Event): void {
+    event.stopPropagation(); // To prevent the row click event from triggering
     const dialogRef = this.dialog.open(StudentUpdateDialogComponent, {
       width: '550px',
       data: student,
     });
-
-    dialogRef
-      .afterClosed()
-      .subscribe((updatedStudent: StudentRequest | undefined) => {
-        if (updatedStudent) {
-          const index = this.students.findIndex(
-            (s) => s.userId === updatedStudent.userId
-          );
-          if (index !== -1) {
-            this.students[index] = updatedStudent;
-            this.dataSource.data = [...this.students]; 
-          } else {
-            this.loadStudent(); 
-          }
+  
+    dialogRef.afterClosed().subscribe((updatedStudent: StudentRequest | undefined) => {
+      if (updatedStudent) {
+        const index = this.students.findIndex(s => s.userId === updatedStudent.userId);
+        if (index !== -1) {
+          this.students[index] = updatedStudent;
+          this.dataSource.data = [...this.students]; 
+        } else {
+          this.loadStudent(); 
         }
-      });
+      }
+    });
   }
+  
 
 
   triggerFileInput(): void {
