@@ -1,4 +1,4 @@
-<div class="flex-1 bg-gray-50 p-6 dark:bg-slate-900">
+<!-- <div class="flex-1 bg-gray-50 p-6 dark:bg-slate-900">
     
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
         <div class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
@@ -37,7 +37,7 @@
    
     <div class="bg-white rounded-md shadow-md overflow-hidden dark:bg-black">
         <button class="bg-gray-300 shadow-md rounded-md p-2 m-3 right-0">+ Add</button>
-        <button class="bg-gray-300 shadow-md rounded-md p-2  right-0"> > Fiuter </button>
+        <button class="bg-gray-300 shadow-md rounded-md p-2  right-0"> > Filter </button>
 
         <table class="w-full">
             <thead>
@@ -72,8 +72,136 @@
                           </button>
                     </td>
                 </tr>
-                <!-- Add more rows as needed -->
+                Add more rows as needed
             </tbody>
         </table>
     </div>
+</div> -->
+
+<div class="flex-1 p-6">
+    <!-- Stats Cards -->
+    <section class="Stats Cards">
+        <div class="grid grid-cols-4 gap-4 mb-6">
+            <div class="bg-green-200 p-4 rounded shadow">
+                <div class="text-2xl font-bold">
+                    16
+                </div>
+                <div class="flex items-center mt-2">
+                    <i class="fas fa-book-reader mr-2">
+                    </i>
+                    Studying
+                </div>
+            </div>
+            <div class="bg-yellow-200 p-4 rounded shadow">
+                <div class="text-2xl font-bold">
+                    4
+                </div>
+                <div class="flex items-center mt-2">
+                    <i class="fas fa-check mr-2">
+                    </i>
+                    Finished
+                </div>
+            </div>
+            <div class="bg-red-200 p-4 rounded shadow">
+                <div class="text-2xl font-bold">
+                    16
+                </div>
+                <div class="flex items-center mt-2">
+                    <i class="fas fa-times-circle mr-2">
+                    </i>
+                    Cancel
+                </div>
+            </div>
+            <div class="bg-blue-200 p-4 rounded shadow">
+                <div class="text-2xl font-bold">
+                    2
+                </div>
+                <div class="flex items-center mt-2">
+                    <i class="fas fa-calendar-alt mr-2">
+                    </i>
+                    Scheduled
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Table -->
+    <section class="Table">
+        <div class="bg-white p-4 rounded shadow">
+            <div class="flex justify-between items-center mb-4">
+                <button class="bg-blue-500 text-white px-4 py-2 rounded">
+                    + Add
+                </button>
+                <button class="bg-gray-200 px-4 py-2 rounded">
+                    Filter
+                </button>
+            </div>
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr>
+                        <th class="border-b p-2">
+                            Id
+                        </th>
+                        <th class="border-b p-2">
+                            Name
+                        </th>
+                        <th class="border-b p-2">
+                            Day
+                        </th>
+                        <th class="border-b p-2">
+                            Hour
+                        </th>
+                        <th class="border-b p-2">
+                            Center
+                        </th>
+                        <th class="border-b p-2">
+                            Course Family
+                        </th>
+                        <th class="border-b p-2">
+                            Admission Date
+                        </th>
+                        <th class="border-b p-2">
+                            Status
+                        </th>
+                        <th class="border-b p-2">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="border-b p-2">
+                            1
+                        </td>
+                        <td class="border-b p-2">
+                            C2208G1
+                        </td>
+                        <td class="border-b p-2">
+                            2,4,5,6
+                        </td>
+                        <td class="border-b p-2">
+                            10:00-12:00
+                        </td>
+                        <td class="border-b p-2">
+                            AA2HN
+                        </td>
+                        <td class="border-b p-2">
+                            ADSE,OV-7091-ADSE
+                        </td>
+                        <td class="border-b p-2">
+                            19/07/2022
+                        </td>
+                        <td class="border-b p-2">
+                            Studying
+                        </td>
+                        <td class="border-b p-2">
+                            <i class="fas fa-edit text-yellow-500 mr-2 cursor-pointer">
+                            </i>
+                            <i class="fas fa-trash text-red-500 cursor-pointer">
+                            </i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </div>
