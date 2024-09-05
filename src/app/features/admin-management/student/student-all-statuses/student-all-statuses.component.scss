@@ -18,18 +18,27 @@
 }
 
 /* Di chuyển label lên trên khi input được focus hoặc khi có nội dung */
-input:focus ~ label,
-input:not(:placeholder-shown) ~ label {
-  top: 0rem; /* Di chuyển lên trên */
-  left: 1rem; /* Điều chỉnh vị trí sang trái */
-  font-size: 1rem; /* Kích thước chữ nhỏ hơn */
-  color: #000000; /* Màu chữ khi focus */
-  background-color: #E0EDF0; /* Màu nền của label để tránh bị viền đè lên */
-  padding: 0 0.25rem; /* Padding để tạo khoảng cách cho viền bo tròn */
-  border-top-left-radius: 0.25rem; /* Bo tròn góc trên bên trái */
-  z-index: 1; /* Đảm bảo label nằm trên input */
-  border-top: white;
-  transition: all 0.3s ease; /* Hiệu ứng chuyển động */
+input:focus~label,
+input:not(:placeholder-shown)~label {
+    top: 0rem;
+    /* Di chuyển lên trên */
+    left: 1rem;
+    /* Điều chỉnh vị trí sang trái */
+    font-size: 1rem;
+    /* Kích thước chữ nhỏ hơn */
+    color: #000000;
+    /* Màu chữ khi focus */
+    background-color: #E0EDF0;
+    /* Màu nền của label để tránh bị viền đè lên */
+    padding: 0 0.25rem;
+    /* Padding để tạo khoảng cách cho viền bo tròn */
+    border-top-left-radius: 0.25rem;
+    /* Bo tròn góc trên bên trái */
+    z-index: 1;
+    /* Đảm bảo label nằm trên input */
+    border-top: white;
+    transition: all 0.3s ease;
+    /* Hiệu ứng chuyển động */
 }
 
 /* Đảm bảo không có đường viền trên label */
@@ -134,16 +143,16 @@ input:not(:placeholder-shown) ~ label {
 }
 
 .email-label .mat-cell {
-    padding-left: 0; /* Adjust or remove padding if it's too large */
-    text-align: left; /* Ensure text is aligned to the left */
+    padding-left: 0;
+    /* Adjust or remove padding if it's too large */
+    text-align: left;
+    /* Ensure text is aligned to the left */
 }
 
-.email-cell .email-text {
-    display: inline-block;
-    max-width: 100%; /* Ensure the text doesn't overflow */
+.email{
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* Show ellipsis if text is too long */
-    margin-right: 0; /* Remove any unwanted margin */
+    text-overflow: ellipsis;
+    display: block;
+    max-width: 130px;
 }
-

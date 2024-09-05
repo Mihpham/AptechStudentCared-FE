@@ -78,12 +78,15 @@
         </ng-container>
 
         <!-- Email Column -->
-        <ng-container matColumnDef="email" class="email-label ">
+        <ng-container matColumnDef="email" class="email-label">
             <mat-header-cell *matHeaderCellDef class="p-2"> Email </mat-header-cell>
             <mat-cell *matCellDef="let student" class="p-2">
-                <span class="email-text email-cell" matTooltip="{{student.email}}">{{student.email}}</span>
+                <span class="email" matTooltip="{{student.email}}">
+                    {{student.email}}
+                </span>
             </mat-cell>
         </ng-container>
+
 
         <!-- Phone Number Column -->
         <ng-container matColumnDef="phone">
