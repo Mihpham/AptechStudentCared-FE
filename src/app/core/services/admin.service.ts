@@ -37,7 +37,8 @@ export class AdminService {
 
   addStudent(student: StudentRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}/students/add`, student, {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      responseType: 'text' 
+
     });
   }
 
@@ -69,24 +70,38 @@ export class AdminService {
     );
   }
 
-  // Class
+  
+  // Get all classes
   findAllClasses(): Observable<Class[]> {
     return this.http.get<Class[]>(`${this.baseUrl}/classes`);
   }
 
+  // Get class by id
   findClassById(id: number): Observable<Class> {
     return this.http.get<Class>(`${this.baseUrl}/classes/${id}`);
   }
 
-  addClass(classRequest: Class): Observable<string> {
-    return this.http.post<string>(`${this.baseUrl}/classes/add`, classRequest, { responseType: 'text' as 'json' });
+  // Add new class
+  addClass(classData: Class): Observable<any> {
+    return this.http.post(`${this.baseUrl}/classes/add`, classData, {
+      responseType: 'text' 
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 400) { // Mã lỗi khi tên lớp bị trùng
+          return throwError(() => new Error('Class with this name already exists'));
+        }
+        return throwError(() => new Error('An unexpected error occurred!'));
+      })
+    );;
   }
 
-  updateClass(id: number, classRequest: Class): Observable<Class> {
-    return this.http.put<Class>(`${this.baseUrl}/classes/${id}`, classRequest, { responseType: 'text' as 'json' });
+  // Update class by id
+  updateClass(id: number, classData: Class): Observable<Class> {
+    return this.http.put<Class>(`${this.baseUrl}/classes/${id}`, classData);
   }
 
-  deleteClass(id: number): Observable<string> {
-    return this.http.delete<string>(`${this.baseUrl}/classes/${id}`, { responseType: 'text' as 'json' });
+  deleteClass(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/classes/${id}`, { responseType: 'text' });
   }
+  
 }

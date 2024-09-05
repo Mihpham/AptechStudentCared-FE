@@ -1,53 +1,172 @@
-<div class="container mx-auto mt-8 max-w-md">
-    <h2 class="text-2xl font-bold mb-4">{{ isEditMode ? 'Edit' : 'Add' }} Class</h2>
-    <form (ngSubmit)="saveClass()" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-      <div class="mb-4">
-        <label for="className" class="block text-gray-700 text-sm font-bold mb-2">Class Name:</label>
-        <input type="text" id="className" [(ngModel)]="class.className" name="className" required
-               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-      </div>
-  
-      <div class="mb-4">
-        <label for="center" class="block text-gray-700 text-sm font-bold mb-2">Center:</label>
-        <input type="text" id="center" [(ngModel)]="class.center" name="center" required
-               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-      </div>
-  
-      <div class="mb-4">
-        <label for="hour" class="block text-gray-700 text-sm font-bold mb-2">Hour:</label>
-        <input type="text" id="hour" [(ngModel)]="class.hour" name="hour" required
-               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-      </div>
-  
-      <div class="mb-4">
-        <label for="days" class="block text-gray-700 text-sm font-bold mb-2">Days:</label>
-        <input type="text" id="days" [(ngModel)]="class.days" name="days" required
-               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-      </div>
-  
-      <div class="mb-4">
-        <label for="admissionDate" class="block text-gray-700 text-sm font-bold mb-2">Admission Date:</label>
-        <input type="date" id="admissionDate" [(ngModel)]="class.admissionDate" name="admissionDate" required
-               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-      </div>
-  
-      <div class="mb-4">
-        <label for="status" class="block text-gray-700 text-sm font-bold mb-2">Status:</label>
-        <select id="status" [(ngModel)]="class.status" name="status"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-          <option value="STUDYING">Studying</option>
-          <option value="COMPLETED">Completed</option>
-        </select>
-      </div>
-  
-      <div class="flex items-center justify-between">
-        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-          {{ isEditMode ? 'Update' : 'Add' }}
-        </button>
-        <button type="button" (click)="onClick()" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-          Cancel
-        </button>
-      </div>
-    </form>
-  </div>
-  
+<div class="container mx-auto mt-8 max-w-lg">
+  <form (ngSubmit)="saveClass()" class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8">
+    <h2 class="text-3xl font-semibold text-center text-gray-800 mb-6">{{ isEditMode ? 'Edit' : 'Add' }} Class</h2>
+
+    <!-- Class Name -->
+    <div class="relative mb-6">
+      <input type="text" id="className" [(ngModel)]="class.className" name="className" required class=" border peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600
+             focus:pt-6
+             focus:pb-2
+             [&:not(:placeholder-shown)]:pt-6
+             [&:not(:placeholder-shown)]:pb-2
+             autofill:pt-6
+             autofill:pb-2" placeholder=" " />
+      <label for="className"
+        class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent  origin-[0_0] dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+      peer-focus:scale-90
+      peer-focus:translate-x-0.5
+      peer-focus:-translate-y-1.5
+      peer-focus:text-gray-500 dark:peer-focus:text-neutral-500
+      peer-[:not(:placeholder-shown)]:scale-90
+      peer-[:not(:placeholder-shown)]:translate-x-0.5
+      peer-[:not(:placeholder-shown)]:-translate-y-1.5
+      peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500">Class</label>
+    </div>
+
+    <!-- Center -->
+    <div class="relative mb-6">
+      <input type="text" id="center" [(ngModel)]="class.center" name="center" required class=" border peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600
+             focus:pt-6
+             focus:pb-2
+             [&:not(:placeholder-shown)]:pt-6
+             [&:not(:placeholder-shown)]:pb-2
+             autofill:pt-6
+             autofill:pb-2" placeholder=" " />
+      <label for="center"
+        class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent  origin-[0_0] dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+      peer-focus:scale-90
+      peer-focus:translate-x-0.5
+      peer-focus:-translate-y-1.5
+      peer-focus:text-gray-500 dark:peer-focus:text-neutral-500
+      peer-[:not(:placeholder-shown)]:scale-90
+      peer-[:not(:placeholder-shown)]:translate-x-0.5
+      peer-[:not(:placeholder-shown)]:-translate-y-1.5
+      peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500">Center</label>
+    </div>
+
+    <!-- Start Hour -->
+    <div class="relative mb-6">
+      <input type="time" id="startHour" [(ngModel)]="startHour" name="startHour" required class=" border peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600
+             focus:pt-6
+             focus:pb-2
+             [&:not(:placeholder-shown)]:pt-6
+             [&:not(:placeholder-shown)]:pb-2
+             autofill:pt-6
+             autofill:pb-2" placeholder=" " />
+      <label for="startHour"
+        class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent  origin-[0_0] dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+      peer-focus:scale-90
+      peer-focus:translate-x-0.5
+      peer-focus:-translate-y-1.5
+      peer-focus:text-gray-500 dark:peer-focus:text-neutral-500
+      peer-[:not(:placeholder-shown)]:scale-90
+      peer-[:not(:placeholder-shown)]:translate-x-0.5
+      peer-[:not(:placeholder-shown)]:-translate-y-1.5
+      peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500">Start
+        Hour</label>
+    </div>
+
+    <!-- Finish Hour -->
+    <div class="relative mb-6">
+      <input type="time" id="finishHour" [(ngModel)]="finishHour" name="finishHour" required class=" border peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600
+             focus:pt-6
+             focus:pb-2
+             [&:not(:placeholder-shown)]:pt-6
+             [&:not(:placeholder-shown)]:pb-2
+             autofill:pt-6
+             autofill:pb-2" placeholder=" " />
+      <label for="finishHour"
+        class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent  origin-[0_0] dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+      peer-focus:scale-90
+      peer-focus:translate-x-0.5
+      peer-focus:-translate-y-1.5
+      peer-focus:text-gray-500 dark:peer-focus:text-neutral-500
+      peer-[:not(:placeholder-shown)]:scale-90
+      peer-[:not(:placeholder-shown)]:translate-x-0.5
+      peer-[:not(:placeholder-shown)]:-translate-y-1.5
+      peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500">Finish
+        Hour</label>
+    </div>
+
+    <!-- Days -->
+    <div class="relative mb-6">
+      <input type="text" id="days" [(ngModel)]="class.days" name="days" required class=" border peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600
+             focus:pt-6
+             focus:pb-2
+             [&:not(:placeholder-shown)]:pt-6
+             [&:not(:placeholder-shown)]:pb-2
+             autofill:pt-6
+             autofill:pb-2" placeholder=" " />
+      <label for="days"
+        class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent  origin-[0_0] dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+      peer-focus:scale-90
+      peer-focus:translate-x-0.5
+      peer-focus:-translate-y-1.5
+      peer-focus:text-gray-500 dark:peer-focus:text-neutral-500
+      peer-[:not(:placeholder-shown)]:scale-90
+      peer-[:not(:placeholder-shown)]:translate-x-0.5
+      peer-[:not(:placeholder-shown)]:-translate-y-1.5
+      peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500">Days</label>
+    </div>
+
+    <!-- Admission Date -->
+    <div class="relative mb-6">
+      <input type="date" id="admissionDate" [(ngModel)]="class.admissionDate" name="admissionDate" required class=" border peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600
+             focus:pt-6
+             focus:pb-2
+             [&:not(:placeholder-shown)]:pt-6
+             [&:not(:placeholder-shown)]:pb-2
+             autofill:pt-6
+             autofill:pb-2" placeholder=" " />
+      <label for="admissionDate"
+        class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent  origin-[0_0] dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+      peer-focus:scale-90
+      peer-focus:translate-x-0.5
+      peer-focus:-translate-y-1.5
+      peer-focus:text-gray-500 dark:peer-focus:text-neutral-500
+      peer-[:not(:placeholder-shown)]:scale-90
+      peer-[:not(:placeholder-shown)]:translate-x-0.5
+      peer-[:not(:placeholder-shown)]:-translate-y-1.5
+      peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500">Admission
+        Date</label>
+    </div>
+
+    <!-- Status -->
+    <div class="relative mb-6">
+      <select id="status" [(ngModel)]="class.status" name="status" class=" border peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600
+             focus:pt-6
+             focus:pb-2
+             [&:not(:placeholder-shown)]:pt-6
+             [&:not(:placeholder-shown)]:pb-2
+             autofill:pt-6
+             autofill:pb-2" placeholder=" ">
+        <option value="STUDYING">Studying</option>
+        <option value="FINISHED">Finished</option>
+        <option value="CANCEL">Cancel</option>
+        <option value="SCHEDULED">Scheduled</option>
+      </select>
+      <label for="status"
+        class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent  origin-[0_0] dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+      peer-focus:scale-90
+      peer-focus:translate-x-0.5
+      peer-focus:-translate-y-1.5
+      peer-focus:text-gray-500 dark:peer-focus:text-neutral-500
+      peer-[:not(:placeholder-shown)]:scale-90
+      peer-[:not(:placeholder-shown)]:translate-x-0.5
+      peer-[:not(:placeholder-shown)]:-translate-y-1.5
+      peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500">Status</label>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex items-center justify-between">
+      <button type="submit"
+        class="bg-blue-500 hover:bg-blue-700 text-white  py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        {{ isEditMode ? 'Update' : 'Add' }}
+      </button>
+      <button type="button" (click)="onClosed()"
+        class="bg-gray-500 hover:bg-gray-700 text-white  py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>
