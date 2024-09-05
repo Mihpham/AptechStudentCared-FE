@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { SubjectService } from '../service/subject.service';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-subject-add',
@@ -10,25 +12,40 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class SubjectAddComponent {
   subjectForm: FormGroup;
 
-  constructor(private fb: FormBuilder, public dialogRef: MatDialogRef<SubjectAddComponent>) {
+  constructor(
+    private fb: FormBuilder,
+    private subjectService: SubjectService,
+    private dialogRef: MatDialogRef<SubjectAddComponent>,
+    private toastr: ToastrService,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
     this.subjectForm = this.fb.group({
       subjectName: ['', Validators.required],
       subjectCode: ['', Validators.required],
-      subjectHour: ['', [Validators.required, Validators.min(1)]],
-      description: ['']
+      totalHours: ['', [Validators.required, Validators.min(1)]]
     });
   }
 
-  ngOnInit(): void {}
-
   onSubmit(): void {
     if (this.subjectForm.valid) {
-      // Add your form submission logic here
-      console.log('Subject Data:', this.subjectForm.value);
+      this.subjectService.addSubject(this.subjectForm.value).subscribe(
+        response => {
+          console.log('Dialog closing with success');
+          this.dialogRef.close();// Indicate success
+          this.toastr.success('Subject added successfully!');
+        },
+        error => {
+          this.toastr.error('An error occurred: ' + error.message);
+        }
+      );
+    } else {
+      this.toastr.warning('Please fill out the form correctly.');
     }
   }
-
+  
   onCancel(): void {
-    this.dialogRef.close();
+    console.log('Dialog closed with cancel');
+    this.dialogRef.close(false); // Indicate cancellation
   }
+  
 }

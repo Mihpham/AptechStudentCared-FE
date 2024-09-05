@@ -16,7 +16,7 @@ import { Class } from 'src/app/features/admin-management/model/class.model';
 export class AdminService {
   private baseUrl = UserEnviroment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   headers = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -79,14 +79,14 @@ export class AdminService {
   }
 
   addClass(classRequest: Class): Observable<string> {
-    return this.http.post<string>(`${this.baseUrl}/classes/add`, classRequest , { responseType: 'text' as 'json' });
+    return this.http.post<string>(`${this.baseUrl}/classes/add`, classRequest, { responseType: 'text' as 'json' });
   }
 
   updateClass(id: number, classRequest: Class): Observable<Class> {
-    return this.http.put<Class>(`${this.baseUrl}/classes/${id}`, classRequest , { responseType: 'text' as 'json' });
+    return this.http.put<Class>(`${this.baseUrl}/classes/${id}`, classRequest, { responseType: 'text' as 'json' });
   }
 
   deleteClass(id: number): Observable<string> {
-    return this.http.delete<string>(`${this.baseUrl}/classes/${id}`,{ responseType: 'text' as 'json' });
+    return this.http.delete<string>(`${this.baseUrl}/classes/${id}`, { responseType: 'text' as 'json' });
   }
 }

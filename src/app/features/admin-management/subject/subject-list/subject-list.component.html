@@ -46,6 +46,10 @@
         No results found.
     </div>
 
+    <div *ngIf="dataSource.data.length === 0" class="no-results text-gray-600">
+      There are no subjects.
+  </div>
+
     <!-- Table for Displaying Subjects -->
     <mat-table *ngIf="dataSource.data.length > 0" [dataSource]="dataSource" class="mat-elevation-z8 table-auto w-full">
         <!-- Subject Name Column -->
@@ -61,9 +65,9 @@
         </ng-container>
       
         <!-- Subject Hour Column -->
-        <ng-container matColumnDef="subjectHour">
+        <ng-container matColumnDef="totalHours">
           <mat-header-cell *matHeaderCellDef> Hour </mat-header-cell>
-          <mat-cell *matCellDef="let subject"> {{subject.subjectHour}} </mat-cell>
+          <mat-cell *matCellDef="let subject"> {{subject.totalHours}} </mat-cell>
         </ng-container>
       
         <!-- Actions Column -->

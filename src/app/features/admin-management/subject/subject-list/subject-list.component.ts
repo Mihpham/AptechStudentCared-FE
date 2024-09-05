@@ -1,16 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { SubjectService } from '../service/subject.service';
+import { SubjectResponse } from '../model/subject-response.model';
 import { SubjectAddComponent } from '../subject-add/subject-add.component';
-import { MatDialog } from '@angular/material/dialog'; // Import MatDialog
+import { MatDialog } from '@angular/material/dialog';
+import { ChangeDetectorRef } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { SubjectUpdateComponent } from '../subject-update/subject-update.component';
+import { ConfirmDeleteSubjectComponent } from '../confirm-delete-subject/confirm-delete-subject.component';
+import { Router } from '@angular/router';
 
-interface Subject {
-  subjectName: string;
-  subjectCode: string;
-  subjectHour: number;
-  id: string;
-}
 
 @Component({
   selector: 'app-subject-list',
@@ -18,49 +18,53 @@ interface Subject {
   styleUrls: ['./subject-list.component.scss']
 })
 export class SubjectListComponent implements OnInit {
-  displayedColumns: string[] = ['subjectName', 'subjectCode', 'subjectHour', 'actions'];
-  dataSource: MatTableDataSource<Subject> = new MatTableDataSource<Subject>([]); // Khởi tạo với mảng rỗng
-  totalSubjects: number = 0;
+  displayedColumns: string[] = ['subjectName', 'subjectCode', 'totalHours', 'actions'];
+  dataSource = new MatTableDataSource<SubjectResponse>();
   searchTerm: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  // Dữ liệu cố định
-  private subjects: Subject[] = [
-    { id: '1', subjectName: 'Mathematics', subjectCode: 'MATH101', subjectHour: 60 },
-    { id: '2', subjectName: 'Physics', subjectCode: 'PHYS101', subjectHour: 45 },
-    { id: '3', subjectName: 'Chemistry', subjectCode: 'CHEM101', subjectHour: 50 },
-    { id: '4', subjectName: 'Biology', subjectCode: 'BIOL101', subjectHour: 55 },
-    { id: '5', subjectName: 'History', subjectCode: 'HIST101', subjectHour: 40 },
-    { id: '1', subjectName: 'Mathematics', subjectCode: 'MATH101', subjectHour: 60 },
-    { id: '2', subjectName: 'Physics', subjectCode: 'PHYS101', subjectHour: 45 },
-    { id: '3', subjectName: 'Chemistry', subjectCode: 'CHEM101', subjectHour: 50 },
-    { id: '4', subjectName: 'Biology', subjectCode: 'BIOL101', subjectHour: 55 },
-    { id: '5', subjectName: 'History', subjectCode: 'HIST101', subjectHour: 40 }
-  ];
 
-  constructor(private dialog: MatDialog) { }
+  totalSubjects: number = 0;
+
+  constructor(private router: Router,
+    private subjectService: SubjectService,
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef,
+    private toastr: ToastrService,) { }
 
   ngOnInit(): void {
     this.loadSubjects();
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-  }
-
   loadSubjects(): void {
-    console.log('Loaded subjects:', this.subjects);
-    this.dataSource.data = this.subjects; // Cập nhật dữ liệu của dataSource
-    if (this.paginator) {
-      this.dataSource.paginator = this.paginator; // Cập nhật paginator sau khi dữ liệu được gán
-    }
-    this.totalSubjects = this.subjects.length;
+    this.subjectService.getAllSubjects().subscribe(
+      (data: SubjectResponse[]) => {
+        // Chuyển đổi thuộc tính createdAt từ chuỗi thành đối tượng Date nếu cần
+        data.forEach(subject => {
+          if (typeof subject.createdAt === 'string') {
+            subject.createdAt = new Date(subject.createdAt);
+          }
+        });
+        
+        // Sắp xếp dữ liệu theo thuộc tính createdAt (giảm dần)
+        data.sort((a, b) => (b.createdAt.getTime() - a.createdAt.getTime()));
+        
+        console.log('Loaded subjects:', data);
+        this.dataSource.data = data;
+        this.totalSubjects = data.length;
+        this.dataSource.paginator = this.paginator;
+        this.applyFilter(this.searchTerm); // Apply the filter after loading data
+      },
+      (error) => {
+        console.error('Error fetching subjects', error);
+      }
+    );
   }
+  
 
-
-  applyFilter(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value;
+  applyFilter(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
@@ -68,30 +72,62 @@ export class SubjectListComponent implements OnInit {
 
   onAdd(): void {
     const dialogRef = this.dialog.open(SubjectAddComponent, {
-      width: '400px',
+      width: '400px'
     });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.subjectService.addSubject(result).subscribe(() => {
+          this.loadSubjects(); // Cập nhật lại danh sách sau khi thêm thành công
+        });
+      }
+    });
+
   }
 
-  onUpdate(subjectData: Subject): void {
+  onUpdate(subject: SubjectResponse): void {
     const dialogRef = this.dialog.open(SubjectUpdateComponent, {
       width: '400px',
-      data: subjectData // Pass data to the dialog
+      data: subject
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.reload) {
+        this.loadSubjects(); // Reload data if needed
+      }
     });
   }
 
-  onDelete(id: string): void {
-    // Logic để xóa môn học
-    if (confirm('Are you sure you want to delete this subject?')) {
-      this.subjects = this.subjects.filter(subject => subject.id !== id);
-      this.loadSubjects();
-    }
+  onDelete(id: number): void {
+    const dialogRef = this.dialog.open(ConfirmDeleteSubjectComponent, {
+      width: '300px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Gọi API để xóa
+        this.subjectService.deleteSubject(id).subscribe(
+          () => {
+            this.toastr.success('Xóa thành công');
+            this.loadSubjects();
+          },
+          error => {
+            console.error('Error deleting subject:', error);
+            this.toastr.error('Xóa không thành công');
+          }
+        );
+      }
+    });
+  }
+
+
+
+  triggerFileInput(): void {
+    // Handle file import action
   }
 
   onExport(): void {
-    // Logic để xuất dữ liệu
+    // Handle export action
   }
 
-  triggerFileInput(): void {
-    // Logic để import dữ liệu từ file
-  }
 }
