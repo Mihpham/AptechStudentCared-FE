@@ -13,7 +13,6 @@ import { SidebarComponent } from './layout/components/sidebar/sidebar.component'
 import { PagesModule } from './features/pages/pages.module';
 import { SharedModule } from './shared/shared.module';
 import { ProfileModule } from './features/profile/profile.module';
-import { InterceptorsModule } from './core/interceptors/interceptors.module';
 import { BreadcrumbsComponent } from './layout/components/breadcrumbs/breadcrumbs.component';
 import { AuthService } from './core/auth/auth.service';
 import { StudentAddComponent } from './features/admin-management/student/student-add/student-add.component';
@@ -39,7 +38,6 @@ export function tokenGetter() {
     PagesModule,
     SharedModule,
     ProfileModule,
-    InterceptorsModule,
     ToastrModule.forRoot({
       positionClass: 'toast-top-right',
       preventDuplicates: true,

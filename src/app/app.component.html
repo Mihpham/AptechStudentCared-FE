@@ -1,12 +1,12 @@
-<div *ngIf="isAuthenticated()"  class="flex" [ngClass]="darkModeService.darkModeSignal()">
+<div *ngIf="isAuthenticated()"  class="flex h-full w-full" [ngClass]="darkModeService.darkModeSignal()">
   <aside [ngClass]="{'sidebar-collapsed': collapsed, 'sidebar-expanded': !collapsed}" class="sidebar bg-gray-200 h-screen p-4">
     <app-sidebar class="bg-slate-200" [collapsed]="collapsed" (toggle)="handleToggleSidebar()"></app-sidebar>
   </aside>
 
-  <div class="main-content flex-1 flex flex-col bg-slate-200">
+  <div class="main-content flex-1 flex flex-col bg-slate-200 dark:bg-gray-700">
     <app-navbar></app-navbar>
-    <app-breadcrumbs></app-breadcrumbs>
-    <main class="flex-1 h-full  ">
+    <app-breadcrumbs class=" dark:bg-gray-900"></app-breadcrumbs>
+    <main class="flex-1 h-full dark:bg-gray-900">
       <router-outlet></router-outlet>
     </main>
   </div>
