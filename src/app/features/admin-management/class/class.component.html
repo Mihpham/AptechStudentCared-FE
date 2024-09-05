@@ -69,4 +69,16 @@
       </tr>
     </tbody>
   </table>
+  <!-- Pagination controls -->
+  <div class="flex justify-center mt-4">
+    <button class="mx-2 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded" 
+            (click)="previousPage()" [disabled]="currentPage === 1">
+      Previous
+    </button>
+    <span class="text-gray-700 py-2">Page {{ currentPage }} of {{ totalPages }}</span>
+    <button class="mx-2 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded" 
+            (click)="nextPage()" [disabled]="currentPage === totalPages">
+      Next
+    </button>
+  </div>
 </div>

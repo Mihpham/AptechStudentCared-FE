@@ -12,7 +12,10 @@ import { Router } from '@angular/router';
 export class ClassComponent implements OnInit {
   classes: WritableSignal<Class[]> = signal([]); // Initialize as writable signal
   statusCounts = signal({ studying: 0, finished: 0, cancel: 0, scheduled: 0 });
-
+  paginatedClasses: WritableSignal<Class[]> = signal([]); // Classes for the current page
+  currentPage = 1;
+  itemsPerPage = 5;
+  totalPages = 1;
   constructor(
     private classService: AdminService,
     private toastr: ToastrService,
@@ -34,6 +37,32 @@ export class ClassComponent implements OnInit {
         console.error('Load classes failed', error);
       }
     });
+  }
+
+  calculatePagination(): void {
+    const totalClasses = this.classes().length;
+    this.totalPages = Math.ceil(totalClasses / this.itemsPerPage);
+    this.updatePaginatedClasses();
+  }
+
+  updatePaginatedClasses(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedClasses.set(this.classes().slice(startIndex, endIndex));
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePaginatedClasses();
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePaginatedClasses();
+    }
   }
 
   updateStatusCounts(): void {

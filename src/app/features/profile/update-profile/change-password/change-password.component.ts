@@ -1,51 +1,46 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
-import { AuthService } from 'src/app/core/auth/auth.service';
+import { UserProfileService } from 'src/app/core/services/profile.service';
 
 @Component({
   selector: 'app-change-password',
   templateUrl: './change-password.component.html',
-  styleUrls: ['./change-password.component.scss']
+  styleUrls: ['./change-password.component.css']
 })
 export class ChangePasswordComponent {
   changePasswordForm: FormGroup;
-  passwordMismatchError: string | null = null;
+  message: string | null = null;
+  isSuccess: boolean = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private toastr: ToastrService
-  ) {
+  constructor(private fb: FormBuilder, private userProfileService: UserProfileService) {
     this.changePasswordForm = this.fb.group({
       currentPassword: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', Validators.required],
-    });
+      newPassword: ['', Validators.required],
+      confirmPassword: ['', Validators.required]
+    }, { validators: this.passwordsMatch });
+  }
+
+  passwordsMatch(group: FormGroup): { [key: string]: boolean } | null {
+    const newPassword = group.get('newPassword')?.value;
+    const confirmPassword = group.get('confirmPassword')?.value;
+    return newPassword === confirmPassword ? null : { 'passwordMismatch': true };
   }
 
   onSubmit(): void {
-    if (this.changePasswordForm.valid) {
-      const { currentPassword, newPassword, confirmPassword } = this.changePasswordForm.value;
-
-      if (newPassword !== confirmPassword) {
-        this.passwordMismatchError = 'New password and confirmation do not match.';
-        return;
-      }
-
-      // Call the service to change the password
-      this.authService.changePassword(currentPassword, newPassword).subscribe({
-        next: () => {
-          this.toastr.success('Password changed successfully');
-          this.changePasswordForm.reset();
-        },
-        error: (err: any) => {
-          console.error('Error changing password:', err);
-          this.toastr.error('Failed to change password');
-        },
-      });
-    } else {
-      this.toastr.error('Please fill out the form correctly!');
+    if (this.changePasswordForm.invalid) {
+      return;
     }
+
+    this.userProfileService.changePassword(this.changePasswordForm.value).subscribe({
+      next: (response: any) => {
+        this.message = response.message || 'Password changed successfully';
+        this.isSuccess = true;
+        this.changePasswordForm.reset();
+      },
+      error: (error: any) => {
+        this.message = error.error?.message || 'An error occurred';
+        this.isSuccess = false;
+      }
+    });
   }
 }

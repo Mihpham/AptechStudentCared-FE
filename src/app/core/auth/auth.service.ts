@@ -59,6 +59,7 @@ export class AuthService {
   forgotPassword(email: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/forgot-password`, { email });
   }
+  
 
   setToken(token: string) {
     this.token = token;
