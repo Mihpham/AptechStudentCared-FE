@@ -4,48 +4,81 @@ import { UserEnviroment } from 'src/app/environments/environment';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { StudentResponse } from 'src/app/features/admin-management/model/student-response.model.';
 import { StudentRequest } from 'src/app/features/admin-management/model/student-request.model';
+import { CourseResponse } from 'src/app/features/admin-management/model/course/course-response.model';
+import { CourseRequest } from 'src/app/features/admin-management/model/course/course-request.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
-  
-  private apiUrl =  `${UserEnviroment.apiUrl}/students`;
 
-  constructor( private http : HttpClient) { }
-  
+  private studentApiUrl = `${UserEnviroment.apiUrl}/students`;
+  private courseApiUrl = `${UserEnviroment.apiUrl}/courses`;
+
+  constructor(private http: HttpClient) { }
+
   headers = new HttpHeaders({
     'Content-Type': 'application/json'
   });
 
- 
+
   getAllStudents(): Observable<StudentResponse[]> {
-    return this.http.get<StudentResponse[]>(`${this.apiUrl}`);
+    return this.http.get<StudentResponse[]>(`${this.studentApiUrl}`);
   }
 
   addStudent(student: StudentRequest): Observable<any> {
-    return this.http.post(`${this.apiUrl}/add`, student, {
+    return this.http.post(`${this.studentApiUrl}/add`, student, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     });
   }
 
   getStudentById(studentId: number): Observable<StudentResponse> {
-    return this.http.get<StudentResponse>(`${this.apiUrl}/${studentId}`);
+    return this.http.get<StudentResponse>(`${this.studentApiUrl}/${studentId}`);
   }
 
   updateStudent(studentId: number, student: StudentRequest): Observable<StudentResponse> {
-    return this.http.put<StudentResponse>(`${this.apiUrl}/${studentId}`, student, {
+    return this.http.put<StudentResponse>(`${this.studentApiUrl}/${studentId}`, student, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     });
   }
 
   deleteStudent(userId: number): Observable<StudentResponse> {
-    return this.http.delete<any>(`${this.apiUrl}/${userId}`)
-        .pipe(
-            catchError((error: HttpErrorResponse) => {
-                console.error('Delete student failed:', error);
-                return throwError(error); // Propagate the error to be caught in the component
-            })
-        );
-}
+    return this.http.delete<any>(`${this.studentApiUrl}/${userId}`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Delete student failed:', error);
+          return throwError(error); // Propagate the error to be caught in the component
+        })
+      );
+  }
+
+  getAllCourse(): Observable<CourseResponse[]> {
+    return this.http.get<CourseResponse[]>(`${this.courseApiUrl}`);
+  }
+
+  addCourse(course: CourseRequest): Observable<any> {
+    return this.http.post(`${this.courseApiUrl}/add`, course, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    });
+  }
+
+  getCourseById(courseId: number): Observable<CourseResponse> {
+    return this.http.get<CourseResponse>(`${this.courseApiUrl}/${courseId}`);
+  }
+
+  updateCourse(courseId: number, course: CourseRequest): Observable<CourseResponse> {
+    return this.http.put<CourseResponse>(`${this.courseApiUrl}/${courseId}`, course, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    });
+  }
+
+  deleteCourse(courseId: number): Observable<CourseResponse> {
+    return this.http.delete<any>(`${this.courseApiUrl}/${courseId}`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Delete course failed:', error);
+          return throwError(error); // Propagate the error to be caught in the component
+        })
+      );
+  }
 }
