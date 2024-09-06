@@ -17,10 +17,10 @@
     </div>
     <!-- Other Column -->
     <!-- No -->
-    <ng-container matColumnDef="no">
+    <!-- <ng-container matColumnDef="no">
       <mat-header-cell *matHeaderCellDef> No </mat-header-cell>
       <mat-cell *matCellDef="let course"> {{course.no}} </mat-cell>
-    </ng-container>
+    </ng-container> -->
 
     <!-- Course Name -->
     <ng-container matColumnDef="courseName">
@@ -47,7 +47,7 @@
         <button mat-icon-button class="mat-button-edit " (click)="onUpdate($event, course)">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button class="mat-button-delete" (click)="onDelete(course.courseId)">
+        <button mat-icon-button class="mat-button-delete" (click)="onDelete(course.courseCode)">
           <mat-icon>delete</mat-icon>
         </button>
       </mat-cell>

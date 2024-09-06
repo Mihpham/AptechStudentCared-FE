@@ -56,24 +56,24 @@ export class AdminService {
     return this.http.get<CourseResponse[]>(`${this.courseApiUrl}`);
   }
 
+  getCourseByCode(courseCode: string): Observable<CourseResponse> {
+    return this.http.get<CourseResponse>(`${this.courseApiUrl}/${courseCode}`);
+  }
+
   addCourse(course: CourseRequest): Observable<any> {
     return this.http.post(`${this.courseApiUrl}/add`, course, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     });
   }
 
-  getCourseById(courseId: number): Observable<CourseResponse> {
-    return this.http.get<CourseResponse>(`${this.courseApiUrl}/${courseId}`);
-  }
-
-  updateCourse(courseId: number, course: CourseRequest): Observable<CourseResponse> {
-    return this.http.put<CourseResponse>(`${this.courseApiUrl}/${courseId}`, course, {
+  updateCourse(courseCode: string, course: CourseRequest): Observable<CourseResponse> {
+    return this.http.put<CourseResponse>(`${this.courseApiUrl}/${courseCode}`, course, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     });
   }
 
-  deleteCourse(courseId: number): Observable<CourseResponse> {
-    return this.http.delete<any>(`${this.courseApiUrl}/${courseId}`)
+  deleteCourse(courseCode: string): Observable<CourseResponse> {
+    return this.http.delete<any>(`${this.courseApiUrl}/${courseCode}`)
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Delete course failed:', error);

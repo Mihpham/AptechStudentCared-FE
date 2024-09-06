@@ -26,8 +26,12 @@ export class CourseAddComponent implements AfterViewInit, OnDestroy {
     private el: ElementRef
   ) {
     this.courseForm = this.fb.group({
+      // courseName: ['', [Validators.required]], 
+      // courseCode: ['', [Validators.required]],
+      // classSchedule: ['', [Validators.required]],
+
       courseName: ['', [Validators.required]], 
-      courseCode: ['', Validators.required],
+      courseCode: ['', [Validators.required]],
       classSchedule: ['', [Validators.required]],
     });
   }
@@ -75,20 +79,20 @@ export class CourseAddComponent implements AfterViewInit, OnDestroy {
         .pipe(
           catchError((err) => {
             console.error('Error:', err);
-            this.toastr.error('Failed to add student');
+            this.toastr.error('Failed to add course');
             return throwError(err);
           })
         )
         .subscribe({
           next: (response) => {
             console.log('Response:', response);
-            this.toastr.success('Student added successfully');
+            this.toastr.success('Course added successfully');
             this.courseForm.reset();
             this.dialogRef.close(this.courseForm.value);
           },
           error: (err) => {
             console.error('Error:', err);
-            this.toastr.error('Failed to add student');
+            this.toastr.error('Failed to add course');
           },
         });
     } else {

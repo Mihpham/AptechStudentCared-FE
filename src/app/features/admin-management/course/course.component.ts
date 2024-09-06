@@ -26,7 +26,6 @@ export class CourseComponent implements OnInit, AfterViewInit {
   totalCourses: number = 0;
 
   displayedColumns: string[] = [
-    'no',
     'courseName',
     'courseCode',
     'classSchedule'
@@ -111,7 +110,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
       .subscribe((updatedCourse: CourseResponse | undefined) => {
         if (updatedCourse) {
           const index = this.courses.findIndex(
-            (s) => s.courseId === updatedCourse.courseId
+            (s) => s.courseCode === updatedCourse.courseCode
           );
           if (index !== -1) {
             this.courses[index] = updatedCourse;
@@ -126,7 +125,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
   }
 
 
-  onDelete(courseId: number): void {
+  onDelete(courseCode: string): void {
     Swal.fire({
       width: 350,
       title: 'Are you sure you want to delete this student?',
@@ -138,7 +137,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.courseService.deleteCourse(courseId).subscribe({
+        this.courseService.deleteCourse(courseCode).subscribe({
           next: () => {
             this.toastr.success('Course deleted successfully', 'Success');
             this.loadCourse(); // Reload course list after delete
