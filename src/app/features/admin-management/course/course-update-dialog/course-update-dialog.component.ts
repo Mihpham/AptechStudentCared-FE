@@ -25,6 +25,7 @@ export class CourseUpdateDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.courseForm = this.fb.group({
+      courseId: [data?.courseId],
       courseName: [data?.courseName || ''],
       courseCode: [data?.courseCode || '', Validators.required],
       classSchedule: [data?.classSchedule || '', Validators.required],
@@ -50,7 +51,7 @@ export class CourseUpdateDialogComponent {
     if (this.courseForm.valid) {
       console.log('Form submitted:', this.courseForm.value);
 
-      const courseId = this.courseForm.value.userId; // Extract courseId from the form
+      const courseId = this.courseForm.value.courseId; // Extract courseId from the form
       const course: CourseRequest = this.courseForm.value; // Extract course details
 
       // Call the service to update the course

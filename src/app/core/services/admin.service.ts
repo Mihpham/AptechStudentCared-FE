@@ -60,6 +60,10 @@ export class AdminService {
     return this.http.get<CourseResponse>(`${this.courseApiUrl}/${courseCode}`);
   }
 
+  getCourseById(courseId: number): Observable<CourseResponse> {
+    return this.http.get<CourseResponse>(`${this.courseApiUrl}/${courseId}`);
+  }
+
   addCourse(course: CourseRequest): Observable<any> {
     return this.http.post(`${this.courseApiUrl}/add`, course, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -72,8 +76,8 @@ export class AdminService {
     });
   }
 
-  deleteCourse(courseCode: string): Observable<CourseResponse> {
-    return this.http.delete<any>(`${this.courseApiUrl}/${courseCode}`)
+  deleteCourse(courseId: number): Observable<CourseResponse> {
+    return this.http.delete<any>(`${this.courseApiUrl}/${courseId}`)
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Delete course failed:', error);

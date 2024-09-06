@@ -26,10 +26,7 @@ export class CourseAddComponent implements AfterViewInit, OnDestroy {
     private el: ElementRef
   ) {
     this.courseForm = this.fb.group({
-      // courseName: ['', [Validators.required]], 
-      // courseCode: ['', [Validators.required]],
-      // classSchedule: ['', [Validators.required]],
-
+      // courseId: [''],
       courseName: ['', [Validators.required]], 
       courseCode: ['', [Validators.required]],
       classSchedule: ['', [Validators.required]],
@@ -51,26 +48,26 @@ export class CourseAddComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  toggleDropdown(): void {
-    this.isDropdownOpen = !this.isDropdownOpen;
-  }
+  // toggleDropdown(): void {
+  //   this.isDropdownOpen = !this.isDropdownOpen;
+  // }
   
 
-  onCourseToggle(course: string) {
-    const index = this.selectedCourses.indexOf(course);
-    if (index > -1) {
-      this.selectedCourses.splice(index, 1);
-    } else {
-      this.selectedCourses.push(course);
-    }
-    this.courseForm.get('courses')?.setValue(this.selectedCourses);
-  }
+  // onCourseToggle(course: string) {
+  //   const index = this.selectedCourses.indexOf(course);
+  //   if (index > -1) {
+  //     this.selectedCourses.splice(index, 1);
+  //   } else {
+  //     this.selectedCourses.push(course);
+  //   }
+  //   this.courseForm.get('courses')?.setValue(this.selectedCourses);
+  // }
 
-  onCheckboxClick(event: Event, course: string) {
-    event.stopPropagation(); // Prevents the event from bubbling up to the parent div
-    const checkbox = event.target as HTMLInputElement;
-    this.onCourseToggle(course);
-  }
+  // onCheckboxClick(event: Event, course: string) {
+  //   event.stopPropagation(); // Prevents the event from bubbling up to the parent div
+  //   const checkbox = event.target as HTMLInputElement;
+  //   this.onCourseToggle(course);
+  // }
 
   onSubmit() {
     if (this.courseForm.valid) {

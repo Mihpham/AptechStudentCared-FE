@@ -26,9 +26,11 @@ export class CourseComponent implements OnInit, AfterViewInit {
   totalCourses: number = 0;
 
   displayedColumns: string[] = [
+    'courseId',
     'courseName',
     'courseCode',
-    'classSchedule'
+    'classSchedule',
+    'actions'
   ];
   dataSource: MatTableDataSource<CourseResponse> =
     new MatTableDataSource<CourseResponse>();
@@ -110,7 +112,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
       .subscribe((updatedCourse: CourseResponse | undefined) => {
         if (updatedCourse) {
           const index = this.courses.findIndex(
-            (s) => s.courseCode === updatedCourse.courseCode
+            (s) => s.courseId === updatedCourse.courseId
           );
           if (index !== -1) {
             this.courses[index] = updatedCourse;
@@ -125,7 +127,8 @@ export class CourseComponent implements OnInit, AfterViewInit {
   }
 
 
-  onDelete(courseCode: string): void {
+  onDelete(course: CourseResponse): void {
+    console.log('CourseId:', course.courseId);
     Swal.fire({
       width: 350,
       title: 'Are you sure you want to delete this student?',
@@ -137,7 +140,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.courseService.deleteCourse(courseCode).subscribe({
+        this.courseService.deleteCourse(course.courseId).subscribe({
           next: () => {
             this.toastr.success('Course deleted successfully', 'Success');
             this.loadCourse(); // Reload course list after delete
