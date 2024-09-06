@@ -4,6 +4,15 @@
   <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
     <section class="course-information">
       <h3>Course Information</h3>
+      <!-- Course ID -->
+      <section class="courseId">
+        <div class="form-row">
+          <div class="form-group half-width">
+            <label for="courseId">Course ID</label>
+            <span id="courseId">{{courseForm.value.courseId}}</span>
+          </div>
+        </div>
+      </section>
       <!-- Course Name -->
       <section class="courseName">
         <div class="form-row">

@@ -1,6 +1,6 @@
 //create a CourseResponse
 export interface CourseResponse {
-    courseId: number;
+    id: number;
     courseName: string;
     courseCode: string;
     classSchedule: string;

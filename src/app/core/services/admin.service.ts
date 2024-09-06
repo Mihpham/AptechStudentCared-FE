@@ -70,8 +70,8 @@ export class AdminService {
     });
   }
 
-  updateCourse(courseCode: string, course: CourseRequest): Observable<CourseResponse> {
-    return this.http.put<CourseResponse>(`${this.courseApiUrl}/${courseCode}`, course, {
+  updateCourse(courseId: number, course: CourseRequest): Observable<CourseResponse> {
+    return this.http.put<CourseResponse>(`${this.courseApiUrl}/${courseId}`, course, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     });
   }

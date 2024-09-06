@@ -25,7 +25,7 @@
     <!-- Course ID -->
     <ng-container matColumnDef="courseId">
       <mat-header-cell *matHeaderCellDef> Course ID </mat-header-cell>
-      <mat-cell *matCellDef="let course"> {{course.courseId}} </mat-cell>
+      <mat-cell *matCellDef="let course"> {{course.id}} </mat-cell>
     </ng-container>
 
     
@@ -54,7 +54,7 @@
         <button mat-icon-button class="mat-button-edit " (click)="onUpdate($event, course)">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button class="mat-button-delete" (click)="onDelete(course.courseId)">
+        <button mat-icon-button class="mat-button-delete" (click)="onDelete(course)">
           <mat-icon>delete</mat-icon>
         </button>
       </mat-cell>

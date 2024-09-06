@@ -25,7 +25,7 @@ export class CourseUpdateDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.courseForm = this.fb.group({
-      courseId: [data?.courseId],
+      courseId: [data?.id],
       courseName: [data?.courseName || ''],
       courseCode: [data?.courseCode || '', Validators.required],
       classSchedule: [data?.classSchedule || '', Validators.required],
