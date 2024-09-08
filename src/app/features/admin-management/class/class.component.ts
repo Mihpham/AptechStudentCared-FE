@@ -11,11 +11,14 @@ import { Router } from '@angular/router';
 })
 export class ClassComponent implements OnInit {
   classes: WritableSignal<Class[]> = signal([]); // Initialize as writable signal
-  statusCounts = signal({ studying: 0, finished: 0, cancel: 0, scheduled: 0 });
   paginatedClasses: WritableSignal<Class[]> = signal([]); // Classes for the current page
-  currentPage = 1;
-  itemsPerPage = 5;
-  totalPages = 1;
+  statusCounts = signal({ studying: 0, finished: 0, cancel: 0, scheduled: 0 });
+
+  // Pagination variables
+  currentPage = signal(1);
+  itemsPerPage = signal(5); // Default items per page is 5
+  totalPages = signal(0);
+
   constructor(
     private classService: AdminService,
     private toastr: ToastrService,
@@ -30,39 +33,14 @@ export class ClassComponent implements OnInit {
     this.classService.findAllClasses().subscribe({
       next: (data) => {
         this.classes.set(data); // Update the writable signal with new data
-        this.updateStatusCounts(); // Call this after data is set
+        this.updateStatusCounts();
+        this.updatePagination();
       },
       error: (error) => {
         this.toastr.error('Failed to load classes!', 'Error');
         console.error('Load classes failed', error);
       }
     });
-  }
-
-  calculatePagination(): void {
-    const totalClasses = this.classes().length;
-    this.totalPages = Math.ceil(totalClasses / this.itemsPerPage);
-    this.updatePaginatedClasses();
-  }
-
-  updatePaginatedClasses(): void {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    this.paginatedClasses.set(this.classes().slice(startIndex, endIndex));
-  }
-
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updatePaginatedClasses();
-    }
-  }
-
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updatePaginatedClasses();
-    }
   }
 
   updateStatusCounts(): void {
@@ -79,19 +57,51 @@ export class ClassComponent implements OnInit {
     this.statusCounts.set(counts);
   }
 
+  updatePagination(): void {
+    const classes = this.classes();
+    const startIndex = (this.currentPage() - 1) * this.itemsPerPage();
+    const endIndex = startIndex + this.itemsPerPage();
+    this.paginatedClasses.set(classes.slice(startIndex, endIndex));
+    this.totalPages.set(Math.ceil(classes.length / this.itemsPerPage()));
+  }
+
+  goToFirstPage(): void {
+    this.currentPage.set(1);
+    this.updatePagination();
+  }
+
+  goToPreviousPage(): void {
+    if (this.currentPage() > 1) {
+      this.currentPage.set(this.currentPage() - 1);
+      this.updatePagination();
+    }
+  }
+
+  goToNextPage(): void {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.set(this.currentPage() + 1);
+      this.updatePagination();
+    }
+  }
+
+  goToLastPage(): void {
+    this.currentPage.set(this.totalPages());
+    this.updatePagination();
+  }
+
   deleteClass(id: number): void {
     if (confirm('Are you sure you want to delete this class?')) {
       this.classService.deleteClass(id).subscribe({
         next: (response) => {
-          console.log('Response:', response); // Log response for debugging
           const updatedClasses = this.classes().filter(classItem => classItem.id !== id);
           this.classes.set(updatedClasses);
           this.updateStatusCounts(); 
+          this.updatePagination();
           this.toastr.success('Class deleted successfully!', 'Success');
         },
         error: (error) => {
           console.error('Error details:', error.message);
-          console.log('Error object:', error); // Log the full error object for debugging
+          console.log('Error object:', error);
           this.toastr.error('Failed to delete class!', 'Error');
         }
       });

@@ -39,6 +39,7 @@ import { ClassFormComponent } from './class/class-form/class-form.component';
 import { SubjectListComponent } from './subject/subject-list/subject-list.component';
 import { SubjectAddComponent } from './subject/subject-add/subject-add.component';
 import { SubjectUpdateComponent } from './subject/subject-update/subject-update.component';
+import { CdkTableModule } from '@angular/cdk/table';
 
 @NgModule({
   
@@ -88,7 +89,8 @@ import { SubjectUpdateComponent } from './subject/subject-update/subject-update.
     MatSelectModule,
     MatOptionModule,
     MatTooltipModule,
-
+    CdkTableModule, 
+    
   ]
 })
 export class AdminManagementModule { }
