@@ -1,6 +1,6 @@
-<div class=" mx-auto mt-4 p-4 dark:bg-gray-900">
+<div class="mx-auto mt-4 p-4 dark:bg-gray-900">
   <div class="container mx-auto">
-    <div class="grid grid-cols-4 gap-4 mb-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
       <div class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
         <span class="text-3xl font-bold">{{ statusCounts().studying }}</span>
         <span class="text-gray-600">Studying</span>
@@ -19,6 +19,7 @@
       </div>
     </div>
   </div>
+
   <!-- Container for buttons aligned to the left -->
   <div class="flex flex-wrap justify-end space-x-2 mb-6 mt-6">
     <button routerLink="/admin/class/create"
@@ -31,44 +32,48 @@
     </button>
   </div>
 
-  <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden table-auto dark:bg-gray-500 dark:text-gray-50 border">
-    <thead class="bg-white text-gray-800 border-b-2 dark:bg-gray-900 dark:text-gray-50">
-      <tr>
-        <th class="py-2 px-4">Class Name</th>
-        <th class="py-2 px-4">Days</th>
-        <th class="py-2 px-4">Admission Date</th>
-        <th class="py-2 px-4">Hour</th>
-        <th class="py-2 px-4">Center</th>
-        <th class="py-2 px-4">Status</th>
-        <th class="py-2 px-4">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let classItem of classes()" class="border-b">
-        <td class="py-2 px-4 text-center">{{ classItem.className }}</td>
-        <td class="py-2 px-4 text-center">{{ classItem.days }}</td>
-        <td class="py-2 px-4 text-center">{{ classItem.admissionDate | date: 'yyyy-MM-dd' }}</td>
-        <td class="py-2 px-4 text-center">{{ classItem.hour }}</td>
-        <td class="py-2 px-4 text-center">{{ classItem.center }}</td>
-        <td class="py-2 px-4 text-center" [ngClass]="{
-          'text-green-500': classItem.status === 'STUDYING',
-          'text-yellow-500': classItem.status === 'FINISHED',
-          'text-red-500': classItem.status === 'CANCEL',
-          'text-orange-500': classItem.status === 'SCHEDULED'
-        }">
-          {{ classItem.status }}
-        </td>
-        <td class="py-2 px-4 text-center">
-          <button [routerLink]="['/admin/class/update', classItem.id]" class="text-blue-400 hover:text-blue-600">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button class="text-red-400 hover:text-red-600 p-2" (click)="deleteClass(classItem.id)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- Responsive table wrapper -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden table-auto dark:bg-gray-500 dark:text-gray-50 border">
+      <thead class="bg-white text-gray-800 border-b-2 dark:bg-gray-900 dark:text-gray-50">
+        <tr>
+          <th class="py-2 px-4">Class Name</th>
+          <th class="py-2 px-4">Days</th>
+          <th class="py-2 px-4">Admission Date</th>
+          <th class="py-2 px-4">Hour</th>
+          <th class="py-2 px-4">Center</th>
+          <th class="py-2 px-4">Status</th>
+          <th class="py-2 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let classItem of classes()" class="border-b">
+          <td class="py-2 px-4 text-center">{{ classItem.className }}</td>
+          <td class="py-2 px-4 text-center">{{ classItem.days }}</td>
+          <td class="py-2 px-4 text-center">{{ classItem.admissionDate | date: 'yyyy-MM-dd' }}</td>
+          <td class="py-2 px-4 text-center">{{ classItem.hour }}</td>
+          <td class="py-2 px-4 text-center">{{ classItem.center }}</td>
+          <td class="py-2 px-4 text-center" [ngClass]="{
+            'text-green-500': classItem.status === 'STUDYING',
+            'text-yellow-500': classItem.status === 'FINISHED',
+            'text-red-500': classItem.status === 'CANCEL',
+            'text-orange-500': classItem.status === 'SCHEDULED'
+          }">
+            {{ classItem.status }}
+          </td>
+          <td class="py-2 px-4 text-center">
+            <button [routerLink]="['/admin/class/update', classItem.id]" class="text-blue-400 hover:text-blue-600">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button class="text-red-400 hover:text-red-600 p-2" (click)="deleteClass(classItem.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <!-- Pagination controls -->
   <div class="flex justify-center mt-4">
     <button class="mx-2 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded" 

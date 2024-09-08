@@ -1,47 +1,81 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { UserProfileService } from 'src/app/core/services/profile.service';
+import { UserProfile } from 'src/app/shared/models/user-profile.model';
 
 @Component({
   selector: 'app-change-avatar',
   templateUrl: './change-avatar.component.html',
   styleUrls: ['./change-avatar.component.scss']
 })
-export class ChangeAvatarComponent {
-  avatarUrl: string | ArrayBuffer | null = null;
-  imageError: string | null = null;
+export class ChangeAvatarComponent implements OnInit {
+  avatarForm: FormGroup;
+  selectedFile: File | null = null;
+  userProfile: UserProfile | null = null;
+  userId: number | null = null;
 
-  onImageChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
+  constructor(
+    private fb: FormBuilder,
+    private userProfileService: UserProfileService,
+    private toastr: ToastrService
+  ) {
+    this.avatarForm = this.fb.group({
+      image: [null, Validators.required] // Ensures the image is required
+    });
+  }
 
-      // Validate file size (1MB limit)
-      if (file.size > 1048576) { // 1MB
-        this.imageError = 'File size should not exceed 1MB.';
-        this.avatarUrl = null;
+  ngOnInit(): void {
+    this.loadUserProfile();
+  }
+
+  private loadUserProfile(): void {
+    this.userProfileService.getUserProfile().subscribe({
+      next: (data: UserProfile) => {
+        this.userId = data.id;
+      },
+      error: (error) => {
+        console.error('Error fetching user profile:', error);
+        this.toastr.error('Failed to fetch user profile');
+      }
+    });
+  }
+
+  onFileSelected(event: any): void {
+    const file: File = event.target.files[0];
+
+    if (file) {
+      // Basic file validation (optional)
+      if (!file.type.startsWith('image/')) {
+        this.toastr.warning('Please select a valid image file');
         return;
       }
 
-      // Convert image to Base64 string
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.avatarUrl = reader.result; // Set the image preview
-        this.imageError = null;
-      };
-      reader.onerror = () => {
-        this.imageError = 'Failed to read the file.';
-        this.avatarUrl = null;
-      };
-      reader.readAsDataURL(file); // Converts to Base64 string
+      // Set the selected file and update the form control
+      this.selectedFile = file;
+      this.avatarForm.patchValue({ image: this.selectedFile });
     }
   }
-  
-  onSubmit(): void {
-    if (this.avatarUrl) {
-      console.log('Uploading image...');
-      // Here you would send the Base64 image string to your backend API
-      // Example: this.userService.updateAvatar(this.avatarUrl).subscribe(...);
+
+  onUpload(): void {
+    if (this.avatarForm.invalid || !this.selectedFile) {
+      this.toastr.warning('Please select an image first');
+      return;
+    }
+
+    if (this.userId) {
+      this.userProfileService.updateImage(this.userId, this.selectedFile).subscribe({
+        next: (response: UserProfile) => {
+          this.toastr.success('Image updated successfully');
+          this.userProfile = response; // Update the user profile with the new image
+        },
+        error: (error) => {
+          console.error('Error uploading image:', error);
+          this.toastr.error('Failed to upload image');
+        }
+      });
     } else {
-      this.imageError = 'Please select an image to upload.';
+      this.toastr.error('User ID is missing');
     }
   }
 }

@@ -25,7 +25,7 @@ export class ClassFormComponent implements OnInit {
   isEditMode: boolean = false;
   formattedDate: string = '';
   classes: WritableSignal<Class[]> = signal([]); // Signal to hold class list
-
+  selectedDays: string[] = [];
   isLoading = false; // To prevent multiple submissions
 
   constructor(
@@ -52,7 +52,16 @@ export class ClassFormComponent implements OnInit {
       this.formattedDate = this.formatDate(this.class.admissionDate);
     }
   }
-
+  
+  toggleDay(event: any): void {
+    const value = event.target.value;
+    if (event.target.checked) {
+      this.selectedDays.push(value);
+    } else {
+      this.selectedDays = this.selectedDays.filter(day => day !== value);
+    }
+    this.class.days = this.selectedDays.join(',');
+  }
   saveClass(): void {
     this.isLoading = true; // Set loading state
     if (this.class.admissionDate) {

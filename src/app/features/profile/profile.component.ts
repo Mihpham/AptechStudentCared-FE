@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ImageRequest } from 'src/app/core/auth/models/ImageRequest.model';
 import { UserProfileService } from 'src/app/core/services/profile.service';
 import { UserProfile } from 'src/app/shared/models/user-profile.model';
 
@@ -10,6 +11,7 @@ import { UserProfile } from 'src/app/shared/models/user-profile.model';
 })
 export class ProfileComponent implements OnInit {
   userProfile: UserProfile | undefined;
+  imageProfile: ImageRequest | undefined;
   showChangePassword = false;
   showChangeAvatar = false;
   constructor(
