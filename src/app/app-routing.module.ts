@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/auth/auth.guard';
-import { AdminComponent } from './features/admin-management/admin.component';
 import { TeacherComponent } from './features/teacher-management/teacher.component';
 import { StudentComponent } from './features/student-management/student.component';
 import { SroComponent } from './features/sro-management/sro.component';

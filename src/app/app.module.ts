@@ -14,9 +14,8 @@ import { PagesModule } from './features/pages/pages.module';
 import { SharedModule } from './shared/shared.module';
 import { ProfileModule } from './features/profile/profile.module';
 import { BreadcrumbsComponent } from './layout/components/breadcrumbs/breadcrumbs.component';
-import { AuthService } from './core/auth/auth.service';
-import { StudentAddComponent } from './features/admin-management/student/student-add/student-add.component';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+
+import {  LocationStrategy, PathLocationStrategy } from '@angular/common';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -56,7 +55,7 @@ export function tokenGetter() {
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
    
-    { provide: LocationStrategy, useClass: HashLocationStrategy }
+    { provide: LocationStrategy, useClass: PathLocationStrategy  }
   ],
   bootstrap: [AppComponent]
 })
