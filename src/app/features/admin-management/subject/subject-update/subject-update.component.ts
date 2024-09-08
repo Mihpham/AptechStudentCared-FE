@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { SubjectService } from '../service/subject.service';
+import { SubjectService } from '../../../../core/services/admin/subject.service';
 import { SubjectResponse } from '../model/subject-response.model';
 import { SubjectRequest } from '../model/subject-request.model';
 import { ToastrService } from 'ngx-toastr';

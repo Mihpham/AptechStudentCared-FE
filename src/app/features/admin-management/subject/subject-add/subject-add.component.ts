@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { SubjectService } from '../service/subject.service';
+import { SubjectService } from '../../../../core/services/admin/subject.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 
@@ -31,7 +31,7 @@ export class SubjectAddComponent {
       this.subjectService.addSubject(this.subjectForm.value).subscribe(
         response => {
           console.log('Dialog closing with success');
-          this.dialogRef.close();// Indicate success
+          this.dialogRef.close({ reload: true });// Indicate success
           this.toastr.success('Subject added successfully!');
         },
         error => {

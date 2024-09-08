@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { SubjectResponse } from '../model/subject-response.model';
+import { SubjectResponse } from '../../../features/admin-management/subject/model/subject-response.model';
 import { UserEnviroment } from 'src/app/environments/environment';
-import { SubjectRequest } from '../model/subject-request.model';
+import { SubjectRequest } from '../../../features/admin-management/subject/model/subject-request.model';
 import { tap } from 'rxjs/operators';
 
 

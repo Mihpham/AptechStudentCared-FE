@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { SubjectService } from '../service/subject.service';
+import { SubjectService } from '../../../../core/services/admin/subject.service';
 import { SubjectResponse } from '../model/subject-response.model';
 import { SubjectAddComponent } from '../subject-add/subject-add.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -37,20 +37,20 @@ export class SubjectListComponent implements OnInit {
   }
 
   loadSubjects(): void {
+    console.log('Loading subjects...');
     this.subjectService.getAllSubjects().subscribe(
       (data: SubjectResponse[]) => {
-        // Chuyển đổi thuộc tính createdAt từ chuỗi thành đối tượng Date nếu cần
+        console.log('Loaded subjects:', data);
+
         data.forEach(subject => {
           if (typeof subject.createdAt === 'string') {
             subject.createdAt = new Date(subject.createdAt);
           }
         });
-        
-        // Sắp xếp dữ liệu theo thuộc tính createdAt (giảm dần)
+
         data.sort((a, b) => (b.createdAt.getTime() - a.createdAt.getTime()));
-        
-        console.log('Loaded subjects:', data);
-        this.dataSource.data = data;
+
+        this.dataSource.data = [...data]; // Thay thế dữ liệu cũ
         this.totalSubjects = data.length;
         this.dataSource.paginator = this.paginator;
         this.applyFilter(this.searchTerm); // Apply the filter after loading data
@@ -60,7 +60,7 @@ export class SubjectListComponent implements OnInit {
       }
     );
   }
-  
+
 
   applyFilter(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -76,13 +76,10 @@ export class SubjectListComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.subjectService.addSubject(result).subscribe(() => {
-          this.loadSubjects(); // Cập nhật lại danh sách sau khi thêm thành công
-        });
+      if (result && result.reload) {
+        this.loadSubjects(); // Reload data if needed
       }
     });
-
   }
 
   onUpdate(subject: SubjectResponse): void {
@@ -105,11 +102,14 @@ export class SubjectListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Gọi API để xóa
         this.subjectService.deleteSubject(id).subscribe(
           () => {
-            this.toastr.success('Xóa thành công');
-            this.loadSubjects();
+            // Xóa môn học khỏi danh sách hiện tại
+            const updatedData = this.dataSource.data.filter(subject => subject.id !== id);
+            this.dataSource.data = updatedData;
+            this.totalSubjects = updatedData.length;
+            this.applyFilter(this.searchTerm); // Áp dụng bộ lọc nếu có
+            this.toastr.success('Xóa môn học thành công');
           },
           error => {
             console.error('Error deleting subject:', error);
@@ -119,6 +119,7 @@ export class SubjectListComponent implements OnInit {
       }
     });
   }
+
 
 
 
