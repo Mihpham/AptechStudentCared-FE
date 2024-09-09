@@ -1,0 +1,53 @@
+<div class="dialog-content">
+  <h2 class="dialog-title">Update Course</h2>
+  <hr>
+  <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
+    <section class="course-information">
+      <h3>Course Information</h3>
+      <!-- Course ID -->
+      <section class="courseId">
+        <div class="form-row">
+          <div class="form-group half-width">
+            <label for="courseId">Course ID</label>
+            <span id="courseId">{{courseForm.value.courseId}}</span>
+          </div>
+        </div>
+      </section>
+      <!-- Course Name -->
+      <section class="courseName">
+        <div class="form-row">
+          <div class="form-group half-width">
+            <label for="courseName">Course Name</label>
+            <input id="courseName" type="text" formControlName="courseName" placeholder="Enter course name">
+          </div>
+        </div>
+      </section>
+
+      <!-- Course Code -->
+      <section class="courseCode">
+        <div class="form-row">
+          <div class="form-group half-width">
+            <label for="courseCode">Course Code</label>
+            <input id="courseCode" type="text" formControlName="courseCode" placeholder="Enter course code">
+          </div>
+        </div>
+      </section>
+
+      <!-- Class Schedule -->
+      <section class="classSchedule">
+        <div class="form-row">
+          <div class="form-group half-width">
+            <label for="classSchedule">Class Schedule</label>
+            <input id="classSchedule" type="text" formControlName="classSchedule" placeholder="Enter class schedule">
+          </div>
+        </div>
+      </section>
+
+
+    <div class="form-actions">
+      <button type="button" (click)="onCancel()">Cancel</button>
+      <button type="submit" [disabled]="courseForm.invalid">Save</button>
+    </div>
+    </section>
+  </form>
+</div>

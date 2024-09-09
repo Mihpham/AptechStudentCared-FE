@@ -1,10 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdminService } from 'src/app/core/services/admin.service';
-import { StudentRequest } from '../../model/studentRequest.model';
+import { StudentRequest } from '../../model/student-request.model';
 import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { StudentResponse } from '../../model/studentResponse.model';
+import { StudentResponse } from '../../model/student-response.model.';
 
 @Component({
   selector: 'app-student-update-dialog',

@@ -1,0 +1,66 @@
+
+
+.course-list {
+    padding: 16px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.total-courses {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 16px;
+    /* Adjust gap between elements as needed */
+}
+
+
+.mat-table {
+    table-layout: fixed;
+    width: 100%; /* Đảm bảo bảng chiếm toàn bộ chiều rộng của phần tử chứa */
+  }
+
+.mat-row {
+    transition: background-color 0.3s ease;
+  }
+
+.mat-row:hover {
+    background-color: rgba(122, 114, 114, 0.04); /* Light gray color on hover */
+    cursor: pointer; /* Change cursor to pointer on hover */
+  }
+
+.actions {
+    display: flex;
+    gap: 8px;
+    /* Adjust gap between buttons as needed */
+}
+
+
+.mat-icon {
+    font-size: 16px;
+}
+
+.mat-button-edit {
+    color: orange;
+}
+
+.mat-button-delete {
+    color: red;
+}
+
+/* Status Color Coding */
+.status-studying {
+    color: rgb(0, 183, 0);
+}
+
+
