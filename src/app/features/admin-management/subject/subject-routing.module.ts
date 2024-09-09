@@ -22,7 +22,7 @@ const routes: Routes = [
         data: { breadcrumb: 'Add Subject' },
       },
       {
-        path: 'update:id',
+        path: 'update/:id',
         component: SubjectUpdateComponent,
         data: { breadcrumb: 'Update Subject' },
       },

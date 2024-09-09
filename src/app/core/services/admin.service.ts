@@ -18,7 +18,7 @@ import { StudentResponse } from 'src/app/features/admin-management/model/student
 export class AdminService {
   private baseUrl = UserEnviroment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   headers = new HttpHeaders({
     'Content-Type': 'application/json',

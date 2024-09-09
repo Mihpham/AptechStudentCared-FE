@@ -38,6 +38,7 @@ import { ClassFormComponent } from './class/class-form/class-form.component';
 import { SubjectListComponent } from './subject/subject-list/subject-list.component';
 import { SubjectAddComponent } from './subject/subject-add/subject-add.component';
 import { SubjectUpdateComponent } from './subject/subject-update/subject-update.component';
+import { ConfirmDeleteSubjectComponent } from './subject/confirm-delete-subject/confirm-delete-subject.component';
 import { CdkTableModule } from '@angular/cdk/table';
 import { FilterDialogComponent } from './class/filter-dialog/filter-dialog.component';
 import { CourseComponent } from './course/course.component';
@@ -75,6 +76,7 @@ import { CourseUpdateDialogComponent } from './course/course-update-dialog/cours
     SubjectListComponent,
     SubjectAddComponent,
     SubjectUpdateComponent,
+    ConfirmDeleteSubjectComponent
     FilterDialogComponent,
     CourseAddComponent,
     CourseDetailDialogComponent,
