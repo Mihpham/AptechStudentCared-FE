@@ -41,6 +41,17 @@
         </div>
     </section>
 
+    <!-- Course Completion Time -->
+    <section class="courseCompTime">
+      <label class="block text-gray-700 text-sm mb-2">Course Completion Time</label>
+      <input formControlName="courseCompTime"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="text" />
+      <div *ngIf="courseForm.get('courseCompTime')?.invalid && courseForm.get('courseCompTime')?.touched"
+        class="text-red-500 text-xs mt-1">
+        Course Completion Time is required.
+      </div>
+  </section>
 
     <!-- Still not know should add this or not -->
     <!--     

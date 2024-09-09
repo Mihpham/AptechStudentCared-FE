@@ -62,6 +62,7 @@ export class CourseUpdateDialogComponent {
         },
         error: (error) => {
           console.error('Error updating student', error);
+          console.log('Response:', error); // log the response body
           this.toastr.error('Failed to update student', 'Error');
         }
       });

@@ -31,6 +31,7 @@ displayedColumns: string[] = [
   'courseName',
   'courseCode',
   'classSchedule',
+  'courseCompTime',
   'actions'
 ];
 dataSource: MatTableDataSource<CourseResponse> =
@@ -96,6 +97,8 @@ onAdd(): void {
       .afterClosed()
     .subscribe((newCourse: CourseRequest | undefined) => {
       if (newCourse) {
+        this.courses.push(newCourse); // Add the new course to the list
+        this.dataSource.data = [...this.courses];
         this.loadCourse();
         this.cdr.markForCheck(); // Trigger change detection cycle
         this.paginator.pageIndex = 0; // Update paginator
@@ -130,7 +133,7 @@ onUpdate(event: MouseEvent, course: CourseResponse): void {
 
 
 onDelete(course: CourseResponse): void {
-  console.log('CourseId:', course.id);
+  // console.log('CourseId:', course.id);
   Swal.fire({
     width: 350,
     title: 'Are you sure you want to delete this student?',
@@ -142,6 +145,7 @@ onDelete(course: CourseResponse): void {
     confirmButtonText: 'Yes, delete it!',
   }).then((result) => {
     if (result.isConfirmed) {
+      console.log(course);
       this.courseService.deleteCourse(course.id).subscribe({
         next: () => {
           this.toastr.success('Course deleted successfully', 'Success');
@@ -155,7 +159,7 @@ onDelete(course: CourseResponse): void {
             err.error && err.error.message
               ? err.error.message
               : 'Failed to delete student';
-          this.toastr.error(errorMessage);
+          this.toastr.error(errorMessage);console.log('Response:', err.error); // log the response body
         },
       });
     }

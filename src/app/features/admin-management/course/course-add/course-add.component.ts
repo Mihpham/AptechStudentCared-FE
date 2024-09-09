@@ -27,9 +27,10 @@ export class CourseAddComponent implements AfterViewInit, OnDestroy {
   ) {
     this.courseForm = this.fb.group({
       // courseId: [''],
-      courseName: ['', [Validators.required]], 
+      courseName: ['', [Validators.required]],
       courseCode: ['', [Validators.required]],
       classSchedule: ['', [Validators.required]],
+      courseCompTime: ['', Validators.required],
     });
   }
 
@@ -48,54 +49,36 @@ export class CourseAddComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  // toggleDropdown(): void {
-  //   this.isDropdownOpen = !this.isDropdownOpen;
-  // }
-  
-
-  // onCourseToggle(course: string) {
-  //   const index = this.selectedCourses.indexOf(course);
-  //   if (index > -1) {
-  //     this.selectedCourses.splice(index, 1);
-  //   } else {
-  //     this.selectedCourses.push(course);
-  //   }
-  //   this.courseForm.get('courses')?.setValue(this.selectedCourses);
-  // }
-
-  // onCheckboxClick(event: Event, course: string) {
-  //   event.stopPropagation(); // Prevents the event from bubbling up to the parent div
-  //   const checkbox = event.target as HTMLInputElement;
-  //   this.onCourseToggle(course);
-  // }
-
   onSubmit() {
     if (this.courseForm.valid) {
       const course: CourseRequest = this.courseForm.value;
       this.courseService.addCourse(course)
-        .pipe(
-          catchError((err) => {
-            console.error('Error:', err);
-            this.toastr.error('Failed to add course');
-            return throwError(err);
-          })
-        )
         .subscribe({
-          next: (response) => {
+          next: (response: any) => {
             console.log('Response:', response);
             this.toastr.success('Course added successfully');
             this.courseForm.reset();
-            this.dialogRef.close(this.courseForm.value);
+            this.dialogRef.close(); // Close the dialog
           },
           error: (err) => {
-            console.error('Error:', err);
-            this.toastr.error('Failed to add course');
+            if (err.status === 201) {
+              console.log('Course added successfully');
+              this.toastr.success('Course added successfully');
+              this.courseForm.reset();
+              this.dialogRef.close(this.courseForm.value); // Close the dialog
+            } else {
+              console.error('Error:', err);
+              console.log('Response:', err.error); // log the response body
+              this.toastr.error('Failed to add course');
+              this.dialogRef.close(); // Close the dialog on error
+            }
           },
         });
     } else {
       this.toastr.error('Please fill out the form correctly!');
     }
   }
+
 
   onCancel(): void {
     this.dialogRef.close();

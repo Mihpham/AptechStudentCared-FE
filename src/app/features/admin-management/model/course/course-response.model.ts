@@ -4,4 +4,6 @@ export interface CourseResponse {
     courseName: string;
     courseCode: string;
     classSchedule: string;
+    courseCompTime: number;
+    // semesters: [];
 }

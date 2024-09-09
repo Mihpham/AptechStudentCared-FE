@@ -67,7 +67,7 @@ export class AdminService {
   addCourse(course: CourseRequest): Observable<any> {
     return this.http.post(`${this.courseApiUrl}/add`, course, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    });
+    })
   }
 
   updateCourse(courseId: number, course: CourseRequest): Observable<CourseResponse> {
