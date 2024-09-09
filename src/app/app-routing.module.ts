@@ -33,7 +33,7 @@ const routes: Routes = [
     path: 'student',
     component: StudentComponent,
     canActivate: [AuthGuard],
-    data: { role: 'USER' },
+    data: { role: 'STUDENT' },
   },
   {
     path: 'sro',

@@ -40,6 +40,7 @@ import { SubjectListComponent } from './subject/subject-list/subject-list.compon
 import { SubjectAddComponent } from './subject/subject-add/subject-add.component';
 import { SubjectUpdateComponent } from './subject/subject-update/subject-update.component';
 import { CdkTableModule } from '@angular/cdk/table';
+import { FilterDialogComponent } from './class/filter-dialog/filter-dialog.component';
 
 @NgModule({
   
@@ -70,7 +71,8 @@ import { CdkTableModule } from '@angular/cdk/table';
     ClassFormComponent,
     SubjectListComponent,
     SubjectAddComponent,
-    SubjectUpdateComponent
+    SubjectUpdateComponent,
+    FilterDialogComponent
   ],
   imports: [
     CommonModule,

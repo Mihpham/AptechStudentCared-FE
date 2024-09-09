@@ -26,7 +26,7 @@
       class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
       <i class="fa-solid fa-plus"></i> Add
     </button>
-    <button
+    <button (click)="openFilterDialog()"
       class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
       <i class="fa-solid fa-filter"></i> Filter
     </button>
@@ -48,10 +48,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let classItem of classes()" class="border-b">
+        <tr *ngFor="let classItem of paginatedClasses()" class="border-b">
           <td class="py-2 px-4 text-center">{{ classItem.className }}</td>
           <td class="py-2 px-4 text-center">{{ classItem.days }}</td>
-          <td class="py-2 px-4 text-center">{{ classItem.admissionDate | date: 'yyyy-MM-dd' }}</td>
+          <td class="py-2 px-4 text-center">{{ classItem.admissionDate | date: 'dd-MM-yyyy' }}</td>
           <td class="py-2 px-4 text-center">{{ classItem.hour }}</td>
           <td class="py-2 px-4 text-center">{{ classItem.center }}</td>
           <td class="py-2 px-4 text-center" [ngClass]="{
@@ -78,36 +78,39 @@
     </div>
 
     <div
-      class="flex items-center justify-between p-4 mt-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-      <!-- Page indicator & Pagination controls -->
-      <div class="flex items-center space-x-4 ml-auto">
-        <!-- Items per page -->
-        <div class="flex items-center space-x-2">
-          <span class="text-gray-700 dark:text-gray-300">Items per page:</span>
-          <select
-            class="block w-20 p-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-white"
-            [(ngModel)]="itemsPerPage" (ngModelChange)="updatePagination()">
-            <option *ngFor="let option of [5, 10, 20]" [value]="option">{{ option }}</option>
-          </select>
-        </div>
-        <!-- Page indicator -->
-        <div class="text-gray-700 dark:text-gray-300">
-          Page {{ currentPage() }} of {{ totalPages() }}
-        </div>
-
-        <!-- Pagination controls -->
-        <div class="flex items-center space-x-2">
-          <button (click)="goToFirstPage()" [disabled]="currentPage() === 1" class="btn btn-primary"><i
-              class="fas fa-angle-double-left"></i></button>
-          <button (click)="goToLastPage()" [disabled]="currentPage() === totalPages()" class="btn btn-primary"><i
-              class="fa-solid fa-chevron-left"></i></button>
-          <button (click)="goToNextPage()" [disabled]="currentPage() === totalPages()" class="btn btn-primary"><i
-              class="fa-solid fa-chevron-right"></i></button>
-          <button (click)="goToPreviousPage()" [disabled]="currentPage() === 1" class="btn btn-primary"><i
-              class="fas fa-angle-double-right"></i></button>
-
-        </div>
-      </div>
+  class="flex items-center justify-between p-4 mt-4 rounded-lg bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+  <!-- Page indicator & Pagination controls -->
+  <div class="flex items-center space-x-6 ml-auto">
+    <!-- Items per page -->
+    <div class="flex items-center space-x-4 mr-3">
+      <span class="text-gray-700 dark:text-gray-300">Items per page:</span>
+      <select
+        class="block w-20 p-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-white"
+        [ngModel]="itemsPerPage()" (ngModelChange)="onItemsPerPageChange($event)">
+        <option *ngFor="let option of [5, 10, 20]" [value]="option">{{ option }}</option>
+      </select>
     </div>
+    <!-- Page indicator -->
+    <div class="text-gray-700 dark:text-gray-300 mr-10 ml-10">
+      Page {{ currentPage() }} of {{ totalPages() }}
+    </div>
+    <!-- Pagination controls -->
+    <div class="flex items-center space-x-4 ">
+      <button (click)="goToFirstPage()" [disabled]="currentPage() === 1" class="btn btn-primary dark:text-gray-200">
+        <i class="fas fa-angle-double-left mr-3 ml-3"></i>
+      </button>
+      <button (click)="goToLastPage()" [disabled]="currentPage() === totalPages()" class="btn btn-primary dark:text-gray-200">
+        <i class="fa-solid fa-chevron-left mr-3 ml-3"></i>
+      </button>
+      <button (click)="goToNextPage()" [disabled]="currentPage() === totalPages()" class="btn btn-primary dark:text-gray-200">
+        <i class="fa-solid fa-chevron-right mr-3 ml-3"></i>
+      </button>
+      <button (click)="goToPreviousPage()" [disabled]="currentPage() === 1" class="btn btn-primary dark:text-gray-200">
+        <i class="fas fa-angle-double-right mr-3 ml-3"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
   </div>
 </div>

@@ -1,8 +1,10 @@
 import { Component, OnInit, WritableSignal, signal } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Class } from '../model/class.model';
 import { AdminService } from 'src/app/core/services/admin.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { FilterDialogComponent } from './filter-dialog/filter-dialog.component';
 
 @Component({
   selector: 'app-class',
@@ -10,31 +12,33 @@ import { Router } from '@angular/router';
   styleUrls: ['./class.component.scss']
 })
 export class ClassComponent implements OnInit {
-  classes: WritableSignal<Class[]> = signal([]); // Initialize as writable signal
-  paginatedClasses: WritableSignal<Class[]> = signal([]); // Classes for the current page
+  classes: WritableSignal<Class[]> = signal([]);
+  paginatedClasses: WritableSignal<Class[]> = signal([]);
+  filteredClasses: WritableSignal<Class[]> = signal([]);
+
   statusCounts = signal({ studying: 0, finished: 0, cancel: 0, scheduled: 0 });
 
-  // Pagination variables
   currentPage = signal(1);
-  itemsPerPage = signal(5); // Default items per page is 5
+  itemsPerPage = signal(5);
   totalPages = signal(0);
 
   constructor(
     private classService: AdminService,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    this.loadClasses(); 
+    this.loadClasses();
   }
 
   loadClasses(): void {
     this.classService.findAllClasses().subscribe({
       next: (data) => {
-        this.classes.set(data); // Update the writable signal with new data
+        this.classes.set(data);
+        this.applyFilters(); 
         this.updateStatusCounts();
-        this.updatePagination();
       },
       error: (error) => {
         this.toastr.error('Failed to load classes!', 'Error');
@@ -43,8 +47,43 @@ export class ClassComponent implements OnInit {
     });
   }
 
+  openFilterDialog(): void {
+    const dialogRef = this.dialog.open(FilterDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log(result);
+        this.applyFilters(result);
+      }
+    });
+  }
+
+  applyFilters(filters?: { className: string, admissionDate: string, status: string }): void {
+    const classNameFilter = filters?.className || '';
+    const admissionDateFilter = filters?.admissionDate || '';
+    const statusFilter = filters?.status || 'ALL';
+
+    const filtered = this.classes().filter(classItem => {
+      const matchesClassName = classNameFilter
+        ? classItem.className.toLowerCase().includes(classNameFilter.toLowerCase())
+        : true;
+      console.log('Matches class name:', matchesClassName);
+    
+      const matchesStatus = statusFilter !== 'ALL'
+        ? classItem.status === statusFilter
+        : true;
+      console.log('Matches status:', matchesStatus);
+    
+      return matchesClassName && matchesStatus;
+    });
+    
+    console.log('Filtered classes:', filtered); // Kiểm tra danh sách lớp đã lọc
+    this.filteredClasses.set(filtered);
+    this.updatePagination(); // Cập nhật phân trang sau khi lọc
+  }
+
   updateStatusCounts(): void {
-    const currentClasses = this.classes();
+    const currentClasses = this.filteredClasses();
     const counts = { studying: 0, finished: 0, cancel: 0, scheduled: 0 };
 
     currentClasses.forEach(classItem => {
@@ -58,12 +97,24 @@ export class ClassComponent implements OnInit {
   }
 
   updatePagination(): void {
-    const classes = this.classes();
+    const classes = this.filteredClasses();
+    
+    // Fix signal access by calling it like a function
     const startIndex = (this.currentPage() - 1) * this.itemsPerPage();
     const endIndex = startIndex + this.itemsPerPage();
+    
+    // Update the paginated classes
     this.paginatedClasses.set(classes.slice(startIndex, endIndex));
+    
+    // Update total pages
     this.totalPages.set(Math.ceil(classes.length / this.itemsPerPage()));
   }
+  
+  onItemsPerPageChange(value: number): void {
+    this.itemsPerPage.set(value);
+    this.updatePagination();
+  }
+  
 
   goToFirstPage(): void {
     this.currentPage.set(1);
@@ -92,16 +143,15 @@ export class ClassComponent implements OnInit {
   deleteClass(id: number): void {
     if (confirm('Are you sure you want to delete this class?')) {
       this.classService.deleteClass(id).subscribe({
-        next: (response) => {
+        next: () => {
           const updatedClasses = this.classes().filter(classItem => classItem.id !== id);
           this.classes.set(updatedClasses);
-          this.updateStatusCounts(); 
-          this.updatePagination();
+          this.applyFilters();
+          this.updateStatusCounts();
           this.toastr.success('Class deleted successfully!', 'Success');
         },
         error: (error) => {
           console.error('Error details:', error.message);
-          console.log('Error object:', error);
           this.toastr.error('Failed to delete class!', 'Error');
         }
       });
