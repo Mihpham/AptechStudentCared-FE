@@ -17,6 +17,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { catchError, throwError } from 'rxjs';
 import { StudentRequest } from '../../model/studentRequest.model';
 import { AuthService } from 'src/app/core/auth/auth.service';
+import { Class } from '../../model/class.model';
 
 @Component({
   selector: 'app-student-add',
@@ -24,11 +25,13 @@ import { AuthService } from 'src/app/core/auth/auth.service';
   styleUrls: ['./student-add.component.scss'],
   providers: [AdminService] 
 })
-export class StudentAddComponent implements AfterViewInit, OnDestroy {
+export class StudentAddComponent implements AfterViewInit , OnInit  {
 
   studentForm: FormGroup;
   availableCourses: string[] = ['Mathematics', 'Science', 'History', 'Art'];
   selectedCourses: string[] = [];
+  availableClasses: Class[] = [];
+
   isDropdownOpen = false;
   private dropdownElement: HTMLElement | null = null;
   students: StudentRequest | undefined;
@@ -63,13 +66,12 @@ export class StudentAddComponent implements AfterViewInit, OnDestroy {
       parentGender: ['', Validators.required],
     });
   }
+  ngOnInit(): void {
+    this.loadAvailableClasses();
+  }
 
   ngAfterViewInit() {
     this.dropdownElement = this.el.nativeElement.querySelector('.relative');
-  }
-
-  ngOnDestroy() {
-    // Clean up any listeners if necessary
   }
 
   @HostListener('document:click', ['$event'])
@@ -80,6 +82,13 @@ export class StudentAddComponent implements AfterViewInit, OnDestroy {
     ) {
       this.isDropdownOpen = false;
     }
+  }
+
+  loadAvailableClasses() {
+    this.studentService.findAllClasses().subscribe({
+      next: (classes) => this.availableClasses = classes,
+      error: (err) => this.toastr.error('Failed to load classes')
+    });
   }
 
   toggleDropdown(): void {

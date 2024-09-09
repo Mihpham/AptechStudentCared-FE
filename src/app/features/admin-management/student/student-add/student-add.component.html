@@ -53,14 +53,19 @@
     <!-- Class Name -->
     <div>
       <label class="block text-gray-700 text-sm mb-2">Class Name</label>
-      <input formControlName="className"
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        type="text" />
+      <select formControlName="className"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        <option value="" disabled>Select Class</option>
+        <option *ngFor="let class of availableClasses" [value]="class.id">
+          {{ class.className }}
+        </option>
+      </select>
       <div *ngIf="studentForm.get('className')?.invalid && studentForm.get('className')?.touched"
         class="text-red-500 text-xs mt-1">
         Class Name is required.
       </div>
     </div>
+
 
     <!-- Date of Birth -->
     <div>
