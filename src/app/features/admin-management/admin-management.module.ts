@@ -76,7 +76,7 @@ import { CourseUpdateDialogComponent } from './course/course-update-dialog/cours
     SubjectListComponent,
     SubjectAddComponent,
     SubjectUpdateComponent,
-    ConfirmDeleteSubjectComponent
+    ConfirmDeleteSubjectComponent,
     FilterDialogComponent,
     CourseAddComponent,
     CourseDetailDialogComponent,

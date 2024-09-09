@@ -10,6 +10,7 @@ import { StudentRequest } from 'src/app/features/admin-management/model/studentR
 import { Class } from 'src/app/features/admin-management/model/class.model';
 import { CourseRequest } from 'src/app/features/admin-management/model/course/course-request.model';
 import { StudentResponse } from 'src/app/features/admin-management/model/student-response.model.';
+import { CourseResponse } from 'src/app/features/admin-management/model/course/course-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -107,8 +108,8 @@ export class AdminService {
 
   //Courses
    // Get all courses
-   getAllCourse(): Observable<CourseRequest[]> {
-    return this.http.get<CourseRequest[]>(`${this.baseUrl}/courses`)
+   getAllCourse(): Observable<CourseResponse[]> {
+    return this.http.get<CourseResponse[]>(`${this.baseUrl}/courses`)
       .pipe(catchError(this.handleError));
   }
 
@@ -133,8 +134,8 @@ export class AdminService {
   }
 
   // Update an existing course
-  updateCourse(courseId: number, course: CourseRequest): Observable<CourseRequest> {
-    return this.http.put<CourseRequest>(`${this.baseUrl}/courses/${courseId}`, course, {
+  updateCourse(courseId: number, course: CourseRequest): Observable<CourseResponse> {
+    return this.http.put<CourseResponse>(`${this.baseUrl}/courses/${courseId}`, course, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }) // Ensure the content type is JSON
     })
     .pipe(catchError(this.handleError));

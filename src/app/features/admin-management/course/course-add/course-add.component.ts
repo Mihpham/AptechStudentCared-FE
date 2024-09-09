@@ -1,21 +1,22 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, throwError } from 'rxjs';
 import { AdminService } from 'src/app/core/services/admin.service';
-import { CourseRequest } from '../../model/course/course-request.model';
+import { SubjectService } from 'src/app/core/services/admin/subject.service';
 
 @Component({
   selector: 'app-course-add',
   templateUrl: './course-add.component.html',
   styleUrls: ['./course-add.component.scss'],
 })
-export class CourseAddComponent implements AfterViewInit, OnDestroy {
-  courseForm: FormGroup;
-  availableCourses: string[] = ['Mathematics', 'Science', 'History', 'Art'];
-  selectedCourses: string[] = [];
-  isDropdownOpen = false;
+export class CourseAddComponent implements AfterViewInit, OnDestroy, OnInit {
+  courseForm!: FormGroup;
+  semesters = ['sem1', 'sem2', 'sem3', 'sem4'];
+  availableSubjects: string[] = [];
+  selectedSubjectsBySemester: { [key: string]: string[] } = {};
+  isDropdownOpen: { [key: string]: boolean } = {};
   private dropdownElement: HTMLElement | null = null;
 
   constructor(
@@ -23,15 +24,13 @@ export class CourseAddComponent implements AfterViewInit, OnDestroy {
     private courseService: AdminService,
     private toastr: ToastrService,
     private dialogRef: MatDialogRef<CourseAddComponent>,
-    private el: ElementRef
-  ) {
-    this.courseForm = this.fb.group({
-      // courseId: [''],
-      courseName: ['', [Validators.required]],
-      courseCode: ['', [Validators.required]],
-      classSchedule: ['', [Validators.required]],
-      courseCompTime: ['', Validators.required],
-    });
+    private el: ElementRef,
+    private subjectService: SubjectService,
+  ) { }
+
+  ngOnInit(): void {
+    this.initializeForm();
+    this.loadSubjects();
   }
 
   ngAfterViewInit() {
@@ -44,45 +43,119 @@ export class CourseAddComponent implements AfterViewInit, OnDestroy {
 
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {
-    if (this.dropdownElement && !this.dropdownElement.contains(event.target as Node)) {
-      this.isDropdownOpen = false;
-    }
+    Object.keys(this.isDropdownOpen).forEach(semester => {
+      if (this.dropdownElement && !this.dropdownElement.contains(event.target as Node)) {
+        this.isDropdownOpen[semester] = false;
+      }
+    });
+  }
+
+  initializeForm(): void {
+    this.courseForm = this.fb.group({
+      courseName: ['', Validators.required],
+      courseCode: ['', Validators.required],
+      courseCompTime: ['', Validators.required],
+      semesters: this.fb.group({
+        sem1: this.fb.array([]),
+        sem2: this.fb.array([]),
+        sem3: this.fb.array([]),
+        sem4: this.fb.array([])
+      })
+    });
+  }
+  
+  
+  loadSubjects(): void {
+    this.subjectService.getAllSubjects().pipe(
+      catchError(error => {
+        console.error('Error loading subjects:', error);
+        this.toastr.error('Failed to load subjects');
+        return throwError(error);
+      })
+    ).subscribe(subjects => {
+      this.availableSubjects = subjects.map(subject => subject.subjectName);
+    });
+  }
+
+  toggleDropdown(semester: string): void {
+    this.isDropdownOpen[semester] = !this.isDropdownOpen[semester];
+  }
+
+  onCheckboxClick(event: MouseEvent, semester: string, subject: string): void {
+    event.stopPropagation(); // Prevent click from affecting the dropdown toggle
+    this.onSubjectToggle(semester, subject);
+  }
+
+  onSubjectToggle(semester: string, subject: string): void {
+    setTimeout(() => {
+      const formArray = this.courseForm.get(['semesters', semester]) as FormArray;
+  
+      if (!formArray) {
+        console.error(`FormArray for ${semester} does not exist.`);
+        return;
+      }
+  
+      const selectedSubjects = this.selectedSubjectsBySemester[semester] || [];
+      if (selectedSubjects.includes(subject)) {
+        this.selectedSubjectsBySemester[semester] = selectedSubjects.filter(s => s !== subject);
+      } else {
+        this.selectedSubjectsBySemester[semester] = [...selectedSubjects, subject];
+      }
+  
+      // Đảm bảo FormArray được cập nhật đúng cách
+      formArray.clear(); // Xóa tất cả các điều khiển hiện tại
+      this.selectedSubjectsBySemester[semester].forEach(subject => {
+        formArray.push(this.fb.control(subject));
+      });
+    }, 0);
+  }
+  
+  
+  isSubjectSelected(semester: string, subject: string): boolean {
+    const selectedSubjects = this.selectedSubjectsBySemester[semester] || [];
+    return selectedSubjects.includes(subject);
+  }
+
+  getSelectedSubjects(semester: string): string[] {
+    return this.selectedSubjectsBySemester[semester] || [];
+  }
+
+  getFilteredSubjects(semester: string): string[] {
+    const selectedSubjects = new Set<string>();
+    this.semesters.forEach(sem => {
+      if (sem !== semester) {
+        const subjects = this.selectedSubjectsBySemester[sem] || [];
+        subjects.forEach(subject => selectedSubjects.add(subject));
+      }
+    });
+    return this.availableSubjects.filter(subject => !selectedSubjects.has(subject));
   }
 
   onSubmit() {
     if (this.courseForm.valid) {
-      const course: CourseRequest = this.courseForm.value;
-      this.courseService.addCourse(course)
-        .subscribe({
-          next: (response: any) => {
-            console.log('Response:', response);
-            this.toastr.success('Course added successfully');
-            this.courseForm.reset();
-            this.dialogRef.close(); // Close the dialog
-          },
-          error: (err) => {
-            if (err.status === 201) {
-              console.log('Course added successfully');
-              this.toastr.success('Course added successfully');
-              this.courseForm.reset();
-              this.dialogRef.close(this.courseForm.value); // Close the dialog
-            } else {
-              console.error('Error:', err);
-              console.log('Response:', err.error); // log the response body
-              this.toastr.error('Failed to add course');
-              this.dialogRef.close(); // Close the dialog on error
-            }
-          },
-        });
+      const course = this.courseForm.value;
+      console.log('Course Form Value:', course); // In ra giá trị để kiểm tra
+  
+      this.courseService.addCourse(course).subscribe({
+        next: (response: any) => {
+          console.log('Response:', response);
+          this.toastr.success('Course added successfully');
+          this.courseForm.reset();
+          this.dialogRef.close(); // Close the dialog
+        },
+        error: (err) => {
+          console.error('Error:', err);
+          this.toastr.error('Failed to add course');
+          this.dialogRef.close(); // Close the dialog on error
+        },
+      });
     } else {
       this.toastr.error('Please fill out the form correctly!');
     }
   }
-
+  
 
   onCancel(): void {
     this.dialogRef.close();
   }
-
-
 }
