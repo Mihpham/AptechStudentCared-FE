@@ -18,25 +18,29 @@ import { catchError, throwError } from 'rxjs';
 import { StudentRequest } from '../../model/studentRequest.model';
 import { AuthService } from 'src/app/core/auth/auth.service';
 import { Class } from '../../model/class.model';
+import { CourseRequest } from '../../model/course/course-request.model';
+import { CourseResponse } from '../../model/course/course-response.model';
 
 @Component({
   selector: 'app-student-add',
   templateUrl: './student-add.component.html',
   styleUrls: ['./student-add.component.scss'],
-  providers: [AdminService] 
+  providers: [AdminService],
 })
-export class StudentAddComponent implements AfterViewInit , OnInit  {
-
+export class StudentAddComponent implements AfterViewInit, OnInit {
   studentForm: FormGroup;
-  availableCourses: string[] = ['Mathematics', 'Science', 'History', 'Art'];
   selectedCourses: string[] = [];
   availableClasses: Class[] = [];
+  availableCourses: CourseResponse[] = [];
+  dropdownOpen = false;
+  courseDropdownOpen = false;
+  selectedClass: string | undefined;
+  selectedCourse: any;
 
   isDropdownOpen = false;
   private dropdownElement: HTMLElement | null = null;
   students: StudentRequest | undefined;
   @Output() studentAdded = new EventEmitter<StudentRequest>();
-
 
   constructor(
     private fb: FormBuilder,
@@ -68,6 +72,8 @@ export class StudentAddComponent implements AfterViewInit , OnInit  {
   }
   ngOnInit(): void {
     this.loadAvailableClasses();
+    this.loadAvailableCourses();
+    this.loadGenderParent();
   }
 
   ngAfterViewInit() {
@@ -86,10 +92,44 @@ export class StudentAddComponent implements AfterViewInit , OnInit  {
 
   loadAvailableClasses() {
     this.studentService.findAllClasses().subscribe({
-      next: (classes) => this.availableClasses = classes,
-      error: (err) => this.toastr.error('Failed to load classes')
+      next: (classes) => (this.availableClasses = classes),
+      error: (err) => this.toastr.error('Failed to load classes'),
     });
   }
+
+  loadAvailableCourses() {
+    this.studentService.getAllCourse().subscribe({
+      next: (courses) => (this.availableCourses = courses),
+      error: (err) => this.toastr.error('Failed to load courses'),
+    });
+  }
+
+  loadGenderParent() {
+    this.studentForm
+      .get('studentRelation')
+      ?.valueChanges.subscribe((relation) => {
+        if (relation === 'Father') {
+          this.studentForm.get('parentGender')?.setValue('Male');
+        } else if (relation === 'Mother') {
+          this.studentForm.get('parentGender')?.setValue('Female');
+        } else {
+          this.studentForm.get('parentGender')?.setValue(null);
+        }
+      });
+  }
+
+  selectClass(className: any) {
+    this.selectedClass = className.className;
+    this.studentForm.get('className')?.setValue(this.selectedClass);
+    this.dropdownOpen = false; 
+  }
+
+  selectCourse(courseItem: any) {
+    this.selectedCourse = courseItem.courseName;
+    this.studentForm.get('courses')?.setValue(this.selectedCourse);
+    this.courseDropdownOpen = false;
+  }
+
 
   toggleDropdown(): void {
     this.isDropdownOpen = !this.isDropdownOpen;
@@ -120,25 +160,27 @@ export class StudentAddComponent implements AfterViewInit , OnInit  {
     this.onCourseToggle(course);
   }
 
-  onSubmit() {
-    if (this.studentForm.valid) {
-      const student: StudentRequest = this.studentForm.value;
-      this.studentService.addStudent(student).subscribe({
-        next: () => {
-          this.toastr.success('Student added successfully');
-          this.studentAdded.emit(student); // Emit the event
-          this.changeDetectorRef.detectChanges();
-          this.closeDialog();
-        },
-        error: (err) => {
-          console.error('Error:', err);
-          this.toastr.error('Failed to add student');
-        },
-      });
-    } else {
-      this.toastr.error('Please fill out the form correctly!');
-    }
+ onSubmit() {
+  if (this.studentForm.valid) {
+    const student: StudentRequest = this.studentForm.value;
+    this.studentService.addStudent(student).subscribe({
+      next: () => {
+        this.toastr.success('Student added successfully');
+        this.studentAdded.emit(student); // Emit the event
+        this.changeDetectorRef.detectChanges();
+        this.closeDialog();
+      },
+      error: (err) => {
+        console.error('Error:', err);
+        this.toastr.error('Failed to add student');
+      },
+    });
+  } else {
+    this.studentForm.markAllAsTouched(); // Mark all fields as touched to trigger validation
+    this.toastr.error('Please fill out the form correctly!');
   }
+}
+
 
   onCancel(): void {
     this.closeDialog();

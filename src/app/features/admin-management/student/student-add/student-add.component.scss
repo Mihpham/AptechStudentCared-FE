@@ -50,4 +50,11 @@ img {
   background-color: #f3f4f6;
 }
 
+select {
+  padding-right: 2.5rem; /* Leave space for the icon */
+}
+
+.relative .fa-chevron-down {
+  pointer-events: none; /* Ensure the icon doesn't block clicks on the dropdown */
+}
 

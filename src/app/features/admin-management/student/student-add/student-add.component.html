@@ -1,5 +1,7 @@
 <form [formGroup]="studentForm" (ngSubmit)="onSubmit()"
   class="p-4 max-w-lg mx-auto bg-white shadow-md rounded md:max-w-lg">
+
+  
   <h2 class="text-xl font-bold ">Add Student</h2>
   <hr>
   <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
@@ -51,21 +53,27 @@
     </div>
 
     <!-- Class Name -->
-    <div>
-      <label class="block text-gray-700 text-sm mb-2">Class Name</label>
-      <select formControlName="className"
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        <option value="" disabled>Select Class</option>
-        <option *ngFor="let class of availableClasses" [value]="class.id">
-          {{ class.className }}
-        </option>
-      </select>
-      <div *ngIf="studentForm.get('className')?.invalid && studentForm.get('className')?.touched"
-        class="text-red-500 text-xs mt-1">
-        Class Name is required.
+    <div class="relative">
+      <label class="block text-gray-700 text-sm mb-2">Class</label>
+
+      <button (click)="dropdownOpen = !dropdownOpen"
+        class="w-full bg-white border rounded py-2 px-3 text-left text-gray-700">
+        {{ selectedClass ? selectedClass : 'Select Class' }}
+      </button>
+
+      <div *ngIf="dropdownOpen" class="absolute z-10 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-full">
+        <ul>
+          <li *ngFor="let class of availableClasses" (click)="selectClass(class)" 
+            class="cursor-pointer py-2 px-4 hover:bg-gray-100">
+            {{ class.className }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="absolute inset-y-0 right-0 pr-3 pt-7 flex items-center pointer-events-none">
+        <i class="fas fa-chevron-down text-gray-500"></i>
       </div>
     </div>
-
 
     <!-- Date of Birth -->
     <div>
@@ -103,22 +111,33 @@
     </div>
 
     <!-- Courses -->
-    <div class="relative">
-      <!-- Input Field -->
-      <label class="block text-gray-700 text-sm mb-2">Course</label>
-      <input type="text" [value]="selectedCourses.join(', ')" (click)="toggleDropdown()" placeholder="Select courses"
-        readonly class="form-input border rounded p-2 w-full cursor-pointer" />
 
-      <!-- Dropdown Menu -->
-      <div *ngIf="isDropdownOpen" class="absolute z-10 bg-white border border-gray-300 rounded mt-1 w-full shadow-lg">
-        <div *ngFor="let course of availableCourses" (click)="onCourseToggle(course)"
-          class="flex items-center p-2 hover:bg-gray-200 cursor-pointer">
-          <input type="checkbox" [value]="course" [checked]="selectedCourses.includes(course)"
-            class="form-checkbox text-blue-600 mr-2" (click)="onCheckboxClick($event, course)" />
-          <span>{{ course }}</span>
-        </div>
+    <div class="relative">
+      <label class="block text-gray-700 text-sm mb-2">Course</label>
+
+      <!-- Button to toggle dropdown -->
+      <button (click)="courseDropdownOpen = !courseDropdownOpen"
+        class="w-full bg-white border rounded py-2 px-3 text-left text-gray-700">
+        {{ selectedCourse ? selectedCourse : 'Select Course' }}
+      </button>
+      <!-- Dropdown content -->
+      <div *ngIf="courseDropdownOpen"
+        class="absolute z-10 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-full">
+        <ul>
+          <li *ngFor="let course of availableCourses" (click)="selectCourse(course)" 
+            class="cursor-pointer py-2 px-4 hover:bg-gray-100">
+            {{ course.courseName }}
+          </li>
+        </ul>
+      </div>
+
+      <!-- Icon for the dropdown -->
+      <div class="absolute inset-y-0 right-0 pr-3 pt-7 flex items-center pointer-events-none">
+        <i class="fas fa-chevron-down text-gray-500"></i>
       </div>
     </div>
+
+
 
     <!-- Parent's Full Name -->
     <div>
@@ -163,7 +182,7 @@
     <!-- Parent's Gender -->
     <div>
       <label class="block text-gray-700 text-sm mb-2">Parent's Gender</label>
-      <div class="flex items-center">
+      <div class="flex items-center mt-2">
         <label class="inline-flex items-center mr-4">
           <input formControlName="parentGender" type="radio" value="Male" class="form-radio text-blue-600" />
           <span class="ml-2">Male</span>
