@@ -8,7 +8,6 @@ import {
 } from '@angular/common/http';
 import { StudentRequest } from 'src/app/features/admin-management/model/studentRequest.model';
 import { Class } from 'src/app/features/admin-management/model/class.model';
-import { CourseResponse } from 'src/app/features/admin-management/model/course/course-response.model';
 import { CourseRequest } from 'src/app/features/admin-management/model/course/course-request.model';
 import { StudentResponse } from 'src/app/features/admin-management/model/student-response.model.';
 
@@ -39,8 +38,7 @@ export class AdminService {
 
   addStudent(student: StudentRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}/students/add`, student, {
-      responseType: 'text' 
-
+      responseType: 'json' 
     });
   }
 
@@ -106,38 +104,60 @@ export class AdminService {
     return this.http.delete(`${this.baseUrl}/classes/${id}`, { responseType: 'text' });
   }
 
-  getAllCourse(): Observable<CourseResponse[]> {
-    return this.http.get<CourseResponse[]>(`${this.baseUrl}/courses`);
+
+  //Courses
+   // Get all courses
+   getAllCourse(): Observable<CourseRequest[]> {
+    return this.http.get<CourseRequest[]>(`${this.baseUrl}/courses`)
+      .pipe(catchError(this.handleError));
   }
 
-  getCourseByCode(courseCode: string): Observable<CourseResponse> {
-    return this.http.get<CourseResponse>(`${this.baseUrl}/${courseCode}`);
+  // Get course by code
+  getCourseByCode(courseCode: string): Observable<CourseRequest> {
+    return this.http.get<CourseRequest>(`${this.baseUrl}/courses/code/${courseCode}`)
+      .pipe(catchError(this.handleError));
   }
 
-  getCourseById(courseId: number): Observable<CourseResponse> {
-    return this.http.get<CourseResponse>(`${this.baseUrl}/courses/${courseId}`);
+  // Get course by ID
+  getCourseById(courseId: number): Observable<CourseRequest> {
+    return this.http.get<CourseRequest>(`${this.baseUrl}/courses/${courseId}`)
+      .pipe(catchError(this.handleError));
   }
 
+  // Add a new course
   addCourse(course: CourseRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}/courses/add`, course, {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+      responseType: 'text' // Adjust this based on what the backend returns (e.g., plain text or JSON)
     })
+    .pipe(catchError(this.handleError));
   }
 
-  updateCourse(courseId: number, course: CourseRequest): Observable<CourseResponse> {
-    return this.http.put<CourseResponse>(`${this.baseUrl}/courses/${courseId}`, course, {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    });
+  // Update an existing course
+  updateCourse(courseId: number, course: CourseRequest): Observable<CourseRequest> {
+    return this.http.put<CourseRequest>(`${this.baseUrl}/courses/${courseId}`, course, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }) // Ensure the content type is JSON
+    })
+    .pipe(catchError(this.handleError));
   }
 
-  deleteCourse(courseId: number): Observable<CourseResponse> {
+  // Delete a course
+  deleteCourse(courseId: number): Observable<any> {
     return this.http.delete<any>(`${this.baseUrl}/courses/${courseId}`)
-      .pipe(  
-        catchError((error: HttpErrorResponse) => {
-          console.error('Delete course failed:', error);
-          return throwError(error); // Propagate the error to be caught in the component
-        })
-      );
+      .pipe(catchError(this.handleError));
+  }
+
+  // Handle HTTP errors
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'An unknown error occurred!';
+    if (error.error instanceof ErrorEvent) {
+      // Client-side or network error
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Backend returned an unsuccessful response code
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    console.error(errorMessage);
+    return throwError(errorMessage);
   }
   
 }
