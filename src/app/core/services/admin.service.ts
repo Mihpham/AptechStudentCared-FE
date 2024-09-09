@@ -6,9 +6,11 @@ import {
   HttpErrorResponse,
   HttpHeaders,
 } from '@angular/common/http';
-import { StudentResponse } from 'src/app/features/admin-management/model/studentResponse.model';
 import { StudentRequest } from 'src/app/features/admin-management/model/studentRequest.model';
 import { Class } from 'src/app/features/admin-management/model/class.model';
+import { CourseResponse } from 'src/app/features/admin-management/model/course/course-response.model';
+import { CourseRequest } from 'src/app/features/admin-management/model/course/course-request.model';
+import { StudentResponse } from 'src/app/features/admin-management/model/student-response.model.';
 
 @Injectable({
   providedIn: 'root',
@@ -102,6 +104,40 @@ export class AdminService {
 
   deleteClass(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/classes/${id}`, { responseType: 'text' });
+  }
+
+  getAllCourse(): Observable<CourseResponse[]> {
+    return this.http.get<CourseResponse[]>(`${this.baseUrl}/courses`);
+  }
+
+  getCourseByCode(courseCode: string): Observable<CourseResponse> {
+    return this.http.get<CourseResponse>(`${this.baseUrl}/${courseCode}`);
+  }
+
+  getCourseById(courseId: number): Observable<CourseResponse> {
+    return this.http.get<CourseResponse>(`${this.baseUrl}/courses/${courseId}`);
+  }
+
+  addCourse(course: CourseRequest): Observable<any> {
+    return this.http.post(`${this.baseUrl}/courses/add`, course, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    })
+  }
+
+  updateCourse(courseId: number, course: CourseRequest): Observable<CourseResponse> {
+    return this.http.put<CourseResponse>(`${this.baseUrl}/courses/${courseId}`, course, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    });
+  }
+
+  deleteCourse(courseId: number): Observable<CourseResponse> {
+    return this.http.delete<any>(`${this.baseUrl}/courses/${courseId}`)
+      .pipe(  
+        catchError((error: HttpErrorResponse) => {
+          console.error('Delete course failed:', error);
+          return throwError(error); // Propagate the error to be caught in the component
+        })
+      );
   }
   
 }

@@ -10,8 +10,8 @@ import { AdminService } from 'src/app/core/services/admin.service';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { ToastrService } from 'ngx-toastr';
-import { StudentResponse } from '../../model/studentResponse.model';
 import { Router } from '@angular/router';
+import { StudentResponse } from '../../model/student-response.model.';
 
 @Component({
   selector: 'app-student-all-statuses',

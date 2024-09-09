@@ -9,7 +9,6 @@ import { ExamMarkComponent } from './exam-mark/exam-mark.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { AttendanceComponent } from './attendance/attendance.component';
 import { CalendarComponent } from './calendar/calendar.component';
-import { CourseComponent } from './course/course.component';
 import { SubjectComponent } from './subject/subject.component';
 import { StudentComponent } from './student/student.component';
 import { StudyingComponent } from './student/studying/studying.component';
@@ -41,6 +40,10 @@ import { SubjectAddComponent } from './subject/subject-add/subject-add.component
 import { SubjectUpdateComponent } from './subject/subject-update/subject-update.component';
 import { CdkTableModule } from '@angular/cdk/table';
 import { FilterDialogComponent } from './class/filter-dialog/filter-dialog.component';
+import { CourseComponent } from './course/course.component';
+import { CourseAddComponent } from './course/course-add/course-add.component';
+import { CourseDetailDialogComponent } from './course/course-detail-dialog/course-detail-dialog.component';
+import { CourseUpdateDialogComponent } from './course/course-update-dialog/course-update-dialog.component';
 
 @NgModule({
   
@@ -72,7 +75,10 @@ import { FilterDialogComponent } from './class/filter-dialog/filter-dialog.compo
     SubjectListComponent,
     SubjectAddComponent,
     SubjectUpdateComponent,
-    FilterDialogComponent
+    FilterDialogComponent,
+    CourseAddComponent,
+    CourseDetailDialogComponent,
+    CourseUpdateDialogComponent
   ],
   imports: [
     CommonModule,
