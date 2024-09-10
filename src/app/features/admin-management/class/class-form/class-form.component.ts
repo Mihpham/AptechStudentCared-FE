@@ -16,7 +16,7 @@ export class ClassFormComponent implements OnInit {
     center: '',
     hour: '',
     days: '',
-    admissionDate: new Date(),
+    createdAt: new Date(),
     status: 'STUDYING',
   };
 
@@ -48,8 +48,8 @@ export class ClassFormComponent implements OnInit {
         },
       });
     }
-    if (this.class.admissionDate) {
-      this.formattedDate = this.formatDate(this.class.admissionDate);
+    if (this.class.createdAt) {
+      this.formattedDate = this.formatDate(this.class.createdAt);
     }
   }
   
@@ -64,8 +64,8 @@ export class ClassFormComponent implements OnInit {
   }
   saveClass(): void {
     this.isLoading = true; // Set loading state
-    if (this.class.admissionDate) {
-      this.class.admissionDate = new Date(this.class.admissionDate);
+    if (this.class.createdAt) {
+      this.class.createdAt = new Date(this.class.createdAt);
     }
     this.class.hour = `${this.startHour} - ${this.finishHour}`;
 
@@ -144,7 +144,7 @@ export class ClassFormComponent implements OnInit {
       center: '',
       hour: '',
       days: '',
-      admissionDate: new Date(),
+      createdAt: new Date(),
       status: 'STUDYING',
     };
     this.isEditMode = false; // Reset edit mode for next potential entry

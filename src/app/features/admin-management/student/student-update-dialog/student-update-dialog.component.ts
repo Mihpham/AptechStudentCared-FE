@@ -1,22 +1,26 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdminService } from 'src/app/core/services/admin.service';
 import { StudentRequest } from '../../model/studentRequest.model';
 import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { StudentResponse } from '../../model/student-response.model.';
+import { catchError, throwError } from 'rxjs';
+import { Class } from '../../model/class.model';
+import { CourseResponse } from '../../model/course/course-response.model';
 
 @Component({
   selector: 'app-student-update-dialog',
   templateUrl: './student-update-dialog.component.html',
   styleUrls: ['./student-update-dialog.component.scss']
 })
-export class StudentUpdateDialogComponent {
+export class StudentUpdateDialogComponent implements OnInit {
   studentForm: FormGroup;
   imageUrl: string | ArrayBuffer | null = null;
   imageError: string | null = null;
-  availableCourses: string[] = ['Mathematics', 'Science', 'History', 'Art']; // Example courses
-  selectedCourses: string[] = [];
+  availableClasses: Class[] = [];
+  availableCourses: CourseResponse[] = [];
+  selectedCourses: string[] = [];  // Initialize as an empty array
   isDropdownOpen: boolean = false;
 
   constructor(
@@ -27,23 +31,33 @@ export class StudentUpdateDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.studentForm = this.fb.group({
-      userId: [data?.userId || ''], // Ensure userId is included
+      userId: [data?.userId || '', Validators.required],
       rollNumber: [data?.rollNumber || '', Validators.required],
-      fullName: [data?.fullName || '', Validators.required],
-      gender: [data?.gender || 'Male'], // Ensure field names match
+      fullName: [data?.fullName || '', [Validators.required, Validators.minLength(2)]],
+      gender: [data?.gender || 'Male', Validators.required],
       className: [data?.className || '', Validators.required],
       dob: [data?.dob || '', [Validators.required, this.dateValidator]],
       email: [data?.email || '', [Validators.required, Validators.email]],
       phoneNumber: [data?.phoneNumber || '', [Validators.required, Validators.pattern(/^\+?[0-9]\d{1,10}$/)]],
       address: [data?.address || '', Validators.required],
-      courses: [data?.courses || [], Validators.required], // Ensure this is an array
+      courses: [data?.courses || []], // Initialize with data if available
       status: [data?.status || '', Validators.required],
-      parentFullName: [data?.parentFullName || ''],
-      parentGender: [data?.parentGender || 'Male'],
-      parentPhone: [data?.parentPhone || ''],
-      studentRelation: [data?.studentRelation || ''],
+      parentFullName: [data?.parentFullName || '', [Validators.required, Validators.minLength(2)]],
+      parentGender: [data?.parentGender || 'Male', Validators.required],
+      parentPhone: [data?.parentPhone || '', [Validators.required, Validators.pattern(/^\+?[0-9]\d{1,10}$/)]],
+      studentRelation: [data?.studentRelation || '', Validators.required],
     });
 
+    if (data?.courses) {
+      this.selectedCourses = data.courses;
+      this.studentForm.get('courses')?.setValue(this.selectedCourses);
+    }
+    
+  }
+
+  ngOnInit(): void {
+    this.loadAvailableClasses();
+    this.loadAvailableCourses();
   }
 
   dateValidator(control: any) {
@@ -55,11 +69,33 @@ export class StudentUpdateDialogComponent {
     return null;
   }
 
-  onCourseToggle(course: string) {
-    if (this.selectedCourses.includes(course)) {
-      this.selectedCourses = this.selectedCourses.filter(c => c !== course);
-    } else {
-      this.selectedCourses.push(course);
+  selectCourse(courseItem: CourseResponse) {
+    const courseName = courseItem.courseName;
+    if (!this.selectedCourses.includes(courseName)) {
+      this.selectedCourses.push(courseName);
+    }
+    this.studentForm.get('courses')?.setValue(this.selectedCourses);
+    this.isDropdownOpen = false; // Close dropdown after selection
+  }
+
+  getSelectedCoursesString(): string {
+    return this.selectedCourses.join(', '); // Join with ", " ensuring no extra commas
+  }
+
+  getFormattedCourses(): string {
+    return this.getSelectedCoursesString(); // Call the method to get the formatted string
+  }
+
+  onCourseToggle(course: CourseResponse) {
+    const courseName = course.courseName;
+    if (courseName) {
+      const index = this.selectedCourses.indexOf(courseName);
+      if (index > -1) {
+        this.selectedCourses.splice(index, 1);  // Remove the course if already selected
+      } else {
+        this.selectedCourses.push(courseName);  // Add the course if not selected
+      }
+      this.studentForm.get('courses')?.setValue(this.selectedCourses);  // Update form control
     }
   }
 
@@ -67,22 +103,29 @@ export class StudentUpdateDialogComponent {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
-  onCheckboxClick(event: MouseEvent, course: string) {
+  onCheckboxClick(event: MouseEvent, course: CourseResponse) {
     event.stopPropagation();
     this.onCourseToggle(course);
   }
 
-  onCourseChange(event: any) {
-    const courses = this.studentForm.get('courses')?.value || [];
-    if (event.target.checked) {
-      courses.push(event.target.value);
-    } else {
-      const index = courses.indexOf(event.target.value);
-      if (index > -1) {
-        courses.splice(index, 1);
-      }
-    }
-    this.studentForm.get('courses')?.setValue(courses);
+  loadAvailableClasses() {
+    this.studentService.findAllClasses().pipe(
+      catchError((err) => {
+        this.toastr.error('Failed to load classes');
+        return throwError(() => err);
+      })
+    ).subscribe({
+      next: (classes) => (this.availableClasses = classes),
+    });
+  }
+
+  loadAvailableCourses() {
+    this.studentService.getAllCourse().subscribe({
+      next: (courses: CourseResponse[]) => {
+        this.availableCourses = courses;
+      },
+      error: (err) => this.toastr.error('Failed to load courses'),
+    });
   }
 
   onImageChange(event: Event) {
@@ -104,11 +147,9 @@ export class StudentUpdateDialogComponent {
 
   onSubmit(): void {
     if (this.studentForm.valid) {
-  
       const studentId = this.studentForm.value.userId;
       const student: StudentRequest = this.studentForm.value;
-  
-      // Call the service to update the student
+
       this.studentService.updateStudent(studentId, student).subscribe({
         next: (response: StudentResponse) => {
           this.toastr.success('Student updated successfully', 'Success');
@@ -120,11 +161,9 @@ export class StudentUpdateDialogComponent {
         }
       });
     } else {
-      console.log('Form is invalid', this.studentForm.errors);
       this.toastr.error('Please fill in all required fields correctly.', 'Form Invalid');
     }
   }
-  
 
   onCancel(): void {
     this.dialogRef.close();

@@ -4,7 +4,7 @@ export interface Class {
     center: string;
     hour: string;
     days: string;
-    admissionDate: Date;
+    createdAt: Date;
     status: string;
   }
   

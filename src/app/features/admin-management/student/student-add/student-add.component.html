@@ -1,7 +1,5 @@
 <form [formGroup]="studentForm" (ngSubmit)="onSubmit()"
   class="p-4 max-w-lg mx-auto bg-white shadow-md rounded md:max-w-lg">
-
-  
   <h2 class="text-xl font-bold ">Add Student</h2>
   <hr>
   <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
@@ -56,14 +54,14 @@
     <div class="relative">
       <label class="block text-gray-700 text-sm mb-2">Class</label>
 
-      <button (click)="dropdownOpen = !dropdownOpen"
+      <button type="button" (click)="dropdownOpen = !dropdownOpen"
         class="w-full bg-white border rounded py-2 px-3 text-left text-gray-700">
         {{ selectedClass ? selectedClass : 'Select Class' }}
       </button>
 
       <div *ngIf="dropdownOpen" class="absolute z-10 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-full">
         <ul>
-          <li *ngFor="let class of availableClasses" (click)="selectClass(class)" 
+          <li *ngFor="let class of availableClasses" (click)="selectClass(class)"
             class="cursor-pointer py-2 px-4 hover:bg-gray-100">
             {{ class.className }}
           </li>
@@ -110,22 +108,25 @@
       </div>
     </div>
 
-    <!-- Courses -->
 
+    <!-- Courses -->
     <div class="relative">
       <label class="block text-gray-700 text-sm mb-2">Course</label>
 
       <!-- Button to toggle dropdown -->
-      <button (click)="courseDropdownOpen = !courseDropdownOpen"
+      <button type="button" (click)="courseDropdownOpen = !courseDropdownOpen"
         class="w-full bg-white border rounded py-2 px-3 text-left text-gray-700">
-        {{ selectedCourse ? selectedCourse : 'Select Course' }}
+        {{ getFormattedCourses() || 'Select Courses' }}
       </button>
+
       <!-- Dropdown content -->
       <div *ngIf="courseDropdownOpen"
         class="absolute z-10 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-full">
         <ul>
-          <li *ngFor="let course of availableCourses" (click)="selectCourse(course)" 
+          <li *ngFor="let course of availableCourses" (click)="onCourseToggle(course.courseName)"
             class="cursor-pointer py-2 px-4 hover:bg-gray-100">
+            <input type="checkbox" [checked]="selectedCourses.includes(course.courseName)"
+              (click)="$event.stopPropagation()" />
             {{ course.courseName }}
           </li>
         </ul>
@@ -136,8 +137,6 @@
         <i class="fas fa-chevron-down text-gray-500"></i>
       </div>
     </div>
-
-
 
     <!-- Parent's Full Name -->
     <div>
@@ -175,14 +174,14 @@
         type="tel" />
       <div *ngIf="studentForm.get('parentPhone')?.invalid && studentForm.get('parentPhone')?.touched"
         class="text-red-500 text-xs mt-1">
-        Parent's Phone Number is required and must be in a valid format.
+        Parent's Phone Number is required.
       </div>
     </div>
 
     <!-- Parent's Gender -->
     <div>
       <label class="block text-gray-700 text-sm mb-2">Parent's Gender</label>
-      <div class="flex items-center mt-2">
+      <div class="flex items-center">
         <label class="inline-flex items-center mr-4">
           <input formControlName="parentGender" type="radio" value="Male" class="form-radio text-blue-600" />
           <span class="ml-2">Male</span>
@@ -201,18 +200,18 @@
         Parent's Gender is required.
       </div>
     </div>
+  </div>
 
-    <!-- Form Buttons -->
-    <div class="flex items-center justify-between mt-4">
-      <div class="form-actions">
-        <button type="button" (click)="onCancel()"
-          class="mr-2 bg-gray-300 hover:bg-gray-400 text-white py-2 px-4 rounded">
-          Cancel
-        </button>
-        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
-          Save
-        </button>
-      </div>
-    </div>
+  <!-- Buttons -->
+  <div class="flex justify-end gap-4 mt-4">
+    <button type="submit"
+      class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline">
+      Submit
+    </button>
+    <button type="button" (click)="onCancel()"
+      class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 focus:outline-none focus:shadow-outline">
+      Cancel
+    </button>
   </div>
 </form>
+

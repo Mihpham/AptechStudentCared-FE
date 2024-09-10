@@ -16,10 +16,9 @@ import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { catchError, throwError } from 'rxjs';
 import { StudentRequest } from '../../model/studentRequest.model';
-import { AuthService } from 'src/app/core/auth/auth.service';
 import { Class } from '../../model/class.model';
-import { CourseRequest } from '../../model/course/course-request.model';
 import { CourseResponse } from '../../model/course/course-response.model';
+import { AddressService } from 'src/app/core/services/address.service';
 
 @Component({
   selector: 'app-student-add',
@@ -36,20 +35,22 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
   courseDropdownOpen = false;
   selectedClass: string | undefined;
   selectedCourse: any;
+  provinces: any[] = [];
 
   isDropdownOpen = false;
   private dropdownElement: HTMLElement | null = null;
   students: StudentRequest | undefined;
-  @Output() studentAdded = new EventEmitter<StudentRequest>();
+  @Output() studentAdded = new EventEmitter<void>();
 
   constructor(
     private fb: FormBuilder,
     private studentService: AdminService,
+    private addressService: AddressService,
     private toastr: ToastrService,
     private el: ElementRef,
     private changeDetectorRef: ChangeDetectorRef,
     public dialogRef: MatDialogRef<StudentAddComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: StudentRequest
   ) {
     this.studentForm = this.fb.group({
       image: ['avatar-default.webp'],
@@ -74,6 +75,10 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
     this.loadAvailableClasses();
     this.loadAvailableCourses();
     this.loadGenderParent();
+
+    this.addressService.getProvinces().subscribe((data) => {
+      this.provinces = data;
+    });
   }
 
   ngAfterViewInit() {
@@ -91,10 +96,17 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
   }
 
   loadAvailableClasses() {
-    this.studentService.findAllClasses().subscribe({
-      next: (classes) => (this.availableClasses = classes),
-      error: (err) => this.toastr.error('Failed to load classes'),
-    });
+    this.studentService
+      .findAllClasses()
+      .pipe(
+        catchError((err) => {
+          this.toastr.error('Failed to load classes');
+          return throwError(() => err);
+        })
+      )
+      .subscribe({
+        next: (classes) => (this.availableClasses = classes),
+      });
   }
 
   loadAvailableCourses() {
@@ -118,10 +130,11 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
       });
   }
 
+  
   selectClass(className: any) {
     this.selectedClass = className.className;
     this.studentForm.get('className')?.setValue(this.selectedClass);
-    this.dropdownOpen = false; 
+    this.dropdownOpen = false;
   }
 
   selectCourse(courseItem: any) {
@@ -130,9 +143,16 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
     this.courseDropdownOpen = false;
   }
 
-
   toggleDropdown(): void {
     this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  toggleCourseDropdown() {
+    this.courseDropdownOpen = !this.courseDropdownOpen;
+  }
+
+  getFormattedCourses(): string {
+    return this.selectedCourses.join(', ');
   }
 
   dateValidator(control: any) {
@@ -160,33 +180,52 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
     this.onCourseToggle(course);
   }
 
- onSubmit() {
-  if (this.studentForm.valid) {
-    const student: StudentRequest = this.studentForm.value;
-    this.studentService.addStudent(student).subscribe({
-      next: () => {
-        this.toastr.success('Student added successfully');
-        this.studentAdded.emit(student); // Emit the event
-        this.changeDetectorRef.detectChanges();
-        this.closeDialog();
-      },
-      error: (err) => {
-        console.error('Error:', err);
-        this.toastr.error('Failed to add student');
-      },
-    });
-  } else {
-    this.studentForm.markAllAsTouched(); // Mark all fields as touched to trigger validation
-    this.toastr.error('Please fill out the form correctly!');
-  }
-}
+  onSubmit() {
+    if (this.studentForm.valid) {
+      const student: StudentRequest = this.studentForm.value;
 
+      this.studentService.addStudent(student).subscribe({
+        next: () => {
+          this.toastr.success('Student added successfully');
+
+          // Emit event to notify parent component that a student was added
+          this.studentAdded.emit();
+
+          // Optionally trigger change detection (only if necessary)
+          this.changeDetectorRef.detectChanges();
+
+          // Close the dialog and pass true to indicate success
+          this.closeDialog(true);
+        },
+        error: (err) => {
+          // Handle the specific full name error case
+          if (
+            err.message &&
+            err.message.includes(
+              'Full name must contain at least first name and last name.'
+            )
+          ) {
+            this.toastr.error(
+              'Full name must contain at least first name and last name.'
+            );
+          } else {
+            // Handle generic error case
+            this.toastr.error('Failed to add student!', 'Error');
+          }
+        },
+      });
+    } else {
+      // Mark all form controls as touched to show validation errors
+      this.studentForm.markAllAsTouched();
+      this.toastr.error('Please fill out the form correctly!');
+    }
+  }
 
   onCancel(): void {
     this.closeDialog();
   }
 
-  private closeDialog(newStudent?: StudentRequest): void {
-    this.dialogRef.close(newStudent);
+  private closeDialog(reload: boolean = false): void {
+    this.dialogRef.close({ reload }); // Pass result object
   }
 }

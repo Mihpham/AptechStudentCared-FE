@@ -9,7 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-subject-update',
   templateUrl: './subject-update.component.html',
-  styleUrls: ['./subject-update.component.css']
+  styleUrls: ['./subject-update.component.scss']
 })
 export class SubjectUpdateComponent implements OnInit {
   subjectForm!: FormGroup;

@@ -51,7 +51,7 @@
         <tr *ngFor="let classItem of paginatedClasses()" class="border-b">
           <td class="py-2 px-4 text-center">{{ classItem.className }}</td>
           <td class="py-2 px-4 text-center">{{ classItem.days }}</td>
-          <td class="py-2 px-4 text-center">{{ classItem.admissionDate | date: 'dd-MM-yyyy' }}</td>
+          <td class="py-2 px-4 text-center">{{ classItem.createdAt | date: 'dd-MM-yyyy' }}</td>
           <td class="py-2 px-4 text-center">{{ classItem.hour }}</td>
           <td class="py-2 px-4 text-center">{{ classItem.center }}</td>
           <td class="py-2 px-4 text-center" [ngClass]="{

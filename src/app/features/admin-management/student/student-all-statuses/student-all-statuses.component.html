@@ -113,11 +113,12 @@
                     <mat-icon>edit</mat-icon>
                 </button>
                 <button class="text-red-400 hover:text-red-600" matTooltip="Delete Student"
-                    (click)="onDelete(student.userId)">
+                    (click)="onDelete(student.userId, $event)">
                     <mat-icon>delete</mat-icon>
                 </button>
             </mat-cell>
         </ng-container>
+
 
         <!-- No Students Available Message -->
         <div *ngIf="dataSource.data.length === 0" class="no-students text-center text-gray-500">
