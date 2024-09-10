@@ -1,53 +1,68 @@
-<div class="dialog-content">
-  <h2 class="dialog-title">Update Course</h2>
+<form [formGroup]="courseForm" class="p-4 max-w-lg mx-auto bg-white shadow-md rounded md:max-w-lg">
+  <h2 class="text-xl font-bold">Update Course</h2>
   <hr>
-  <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
-    <section class="course-information">
-      <h3>Course Information</h3>
-      <!-- Course ID -->
-      <section class="courseId">
-        <div class="form-row">
-          <div class="form-group half-width">
-            <label for="courseId">Course ID</label>
-            <span id="courseId">{{courseForm.value.courseId}}</span>
-          </div>
-        </div>
-      </section>
-      <!-- Course Name -->
-      <section class="courseName">
-        <div class="form-row">
-          <div class="form-group half-width">
-            <label for="courseName">Course Name</label>
-            <input id="courseName" type="text" formControlName="courseName" placeholder="Enter course name">
-          </div>
-        </div>
-      </section>
 
-      <!-- Course Code -->
-      <section class="courseCode">
-        <div class="form-row">
-          <div class="form-group half-width">
-            <label for="courseCode">Course Code</label>
-            <input id="courseCode" type="text" formControlName="courseCode" placeholder="Enter course code">
-          </div>
-        </div>
-      </section>
-
-      <!-- Class Schedule -->
-      <section class="classSchedule">
-        <div class="form-row">
-          <div class="form-group half-width">
-            <label for="classSchedule">Class Schedule</label>
-            <input id="classSchedule" type="text" formControlName="classSchedule" placeholder="Enter class schedule">
-          </div>
-        </div>
-      </section>
-
-
-    <div class="form-actions">
-      <button type="button" (click)="onCancel()">Cancel</button>
-      <button type="submit" [disabled]="courseForm.invalid">Save</button>
+  <!-- Course Details -->
+  <section class="mb-4">
+    <label class="block text-gray-700 text-sm mb-2">Course Name</label>
+    <input formControlName="courseName"
+      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      type="text" />
+    <div *ngIf="courseForm.get('courseName')?.invalid && courseForm.get('courseName')?.touched"
+      class="text-red-500 text-xs mt-1">
+      Course Name is required.
     </div>
-    </section>
-  </form>
-</div>
+  </section>
+
+  <section class="mb-4">
+    <label class="block text-gray-700 text-sm mb-2">Course Code</label>
+    <input formControlName="courseCode"
+      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      type="text" />
+    <div *ngIf="courseForm.get('courseCode')?.invalid && courseForm.get('courseCode')?.touched"
+      class="text-red-500 text-xs mt-1">
+      Course Code is required.
+    </div>
+  </section>
+
+  <section class="mb-4">
+    <label class="block text-gray-700 text-sm mb-2">Course Completion Time</label>
+    <input formControlName="courseCompTime"
+      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      type="text" />
+    <div *ngIf="courseForm.get('courseCompTime')?.invalid && courseForm.get('courseCompTime')?.touched"
+      class="text-red-500 text-xs mt-1">
+      Course Completion Time is required.
+    </div>
+  </section>
+
+  <!-- Semesters -->
+  <div class="relative mb-4">
+    <label class="block text-gray-700 text-sm mb-2">Semesters</label>
+    <div *ngFor="let semester of semesters" class="mb-4">
+      <label class="block text-gray-700 text-sm mt-2">{{ semester }}</label>
+      <input type="text" [value]="getSelectedSubjects(semester).join(', ')" (click)="toggleDropdown(semester)" placeholder="Select subjects"
+        readonly class="form-input border rounded p-2 w-full cursor-pointer" />
+
+      <!-- Dropdown Menu -->
+      <div *ngIf="isDropdownOpen[semester]" class="absolute z-10 bg-white border border-gray-300 rounded mt-1 w-full shadow-lg max-h-60 overflow-y-auto">
+        <div *ngFor="let subject of getFilteredSubjects(semester)" (click)="onSubjectToggle(semester, subject)"
+          class="flex items-center p-2 hover:bg-gray-200 cursor-pointer">
+          <input type="checkbox" [checked]="isSubjectSelected(semester, subject)"
+            class="form-checkbox text-blue-600 mr-2" (click)="onCheckboxClick($event, semester, subject)" />
+          <span>{{ subject }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="flex items-center justify-between mt-4">
+    <button type="button" (click)="onCancel()" class="mr-2 bg-gray-300 hover:bg-gray-400 text-white py-2 px-4 rounded">
+      Cancel
+    </button>
+    <button type="submit" (click)="onSubmit()" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+      Save
+    </button>
+  </div>
+</form>

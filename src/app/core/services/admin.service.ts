@@ -18,7 +18,7 @@ import { CourseResponse } from 'src/app/features/admin-management/model/course/c
 export class AdminService {
   private baseUrl = UserEnviroment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   headers = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -140,9 +140,9 @@ export class AdminService {
   }
 
   // Get course by ID
-  getCourseById(courseId: number): Observable<CourseRequest> {
+  getCourseById(courseId: number): Observable<CourseResponse> {
     return this.http
-      .get<CourseRequest>(`${this.baseUrl}/courses/${courseId}`)
+      .get<CourseResponse>(`${this.baseUrl}/courses/${courseId}`)
       .pipe(catchError(this.handleError));
   }
 
@@ -156,16 +156,11 @@ export class AdminService {
   }
 
   // Update an existing course
-  updateCourse(
-    courseId: number,
-    course: CourseRequest
-  ): Observable<CourseResponse> {
-    return this.http
-      .put<CourseResponse>(`${this.baseUrl}/courses/${courseId}`, course, {
-        headers: new HttpHeaders({ 'Content-Type': 'application/json' }), // Ensure the content type is JSON
-      })
+  updateCourse(id: number, course: CourseResponse): Observable<CourseResponse> {
+    return this.http.put<CourseResponse>(`${this.baseUrl}/courses/${id}`, course)
       .pipe(catchError(this.handleError));
   }
+  
 
   // Delete a course
   deleteCourse(courseId: number): Observable<any> {

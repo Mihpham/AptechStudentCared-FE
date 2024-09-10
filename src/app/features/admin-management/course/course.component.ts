@@ -21,9 +21,9 @@ import { CourseUpdateDialogComponent } from './course-update-dialog/course-updat
 })
 
 export class CourseComponent implements OnInit, AfterViewInit {
-  courseWorksHtml = '<p>course works!</p>';
   courses: CourseResponse[] = [];
   totalCourses: number = 0;
+  searchTerm: string = '';
 
 
   displayedColumns: string[] = [
@@ -50,15 +50,14 @@ export class CourseComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.loadCourse();
   }
+
   loadCourse(): void {
-    this.courseService
-      .getAllCourse() // Ensure this returns CourseResponse[]
-      .pipe(tap((data) => console.log('Data loaded:', data)))
-      .subscribe(
+    this.courseService.getAllCourse().subscribe(
         (data: CourseResponse[]) => {
           this.courses = data; // This is of type CourseResponse[]
           this.dataSource.data = [...this.courses];
           this.totalCourses = this.courses.length;
+          this.applyFilter(this.searchTerm);
           if (this.paginator) {
             this.paginator.pageIndex = 0;
           }
@@ -69,10 +68,15 @@ export class CourseComponent implements OnInit, AfterViewInit {
           console.error('Error fetching courses', error);
         }
       );
-}
+  }
 
-  
+  applyFilter(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
 
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
@@ -99,7 +103,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onUpdate(event: MouseEvent, course: CourseResponse): void {
+  onUpdate( course: CourseResponse): void {
     console.log('Couse ID: ', course.id);
     const dialogRef = this.dialog.open(CourseUpdateDialogComponent, {
       width: '550px',
@@ -146,5 +150,13 @@ export class CourseComponent implements OnInit, AfterViewInit {
         });
       }
     });
+  }
+
+  triggerFileInput(): void {
+    // Handle file import action
+  }
+
+  onExport(): void {
+    // Handle export action
   }
 }

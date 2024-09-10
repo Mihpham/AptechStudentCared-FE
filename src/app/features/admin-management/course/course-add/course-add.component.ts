@@ -141,7 +141,7 @@ export class CourseAddComponent implements AfterViewInit, OnDestroy, OnInit {
           console.log('Response:', response);
           this.toastr.success('Course added successfully');
           this.courseForm.reset();
-          this.dialogRef.close(); // Close the dialog
+          this.dialogRef.close({ reload: true }); // Close the dialog
         },
         error: (err) => {
           console.error('Error:', err);
