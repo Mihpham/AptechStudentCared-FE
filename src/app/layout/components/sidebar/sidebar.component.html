@@ -1,88 +1,132 @@
-<nav [ngClass]="{'sidebar-collapsed': collapsed}" class="w-48 bg-white h-screen shadow-md fixed top-0 left-0 overflow-y-auto dark:bg-stone-900">
+<nav [ngClass]="{'sidebar-collapsed': collapsed}"
+  class="w-48 bg-white h-screen shadow-md fixed top-0 left-0 overflow-y-auto dark:bg-stone-900">
   <div class="flex items-center justify-center py-4">
-    <img *ngIf="!collapsed" class="dark:text-white" src="assets/images/logo.png" alt="Aptech Logo" class="mx-auto mb-4 w-36">
+    <img *ngIf="!collapsed" class="dark:text-white" src="assets/images/logo.png" alt="Aptech Logo"
+      class="mx-auto mb-4 w-36">
   </div>
-  <button (click)="toggleSidebar()" class="p-2 text-gray-700 hover:bg-gray-200 rounded-lg dark:text-gray-100 dark:bg-gray-300 dark:hover:bg-white">
+  <button (click)="toggleSidebar()"
+    class="p-2 text-gray-700 hover:bg-gray-200 rounded-lg dark:text-gray-100 dark:bg-gray-300 dark:hover:bg-white">
     <i class="fas fa-bars"></i> <!-- Icon for menu button -->
   </button>
   <ul class="space-y-2 mt-2 dark:text-white">
     <li>
-      <a routerLink="/admin/dashboard" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700  hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
+      <a routerLink="/admin/dashboard" routerLinkActive="active-link"
+        class="flex items-center p-2 text-gray-700  hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg cursor-pointer transition duration-300">
         <i class="fas fa-tachometer-alt w-6 h-3 mr-3 dark:text-white"></i>
-        <span *ngIf="!collapsed"  class="dark:text-white">Dashboard</span>
+        <span *ngIf="!collapsed" class="dark:text-white">Dashboard</span>
       </a>
     </li>
     <li>
-      <a routerLink="/admin/class" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
-        <i class="fas fa-chalkboard-teacher w-6 h-3 mr-3 dark:text-white"></i>
+      <a routerLink="/admin/class" routerLinkActive="active-link"
+        class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
+        <i class="fas fa-chalkboard-teacher w-6 h-3 mr-3 dark:text-white "></i>
         <span *ngIf="!collapsed" class="dark:text-white">Class</span>
       </a>
     </li>
     <li>
-      <div>
-        <a (click)="toggleStudentDropdown()" routerLink="/admin/student/all" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg cursor-pointer transition duration-300">
-          <i class="fas fa-user-graduate w-6 h-3 mr-3 dark:text-white"></i>
-          <span *ngIf="!collapsed" class="dark:text-white">Student</span>
-          <i class="fas fa-chevron-down ml-auto" *ngIf="!collapsed" class="dark:text-white"></i>
-        </a>
-        <ul *ngIf="isStudentDropdownOpen" class="ml-8 space-y-1">
-          <li><a routerLink="/admin/student/studying" routerLinkActive="active-link" class="block p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">Studying</a></li>
-          <li><a routerLink="/admin/student/delay" routerLinkActive="active-link" class="block p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">Delay</a></li>
-          <li><a routerLink="/admin/student/dropout" routerLinkActive="active-link" class="block p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">Dropout</a></li>
-          <li><a routerLink="/admin/student/graduated" routerLinkActive="active-link" class="block p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">Graduated</a></li>
-        </ul>
-      </div>
+      <a (click)="toggleStudentDropdown()" routerLink="/admin/student/all" routerLinkActive="active-link"
+        class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
+        <i class="fas fa-user-graduate w-6 h-3 mr-3 dark:text-white"></i>
+        <span *ngIf="!collapsed" class="dark:text-white">Student</span>
+        <i *ngIf="!collapsed"  [ngClass]="isStudentDropdownOpen ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"
+          class="ml-auto chevron-icon dark:text-white"></i>
+      </a>
+      <ul *ngIf="isStudentDropdownOpen && !collapsed" class="ml-8 space-y-1">
+        <li>
+          <a routerLink="/admin/student/studying" routerLinkActive="active-link"
+            class="block p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
+            <i class="fas fa-book-reader w-6 h-3 mr-3 dark:text-white"></i>
+            <span>Studying</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/admin/student/delay" routerLinkActive="active-link"
+            class="block p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
+            <i class="fas fa-clock w-6 h-3 mr-3 dark:text-white"></i>
+            <span>Delay</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/admin/student/dropout" routerLinkActive="active-link"
+            class="block p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
+            <i class="fas fa-door-open w-6 h-3 mr-3 dark:text-white"></i>
+            <span>Dropout</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/admin/student/graduated" routerLinkActive="active-link"
+            class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
+            <i class="fas fa-graduation-cap w-6 h-3 mr-2 dark:text-white"></i>
+            <span class="ml-2">Graduated</span>
+          </a>
+        </li>
+
+      </ul>
     </li>
     <li>
-      <a routerLink="/admin/exam-mark" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
+      <a routerLink="/admin/exam-mark" routerLinkActive="active-link"
+        class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
         <i class="fas fa-file-alt w-6 h-3 mr-3 dark:text-white"></i>
         <span *ngIf="!collapsed" class="dark:text-white">Exam Mark</span>
       </a>
     </li>
     <li>
-      <a routerLink="/admin/teacher" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
+      <a routerLink="/admin/teacher" routerLinkActive="active-link"
+        class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
         <i class="fas fa-chalkboard w-6 h-3 mr-3 dark:text-white"></i>
         <span *ngIf="!collapsed" class="dark:text-white">Teacher</span>
       </a>
     </li>
     <li>
-      <a routerLink="/admin/sro" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
+      <a routerLink="/admin/sro" routerLinkActive="active-link"
+        class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
         <i class="fas fa-id-badge w-6 h-3 mr-3 dark:text-white"></i>
         <span *ngIf="!collapsed" class="dark:text-white">SRO</span>
       </a>
     </li>
     <li>
-      <a routerLink="/admin/accounts" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
+      <a routerLink="/admin/accounts" routerLinkActive="active-link"
+        class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
         <i class="fas fa-book w-6 h-3 mr-3 dark:text-white"></i>
         <span *ngIf="!collapsed" class="dark:text-white">Accounts</span>
       </a>
     </li>
     <li>
-      <div>
-        <a (click)="toggleAttendanceDropdown()" routerLink="/admin/attendance" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg cursor-pointer transition duration-300">
-          <i class="fas fa-user-graduate w-6 h-3 mr-3 dark:text-white"></i>
-          <span *ngIf="!collapsed" class="dark:text-white">Attendance</span>
-          <i class="fas fa-chevron-down ml-auto" *ngIf="!collapsed" class="dark:text-white"></i>
-        </a>
-        <ul *ngIf="isAttendanceDropdownOpen" class="ml-8 space-y-1">
-          <li><a routerLink="/admin/attendance/attendance-record" routerLinkActive="active-link" class="block p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">Attendance Record</a></li>
-        </ul>
-      </div>
+      <a (click)="toggleAttendanceDropdown()" routerLink="/admin/attendance" routerLinkActive="active-link"
+        class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg cursor-pointer transition duration-300">
+        <i class="fas fa-user-check w-6 h-3 mr-2 dark:text-white"></i>
+        <span *ngIf="!collapsed" class="dark:text-white">Attendance</span>
+        <i *ngIf="!collapsed" [ngClass]="isAttendanceDropdownOpen ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"
+          class="ml-auto dark:text-white chevron-icon"></i>
+      </a>
+      <ul *ngIf="isAttendanceDropdownOpen && !collapsed" class="ml-8 space-y-1">
+        <li>
+          <a routerLink="/admin/attendance/attendance-record" routerLinkActive="active-link"
+            class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
+            <i class="fas fa-file-alt w-6 h-3 mr-3 dark:text-white"></i>
+            <span class="ml-2">Attendance Record</span>
+          </a>
+        </li>
+      </ul>
+
     </li>
     <li>
-      <a routerLink="/admin/calendar" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
+      <a routerLink="/admin/calendar" routerLinkActive="active-link"
+        class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
         <i class="fas fa-calendar-alt w-6 h-3 mr-3 dark:text-white"></i>
         <span *ngIf="!collapsed" class="dark:text-white">Calendar</span>
       </a>
     </li>
     <li>
-      <a routerLink="/admin/course" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
+      <a routerLink="/admin/course" routerLinkActive="active-link"
+        class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
         <i class="fas fa-book-open w-6 h-3 mr-3 dark:text-white"></i>
         <span *ngIf="!collapsed" class="dark:text-white">Course</span>
       </a>
     </li>
     <li>
-      <a routerLink="/admin/subject" routerLinkActive="active-link" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
+      <a routerLink="/admin/subject" routerLinkActive="active-link"
+        class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
         <i class="fas fa-book-reader w-6 h-3 mr-3 dark:text-white"></i>
         <span *ngIf="!collapsed" class="dark:text-white">Subject</span>
       </a>

@@ -73,7 +73,6 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
       }
     );
   }
-  
 
   applyFilter(filterValue: string): void {
     this.dataSource.filterPredicate = (
@@ -98,7 +97,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
 
   onRowClick(event: MouseEvent, student: StudentRequest): void {
     this.router.navigate(['/admin/student/details', student.userId]);
-  } 
+  }
 
   onStudentAdded() {
     this.loadStudent(); // Tải lại danh sách sinh viên khi nhận được sự kiện
@@ -106,19 +105,19 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
 
   onAdd(): void {
     const dialogRef = this.dialog.open(StudentAddComponent, {
-      width: '550px',
+      width: '650px',
     });
-        dialogRef.afterClosed().subscribe(result => {
-          if (result && result.reload) {
-            this.loadStudent(); // Reload data if needed
-          }
-        });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && result.reload) {
+        this.loadStudent(); // Reload data if needed
+      }
+    });
   }
 
   onUpdate(student: StudentRequest, event: Event): void {
     event.stopPropagation(); // To prevent the row click event from triggering
     const dialogRef = this.dialog.open(StudentUpdateDialogComponent, {
-      width: '550px',
+      width: '650px',
       data: student,
     });
 
@@ -161,28 +160,27 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   onDelete(userId: number, event: Event): void {
     event.stopPropagation(); // Prevent the row click event from firing
     if (confirm('Are you sure you want to delete this student?')) {
-        this.studentService.deleteStudent(userId).subscribe({
-            next: () => {
-                console.log(`Student with ID ${userId} deleted`);
+      this.studentService.deleteStudent(userId).subscribe({
+        next: () => {
+          console.log(`Student with ID ${userId} deleted`);
 
-                this.students = this.students.filter(
-                    (student) => student.userId !== userId
-                );
-                this.dataSource.data = this.students;
-                this.totalStudents = this.students.length;
+          this.students = this.students.filter(
+            (student) => student.userId !== userId
+          );
+          this.dataSource.data = this.students;
+          this.totalStudents = this.students.length;
 
-                this.toastr.success('Student deleted successfully');
-            },
-            error: (err) => {
-                console.error('Error deleting student:', err);
-                const errorMessage =
-                    err.error && err.error.message
-                        ? err.error.message
-                        : 'Failed to delete student';
-                this.toastr.error(errorMessage);
-            },
-        });
+          this.toastr.success('Student deleted successfully');
+        },
+        error: (err) => {
+          console.error('Error deleting student:', err);
+          const errorMessage =
+            err.error && err.error.message
+              ? err.error.message
+              : 'Failed to delete student';
+          this.toastr.error(errorMessage);
+        },
+      });
     }
-}
-
+  }
 }

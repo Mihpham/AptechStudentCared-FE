@@ -58,6 +58,7 @@ export class StudentUpdateDialogComponent implements OnInit {
   ngOnInit(): void {
     this.loadAvailableClasses();
     this.loadAvailableCourses();
+    this.loadGenderParent();
   }
 
   dateValidator(control: any) {
@@ -67,6 +68,18 @@ export class StudentUpdateDialogComponent implements OnInit {
       return { invalidDate: 'Date of birth cannot be in the future.' };
     }
     return null;
+  }
+
+  loadGenderParent() {
+    this.studentForm.get('studentRelation')?.valueChanges.subscribe((relation) => {
+      if (relation === 'Father') {
+        this.studentForm.get('parentGender')?.setValue('Male');
+      } else if (relation === 'Mother') {
+        this.studentForm.get('parentGender')?.setValue('Female');
+      } else {
+        this.studentForm.get('parentGender')?.setValue(null);
+      }
+    });
   }
 
   selectCourse(courseItem: CourseResponse) {

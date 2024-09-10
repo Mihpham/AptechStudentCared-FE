@@ -1,8 +1,8 @@
-<form [formGroup]="studentForm" (ngSubmit)="onSubmit()"
-  class="p-4 max-w-lg mx-auto bg-white shadow-md rounded md:max-w-lg">
-  <h2 class="text-xl font-bold ">Add Student</h2>
-  <hr>
-  <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
+<form [formGroup]="studentForm" (ngSubmit)="onSubmit()" class="p-6 pt-5 h-auto bg-white shadow-md rounded">
+  <h2 class="text-2xl font-bold mb-4">Add Student</h2>
+  <hr class="mb-4">
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 pb-5">
     <!-- Roll Number -->
     <div>
       <label class="block text-gray-700 text-sm mb-2">Roll Number</label>
@@ -26,53 +26,10 @@
         Full Name is required and must be at least 2 characters long.
       </div>
     </div>
+  </div>
 
-    <!-- Gender -->
-    <div>
-      <label class="block text-gray-700 text-sm mb-2">Gender</label>
-      <div class="flex items-center">
-        <label class="inline-flex items-center mr-4">
-          <input formControlName="gender" type="radio" value="Male" class="form-radio text-blue-600" />
-          <span class="ml-2">Male</span>
-        </label>
-        <label class="inline-flex items-center mr-4">
-          <input formControlName="gender" type="radio" value="Female" class="form-radio text-blue-600" />
-          <span class="ml-2">Female</span>
-        </label>
-        <label class="inline-flex items-center">
-          <input formControlName="gender" type="radio" value="Other" class="form-radio text-blue-600" />
-          <span class="ml-2">Other</span>
-        </label>
-      </div>
-      <div *ngIf="studentForm.get('gender')?.invalid && studentForm.get('gender')?.touched"
-        class="text-red-500 text-xs mt-1">
-        Gender is required.
-      </div>
-    </div>
-
-    <!-- Class Name -->
-    <div class="relative">
-      <label class="block text-gray-700 text-sm mb-2">Class</label>
-
-      <button type="button" (click)="dropdownOpen = !dropdownOpen"
-        class="w-full bg-white border rounded py-2 px-3 text-left text-gray-700">
-        {{ selectedClass ? selectedClass : 'Select Class' }}
-      </button>
-
-      <div *ngIf="dropdownOpen" class="absolute z-10 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-full">
-        <ul>
-          <li *ngFor="let class of availableClasses" (click)="selectClass(class)"
-            class="cursor-pointer py-2 px-4 hover:bg-gray-100">
-            {{ class.className }}
-          </li>
-        </ul>
-      </div>
-
-      <div class="absolute inset-y-0 right-0 pr-3 pt-7 flex items-center pointer-events-none">
-        <i class="fas fa-chevron-down text-gray-500"></i>
-      </div>
-    </div>
-
+  <!-- Second row: Gender, Date of Birth, Phone Number -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 ">
     <!-- Date of Birth -->
     <div>
       <label class="block text-gray-700 text-sm mb-2">Date of Birth</label>
@@ -96,30 +53,66 @@
       </div>
     </div>
 
-    <!-- Address -->
+    <!-- Gender -->
     <div>
-      <label class="block text-gray-700 text-sm mb-2">Address</label>
-      <input formControlName="address"
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        type="text" />
-      <div *ngIf="studentForm.get('address')?.invalid && studentForm.get('address')?.touched"
+      <label class="block text-gray-700 text-sm mb-2">Gender</label>
+      <div class="flex items-center">
+        <label class="inline-flex items-center mr-2">
+          <input formControlName="gender" type="radio" value="Male" class="form-radio text-blue-600" />
+          <span class="ml-2">Male</span>
+        </label>
+        <label class="inline-flex items-center mr-4">
+          <input formControlName="gender" type="radio" value="Female" class="form-radio text-blue-600" />
+          <span class="ml-2">Female</span>
+        </label>
+        <label class="inline-flex items-center">
+          <input formControlName="gender" type="radio" value="Other" class="form-radio text-blue-600" />
+          <span class="ml-2">Other</span>
+        </label>
+      </div>
+      <div *ngIf="studentForm.get('gender')?.invalid && studentForm.get('gender')?.touched"
         class="text-red-500 text-xs mt-1">
-        Address is required.
+        Gender is required.
       </div>
     </div>
+  </div>
 
+  <!-- Address -->
+  <div class="pt-5">
+    <app-location-selector [provinces]="provinces" [districts]="districts" [communes]="communes"
+      (locationChanged)="onLocationChange($event)">
+    </app-location-selector>
+  </div>
+
+  <!-- Class and Courses -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-5">
+    <!-- Class Name -->
+    <div class="relative">
+      <label class="block text-gray-700 text-sm mb-2">Class</label>
+      <button type="button" (click)="dropdownOpen = !dropdownOpen"
+        class="w-full bg-white border rounded py-2 px-3 text-left text-gray-700">
+        {{ selectedClass ? selectedClass : 'Select Class' }}
+      </button>
+      <div *ngIf="dropdownOpen" class="absolute z-10 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-full">
+        <ul>
+          <li *ngFor="let class of availableClasses" (click)="selectClass(class)"
+            class="cursor-pointer py-2 px-4 hover:bg-gray-100">
+            {{ class.className }}
+          </li>
+        </ul>
+      </div>
+      <div class="absolute inset-y-0 right-0 pr-3 pt-7 flex items-center pointer-events-none">
+        <i class="fas fa-chevron-down text-gray-500"></i>
+      </div>
+    </div>
 
     <!-- Courses -->
     <div class="relative">
       <label class="block text-gray-700 text-sm mb-2">Course</label>
-
-      <!-- Button to toggle dropdown -->
       <button type="button" (click)="courseDropdownOpen = !courseDropdownOpen"
         class="w-full bg-white border rounded py-2 px-3 text-left text-gray-700">
         {{ getFormattedCourses() || 'Select Courses' }}
       </button>
-
-      <!-- Dropdown content -->
       <div *ngIf="courseDropdownOpen"
         class="absolute z-10 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-full">
         <ul>
@@ -131,13 +124,14 @@
           </li>
         </ul>
       </div>
-
-      <!-- Icon for the dropdown -->
       <div class="absolute inset-y-0 right-0 pr-3 pt-7 flex items-center pointer-events-none">
         <i class="fas fa-chevron-down text-gray-500"></i>
       </div>
     </div>
+  </div>
 
+  <!-- Parent Information -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-5">
     <!-- Parent's Full Name -->
     <div>
       <label class="block text-gray-700 text-sm mb-2">Parent's Full Name</label>
@@ -203,7 +197,7 @@
   </div>
 
   <!-- Buttons -->
-  <div class="flex justify-end gap-4 mt-4">
+  <div class="flex justify-end gap-4 pt-8">
     <button type="submit"
       class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline">
       Submit
@@ -214,4 +208,3 @@
     </button>
   </div>
 </form>
-

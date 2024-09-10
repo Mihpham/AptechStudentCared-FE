@@ -1,25 +1,12 @@
-import {
-  Component,
-  HostListener,
-  ElementRef,
-  AfterViewInit,
-  OnDestroy,
-  ChangeDetectorRef,
-  Output,
-  EventEmitter,
-  OnInit,
-  Inject,
-} from '@angular/core';
+import { Component, OnInit, AfterViewInit, HostListener, ElementRef, ChangeDetectorRef, Output, EventEmitter, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdminService } from 'src/app/core/services/admin.service';
 import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { catchError, throwError } from 'rxjs';
+import { catchError, finalize, throwError } from 'rxjs';
 import { StudentRequest } from '../../model/studentRequest.model';
 import { Class } from '../../model/class.model';
 import { CourseResponse } from '../../model/course/course-response.model';
-import { AddressService } from 'src/app/core/services/address.service';
-
 @Component({
   selector: 'app-student-add',
   templateUrl: './student-add.component.html',
@@ -36,6 +23,10 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
   selectedClass: string | undefined;
   selectedCourse: any;
   provinces: any[] = [];
+  districts: any[] = [];  // Add this line
+  communes: any[] = [];  
+  loadingClasses = false;
+
 
   isDropdownOpen = false;
   private dropdownElement: HTMLElement | null = null;
@@ -45,7 +36,6 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
   constructor(
     private fb: FormBuilder,
     private studentService: AdminService,
-    private addressService: AddressService,
     private toastr: ToastrService,
     private el: ElementRef,
     private changeDetectorRef: ChangeDetectorRef,
@@ -59,26 +49,22 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
       gender: ['', Validators.required],
       className: ['', Validators.required],
       dob: ['', [Validators.required, this.dateValidator]],
-      phoneNumber: [
-        '',
-        [Validators.required, Validators.pattern(/^\+?[0-9]\d{1,10}$/)],
-      ],
-      address: ['', Validators.required],
-      courses: this.fb.control([], Validators.required),
+      phoneNumber: ['', [Validators.required, Validators.pattern(/^\+?[0-9]\d{1,10}$/)]],
       parentFullName: ['', [Validators.required, Validators.minLength(2)]],
       studentRelation: ['', Validators.required],
       parentPhone: ['', [Validators.required]],
       parentGender: ['', Validators.required],
+      courses: this.fb.control([]),
+      province: [''],  // Add this
+      district: [''],  // Add this
+      commune: [''], 
     });
   }
+
   ngOnInit(): void {
     this.loadAvailableClasses();
     this.loadAvailableCourses();
     this.loadGenderParent();
-
-    this.addressService.getProvinces().subscribe((data) => {
-      this.provinces = data;
-    });
   }
 
   ngAfterViewInit() {
@@ -87,50 +73,48 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
 
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {
-    if (
-      this.dropdownElement &&
-      !this.dropdownElement.contains(event.target as Node)
-    ) {
+    if (this.dropdownElement && !this.dropdownElement.contains(event.target as Node)) {
       this.isDropdownOpen = false;
     }
   }
 
   loadAvailableClasses() {
-    this.studentService
-      .findAllClasses()
-      .pipe(
-        catchError((err) => {
-          this.toastr.error('Failed to load classes');
-          return throwError(() => err);
-        })
-      )
-      .subscribe({
-        next: (classes) => (this.availableClasses = classes),
-      });
+    this.loadingClasses = true;
+    this.studentService.findAllClasses().pipe(
+      catchError((err) => {
+        this.toastr.error('Failed to load classes');
+        return throwError(() => err);
+      }),
+      finalize(() => this.loadingClasses = false)
+    ).subscribe({
+      next: (classes) => (this.availableClasses = classes),
+    });
   }
 
   loadAvailableCourses() {
-    this.studentService.getAllCourse().subscribe({
+    this.studentService.getAllCourse().pipe(
+      catchError((err) => {
+        this.toastr.error('Failed to load courses');
+        return throwError(() => err);
+      }),
+      finalize(() => this.loadingClasses = false)
+    ).subscribe({
       next: (courses) => (this.availableCourses = courses),
-      error: (err) => this.toastr.error('Failed to load courses'),
     });
   }
 
   loadGenderParent() {
-    this.studentForm
-      .get('studentRelation')
-      ?.valueChanges.subscribe((relation) => {
-        if (relation === 'Father') {
-          this.studentForm.get('parentGender')?.setValue('Male');
-        } else if (relation === 'Mother') {
-          this.studentForm.get('parentGender')?.setValue('Female');
-        } else {
-          this.studentForm.get('parentGender')?.setValue(null);
-        }
-      });
+    this.studentForm.get('studentRelation')?.valueChanges.subscribe((relation) => {
+      if (relation === 'Father') {
+        this.studentForm.get('parentGender')?.setValue('Male');
+      } else if (relation === 'Mother') {
+        this.studentForm.get('parentGender')?.setValue('Female');
+      } else {
+        this.studentForm.get('parentGender')?.setValue(null);
+      }
+    });
   }
 
-  
   selectClass(className: any) {
     this.selectedClass = className.className;
     this.studentForm.get('className')?.setValue(this.selectedClass);
@@ -182,44 +166,33 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
 
   onSubmit() {
     if (this.studentForm.valid) {
-      const student: StudentRequest = this.studentForm.value;
-
+      const formValues = this.studentForm.value;
+  
+      // Combine the full address using names
+      const fullAddress = `${formValues.province}, ${formValues.district}, ${formValues.commune}`;
+  
+      const student: StudentRequest = {
+        ...formValues,
+        address: fullAddress, // Use the combined address
+      };
+  
       this.studentService.addStudent(student).subscribe({
         next: () => {
           this.toastr.success('Student added successfully');
-
-          // Emit event to notify parent component that a student was added
           this.studentAdded.emit();
-
-          // Optionally trigger change detection (only if necessary)
           this.changeDetectorRef.detectChanges();
-
-          // Close the dialog and pass true to indicate success
           this.closeDialog(true);
         },
         error: (err) => {
-          // Handle the specific full name error case
-          if (
-            err.message &&
-            err.message.includes(
-              'Full name must contain at least first name and last name.'
-            )
-          ) {
-            this.toastr.error(
-              'Full name must contain at least first name and last name.'
-            );
-          } else {
-            // Handle generic error case
-            this.toastr.error('Failed to add student!', 'Error');
-          }
+          this.toastr.error('Failed to add student!', 'Error');
         },
       });
     } else {
-      // Mark all form controls as touched to show validation errors
       this.studentForm.markAllAsTouched();
       this.toastr.error('Please fill out the form correctly!');
     }
   }
+  
 
   onCancel(): void {
     this.closeDialog();
@@ -228,4 +201,11 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
   private closeDialog(reload: boolean = false): void {
     this.dialogRef.close({ reload }); // Pass result object
   }
+
+  onLocationChange(location: { province: string; district: string; commune: string }): void {
+    this.studentForm.get('province')?.setValue(location.province);  
+    this.studentForm.get('district')?.setValue(location.district);  // Set name, not code
+    this.studentForm.get('commune')?.setValue(location.commune);   
+  }
+  
 }
