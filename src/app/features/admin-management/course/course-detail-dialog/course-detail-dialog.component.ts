@@ -1,8 +1,9 @@
-import { Component, Inject } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { AdminService } from 'src/app/core/services/admin.service';
+import { CourseResponse } from '../../model/course/course-response.model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { CourseRequest } from '../../model/course/course-request.model';
-
-
+import { DialogRef } from '@angular/cdk/dialog';
 
 @Component({
   selector: 'app-course-detail-dialog',
@@ -10,12 +11,15 @@ import { CourseRequest } from '../../model/course/course-request.model';
   styleUrls: ['./course-detail-dialog.component.scss']
 })
 export class CourseDetailDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<CourseDetailDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public course: CourseRequest
-  ) { }
+  course: CourseResponse;
 
-  onClose(): void {
-    this.dialogRef.close();
+  constructor(public dialogRef: MatDialogRef<CourseDetailDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: CourseResponse) {
+    this.course = data;
   }
+  
+onClose(){
+  this.dialogRef.close();
+}
+  
 }

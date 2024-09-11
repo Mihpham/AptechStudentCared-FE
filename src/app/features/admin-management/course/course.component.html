@@ -70,10 +70,10 @@
     <ng-container matColumnDef="actions">
       <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
       <mat-cell *matCellDef="let course" class="actions-cell">
-        <button class="text-blue-400 hover:text-blue-600" (click)="onUpdate(course)">
+        <button class="text-blue-400 hover:text-blue-600" (click)="onUpdate($event, course)">
           <mat-icon>edit</mat-icon>
         </button>
-        <button class="text-red-400 hover:text-red-600" (click)="onDelete(course)">
+        <button class="text-red-400 hover:text-red-600" (click)="onDelete($event, course)">
           <mat-icon>delete</mat-icon>
         </button>
       </mat-cell>
@@ -81,7 +81,7 @@
     
     <!-- Table Header and Rows -->
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClick(row.id)"></mat-row>
   </mat-table>
 
   <!-- Paginator -->
