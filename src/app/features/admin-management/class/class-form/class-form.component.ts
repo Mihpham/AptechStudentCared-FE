@@ -1,8 +1,8 @@
 import { Component, OnInit, WritableSignal, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Class } from '../../model/class.model';
-import { AdminService } from 'src/app/core/services/admin.service';
 import { ToastrService } from 'ngx-toastr';
+import { ClassService } from 'src/app/core/services/admin/class.service';
 
 @Component({
   selector: 'app-class-form',
@@ -31,7 +31,7 @@ export class ClassFormComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private classService: AdminService,
+    private classService: ClassService,
     private toastr: ToastrService
   ) {}
 

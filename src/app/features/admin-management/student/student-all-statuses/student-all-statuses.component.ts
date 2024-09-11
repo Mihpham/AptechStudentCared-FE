@@ -12,13 +12,13 @@ import { StudentDetailDialogComponent } from '../student-detail/student-detail-d
 import { StudentAddComponent } from '../student-add/student-add.component';
 import { StudentUpdateDialogComponent } from '../student-update-dialog/student-update-dialog.component';
 import { StudentRequest } from '../../model/studentRequest.model';
-import { AdminService } from 'src/app/core/services/admin.service';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { StudentResponse } from '../../model/student-response.model.';
 import Swal from 'sweetalert2';
+import { StudentService } from 'src/app/core/services/admin/student.service';
 
 @Component({
   selector: 'app-student-all-statuses',
@@ -50,7 +50,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
-    private studentService: AdminService,
+    private studentService: StudentService,
     private toastr: ToastrService,
     private router: Router
   ) {}
@@ -201,6 +201,8 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
             this.updateStatusCounts(); // Update counts after deletion
 
             Swal.fire('Deleted!', 'Student has been deleted.', 'success');
+            this.toastr.success('Student  has been deleted.');
+
           },
           error: (err) => {
             console.error('Error deleting student:', err);

@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, throwError } from 'rxjs';
-import { AdminService } from 'src/app/core/services/admin.service';
 import { SubjectService } from 'src/app/core/services/admin/subject.service';
 import { CourseResponse } from '../../model/course/course-response.model';
+import { CourseService } from 'src/app/core/services/admin/course.service';
 
 @Component({
   selector: 'app-course-update-dialog',
@@ -23,7 +23,7 @@ export class CourseUpdateDialogComponent implements OnInit, AfterViewInit, OnDes
 
   constructor(
     private fb: FormBuilder,
-    private courseService: AdminService,
+    private courseService: CourseService,
     private toastr: ToastrService,
     private dialogRef: MatDialogRef<CourseUpdateDialogComponent>,
     private el: ElementRef,

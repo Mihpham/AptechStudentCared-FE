@@ -3,8 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
-import { tap } from 'rxjs';
-import { AdminService } from 'src/app/core/services/admin.service';
 import { CourseRequest } from '../model/course/course-request.model';
 import { CourseResponse } from '../model/course/course-response.model';
 
@@ -13,6 +11,7 @@ import { CourseAddComponent } from './course-add/course-add.component';
 import Swal from 'sweetalert2';
 import { CourseDetailDialogComponent } from './course-detail-dialog/course-detail-dialog.component';
 import { CourseUpdateDialogComponent } from './course-update-dialog/course-update-dialog.component';
+import { CourseService } from 'src/app/core/services/admin/course.service';
 
 @Component({
   selector: 'app-course',
@@ -41,7 +40,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
-    private courseService: AdminService,
+    private courseService: CourseService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
   ) { }

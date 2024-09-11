@@ -2,7 +2,6 @@
 
 .student-list {
     padding: 16px;
-    background-color: #E0EDF0;
 }
 
 .header {
@@ -66,6 +65,7 @@ input:not(:placeholder-shown)~label {
 .mat-table {
     table-layout: fixed;
     width: 100%;
+    border: 1px solid white;
     /* Đảm bảo bảng chiếm toàn bộ chiều rộng của phần tử chứa */
 }
 

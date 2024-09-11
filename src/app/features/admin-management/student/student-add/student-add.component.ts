@@ -10,18 +10,20 @@ import {
   Inject,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AdminService } from 'src/app/core/services/admin.service';
 import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { catchError, finalize, throwError } from 'rxjs';
 import { StudentRequest } from '../../model/studentRequest.model';
 import { Class } from '../../model/class.model';
 import { CourseResponse } from '../../model/course/course-response.model';
+import { StudentService } from 'src/app/core/services/admin/student.service';
+import { ClassService } from 'src/app/core/services/admin/class.service';
+import { CourseService } from 'src/app/core/services/admin/course.service';
 @Component({
   selector: 'app-student-add',
   templateUrl: './student-add.component.html',
   styleUrls: ['./student-add.component.scss'],
-  providers: [AdminService],
+  providers: [StudentService],
 })
 export class StudentAddComponent implements AfterViewInit, OnInit {
   studentForm: FormGroup;
@@ -39,12 +41,14 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
 
   isDropdownOpen = false;
   private dropdownElement: HTMLElement | null = null;
-  students: StudentRequest | undefined;
+  students: StudentRequest[] = [];
   @Output() studentAdded = new EventEmitter<void>();
 
   constructor(
     private fb: FormBuilder,
-    private studentService: AdminService,
+    private studentService: StudentService,
+    private classService: ClassService,
+    private coursesService: CourseService,
     private toastr: ToastrService,
     private el: ElementRef,
     private changeDetectorRef: ChangeDetectorRef,
@@ -95,7 +99,7 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
 
   loadAvailableClasses() {
     this.loadingClasses = true;
-    this.studentService
+    this.classService
       .findAllClasses()
       .pipe(
         catchError((err) => {
@@ -110,7 +114,7 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
   }
 
   loadAvailableCourses() {
-    this.studentService
+    this.coursesService
       .getAllCourse()
       .pipe(
         catchError((err) => {
@@ -165,25 +169,27 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
   dateValidator(control: any) {
     const birthDate = new Date(control.value);
     const today = new Date();
-  
+
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
       age--;
     }
-  
+
     if (age < 18) {
       return { invalidAge: 'Student must be at least 18 years old.' };
     }
-  
+
     if (birthDate > today) {
       return { invalidDate: 'Date of birth cannot be in the future.' };
     }
-  
-    return null; 
+
+    return null;
   }
-  
 
   onCourseToggle(course: string) {
     const index = this.selectedCourses.indexOf(course);
@@ -206,7 +212,7 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
       const formValues = this.studentForm.value;
 
       // Combine the full address using names
-      const fullAddress = `${formValues.province}, ${formValues.district}, ${formValues.commune}`;
+      const fullAddress = `${formValues.commune} , ${formValues.district}, ${formValues.province}`;
 
       const student: StudentRequest = {
         ...formValues,
@@ -214,15 +220,28 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
       };
 
       this.studentService.addStudent(student).subscribe({
-        next: () => {
+        next: (addedStudent) => {
           this.toastr.success('Student added successfully');
           this.studentAdded.emit();
+
+          // Thêm sinh viên mới vào đầu danh sách
+          this.students.unshift(addedStudent); // `students` là danh sách sinh viên hiển thị
+
+          // Cuộn đến đầu trang hoặc tới phần tử mới
+          this.scrollToNewlyAddedStudent();
+
           this.changeDetectorRef.detectChanges();
           this.closeDialog(true);
         },
         error: (error) => {
-          if (error.message.includes('Full name must contain at least first name and last name.')) {
-            this.toastr.error('Full name must contain at least first name and last name.!');
+          if (
+            error.message.includes(
+              'Full name must contain at least first name and last name.'
+            )
+          ) {
+            this.toastr.error(
+              'Full name must contain at least first name and last name.'
+            );
           } else {
             this.toastr.error('Failed to add student!', 'Error');
           }
@@ -232,6 +251,17 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
       this.studentForm.markAllAsTouched();
       this.toastr.error('Please fill out the form correctly!');
     }
+  }
+  scrollToNewlyAddedStudent() {
+    setTimeout(() => {
+      const newStudentElement = document.getElementById('student-0'); // Giả định sinh viên mới có ID 'student-0'
+      if (newStudentElement) {
+        newStudentElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }
+    }, 0);
   }
 
   onCancel(): void {

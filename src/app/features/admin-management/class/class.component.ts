@@ -1,10 +1,11 @@
 import { Component, OnInit, WritableSignal, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Class } from '../model/class.model';
-import { AdminService } from 'src/app/core/services/admin.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { FilterDialogComponent } from './filter-dialog/filter-dialog.component';
+import Swal from 'sweetalert2';
+import { ClassService } from 'src/app/core/services/admin/class.service';
 
 @Component({
   selector: 'app-class',
@@ -23,7 +24,7 @@ export class ClassComponent implements OnInit {
   totalPages = signal(0);
 
   constructor(
-    private classService: AdminService,
+    private classService: ClassService,
     private toastr: ToastrService,
     private router: Router,
     private dialog: MatDialog
@@ -141,20 +142,49 @@ export class ClassComponent implements OnInit {
   }
 
   deleteClass(id: number): void {
-    if (confirm('Are you sure you want to delete this class?')) {
-      this.classService.deleteClass(id).subscribe({
-        next: () => {
-          const updatedClasses = this.classes().filter(classItem => classItem.id !== id);
-          this.classes.set(updatedClasses);
-          this.applyFilters();
-          this.updateStatusCounts();
-          this.toastr.success('Class deleted successfully!', 'Success');
-        },
-        error: (error) => {
-          console.error('Error details:', error.message);
-          this.toastr.error('Failed to delete class!', 'Error');
-        }
-      });
-    }
+    // Show confirmation dialog with SweetAlert2
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Proceed with deletion
+        this.classService.deleteClass(id).subscribe({
+          next: () => {
+            // Update the list of classes by filtering out the deleted class
+            const updatedClasses = this.classes().filter(classItem => classItem.id !== id);
+            this.classes.set(updatedClasses);
+  
+            // Apply any filters that might be set
+            this.applyFilters();
+  
+            // Update status counts if applicable
+            this.updateStatusCounts();
+  
+            // Show success message with SweetAlert2
+            Swal.fire(
+              'Deleted!',
+              'Class has been deleted.',
+              'success'
+            );
+          },
+          error: (error) => {
+            // Log error details and show error message with SweetAlert2
+            console.error('Error details:', error.message);
+            Swal.fire(
+              'Error!',
+              'Failed to delete class.',
+              'error'
+            );
+          }
+        });
+      }
+    });
   }
+  
 }
