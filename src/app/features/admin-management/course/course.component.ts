@@ -87,8 +87,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
     this.courseService.getCourseById(courseId).subscribe((course: CourseResponse) => {
       this.dialog.open(CourseDetailDialogComponent, {
         data: course,
-        width: '80%', // Đặt kích thước của dialog
-        maxWidth: '600px' // Đặt chiều rộng tối đa của dialog
+        width: '500px' // Đặt chiều rộng tối đa của dialog
       });
     });
   }
@@ -106,6 +105,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
   }
 
   onUpdate(event: MouseEvent, course: CourseResponse): void {
+    event.stopPropagation();
     console.log('Couse ID: ', course.id);
     const dialogRef = this.dialog.open(CourseUpdateDialogComponent, {
       width: '550px',
@@ -121,7 +121,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
 
   onDelete(event: MouseEvent, course: CourseResponse): void {
-    // console.log('CourseId:', course.id);
+    event.stopPropagation();
     Swal.fire({
       width: 350,
       title: 'Are you sure you want to delete this student?',
