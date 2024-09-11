@@ -1,7 +1,13 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table'; // No need to remove this since it's used for data handling, not UI
-import { MatPaginator } from '@angular/material/paginator'; // This can be replaced with custom pagination if desired
-import { MatDialog } from '@angular/material/dialog'; // You can keep Angular Material Dialog if you still want to use it
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  AfterViewInit,
+  signal,
+} from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatDialog } from '@angular/material/dialog';
 import { StudentDetailDialogComponent } from '../student-detail/student-detail-dialog.component';
 import { StudentAddComponent } from '../student-add/student-add.component';
 import { StudentUpdateDialogComponent } from '../student-update-dialog/student-update-dialog.component';
@@ -12,6 +18,7 @@ import { saveAs } from 'file-saver';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { StudentResponse } from '../../model/student-response.model.';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-student-all-statuses',
@@ -23,6 +30,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   selectedStudent: StudentRequest | undefined;
   totalStudents: number = 0;
   searchTerm: string = '';
+  statusCounts = signal({ studying: 0, delay: 0, dropped: 0, graduated: 0 });
 
   displayedColumns: string[] = [
     'avatar',
@@ -62,10 +70,8 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
         this.students = data;
         this.dataSource.data = this.students;
         this.totalStudents = this.students.length;
-        if (this.paginator) {
-          this.dataSource.paginator = this.paginator;
-          this.paginator.pageIndex = 0;
-        }
+        this.updateStatusCounts(); // Update counts when loading students
+        this.dataSource.paginator = this.paginator;
       },
       (error) => {
         this.toastr.error('Failed to load students', 'Error');
@@ -89,10 +95,21 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  updateStatusCounts(): void {
+    const counts = { studying: 0, delay: 0, dropped: 0, graduated: 0 };
+
+    this.students.forEach((student) => {
+      if (student.status === 'STUDYING') counts.studying++;
+      if (student.status === 'DELAY') counts.delay++;
+      if (student.status === 'DROPPED') counts.dropped++;
+      if (student.status === 'GRADUATED') counts.graduated++;
+    });
+
+    this.statusCounts.set(counts);
+  }
+
   ngAfterViewInit(): void {
-    if (this.paginator) {
-      this.dataSource.paginator = this.paginator;
-    }
+    this.dataSource.paginator = this.paginator;
   }
 
   onRowClick(event: MouseEvent, student: StudentRequest): void {
@@ -131,6 +148,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
           if (index !== -1) {
             this.students[index] = updatedStudent;
             this.dataSource.data = [...this.students];
+            this.updateStatusCounts(); // Update counts after editing
           } else {
             this.loadStudent();
           }
@@ -159,28 +177,41 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
 
   onDelete(userId: number, event: Event): void {
     event.stopPropagation(); // Prevent the row click event from firing
-    if (confirm('Are you sure you want to delete this student?')) {
-      this.studentService.deleteStudent(userId).subscribe({
-        next: () => {
-          console.log(`Student with ID ${userId} deleted`);
 
-          this.students = this.students.filter(
-            (student) => student.userId !== userId
-          );
-          this.dataSource.data = this.students;
-          this.totalStudents = this.students.length;
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.studentService.deleteStudent(userId).subscribe({
+          next: () => {
+            console.log(`Student with ID ${userId} deleted`);
 
-          this.toastr.success('Student deleted successfully');
-        },
-        error: (err) => {
-          console.error('Error deleting student:', err);
-          const errorMessage =
-            err.error && err.error.message
-              ? err.error.message
-              : 'Failed to delete student';
-          this.toastr.error(errorMessage);
-        },
-      });
-    }
+            this.students = this.students.filter(
+              (student) => student.userId !== userId
+            );
+            this.dataSource.data = this.students;
+            this.totalStudents = this.students.length;
+            this.updateStatusCounts(); // Update counts after deletion
+
+            Swal.fire('Deleted!', 'Student has been deleted.', 'success');
+          },
+          error: (err) => {
+            console.error('Error deleting student:', err);
+            const errorMessage =
+              err.error && err.error.message
+                ? err.error.message
+                : 'Failed to delete student';
+            Swal.fire('Error', errorMessage, 'error');
+          },
+        });
+      }
+    });
   }
 }

@@ -3,11 +3,30 @@
     <div class="total-students text-lg font-semibold text-gray-800">
         Total Students: <span>{{ totalStudents }}</span>
     </div>
-
+    <div class="container mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            <div class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
+                <span class="text-3xl font-bold">{{ statusCounts().studying }}</span>
+                <span class="text-gray-600">Studying</span>
+            </div>
+            <div class="bg-yellow-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
+                <span class="text-3xl font-bold">{{ statusCounts().delay }}</span>
+                <span class="text-gray-600">DELAY</span>
+            </div>
+            <div class="bg-yellow-200 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
+                <span class="text-3xl font-bold">{{ statusCounts().dropped }}</span>
+                <span class="text-gray-600">DROPPED</span>
+            </div>
+            <div class="bg-cyan-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
+                <span class="text-3xl font-bold">{{ statusCounts().graduated }}</span>
+                <span class="text-gray-600">GRADUATED</span>
+            </div>
+        </div>
+    </div>
     <!-- Header with Search and Action Buttons -->
     <div class="header">
         <div class="header-actions flex flex-wrap items-center justify-between gap-4">
-            <!-- Search Input -->   
+            <!-- Search Input -->
             <div class="relative w-full sm:w-1/2 lg:w-1/3">
                 <input id="searchInput" type="text" placeholder=" " [(ngModel)]="searchTerm"
                     (ngModelChange)="applyFilter($event)"

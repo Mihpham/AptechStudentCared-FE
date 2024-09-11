@@ -27,8 +27,31 @@
     </div>
   </div>
 
-  <div class="grid grid-cols-3 md:grid-cols-3 gap-4 p">
+  <!-- Gender -->
+  <div>
+    <label class="block text-gray-700 text-sm mb-2">Gender</label>
+    <div class="flex items-center">
+      <label class="inline-flex items-center mr-2">
+        <input formControlName="gender" type="radio" value="Male" class="form-radio text-blue-600" />
+        <span class="ml-2">Male</span>
+      </label>
+      <label class="inline-flex items-center mr-2">
+        <input formControlName="gender" type="radio" value="Female" class="form-radio text-blue-600" />
+        <span class="ml-2">Female</span>
+      </label>
+      <label class="inline-flex items-center">
+        <input formControlName="gender" type="radio" value="Other" class="form-radio text-blue-600" />
+        <span class="ml-2">Other</span>
+      </label>
+    </div>
+    <div *ngIf="studentForm.get('gender')?.invalid && studentForm.get('gender')?.touched"
+      class="text-red-500 text-xs mt-1">
+      Gender is required.
+    </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
 
+    <!-- <--phone-->
     <div>
       <label class="block text-gray-700 text-sm mb-2">Phone Number</label>
       <input formControlName="phoneNumber"
@@ -51,35 +74,11 @@
         Date of Birth is required and must be a valid date.
       </div>
     </div>
-
-    <!-- Gender -->
-    <div>
-      <label class="block text-gray-700 text-sm mb-2">Gender</label>
-      <div class="flex items-center">
-        <label class="inline-flex items-center mr-2">
-          <input formControlName="gender" type="radio" value="Male" class="form-radio text-blue-600" />
-          <span class="ml-2">Male</span>
-        </label>
-        <label class="inline-flex items-center mr-2">
-          <input formControlName="gender" type="radio" value="Female" class="form-radio text-blue-600" />
-          <span class="ml-2">Female</span>
-        </label>
-        <label class="inline-flex items-center">
-          <input formControlName="gender" type="radio" value="Other" class="form-radio text-blue-600" />
-          <span class="ml-2">Other</span>
-        </label>
-      </div>
-      <div *ngIf="studentForm.get('gender')?.invalid && studentForm.get('gender')?.touched"
-        class="text-red-500 text-xs mt-1">
-        Gender is required.
-      </div>
-    </div>
   </div>
-  <!-- Phone Number -->
 
   <!-- Address -->
   <div>
-    <label class="block text-gray-700 text-sm mb-2">Address</label>
+    <label class="block text-gray-700 text-sm mb-2 mt-4">Address</label>
     <input formControlName="address"
       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       type="text" />
@@ -227,15 +226,15 @@
     </div>
   </div>
   <!-- Form Buttons -->
-  <div class="flex items-center justify-between ">
-    <div class="form-actions">
-      <button type="button" (click)="onCancel()"
-        class=" bg-gray-300 hover:bg-gray-400 text-white py-2 px-4 rounded">
-        Cancel
-      </button>
-      <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
-        Update
-      </button>
-    </div>
+  <div class="flex items-center justify-between pt-5">
+    <button type="submit"
+      class="bg-blue-500 right-0 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline">
+      Update
+    </button>
+    <button type="button" (click)="onCancel()"
+      class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 focus:outline-none focus:shadow-outline">
+      Cancel
+    </button>
+
   </div>
 </form>

@@ -1,6 +1,6 @@
 <form [formGroup]="studentForm" (ngSubmit)="onSubmit()" class="p-6 pt-5 h-auto bg-white shadow-md rounded">
   <h2 class="text-2xl font-bold mb-4">Add Student</h2>
-  <hr class="mb-4">
+  <hr class="">
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 pb-5">
     <!-- Roll Number -->
@@ -27,9 +27,30 @@
       </div>
     </div>
   </div>
-
-  <!-- Second row: Gender, Date of Birth, Phone Number -->
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 ">
+  <!-- Gender -->
+  <div>
+    <label class="block text-gray-700 text-sm mb-2">Gender</label>
+    <div class="flex items-center">
+      <label class="inline-flex items-center mr-2">
+        <input formControlName="gender" type="radio" value="Male" class="form-radio text-blue-600" />
+        <span class="ml-2">Male</span>
+      </label>
+      <label class="inline-flex items-center mr-4">
+        <input formControlName="gender" type="radio" value="Female" class="form-radio text-blue-600" />
+        <span class="ml-2">Female</span>
+      </label>
+      <label class="inline-flex items-center">
+        <input formControlName="gender" type="radio" value="Other" class="form-radio text-blue-600" />
+        <span class="ml-2">Other</span>
+      </label>
+    </div>
+    <div *ngIf="studentForm.get('gender')?.invalid && studentForm.get('gender')?.touched"
+      class="text-red-500 text-xs mt-1">
+      Gender is required.
+    </div>
+  </div>
+  <!-- Second row: Date of Birth, Phone Number -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
     <!-- Date of Birth -->
     <div>
       <label class="block text-gray-700 text-sm mb-2">Date of Birth</label>
@@ -52,33 +73,10 @@
         Phone Number is required.
       </div>
     </div>
-
-    <!-- Gender -->
-    <div>
-      <label class="block text-gray-700 text-sm mb-2">Gender</label>
-      <div class="flex items-center">
-        <label class="inline-flex items-center mr-2">
-          <input formControlName="gender" type="radio" value="Male" class="form-radio text-blue-600" />
-          <span class="ml-2">Male</span>
-        </label>
-        <label class="inline-flex items-center mr-4">
-          <input formControlName="gender" type="radio" value="Female" class="form-radio text-blue-600" />
-          <span class="ml-2">Female</span>
-        </label>
-        <label class="inline-flex items-center">
-          <input formControlName="gender" type="radio" value="Other" class="form-radio text-blue-600" />
-          <span class="ml-2">Other</span>
-        </label>
-      </div>
-      <div *ngIf="studentForm.get('gender')?.invalid && studentForm.get('gender')?.touched"
-        class="text-red-500 text-xs mt-1">
-        Gender is required.
-      </div>
-    </div>
   </div>
 
   <!-- Address -->
-  <div class="pt-5">
+  <div class="">
     <app-location-selector [provinces]="provinces" [districts]="districts" [communes]="communes"
       (locationChanged)="onLocationChange($event)">
     </app-location-selector>
@@ -197,9 +195,9 @@
   </div>
 
   <!-- Buttons -->
-  <div class="flex justify-end gap-4 pt-8">
+  <div class="flex justify-between gap-4 pt-6">
     <button type="submit"
-      class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline">
+      class="bg-blue-500 right-0 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline">
       Submit
     </button>
     <button type="button" (click)="onCancel()"
