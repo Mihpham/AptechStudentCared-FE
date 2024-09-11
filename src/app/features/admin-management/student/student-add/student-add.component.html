@@ -57,9 +57,13 @@
       <input formControlName="dob"
         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         type="date" />
-      <div *ngIf="studentForm.get('dob')?.invalid && studentForm.get('dob')?.touched" class="text-red-500 text-xs mt-1">
-        Date of Birth is required and must be a valid date.
+      <div *ngIf="studentForm.get('dob')?.hasError('invalidAge') && studentForm.get('dob')?.touched">
+        <small class="text-danger text-red-500">Student must be at least 18 years old.</small>
       </div>
+      <div *ngIf="studentForm.get('dob')?.hasError('invalidDate') && studentForm.get('dob')?.touched">
+        <small class="text-danger text-red-500">Date of birth cannot be in the future.</small>
+      </div>
+
     </div>
 
     <!-- Phone Number -->

@@ -1,4 +1,14 @@
-import { Component, OnInit, AfterViewInit, HostListener, ElementRef, ChangeDetectorRef, Output, EventEmitter, Inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  HostListener,
+  ElementRef,
+  ChangeDetectorRef,
+  Output,
+  EventEmitter,
+  Inject,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdminService } from 'src/app/core/services/admin.service';
 import { ToastrService } from 'ngx-toastr';
@@ -23,10 +33,9 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
   selectedClass: string | undefined;
   selectedCourse: any;
   provinces: any[] = [];
-  districts: any[] = [];  // Add this line
-  communes: any[] = [];  
+  districts: any[] = []; // Add this line
+  communes: any[] = [];
   loadingClasses = false;
-
 
   isDropdownOpen = false;
   private dropdownElement: HTMLElement | null = null;
@@ -49,15 +58,18 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
       gender: ['', Validators.required],
       className: ['', Validators.required],
       dob: ['', [Validators.required, this.dateValidator]],
-      phoneNumber: ['', [Validators.required, Validators.pattern(/^\+?[0-9]\d{1,10}$/)]],
+      phoneNumber: [
+        '',
+        [Validators.required, Validators.pattern(/^\+?[0-9]\d{1,10}$/)],
+      ],
       parentFullName: ['', [Validators.required, Validators.minLength(2)]],
       studentRelation: ['', Validators.required],
       parentPhone: ['', [Validators.required]],
       parentGender: ['', Validators.required],
       courses: this.fb.control([]),
-      province: [''],  // Add this
-      district: [''],  // Add this
-      commune: [''], 
+      province: [''], // Add this
+      district: [''], // Add this
+      commune: [''],
     });
   }
 
@@ -73,46 +85,57 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
 
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {
-    if (this.dropdownElement && !this.dropdownElement.contains(event.target as Node)) {
+    if (
+      this.dropdownElement &&
+      !this.dropdownElement.contains(event.target as Node)
+    ) {
       this.isDropdownOpen = false;
     }
   }
 
   loadAvailableClasses() {
     this.loadingClasses = true;
-    this.studentService.findAllClasses().pipe(
-      catchError((err) => {
-        this.toastr.error('Failed to load classes');
-        return throwError(() => err);
-      }),
-      finalize(() => this.loadingClasses = false)
-    ).subscribe({
-      next: (classes) => (this.availableClasses = classes),
-    });
+    this.studentService
+      .findAllClasses()
+      .pipe(
+        catchError((err) => {
+          this.toastr.error('Failed to load classes');
+          return throwError(() => err);
+        }),
+        finalize(() => (this.loadingClasses = false))
+      )
+      .subscribe({
+        next: (classes) => (this.availableClasses = classes),
+      });
   }
 
   loadAvailableCourses() {
-    this.studentService.getAllCourse().pipe(
-      catchError((err) => {
-        this.toastr.error('Failed to load courses');
-        return throwError(() => err);
-      }),
-      finalize(() => this.loadingClasses = false)
-    ).subscribe({
-      next: (courses) => (this.availableCourses = courses),
-    });
+    this.studentService
+      .getAllCourse()
+      .pipe(
+        catchError((err) => {
+          this.toastr.error('Failed to load courses');
+          return throwError(() => err);
+        }),
+        finalize(() => (this.loadingClasses = false))
+      )
+      .subscribe({
+        next: (courses) => (this.availableCourses = courses),
+      });
   }
 
   loadGenderParent() {
-    this.studentForm.get('studentRelation')?.valueChanges.subscribe((relation) => {
-      if (relation === 'Father') {
-        this.studentForm.get('parentGender')?.setValue('Male');
-      } else if (relation === 'Mother') {
-        this.studentForm.get('parentGender')?.setValue('Female');
-      } else {
-        this.studentForm.get('parentGender')?.setValue(null);
-      }
-    });
+    this.studentForm
+      .get('studentRelation')
+      ?.valueChanges.subscribe((relation) => {
+        if (relation === 'Father') {
+          this.studentForm.get('parentGender')?.setValue('Male');
+        } else if (relation === 'Mother') {
+          this.studentForm.get('parentGender')?.setValue('Female');
+        } else {
+          this.studentForm.get('parentGender')?.setValue(null);
+        }
+      });
   }
 
   selectClass(className: any) {
@@ -140,13 +163,27 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
   }
 
   dateValidator(control: any) {
-    const date = new Date(control.value);
+    const birthDate = new Date(control.value);
     const today = new Date();
-    if (date > today) {
+  
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+  
+    if (age < 18) {
+      return { invalidAge: 'Student must be at least 18 years old.' };
+    }
+  
+    if (birthDate > today) {
       return { invalidDate: 'Date of birth cannot be in the future.' };
     }
-    return null;
+  
+    return null; 
   }
+  
 
   onCourseToggle(course: string) {
     const index = this.selectedCourses.indexOf(course);
@@ -167,15 +204,15 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
   onSubmit() {
     if (this.studentForm.valid) {
       const formValues = this.studentForm.value;
-  
+
       // Combine the full address using names
       const fullAddress = `${formValues.province}, ${formValues.district}, ${formValues.commune}`;
-  
+
       const student: StudentRequest = {
         ...formValues,
         address: fullAddress, // Use the combined address
       };
-  
+
       this.studentService.addStudent(student).subscribe({
         next: () => {
           this.toastr.success('Student added successfully');
@@ -183,8 +220,12 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
           this.changeDetectorRef.detectChanges();
           this.closeDialog(true);
         },
-        error: (err) => {
-          this.toastr.error('Failed to add student!', 'Error');
+        error: (error) => {
+          if (error.message.includes('Full name must contain at least first name and last name.')) {
+            this.toastr.error('Full name must contain at least first name and last name.!');
+          } else {
+            this.toastr.error('Failed to add student!', 'Error');
+          }
         },
       });
     } else {
@@ -192,7 +233,6 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
       this.toastr.error('Please fill out the form correctly!');
     }
   }
-  
 
   onCancel(): void {
     this.closeDialog();
@@ -202,10 +242,13 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
     this.dialogRef.close({ reload }); // Pass result object
   }
 
-  onLocationChange(location: { province: string; district: string; commune: string }): void {
-    this.studentForm.get('province')?.setValue(location.province);  
-    this.studentForm.get('district')?.setValue(location.district);  // Set name, not code
-    this.studentForm.get('commune')?.setValue(location.commune);   
+  onLocationChange(location: {
+    province: string;
+    district: string;
+    commune: string;
+  }): void {
+    this.studentForm.get('province')?.setValue(location.province);
+    this.studentForm.get('district')?.setValue(location.district); // Set name, not code
+    this.studentForm.get('commune')?.setValue(location.commune);
   }
-  
 }
