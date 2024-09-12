@@ -1,8 +1,8 @@
 <div class=" mx-2 h-full">
   <div *ngIf="student" class="bg-white pb-3 shadow-lg rounded-lg relative">
     <div class="flex items-center space-x-2 font-semibold text-gray-900 leading-8 p-4 border-b">
-      <img [src]="getAvatarUrl(student.image)" class="h-16 w-16 rounded-full border-2 border-gray-300 mr-2"
-        alt="Student Avatar" />
+      <img [src]="student.image ? student.image : 'assets/images/avatar-default.webp'" alt="Avatar"
+      class="w-10 h-10 rounded-full object-cover" />
       <div class="text-xl font-bold">{{student.fullName}}</div>
       <div class="absolute top-4 right-4">
         <button mat-button (click)="onClose()"
