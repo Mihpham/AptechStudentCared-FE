@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { catchError, throwError } from 'rxjs';
 import { CourseService } from 'src/app/core/services/admin/course.service';
 import { SubjectService } from 'src/app/core/services/admin/subject.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-course-add',
@@ -134,25 +135,37 @@ export class CourseAddComponent implements AfterViewInit, OnDestroy, OnInit {
   onSubmit() {
     if (this.courseForm.valid) {
       const course = this.courseForm.value;
-      console.log('Course Form Value:', course); // In ra giá trị để kiểm tra
-  
+      console.log('Course Form Value:', course);
+    
       this.courseService.addCourse(course).subscribe({
         next: (response: any) => {
           console.log('Response:', response);
           this.toastr.success('Course added successfully');
           this.courseForm.reset();
-          this.dialogRef.close({ reload: true }); // Close the dialog
+          this.dialogRef.close({ reload: true });
         },
         error: (err) => {
           console.error('Error:', err);
-          this.toastr.error('Failed to add course');
-          this.dialogRef.close(); // Close the dialog on error
+  
+          // Xử lý thông báo lỗi từ backend
+          let errorMessage = 'Failed to add course';
+  
+          if (err.error && typeof err.error === 'object') {
+            if (err.error.message) {
+              errorMessage = err.error.message;
+            } else {
+              console.log('Error details from backend:', err.error);
+            }
+          }
+  
+          this.toastr.error(errorMessage);
         },
       });
     } else {
       this.toastr.error('Please fill out the form correctly!');
     }
   }
+  
   
 
   onCancel(): void {

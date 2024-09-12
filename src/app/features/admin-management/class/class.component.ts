@@ -48,6 +48,9 @@ export class ClassComponent implements OnInit {
     });
   }
 
+  onRowClick(event: Event, classItem: any): void {
+    event.stopPropagation(); // Ngăn chặn sự kiện click không bị lan ra ngoài
+    this.router.navigate(['/admin/student/all'], { queryParams: { classId: classItem.id } });
   getAvatarUrl(avatarName: string | undefined): string {
     return avatarName ? `${avatarName}` : '/assets/images/avatar-default.webp';
   }

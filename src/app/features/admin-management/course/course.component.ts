@@ -24,7 +24,6 @@ export class CourseComponent implements OnInit, AfterViewInit {
   totalCourses: number = 0;
   searchTerm: string = '';
 
-
   displayedColumns: string[] = [
     'courseName',
     'courseCode',
@@ -54,7 +53,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
   loadCourse(): void {
     this.courseService.getAllCourse().subscribe(
       (data: CourseResponse[]) => {
-        this.courses = data; // This is of type CourseResponse[]
+        this.courses = data.sort((a, b) => b.id - a.id); // This is of type CourseResponse[]
         this.dataSource.data = [...this.courses];
         this.totalCourses = this.courses.length;
         this.applyFilter(this.searchTerm);
@@ -86,8 +85,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
     this.courseService.getCourseById(courseId).subscribe((course: CourseResponse) => {
       this.dialog.open(CourseDetailDialogComponent, {
         data: course,
-        width: '80%', // Đặt kích thước của dialog
-        maxWidth: '600px' // Đặt chiều rộng tối đa của dialog
+        width: '500px' // Đặt chiều rộng tối đa của dialog
       });
     });
   }
@@ -105,6 +103,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
   }
 
   onUpdate(event: MouseEvent, course: CourseResponse): void {
+    event.stopPropagation();
     console.log('Couse ID: ', course.id);
     const dialogRef = this.dialog.open(CourseUpdateDialogComponent, {
       width: '550px',
@@ -120,7 +119,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
 
   onDelete(event: MouseEvent, course: CourseResponse): void {
-    // console.log('CourseId:', course.id);
+    event.stopPropagation();
     Swal.fire({
       width: 350,
       title: 'Are you sure you want to delete this student?',

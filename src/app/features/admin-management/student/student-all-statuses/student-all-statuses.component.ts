@@ -15,7 +15,7 @@ import { StudentRequest } from '../../model/studentRequest.model';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { StudentResponse } from '../../model/student-response.model.';
 import Swal from 'sweetalert2';
 import { StudentService } from 'src/app/core/services/admin/student.service';
@@ -30,6 +30,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   selectedStudent: StudentRequest | undefined;
   totalStudents: number = 0;
   searchTerm: string = '';
+  className: string | null = null; // Thay đổi kiểu thành string | null
   statusCounts = signal({ studying: 0, delay: 0, dropped: 0, graduated: 0 });
 
   displayedColumns: string[] = [
@@ -52,11 +53,15 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     public dialog: MatDialog,
     private studentService: StudentService,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.loadStudent(); // Load students when component initializes
+    this.route.queryParams.subscribe(params => {
+      this.className = params['className'] || null; // Nhận tên lớp từ query params
+      this.loadStudent(); // Tải sinh viên khi component khởi tạo
+    });
   }
 
   
@@ -65,10 +70,14 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     this.studentService.getAllStudents().subscribe(
       (data) => {
         console.log('Data received from API:', data);
-        this.students = data;
+        if (this.className) {
+          this.students = data.filter(student => student.className === this.className); // Lọc sinh viên dựa trên tên lớp nếu có
+        } else {
+          this.students = data; // Hiển thị tất cả sinh viên nếu không có lớp
+        }
         this.dataSource.data = this.students;
         this.totalStudents = this.students.length;
-        this.updateStatusCounts(); // Update counts when loading students
+        this.updateStatusCounts(); // Cập nhật số lượng khi tải sinh viên
         this.dataSource.paginator = this.paginator;
       },
       (error) => {
@@ -91,6 +100,10 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
       );
     };
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  openFilterDialog(): void {
+    // Cần triển khai nếu bạn muốn sử dụng dialog để lọc
   }
 
   updateStatusCounts(): void {
@@ -146,7 +159,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
           if (index !== -1) {
             this.students[index] = updatedStudent;
             this.dataSource.data = [...this.students];
-            this.updateStatusCounts(); // Update counts after editing
+            this.updateStatusCounts(); // Cập nhật số lượng sau khi chỉnh sửa
           } else {
             this.loadStudent();
           }
@@ -196,10 +209,10 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
             );
             this.dataSource.data = this.students;
             this.totalStudents = this.students.length;
-            this.updateStatusCounts(); // Update counts after deletion
+            this.updateStatusCounts(); // Cập nhật số lượng sau khi xóa
 
             Swal.fire('Deleted!', 'Student has been deleted.', 'success');
-            this.toastr.success('Student  has been deleted.');
+            this.toastr.success('Student has been deleted.');
 
           },
           error: (err) => {
