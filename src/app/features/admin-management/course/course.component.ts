@@ -25,7 +25,6 @@ export class CourseComponent implements OnInit, AfterViewInit {
   totalCourses: number = 0;
   searchTerm: string = '';
 
-
   displayedColumns: string[] = [
     'courseName',
     'courseCode',
@@ -55,7 +54,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
   loadCourse(): void {
     this.courseService.getAllCourse().subscribe(
       (data: CourseResponse[]) => {
-        this.courses = data; // This is of type CourseResponse[]
+        this.courses = data.sort((a, b) => b.id - a.id); // This is of type CourseResponse[]
         this.dataSource.data = [...this.courses];
         this.totalCourses = this.courses.length;
         this.applyFilter(this.searchTerm);
