@@ -52,6 +52,11 @@ export class ClassComponent implements OnInit {
     event.stopPropagation(); // Ngăn chặn sự kiện click không bị lan ra ngoài
     this.router.navigate(['/admin/student/all'], { queryParams: { className: classItem.className } });
   }
+  
+    getAvatarUrl(avatarName: string | undefined): string {
+    return avatarName ? `${avatarName}` : '/assets/images/avatar-default.webp';
+
+  }
 
   openFilterDialog(): void {
     const dialogRef = this.dialog.open(FilterDialogComponent);

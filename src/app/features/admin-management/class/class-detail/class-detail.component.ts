@@ -1,7 +1,6 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { ClassService } from 'src/app/core/services/admin/class.service';
-import { ClassResponse } from '../../model/class/class-response.model';
 import { StudentAddComponent } from '../../student/student-add/student-add.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
@@ -9,7 +8,6 @@ import { StudentService } from 'src/app/core/services/admin/student.service';
 import { StudentRequest } from '../../model/studentRequest.model';
 import { StudentUpdateDialogComponent } from '../../student/student-update-dialog/student-update-dialog.component';
 import { StudentResponse } from '../../model/student-response.model.';
-import { StudentInClassResponse } from '../../model/class/student-in-class-response.model';
 
 @Component({
   selector: 'app-class-detail',
@@ -19,7 +17,6 @@ export class ClassDetailComponent implements OnInit {
   classId: number | null = null;
   classDetails: any;
   students: StudentResponse[] = [];
-  studentList: StudentInClassResponse[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -42,18 +39,43 @@ export class ClassDetailComponent implements OnInit {
     });
   }
 
+  getAvatarUrl(avatarName: string | undefined): string {
+    
+    return `/assets/images/${avatarName}`;
+  }
+
+
   getClassDetails(id: number): void {
     this.classService.findClassById(id).subscribe(
       (data) => {
         this.classDetails = data;
-        // Load the list of students from class details if available
-        this.studentList = data.students ?? [];
+        this.students = data.students?.map((student: any) => ({
+          userId: student.userId,
+          image: student.image ? student.image : 'assets/images/avatar-default.webp',
+          rollNumber: student.rollNumber,
+          fullName: student.fullName,
+          password: student.password,
+          email: student.email,
+          dob: student.dob,
+          address: student.address,
+          className: student.className,
+          gender: student.gender,
+          phoneNumber: student.phoneNumber,
+          courses: student.courses,
+          status: student.status,
+          parentFullName: student.parentFullName,
+          studentRelation: student.studentRelation,
+          parentPhone: student.parentPhone,
+          parentGender: student.parentGender,
+        })) ?? [];
       },
       (error) => {
         console.error('Error fetching class details:', error);
       }
     );
   }
+  
+  
 
   loadStudent(): void {
     if (this.classId) {
@@ -105,43 +127,18 @@ export class ClassDetailComponent implements OnInit {
     return statusCount;
   }
 
-  // Function to map StudentInClassResponse to StudentRequest
-  mapToStudentRequest(student: StudentInClassResponse): StudentRequest {
-    return {
-      userId: student.id,
-      rollNumber: student.rollNumber ?? '',
-      fullName: student.fullName ?? '',
-      email: student.email ?? '',
-      phoneNumber: student.phoneNumber ?? '',
-      status: student.status ?? '',
-      password: '', // Provide password from another source if needed
-      gender: '', // Provide gender from another source if needed
-      className: '', // Provide className if needed
-      dob: '', // Provide DOB if needed
-      address: '', // Provide address if needed
-      parentFullName: '', // Provide parentFullName if needed
-      studentRelation: '', // Provide studentRelation if needed
-      parentPhone: '', // Provide parentPhone if needed
-      parentGender: '', // Provide parentGender if needed
-      courses: [], // Provide courses if needed
-    };
-  }
-
-  onUpdate(student: StudentInClassResponse, event: Event): void {
+  onUpdate(student: StudentResponse, event: Event): void {
     event.stopPropagation(); // Prevent row click event
-
-    const studentRequest = this.mapToStudentRequest(student);
-
+  
     const dialogRef = this.dialog.open(StudentUpdateDialogComponent, {
       width: '650px',
-      data: studentRequest,
+      data: student, // Pass the StudentResponse object to the dialog
     });
-
-    dialogRef.afterClosed().subscribe((updatedStudent: StudentRequest | undefined) => {
+  
+    dialogRef.afterClosed().subscribe((updatedStudent: StudentResponse | undefined) => {
+      
       if (updatedStudent) {
-        const index = this.students.findIndex(
-          (s) => s.userId === updatedStudent.userId
-        );
+        const index = this.students.findIndex((s) => s.userId === updatedStudent.userId);
         if (index !== -1) {
           this.students[index] = updatedStudent;
         } else {
@@ -167,8 +164,6 @@ export class ClassDetailComponent implements OnInit {
         },
       });
     } else {
-      this.toastr.warning('Unable to delete student. Invalid ID.');
     }
   }
-  
 }

@@ -74,12 +74,13 @@
             <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-200 dark:bg-gray-600"> Avatar
             </mat-header-cell>
             <mat-cell *matCellDef="let student" class="p-2 dark:text-gray-50 dark:bg-gray-600">
-                <div class="avatar-container flex justify-center">
-                    <img [src]="getAvatarUrl(student.image)" alt="Student Avatar"
-                        class="avatar-image w-12 h-12 rounded-full" />
-                </div>
+                <td class="px-4 py-2">
+                    <img [src]="student.image ? student.image : 'assets/images/avatar-default.webp'" alt="Avatar"
+                        class="w-10 h-10 rounded-full object-cover" />
+                </td>
             </mat-cell>
         </ng-container>
+
 
         <!-- Roll Number Column -->
         <ng-container matColumnDef="rollNumber">
