@@ -1,62 +1,37 @@
-// .course-detail .detail-container {
-//   @apply p-4 bg-white shadow-md rounded-md max-w-lg mx-auto;
-// }
+/* Add general styling for the dialog content */
+.bg-white {
+  background-color: #fff;
+}
 
-// .avatar-container {
-//   @apply flex items-center justify-center mb-4;
-// }
+.p-6 {
+  padding: 1.5rem; /* Adjust padding */
+}
 
-// .avatar {
-//   @apply rounded-full w-16 h-16 object-cover;
-// }
+.text-2xl {
+  font-size: 1.5rem; /* Larger font size for title */
+}
 
+.font-bold {
+  font-weight: bold;
+}
 
-.detail {
-    .detail-container {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      flex-wrap: wrap;
-      /* Cho phép hiển thị tốt hơn khi kích thước nhỏ */
-    }
-    .avatar-container {
-      margin-top: 50px;
-      width: 200px; /* Hoặc kích thước bạn muốn */
-      height: 200px; /* Hoặc kích thước bạn muốn */
-    }
-    
-    .avatar-image {
-      border-radius: 8px;
-      object-fit: cover;
-      border: 2px solid #ddd;
-    }
-  
-    .course-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-  
-      .course-name {
-        text-align: center;
-        margin: 0 0 16px 0;
-        font-weight: bold;
-      }
-  
-      .section-title {
-        font-weight: bold;
-        margin-bottom: 8px;
-      }
-  
-      p {
-        margin: 4px 0;
-      }
-  
-    }
-  }
-  
-  mat-dialog-actions {
-    display: flex;
-    justify-content: flex-end;
-    padding: 10px;
-    margin-right: 10px;
-  }
+.mb-4 {
+  margin-bottom: 1rem; /* Adjust bottom margin */
+}
+
+.text-gray-700 {
+  color: #4a5568;
+}
+
+.text-gray-900 {
+  color: #1a202c; /* Darker color for strong text */
+}
+
+.mt-4 {
+  margin-top: 1rem; /* Space above the close button */
+}
+
+button {
+  display: block;
+  width: 100%; /* Make the button take full width */
+}

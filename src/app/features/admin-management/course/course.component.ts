@@ -5,7 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
 import { CourseRequest } from '../model/course/course-request.model';
 import { CourseResponse } from '../model/course/course-response.model';
-
+import { Router } from '@angular/router';
 import { CourseAddComponent } from './course-add/course-add.component';
 
 import Swal from 'sweetalert2';
@@ -43,6 +43,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
     private courseService: CourseService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
+    private router: Router,
   ) { }
 
 
@@ -52,21 +53,21 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
   loadCourse(): void {
     this.courseService.getAllCourse().subscribe(
-        (data: CourseResponse[]) => {
-          this.courses = data; // This is of type CourseResponse[]
-          this.dataSource.data = [...this.courses];
-          this.totalCourses = this.courses.length;
-          this.applyFilter(this.searchTerm);
-          if (this.paginator) {
-            this.paginator.pageIndex = 0;
-          }
-          this.cdr.markForCheck(); // Trigger change detection cycle
-        },
-        (error) => {
-          this.toastr.error('Failed to load courses', 'Error');
-          console.error('Error fetching courses', error);
+      (data: CourseResponse[]) => {
+        this.courses = data; // This is of type CourseResponse[]
+        this.dataSource.data = [...this.courses];
+        this.totalCourses = this.courses.length;
+        this.applyFilter(this.searchTerm);
+        if (this.paginator) {
+          this.paginator.pageIndex = 0;
         }
-      );
+        this.cdr.markForCheck(); // Trigger change detection cycle
+      },
+      (error) => {
+        this.toastr.error('Failed to load courses', 'Error');
+        console.error('Error fetching courses', error);
+      }
+    );
   }
 
   applyFilter(filterValue: string): void {
@@ -81,13 +82,14 @@ export class CourseComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  onRowClick(event: MouseEvent, course: CourseRequest): void {
-    if (!(event.target as HTMLElement).closest('button')) {
+  onRowClick(courseId : number): void {
+    this.courseService.getCourseById(courseId).subscribe((course: CourseResponse) => {
       this.dialog.open(CourseDetailDialogComponent, {
-        width: '650px',
         data: course,
+        width: '80%', // Đặt kích thước của dialog
+        maxWidth: '600px' // Đặt chiều rộng tối đa của dialog
       });
-    }
+    });
   }
 
   onAdd(): void {
@@ -102,7 +104,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onUpdate( course: CourseResponse): void {
+  onUpdate(event: MouseEvent, course: CourseResponse): void {
     console.log('Couse ID: ', course.id);
     const dialogRef = this.dialog.open(CourseUpdateDialogComponent, {
       width: '550px',
@@ -117,7 +119,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
   }
 
 
-  onDelete(course: CourseResponse): void {
+  onDelete(event: MouseEvent, course: CourseResponse): void {
     // console.log('CourseId:', course.id);
     Swal.fire({
       width: 350,

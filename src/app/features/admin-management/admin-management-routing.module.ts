@@ -70,9 +70,9 @@ const routes: Routes = [
   },
   {
     path: 'course',
-    component: CourseComponent,
+    loadChildren: () =>
+      import('./course/course-routing.module').then((m) => m.CourseRoutingModule),
     canActivate: [AuthGuard],
-    data: { breadcrumb: 'Course Management' },
   },
   {
     path: 'subject',
