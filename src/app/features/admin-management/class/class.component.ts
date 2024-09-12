@@ -48,6 +48,10 @@ export class ClassComponent implements OnInit {
     });
   }
 
+  getAvatarUrl(avatarName: string | undefined): string {
+    return avatarName ? `${avatarName}` : '/assets/images/avatar-default.webp';
+  }
+
   openFilterDialog(): void {
     const dialogRef = this.dialog.open(FilterDialogComponent);
 

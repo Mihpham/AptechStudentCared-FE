@@ -59,9 +59,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     this.loadStudent(); // Load students when component initializes
   }
 
-  getAvatarUrl(avatarName: string | undefined): string {
-    return `/assets/images/${avatarName}`;
-  }
+  
 
   loadStudent(): void {
     this.studentService.getAllStudents().subscribe(

@@ -56,10 +56,9 @@
             <tbody>
                 <tr *ngFor="let student of classDetails.students"
                     class="border-t border-gray-200 dark:border-gray-600 cursor-pointer"
-                  routerLink="/student-performance" 
-                    >
+                    routerLink="/student-performance">
                     <td class="px-4 py-2">
-                        <img [src]="student.image ? student.image : 'assets/avatar-default.webp'" alt="Avatar"
+                        <img [src]="student.image ? student.image : 'assets/images/avatar-default.webp'" alt="Avatar"
                             class="w-10 h-10 rounded-full object-cover" />
                     </td>
                     <td class="px-4 py-2">{{ student.fullName }}</td>
@@ -74,23 +73,16 @@
               }">
                         {{ student.status }}
                     </td>
-                    <!-- <td class="py-2 px-4 text-center">
-                        <button (click)="onUpdate(student, $event)">Update</button>
 
-                        <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700"
-                            (click)="deleteStudent(student.id); $event.stopPropagation()">
-                            Delete
-                        </button>
-
-                    </td> -->
                     <td class="py-2 px-4 text-center">
                         <button (click)="onUpdate(student, $event)">
-                          <i class="fa fa-edit"></i> 
+                            <i class="fa fa-edit"></i>
                         </button>
-                        <button class="text-red-400 hover:text-red-600 p-2" (click)="deleteStudent(student.userId); $event.stopPropagation()">
-                          <i class="fa fa-trash"></i> 
+                        <button class="text-red-400 hover:text-red-600 p-2"
+                            (click)="deleteStudent(student.userId); $event.stopPropagation()">
+                            <i class="fa fa-trash"></i>
                         </button>
-                      </td>
+                    </td>
                 </tr>
             </tbody>
         </table>
