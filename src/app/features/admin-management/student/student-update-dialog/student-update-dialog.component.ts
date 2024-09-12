@@ -5,11 +5,11 @@ import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { StudentResponse } from '../../model/student-response.model.';
 import { catchError, throwError } from 'rxjs';
-import { Class } from '../../model/class.model';
 import { CourseResponse } from '../../model/course/course-response.model';
 import { StudentService } from 'src/app/core/services/admin/student.service';
 import { ClassService } from 'src/app/core/services/admin/class.service';
 import { CourseService } from 'src/app/core/services/admin/course.service';
+import { ClassRequest } from '../../model/class/class-request.model';
 
 @Component({
   selector: 'app-student-update-dialog',
@@ -20,7 +20,7 @@ export class StudentUpdateDialogComponent implements OnInit {
   studentForm: FormGroup;
   imageUrl: string | ArrayBuffer | null = null;
   imageError: string | null = null;
-  availableClasses: Class[] = [];
+  availableClasses: ClassRequest[] = [];
   availableCourses: CourseResponse[] = [];
   selectedCourses: string[] = [];  // Initialize as an empty array
   isDropdownOpen: boolean = false;
@@ -132,7 +132,7 @@ export class StudentUpdateDialogComponent implements OnInit {
         return throwError(() => err);
       })
     ).subscribe({
-      next: (classes: Class[]) => (this.availableClasses = classes),
+      next: (classes: ClassRequest[]) => (this.availableClasses = classes),
     });
   }
 

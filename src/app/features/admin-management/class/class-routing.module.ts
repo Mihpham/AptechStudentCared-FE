@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ClassComponent } from './class.component';
 import { AuthGuard } from 'src/app/core/auth/auth.guard';
 import { ClassFormComponent } from './class-form/class-form.component';
+import { ClassDetailComponent } from './class-detail/class-detail.component';
 
 
 const routes: Routes = [
@@ -26,11 +27,13 @@ const routes: Routes = [
     data: { breadcrumb: 'Update Class' },
   },
   {
-    path: 'detail/:id',
-    component: ClassFormComponent,
+    path: 'class-detail/:id',
+    component: ClassDetailComponent,
     canActivate: [AuthGuard],
     data: { breadcrumb: 'Class Details' },
   },
+
+
 ];
 
 @NgModule({

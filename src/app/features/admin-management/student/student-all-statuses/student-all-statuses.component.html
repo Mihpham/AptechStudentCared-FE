@@ -1,13 +1,10 @@
-<div class="student-list p-4 space-y-6 bg-white rounded-lg shadow-md dark:bg-gray-900 dark:border-white">
-    <!-- Total Students Display -->
-    <div class="total-students text-lg font-bold text-gray-800 dark:text-gray-300 ">
-        Total Students: <span>{{ totalStudents }}</span>
-    </div>
+<div class="student-list p-4 space-y-6 bg-slate-200 rounded-lg shadow-md dark:bg-gray-900 dark:border-white">
+   
     <div class="container mx-auto">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             <div class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
                 <span class="text-3xl font-bold">{{ statusCounts().studying }}</span>
-                <span class="text-gray-600">Studying</span>
+                <span class="text-gray-600">STUDYING</span>
             </div>
             <div class="bg-yellow-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
                 <span class="text-3xl font-bold">{{ statusCounts().delay }}</span>
@@ -23,6 +20,10 @@
             </div>
         </div>
     </div>
+     <!-- Total Students Display -->
+     <small class="total-students text-sm font-bold text-gray-800 dark:text-gray-300 ">
+        Total Students: <span>{{ totalStudents }}</span>
+    </small>
     <!-- Header with Search and Action Buttons -->
     <div class="header">
         <div class="header-actions flex flex-wrap items-center justify-between gap-4">

@@ -14,11 +14,11 @@ import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { catchError, finalize, throwError } from 'rxjs';
 import { StudentRequest } from '../../model/studentRequest.model';
-import { Class } from '../../model/class.model';
 import { CourseResponse } from '../../model/course/course-response.model';
 import { StudentService } from 'src/app/core/services/admin/student.service';
 import { ClassService } from 'src/app/core/services/admin/class.service';
 import { CourseService } from 'src/app/core/services/admin/course.service';
+import { ClassRequest } from '../../model/class/class-request.model';
 @Component({
   selector: 'app-student-add',
   templateUrl: './student-add.component.html',
@@ -28,7 +28,7 @@ import { CourseService } from 'src/app/core/services/admin/course.service';
 export class StudentAddComponent implements AfterViewInit, OnInit {
   studentForm: FormGroup;
   selectedCourses: string[] = [];
-  availableClasses: Class[] = [];
+  availableClasses: ClassRequest[] = [];
   availableCourses: CourseResponse[] = [];
   dropdownOpen = false;
   courseDropdownOpen = false;

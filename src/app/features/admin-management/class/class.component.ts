@@ -1,11 +1,11 @@
 import { Component, OnInit, WritableSignal, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Class } from '../model/class.model';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { FilterDialogComponent } from './filter-dialog/filter-dialog.component';
 import Swal from 'sweetalert2';
 import { ClassService } from 'src/app/core/services/admin/class.service';
+import { ClassRequest } from '../model/class/class-request.model';
 
 @Component({
   selector: 'app-class',
@@ -13,9 +13,9 @@ import { ClassService } from 'src/app/core/services/admin/class.service';
   styleUrls: ['./class.component.scss']
 })
 export class ClassComponent implements OnInit {
-  classes: WritableSignal<Class[]> = signal([]);
-  paginatedClasses: WritableSignal<Class[]> = signal([]);
-  filteredClasses: WritableSignal<Class[]> = signal([]);
+  classes: WritableSignal<ClassRequest[]> = signal([]);
+  paginatedClasses: WritableSignal<ClassRequest[]> = signal([]);
+  filteredClasses: WritableSignal<ClassRequest[]> = signal([]);
 
   statusCounts = signal({ studying: 0, finished: 0, cancel: 0, scheduled: 0 });
 
@@ -96,6 +96,15 @@ export class ClassComponent implements OnInit {
 
     this.statusCounts.set(counts);
   }
+
+  goToStudentDetail(studentId: number): void {
+    if (!studentId) {
+      console.error('Invalid student ID');
+      return;
+    }
+    this.router.navigate(['/student-detail', studentId]);
+  }
+  
 
   updatePagination(): void {
     const classes = this.filteredClasses();

@@ -7,6 +7,7 @@ import { SroComponent } from './features/sro-management/sro.component';
 import { ErrorComponent } from './features/pages/error/error.component';
 import { NotAuthComponent } from './features/pages/not-auth/not-auth.component';
 import { ProfileComponent } from './features/profile/profile.component';
+import { StudentPerformanceComponent } from './features/student-performance/student-performance.component';
 
 const routes: Routes = [
   //lazy loading routes
@@ -42,6 +43,8 @@ const routes: Routes = [
     data: { role: 'SRO' },
   },
   { path: 'access-denied', component: NotAuthComponent }, // Route for access denied
+  { path: 'student-performance', component: StudentPerformanceComponent },  // Define the route here
+
   {
     path: 'profile',
     component: ProfileComponent,
