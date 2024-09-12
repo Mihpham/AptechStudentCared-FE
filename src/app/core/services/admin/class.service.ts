@@ -17,7 +17,6 @@ export class ClassService {
     return this.http.get<ClassRequest[]>(this.baseUrl);
   }
 
-
   findClassById(classId: number): Observable<ClassResponse> {
     return this.http.get<ClassResponse>(`${this.baseUrl}/${classId}`);
   }

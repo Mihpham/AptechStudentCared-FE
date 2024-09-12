@@ -48,6 +48,11 @@ export class ClassComponent implements OnInit {
     });
   }
 
+  onRowClick(event: Event, classItem: any): void {
+    event.stopPropagation(); // Ngăn chặn sự kiện click không bị lan ra ngoài
+    this.router.navigate(['/admin/student/all'], { queryParams: { classId: classItem.id } });
+  }
+
   openFilterDialog(): void {
     const dialogRef = this.dialog.open(FilterDialogComponent);
 
