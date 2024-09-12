@@ -46,6 +46,7 @@ import { CourseAddComponent } from './course/course-add/course-add.component';
 import { CourseDetailDialogComponent } from './course/course-detail-dialog/course-detail-dialog.component';
 import { CourseUpdateDialogComponent } from './course/course-update-dialog/course-update-dialog.component';
 import { LocationSelectorComponent } from '../location-selector/location-selector.component';
+import { ClassDetailComponent } from './class/class-detail/class-detail.component';
 
 @NgModule({
   
@@ -82,7 +83,8 @@ import { LocationSelectorComponent } from '../location-selector/location-selecto
     CourseAddComponent,
     CourseDetailDialogComponent,
     CourseUpdateDialogComponent,
-    LocationSelectorComponent
+    LocationSelectorComponent,
+    ClassDetailComponent
 
   ],
   imports: [

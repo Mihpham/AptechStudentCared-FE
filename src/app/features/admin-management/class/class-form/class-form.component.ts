@@ -1,8 +1,8 @@
 import { Component, OnInit, WritableSignal, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Class } from '../../model/class.model';
-import { AdminService } from 'src/app/core/services/admin.service';
 import { ToastrService } from 'ngx-toastr';
+import { ClassService } from 'src/app/core/services/admin/class.service';
+import { ClassRequest } from '../../model/class/class-request.model';
 
 @Component({
   selector: 'app-class-form',
@@ -10,7 +10,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./class-form.component.scss'],
 })
 export class ClassFormComponent implements OnInit {
-  class: Class = {
+  class: ClassRequest = {
     id: 0,
     className: '',
     center: '',
@@ -24,14 +24,14 @@ export class ClassFormComponent implements OnInit {
   finishHour: string = '';
   isEditMode: boolean = false;
   formattedDate: string = '';
-  classes: WritableSignal<Class[]> = signal([]); // Signal to hold class list
+  classes: WritableSignal<ClassRequest[]> = signal([]); // Signal to hold class list
   selectedDays: string[] = [];
   isLoading = false; // To prevent multiple submissions
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private classService: AdminService,
+    private classService: ClassService,
     private toastr: ToastrService
   ) {}
 
@@ -123,13 +123,13 @@ export class ClassFormComponent implements OnInit {
   }
 
   // Method to add a new class to the local class list
-  addClassToList(newClass: Class): void {
+  addClassToList(newClass: ClassRequest): void {
     const updatedClasses = [...this.classes(), newClass]; // Append the new class to the list
     this.classes.set(updatedClasses); // Update signal with new class list
   }
 
   // Method to update an existing class in the local class list
-  updateClassInList(updatedClass: Class): void {
+  updateClassInList(updatedClass: ClassRequest): void {
     const updatedClasses = this.classes().map((classItem) =>
       classItem.id === updatedClass.id ? updatedClass : classItem
     );

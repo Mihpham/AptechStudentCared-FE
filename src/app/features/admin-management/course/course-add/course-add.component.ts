@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, throwError } from 'rxjs';
-import { AdminService } from 'src/app/core/services/admin.service';
+import { CourseService } from 'src/app/core/services/admin/course.service';
 import { SubjectService } from 'src/app/core/services/admin/subject.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -22,7 +22,7 @@ export class CourseAddComponent implements AfterViewInit, OnDestroy, OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private courseService: AdminService,
+    private courseService: CourseService,
     private toastr: ToastrService,
     private dialogRef: MatDialogRef<CourseAddComponent>,
     private el: ElementRef,

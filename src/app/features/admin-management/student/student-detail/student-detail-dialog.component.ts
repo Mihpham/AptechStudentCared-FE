@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { StudentRequest } from '../../model/studentRequest.model';
-import { AdminService } from 'src/app/core/services/admin.service';
+import { StudentService } from 'src/app/core/services/admin/student.service';
 // Import the Student interface
 
 
@@ -13,7 +13,7 @@ import { AdminService } from 'src/app/core/services/admin.service';
 export class StudentDetailDialogComponent {
   studentId: string | undefined;
   student : StudentRequest | undefined;
-  constructor(private studentService: AdminService,
+  constructor(private studentService: StudentService,
     private route: ActivatedRoute, private router : Router) { }
 
   ngOnInit(): void {

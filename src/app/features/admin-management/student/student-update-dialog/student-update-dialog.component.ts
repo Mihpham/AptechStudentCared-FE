@@ -1,13 +1,15 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AdminService } from 'src/app/core/services/admin.service';
 import { StudentRequest } from '../../model/studentRequest.model';
 import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { StudentResponse } from '../../model/student-response.model.';
 import { catchError, throwError } from 'rxjs';
-import { Class } from '../../model/class.model';
 import { CourseResponse } from '../../model/course/course-response.model';
+import { StudentService } from 'src/app/core/services/admin/student.service';
+import { ClassService } from 'src/app/core/services/admin/class.service';
+import { CourseService } from 'src/app/core/services/admin/course.service';
+import { ClassRequest } from '../../model/class/class-request.model';
 
 @Component({
   selector: 'app-student-update-dialog',
@@ -18,14 +20,16 @@ export class StudentUpdateDialogComponent implements OnInit {
   studentForm: FormGroup;
   imageUrl: string | ArrayBuffer | null = null;
   imageError: string | null = null;
-  availableClasses: Class[] = [];
+  availableClasses: ClassRequest[] = [];
   availableCourses: CourseResponse[] = [];
   selectedCourses: string[] = [];  // Initialize as an empty array
   isDropdownOpen: boolean = false;
 
   constructor(
     private fb: FormBuilder,
-    private studentService: AdminService,
+    private studentService: StudentService,
+    private classService: ClassService,
+    private coursesService: CourseService,
     private toastr: ToastrService,
     public dialogRef: MatDialogRef<StudentUpdateDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -122,22 +126,22 @@ export class StudentUpdateDialogComponent implements OnInit {
   }
 
   loadAvailableClasses() {
-    this.studentService.findAllClasses().pipe(
+    this.classService.findAllClasses().pipe(
       catchError((err) => {
         this.toastr.error('Failed to load classes');
         return throwError(() => err);
       })
     ).subscribe({
-      next: (classes) => (this.availableClasses = classes),
+      next: (classes: ClassRequest[]) => (this.availableClasses = classes),
     });
   }
 
   loadAvailableCourses() {
-    this.studentService.getAllCourse().subscribe({
+    this.coursesService.getAllCourse().subscribe({
       next: (courses: CourseResponse[]) => {
         this.availableCourses = courses;
       },
-      error: (err) => this.toastr.error('Failed to load courses'),
+      error: (err: any) => this.toastr.error('Failed to load courses'),
     });
   }
 
@@ -168,7 +172,7 @@ export class StudentUpdateDialogComponent implements OnInit {
           this.toastr.success('Student updated successfully', 'Success');
           this.dialogRef.close(response);
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error updating student', error);
           this.toastr.error('Failed to update student', 'Error');
         }

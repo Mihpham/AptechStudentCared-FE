@@ -1,4 +1,4 @@
-export interface Class {
+export interface ClassRequest {
     id: number;
     className: string;
     center: string;
