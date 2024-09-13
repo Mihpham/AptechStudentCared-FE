@@ -10,7 +10,7 @@ import { ClassRequest } from '../model/class/class-request.model';
 @Component({
   selector: 'app-class',
   templateUrl: './class.component.html',
-  styleUrls: ['./class.component.scss']
+  styleUrls: ['./class.component.scss'],
 })
 export class ClassComponent implements OnInit {
   classes: WritableSignal<ClassRequest[]> = signal([]);
@@ -38,30 +38,31 @@ export class ClassComponent implements OnInit {
     this.classService.findAllClasses().subscribe({
       next: (data) => {
         this.classes.set(data);
-        this.applyFilters(); 
+        this.applyFilters();
         this.updateStatusCounts();
       },
       error: (error) => {
         this.toastr.error('Failed to load classes!', 'Error');
         console.error('Load classes failed', error);
-      }
+      },
     });
   }
 
   onRowClick(event: Event, classItem: any): void {
     event.stopPropagation(); // Ngăn chặn sự kiện click không bị lan ra ngoài
-    this.router.navigate(['/admin/student/all'], { queryParams: { className: classItem.className } });
+    this.router.navigate(['/admin/student/all'], {
+      queryParams: { className: classItem.className },
+    });
   }
-  
-    getAvatarUrl(avatarName: string | undefined): string {
-    return avatarName ? `${avatarName}` : '/assets/images/avatar-default.webp';
 
+  getAvatarUrl(avatarName: string | undefined): string {
+    return avatarName ? `${avatarName}` : '/assets/images/avatar-default.webp';
   }
 
   openFilterDialog(): void {
     const dialogRef = this.dialog.open(FilterDialogComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         console.log(result);
         this.applyFilters(result);
@@ -69,25 +70,30 @@ export class ClassComponent implements OnInit {
     });
   }
 
-  applyFilters(filters?: { className: string, admissionDate: string, status: string }): void {
+  applyFilters(filters?: {
+    className: string;
+    admissionDate: string;
+    status: string;
+  }): void {
     const classNameFilter = filters?.className || '';
     const admissionDateFilter = filters?.admissionDate || '';
     const statusFilter = filters?.status || 'ALL';
 
-    const filtered = this.classes().filter(classItem => {
+    const filtered = this.classes().filter((classItem) => {
       const matchesClassName = classNameFilter
-        ? classItem.className.toLowerCase().includes(classNameFilter.toLowerCase())
+        ? classItem.className
+            .toLowerCase()
+            .includes(classNameFilter.toLowerCase())
         : true;
       console.log('Matches class name:', matchesClassName);
-    
-      const matchesStatus = statusFilter !== 'ALL'
-        ? classItem.status === statusFilter
-        : true;
+
+      const matchesStatus =
+        statusFilter !== 'ALL' ? classItem.status === statusFilter : true;
       console.log('Matches status:', matchesStatus);
-    
+
       return matchesClassName && matchesStatus;
     });
-    
+
     console.log('Filtered classes:', filtered); // Kiểm tra danh sách lớp đã lọc
     this.filteredClasses.set(filtered);
     this.updatePagination(); // Cập nhật phân trang sau khi lọc
@@ -97,7 +103,7 @@ export class ClassComponent implements OnInit {
     const currentClasses = this.filteredClasses();
     const counts = { studying: 0, finished: 0, cancel: 0, scheduled: 0 };
 
-    currentClasses.forEach(classItem => {
+    currentClasses.forEach((classItem) => {
       if (classItem.status === 'STUDYING') counts.studying++;
       if (classItem.status === 'FINISHED') counts.finished++;
       if (classItem.status === 'CANCEL') counts.cancel++;
@@ -114,27 +120,25 @@ export class ClassComponent implements OnInit {
     }
     this.router.navigate(['/student-detail', studentId]);
   }
-  
 
   updatePagination(): void {
     const classes = this.filteredClasses();
-    
+
     // Fix signal access by calling it like a function
     const startIndex = (this.currentPage() - 1) * this.itemsPerPage();
     const endIndex = startIndex + this.itemsPerPage();
-    
+
     // Update the paginated classes
     this.paginatedClasses.set(classes.slice(startIndex, endIndex));
-    
+
     // Update total pages
     this.totalPages.set(Math.ceil(classes.length / this.itemsPerPage()));
   }
-  
+
   onItemsPerPageChange(value: number): void {
     this.itemsPerPage.set(value);
     this.updatePagination();
   }
-  
 
   goToFirstPage(): void {
     this.currentPage.set(1);
@@ -164,46 +168,39 @@ export class ClassComponent implements OnInit {
     // Show confirmation dialog with SweetAlert2
     Swal.fire({
       title: 'Are you sure?',
-      text: 'You won\'t be able to revert this!',
+      text: "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
         // Proceed with deletion
         this.classService.deleteClass(id).subscribe({
           next: () => {
             // Update the list of classes by filtering out the deleted class
-            const updatedClasses = this.classes().filter(classItem => classItem.id !== id);
+            const updatedClasses = this.classes().filter(
+              (classItem) => classItem.id !== id
+            );
             this.classes.set(updatedClasses);
-  
+
             // Apply any filters that might be set
             this.applyFilters();
-  
+
             // Update status counts if applicable
             this.updateStatusCounts();
-  
+
             // Show success message with SweetAlert2
-            Swal.fire(
-              'Deleted!',
-              'Class has been deleted.',
-              'success'
-            );
+            Swal.fire('Deleted!', 'Class has been deleted.', 'success');
           },
           error: (error) => {
             // Log error details and show error message with SweetAlert2
             console.error('Error details:', error.message);
-            Swal.fire(
-              'Error!',
-              'Failed to delete class.',
-              'error'
-            );
-          }
+            Swal.fire('Error!', 'Failed to delete class.', 'error');
+          },
         });
       }
     });
   }
-  
 }

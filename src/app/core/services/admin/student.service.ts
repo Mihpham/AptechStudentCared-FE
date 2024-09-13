@@ -21,6 +21,10 @@ export class StudentService {
     return this.http.get<StudentResponse[]>(this.baseUrl, { headers: this.headers });
   }
 
+  getStudentsByStatus(status: string): Observable<StudentResponse[]> {
+    return this.http.get<StudentResponse[]>(`${this.baseUrl}/status/${status}`);
+  }
+
   addStudent(student: StudentRequest): Observable<StudentResponse> {
     return this.http.post<StudentResponse>(`${this.baseUrl}/add`, student).pipe(
       catchError((error: HttpErrorResponse) => {

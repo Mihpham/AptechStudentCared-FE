@@ -25,6 +25,7 @@
     "d3": "^7.9.0",
     "file-saver": "^2.0.5",
     "ngx-csv": "^0.3.2",
+    "ngx-file-drop": "^16.0.0",
     "ngx-toastr": "^19.0.0",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.12.4",
