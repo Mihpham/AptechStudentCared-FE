@@ -40,42 +40,41 @@ export class ClassDetailComponent implements OnInit {
   }
 
   getAvatarUrl(avatarName: string | undefined): string {
-    
     return `/assets/images/${avatarName}`;
   }
-
 
   getClassDetails(id: number): void {
     this.classService.findClassById(id).subscribe(
       (data) => {
         this.classDetails = data;
-        this.students = data.students?.map((student: any) => ({
-          userId: student.userId,
-          image: student.image ? student.image : 'assets/images/avatar-default.webp',
-          rollNumber: student.rollNumber,
-          fullName: student.fullName,
-          password: student.password,
-          email: student.email,
-          dob: student.dob,
-          address: student.address,
-          className: student.className,
-          gender: student.gender,
-          phoneNumber: student.phoneNumber,
-          courses: student.courses,
-          status: student.status,
-          parentFullName: student.parentFullName,
-          studentRelation: student.studentRelation,
-          parentPhone: student.parentPhone,
-          parentGender: student.parentGender,
-        })) ?? [];
+        this.students =
+          data.students?.map((student: any) => ({
+            userId: student.userId,
+            image: student.image
+              ? student.image
+              : 'assets/images/avatar-default.webp',
+            rollNumber: student.rollNumber,
+            fullName: student.fullName,
+            password: student.password,
+            email: student.email,
+            dob: student.dob,
+            address: student.address,
+            className: student.className,
+            gender: student.gender,
+            phoneNumber: student.phoneNumber,
+            courses: student.courses,
+            status: student.status,
+            parentFullName: student.parentFullName,
+            studentRelation: student.studentRelation,
+            parentPhone: student.parentPhone,
+            parentGender: student.parentGender,
+          })) ?? [];
       },
       (error) => {
         console.error('Error fetching class details:', error);
       }
     );
   }
-  
-  
 
   loadStudent(): void {
     if (this.classId) {
@@ -107,7 +106,7 @@ export class ClassDetailComponent implements OnInit {
     };
 
     if (this.classDetails?.students) {
-      this.classDetails.students.forEach((student: { status: any; }) => {
+      this.classDetails.students.forEach((student: { status: any }) => {
         switch (student.status) {
           case 'STUDYING':
             statusCount.studying++;
@@ -129,23 +128,22 @@ export class ClassDetailComponent implements OnInit {
 
   onUpdate(student: StudentResponse, event: Event): void {
     event.stopPropagation(); // Prevent row click event
-  
+
     const dialogRef = this.dialog.open(StudentUpdateDialogComponent, {
       width: '650px',
       data: student, // Pass the StudentResponse object to the dialog
     });
-  
-    dialogRef.afterClosed().subscribe((updatedStudent: StudentResponse | undefined) => {
-      
-      if (updatedStudent) {
-        const index = this.students.findIndex((s) => s.userId === updatedStudent.userId);
-        if (index !== -1) {
-          this.students[index] = updatedStudent;
-        } else {
+
+    dialogRef
+      .afterClosed()
+      .subscribe((updatedStudent: StudentResponse | undefined) => {
+        if (updatedStudent) {
+          const index = this.students.findIndex(
+            (s) => s.userId === updatedStudent.userId
+          );
           this.loadStudent();
         }
-      }
-    });
+      });
   }
 
   deleteStudent(studentId?: number): void {
