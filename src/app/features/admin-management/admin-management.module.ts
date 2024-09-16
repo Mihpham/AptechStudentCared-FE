@@ -89,8 +89,7 @@ import { SroComponent } from './sro/sro.component';
     CourseUpdateDialogComponent,
     LocationSelectorComponent,
     ClassDetailComponent,
-    AccountsListComponent
-
+    AccountsListComponent,
     SroComponent,
     SroDialogComponent
   ],
