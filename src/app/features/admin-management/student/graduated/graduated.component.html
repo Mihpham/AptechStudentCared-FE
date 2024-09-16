@@ -40,12 +40,12 @@
       <tbody class="divide-y divide-gray-200 dark:text-gray-200 dark:bg-gray-600">
         <tr *ngFor="let student of filteredStudents | paginate: { itemsPerPage: pageSize, currentPage: page }"
           class="hover:bg-gray-50 transition-colors duration-150 ease-in-out">
-          <td class="py-2 px-4 text-sm">{{ student.rollNumber }}</td>
-          <td class="py-2 px-4 text-sm">{{ student.fullName }}</td>
-          <td class="py-2 px-4 text-sm">{{ student.email }}</td>
-          <td class="py-2 px-4 text-sm">{{ student.className }}</td>
-          <td class="py-2 px-4 text-sm">{{ student.courses }}</td>
-          <td class="py-2 px-4 text-sm text-green-500">{{ student.status }}</td>
+          <td class="py-4 px-4 text-sm">{{ student.rollNumber }}</td>
+          <td class="py-4 px-4 text-sm">{{ student.fullName }}</td>
+          <td class="py-4 px-4 text-sm">{{ student.email }}</td>
+          <td class="py-4 px-4 text-sm">{{ student.className }}</td>
+          <td class="py-4 px-4 text-sm">{{ student.courses }}</td>
+          <td class="py-4 px-4 text-sm text-green-500">{{ student.status }}</td>
         </tr>
       </tbody>
     </table>

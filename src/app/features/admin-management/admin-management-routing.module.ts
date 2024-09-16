@@ -46,10 +46,12 @@ const routes: Routes = [
   },
   {
     path: 'sro',
-    component: SroComponent,
+    loadChildren: () =>
+      import('./sro/sro-routing.model').then((m) => m.SroRoutingModule),  // Lazy load SroModule
     canActivate: [AuthGuard],
     data: { breadcrumb: 'SRO Management' },
   },
+  
   {
     path: 'accounts',
     component: AccountsComponent,

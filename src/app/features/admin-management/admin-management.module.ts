@@ -48,6 +48,8 @@ import { CourseUpdateDialogComponent } from './course/course-update-dialog/cours
 import { LocationSelectorComponent } from '../location-selector/location-selector.component';
 import { ClassDetailComponent } from './class/class-detail/class-detail.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { SroDialogComponent } from './sro/sro-dialog/sro-dialog.component';
+import { SroComponent } from './sro/sro.component';
 
 @NgModule({
   
@@ -85,8 +87,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
     CourseDetailDialogComponent,
     CourseUpdateDialogComponent,
     LocationSelectorComponent,
-    ClassDetailComponent
-
+    ClassDetailComponent,
+    SroComponent,
+    SroDialogComponent
   ],
   imports: [
     CommonModule,
@@ -106,7 +109,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     MatOptionModule,
     MatTooltipModule,
     CdkTableModule, 
-    NgxPaginationModule
+    NgxPaginationModule,
   ]
 })
 export class AdminManagementModule { }
