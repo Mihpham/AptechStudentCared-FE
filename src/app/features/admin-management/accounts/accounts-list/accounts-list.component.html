@@ -1,1 +1,40 @@
-<p>accounts-list works!</p>
+<mat-table [dataSource]="dataSource">
+
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+    </ng-container>
+  
+    <ng-container matColumnDef="username">
+      <mat-header-cell *matHeaderCellDef> username </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.username}} </mat-cell>
+    </ng-container>
+  
+    <ng-container matColumnDef="createdAt">
+      <mat-header-cell *matHeaderCellDef> createdAt </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.createdAt}} </mat-cell>
+    </ng-container>
+  
+    <ng-container matColumnDef="updatedAt">
+      <mat-header-cell *matHeaderCellDef> updatedAt </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.updatedAt}} </mat-cell>
+    </ng-container>
+  
+    <ng-container matColumnDef="status">
+      <mat-header-cell *matHeaderCellDef> status </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.status}} </mat-cell>
+    </ng-container>
+  
+    <ng-container matColumnDef="action">
+      <mat-header-cell *matHeaderCellDef> action </mat-header-cell>
+      <mat-cell *matCellDef="let element"> 
+        <mat-icon *ngIf="element.action === 'Active'" color="primary" matTooltip="Active">check_circle</mat-icon>
+        <mat-icon *ngIf="element.action === 'Lock'" color="warn" matTooltip="Lock">lock</mat-icon>
+        <mat-icon color="warn" matTooltip="Delete">delete</mat-icon>
+      </mat-cell>
+    </ng-container>
+  
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+  

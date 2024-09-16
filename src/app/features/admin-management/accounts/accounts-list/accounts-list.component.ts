@@ -13,7 +13,7 @@ import { AccountService } from 'src/app/core/services/admin/account.service';
   styleUrls: ['./accounts-list.component.scss']
 })
 export class AccountsListComponent implements OnInit {
-  displayedColumns: string[] = ['no', 'username', 'createAt', 'updateAt', 'status', 'action'];
+  displayedColumns: string[] = ['id', 'username', 'createdAt', 'updatedAt', 'status', 'action'];
   dataSource = new MatTableDataSource<AccountResponse>([]);
   searchTerm: string = '';
   totalAccounts: number = 0;
