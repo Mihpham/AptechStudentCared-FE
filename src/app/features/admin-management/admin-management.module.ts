@@ -47,6 +47,7 @@ import { CourseDetailDialogComponent } from './course/course-detail-dialog/cours
 import { CourseUpdateDialogComponent } from './course/course-update-dialog/course-update-dialog.component';
 import { LocationSelectorComponent } from '../location-selector/location-selector.component';
 import { ClassDetailComponent } from './class/class-detail/class-detail.component';
+import { AccountsListComponent } from './accounts/accounts-list/accounts-list.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { SroDialogComponent } from './sro/sro-dialog/sro-dialog.component';
 import { SroComponent } from './sro/sro.component';
@@ -88,6 +89,8 @@ import { SroComponent } from './sro/sro.component';
     CourseUpdateDialogComponent,
     LocationSelectorComponent,
     ClassDetailComponent,
+    AccountsListComponent
+
     SroComponent,
     SroDialogComponent
   ],
