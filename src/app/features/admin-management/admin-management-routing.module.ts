@@ -3,14 +3,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../core/auth/auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { ClassComponent } from './class/class.component';
 import { ExamMarkComponent } from './exam-mark/exam-mark.component';
 import { TeacherComponent } from './teacher/teacher.component';
-import { SroComponent } from './sro/sro.component';
-import { AccountsComponent } from './accounts/accounts.component';
 import { CalendarComponent } from './calendar/calendar.component';
-import { CourseComponent } from './course/course.component';
-import { SubjectComponent } from './subject/subject.component';
 
 const routes: Routes = [
   {
