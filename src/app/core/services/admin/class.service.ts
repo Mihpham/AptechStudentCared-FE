@@ -4,6 +4,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { UserEnviroment } from 'src/app/environments/environment';
 import { ClassRequest } from 'src/app/features/admin-management/model/class/class-request.model';
 import { ClassResponse } from 'src/app/features/admin-management/model/class/class-response.model';
+import { AssignTeacherRequest } from 'src/app/features/admin-management/model/class/assign-teacher.model';
 
 @Injectable({
   providedIn: 'root',
@@ -39,4 +40,8 @@ export class ClassService {
   deleteClass(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' });
   }
+  assignTeacher(request: AssignTeacherRequest): Observable<string> {
+    return this.http.post<string>(`${this.baseUrl}/assign-teacher`, request);
+  }
+
 }
