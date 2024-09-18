@@ -52,6 +52,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { TeacherComponent } from './teacher/teacher.component';
 import { SroDialogComponent } from './sro/sro-dialog/sro-dialog.component';
 import { SroComponent } from './sro/sro.component';
+import { TeacherAddComponent } from './teacher/teacher-add/teacher-add.component';
+import { TeacherUpdateComponent } from './teacher/teacher-update/teacher-update.component';
+import { TeacherDetailComponent } from './teacher/teacher-detail/teacher-detail.component';
 
 @NgModule({
   
@@ -90,11 +93,14 @@ import { SroComponent } from './sro/sro.component';
     CourseUpdateDialogComponent,
     LocationSelectorComponent,
     ClassDetailComponent,
-    TeacherComponent
+    TeacherComponent,
 
     AccountsListComponent,
     SroComponent,
-    SroDialogComponent
+    SroDialogComponent,
+    TeacherAddComponent,
+    TeacherUpdateComponent,
+    TeacherDetailComponent
   ],
   imports: [
     CommonModule,
