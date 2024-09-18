@@ -1,12 +1,13 @@
-import { StudentInClassResponse } from "./student-in-class-response.model";
-
 export interface ClassResponse {
-    id: number;
-    className: string;
-    center: string;
-    hour: string;  // If you decide to change hour to a numeric type (int or double), change it here as well
-    days: string;
-    createdAt: Date;  // In TypeScript, we use Date for date and time fields
-    status: string;
-    students: StudentInClassResponse[];
-  }
+  id: number;
+  className: string;
+  center: string;
+  hour: string;
+  days: string;
+  status: string;
+  sem: string;
+  teacherName: string;
+  courseCode: string;
+  createdAt: Date;  // Typically provided by the backend
+  students?: any[]; // Optional if there are students linked to the class
+}

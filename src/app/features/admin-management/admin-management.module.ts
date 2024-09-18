@@ -90,8 +90,7 @@ import { SroComponent } from './sro/sro.component';
     CourseUpdateDialogComponent,
     LocationSelectorComponent,
     ClassDetailComponent,
-    TeacherComponent
-
+    TeacherComponent,
     AccountsListComponent,
     SroComponent,
     SroDialogComponent

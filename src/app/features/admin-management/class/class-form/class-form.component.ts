@@ -2,7 +2,12 @@ import { Component, OnInit, WritableSignal, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ClassService } from 'src/app/core/services/admin/class.service';
+import { TeacherService } from 'src/app/core/services/admin/teacher.service'; // Adjust the import path
+import { CourseService } from 'src/app/core/services/admin/course.service'; // Adjust the import path
 import { ClassRequest } from '../../model/class/class-request.model';
+import { TeacherResponse } from '../../model/teacher/teacher-response.model'; // Adjust the import path
+import { CourseResponse } from '../../model/course/course-response.model'; // Adjust the import path
+import { Semester } from '../../model/semester/semester.model';
 
 @Component({
   selector: 'app-class-form',
@@ -18,6 +23,9 @@ export class ClassFormComponent implements OnInit {
     days: '',
     createdAt: new Date(),
     status: 'STUDYING',
+    teacherName: '',
+    courseCode: '',
+    sem: 'Sem1' // Default semester
   };
 
   startHour: string = '';
@@ -27,32 +35,58 @@ export class ClassFormComponent implements OnInit {
   classes: WritableSignal<ClassRequest[]> = signal([]); // Signal to hold class list
   selectedDays: string[] = [];
   isLoading = false; // To prevent multiple submissions
-
+  teachers: TeacherResponse[] = [];
+  courses: CourseResponse[] = [];
+  semesters: Semester[] = [];
+  
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private classService: ClassService,
+    private teacherService: TeacherService,
+    private courseService: CourseService,
     private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
+    this.loadInitialData();
     const classId = +this.route.snapshot.paramMap.get('id')!;
     if (classId) {
       this.isEditMode = true;
       this.classService.findClassById(classId).subscribe({
         next: (data) => {
           this.class = data;
+          this.selectedDays = this.class.days.split(','); // Populate selectedDays in edit mode
         },
         error: (error) => {
           this.toastr.error('Failed to load class details!', 'Error');
         },
       });
     }
-    if (this.class.createdAt) {
-      this.formattedDate = this.formatDate(this.class.createdAt);
-    }
   }
-  
+
+  loadInitialData(): void {
+    this.teacherService.getAllTeachers().subscribe({
+      next: (data) => {
+        this.teachers = data;
+      },
+      error: (error) => {
+        this.toastr.error('Failed to load teachers!', 'Error');
+      }
+    });
+
+    this.courseService.getAllCourse().subscribe({
+      next: (data) => {
+        this.courses = data;
+      },
+      error: (error) => {
+        this.toastr.error('Failed to load courses!', 'Error');
+      }
+    });
+
+    
+  }
+
   toggleDay(event: any): void {
     const value = event.target.value;
     if (event.target.checked) {
@@ -62,6 +96,7 @@ export class ClassFormComponent implements OnInit {
     }
     this.class.days = this.selectedDays.join(',');
   }
+
   saveClass(): void {
     this.isLoading = true; // Set loading state
     if (this.class.createdAt) {
@@ -73,14 +108,12 @@ export class ClassFormComponent implements OnInit {
       // Update class
       this.classService.updateClass(this.class.id, this.class).subscribe({
         next: (response) => {
-          console.log('Update Response:', response);
           this.toastr.success('Class updated successfully!', 'Success');
           this.updateClassInList(this.class); // Update class in the list locally
           this.clearForm(); // Optionally clear the form after update
           this.router.navigate(['/admin/class']);
         },
         error: (error) => {
-          console.error('Update Error:', error);
           this.toastr.error('Failed to update class!', 'Error');
         },
         complete: () => {
@@ -146,9 +179,13 @@ export class ClassFormComponent implements OnInit {
       days: '',
       createdAt: new Date(),
       status: 'STUDYING',
+      teacherName: '',
+      courseCode: '',
+      sem: 'Sem1' // Default semester
     };
     this.isEditMode = false; // Reset edit mode for next potential entry
   }
+
   onClosed(): void {
     this.router.navigate(['/admin/class']);
   }
