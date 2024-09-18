@@ -100,7 +100,7 @@ export class CourseUpdateDialogComponent implements OnInit, AfterViewInit, OnDes
           courseCode: course.courseCode,
           courseCompTime: course.courseCompTime
         });
-        this.setSemesters(course.semesters);
+        this.setSemesters(course.semesters as { [key: string]: string[] });
       }
     });
   }
@@ -108,7 +108,7 @@ export class CourseUpdateDialogComponent implements OnInit, AfterViewInit, OnDes
   setSemesters(semesters: { [key: string]: string[] }): void {
     this.semesters.forEach(semester => {
       const formArray = this.courseForm.get(['semesters', semester]) as FormArray;
-      formArray.clear(); // Clear existing controls
+      formArray.clear(); // Xóa tất cả các điều khiển hiện tại
       (semesters[semester] || []).forEach(subject => {
         formArray.push(this.fb.control(subject));
       });
@@ -140,7 +140,7 @@ export class CourseUpdateDialogComponent implements OnInit, AfterViewInit, OnDes
       this.selectedSubjectsBySemester[semester] = [...selectedSubjects, subject];
     }
   
-    formArray.clear(); // Clear all existing controls
+    formArray.clear(); // Xóa tất cả các điều khiển hiện tại
     this.selectedSubjectsBySemester[semester].forEach(subject => {
       formArray.push(this.fb.control(subject));
     });
@@ -202,8 +202,6 @@ export class CourseUpdateDialogComponent implements OnInit, AfterViewInit, OnDes
       this.toastr.error('Please fill out the form correctly!');
     }
   }
-  
-  
 
   onCancel(): void {
     this.dialogRef.close();

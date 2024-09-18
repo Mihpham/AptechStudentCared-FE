@@ -55,6 +55,8 @@ import { SroComponent } from './sro/sro.component';
 import { TeacherAddComponent } from './teacher/teacher-add/teacher-add.component';
 import { TeacherUpdateComponent } from './teacher/teacher-update/teacher-update.component';
 import { TeacherDetailComponent } from './teacher/teacher-detail/teacher-detail.component';
+import { AssignTeacherComponent } from './class/assign-teacher/assign-teacher.component';
+import { AssignEditComponent } from './class/assign-edit/assign-edit.component';
 
 @NgModule({
   
@@ -100,7 +102,9 @@ import { TeacherDetailComponent } from './teacher/teacher-detail/teacher-detail.
     SroDialogComponent,
     TeacherAddComponent,
     TeacherUpdateComponent,
-    TeacherDetailComponent
+    TeacherDetailComponent,
+    AssignTeacherComponent,
+    AssignEditComponent
   ],
   imports: [
     CommonModule,

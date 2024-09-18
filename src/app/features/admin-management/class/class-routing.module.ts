@@ -5,6 +5,7 @@ import { ClassComponent } from './class.component';
 import { AuthGuard } from 'src/app/core/auth/auth.guard';
 import { ClassFormComponent } from './class-form/class-form.component';
 import { ClassDetailComponent } from './class-detail/class-detail.component';
+import { AssignTeacherComponent } from './assign-teacher/assign-teacher.component';
 
 
 const routes: Routes = [
@@ -19,6 +20,12 @@ const routes: Routes = [
     component: ClassFormComponent,
     canActivate: [AuthGuard],
     data: { breadcrumb: 'Create Class' },
+  },
+  {
+    path: 'assign/:id',
+    component: AssignTeacherComponent,
+    canActivate: [AuthGuard],
+    data: { breadcrumb: 'Assign Class' },
   },
   {
     path: 'update/:id',
