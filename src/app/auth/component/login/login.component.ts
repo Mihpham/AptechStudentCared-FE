@@ -29,18 +29,20 @@ export class LoginComponent implements OnInit {
     // Redirect to the dashboard if already logged in
     if (this.authService.isAuthenticated()) {
       const role = this.authService.getRole();
+      console.log("role",role);
+      
       let returnUrl = '/';
       switch (role) {
-        case 'ADMIN':
+        case 'ROLE_ADMIN':
           returnUrl = '/admin/dashboard';
           break;
-        case 'SRO':
+        case 'ROLE_SRO':
           returnUrl = '/sro';
           break;
-        case 'TEACHER':
+        case 'ROLE_TEACHER':
           returnUrl = '/teacher';
           break;
-        case 'STUDENT':
+        case 'ROLE_STUDENT':
           returnUrl = '/student';
           break;
       }
@@ -83,34 +85,41 @@ export class LoginComponent implements OnInit {
 
   private handleLoginResponse(response: any) {
     const token = response?.jwt;
-    const role = response?.role;
 
     if (token && token.split('.').length === 3) {
-      this.authService.setToken(token); 
-      this.authService.setRole(role);
-      this.toastr.success('Logged in successfully');
+        this.authService.setToken(token);
 
-      let returnUrl = '/';
-      switch (role) {
-        case 'ADMIN':
-          returnUrl = 'admin/dashboard';
-          break;
-        case 'SRO':
-          returnUrl = 'sro';
-          break;
-        case 'TEACHER':
-          returnUrl = 'teacher';
-          break;
-        case 'STUDENT':
-          returnUrl = 'student';
-          break;
-      }
-      this.router.navigate([returnUrl]);
+        // Decode the token to extract the role
+        const decodedToken = this.authService.decodeToken(token);
+        const role = decodedToken?.roles ? decodedToken.roles[0] : null; // Adjust based on your token structure
+
+        this.authService.setRole(role);
+        this.toastr.success('Logged in successfully');
+
+        let returnUrl = '/';
+        switch (role) {
+            case 'ROLE_ADMIN':
+                returnUrl = '/admin/dashboard';
+                break;
+            case 'ROLE_SRO':
+                returnUrl = '/sro';
+                break;
+            case 'ROLE_TEACHER':
+                returnUrl = '/teacher';
+                break;
+            case 'ROLE_STUDENT':
+                returnUrl = '/student';
+                break;
+            default:
+                returnUrl = '/'; // Fallback for undefined roles
+        }
+        this.router.navigate([returnUrl]);
     } else {
-      console.error('Invalid token format:', token);
-      this.toastr.error('Invalid token received');
+        console.error('Invalid token format:', token);
+        this.toastr.error('Invalid token received');
     }
-  }
+}
+
 
   emailValidator(control: AbstractControl): { [key: string]: boolean } | null {
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
