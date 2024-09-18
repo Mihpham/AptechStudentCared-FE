@@ -48,6 +48,7 @@ import { CourseUpdateDialogComponent } from './course/course-update-dialog/cours
 import { LocationSelectorComponent } from '../location-selector/location-selector.component';
 import { ClassDetailComponent } from './class/class-detail/class-detail.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { TeacherComponent } from './teacher/teacher.component';
 
 @NgModule({
   
@@ -85,7 +86,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     CourseDetailDialogComponent,
     CourseUpdateDialogComponent,
     LocationSelectorComponent,
-    ClassDetailComponent
+    ClassDetailComponent,
+    TeacherComponent
 
   ],
   imports: [
