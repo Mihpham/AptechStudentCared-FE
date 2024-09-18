@@ -15,6 +15,7 @@
                     class="dark:text-gray-500 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm transition-all duration-300 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-gray-500 peer-placeholder-shown:text-base peer-focus:-top-3 peer-focus:text-blue-500 peer-focus:text-xs">Search</label>
             </div>
 
+
             <!-- Action Buttons -->
             <div class="actions flex flex-wrap space-x-2 ml-auto">
                 <button
@@ -25,7 +26,13 @@
             </div>
         </div>
     </div>
-
+    <div *ngIf="dataSource.filteredData.length === 0 && dataSource.data.length > 0" class="no-results text-gray-600">
+        No results found.
+    </div>
+    <!-- No Teachers Available Message -->
+    <div *ngIf="dataSource.data.length === 0" class="no-teachers text-center text-gray-500">
+        No teachers available.
+    </div>
     <!-- Table for Displaying Teachers -->
     <mat-table [dataSource]="dataSource" class="mat-elevation-z8 table-auto w-full dark:bg-gray-900">
 
@@ -58,9 +65,11 @@
         <ng-container matColumnDef="dob">
             <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-50 dark:bg-gray-800"> Date of Birth
             </mat-header-cell>
-            <mat-cell *matCellDef="let teacher" class="p-2 dark:text-gray-200 dark:bg-gray-600"> {{teacher.dob}}
+            <mat-cell *matCellDef="let teacher" class="p-2 dark:text-gray-200 dark:bg-gray-600">
+                {{ teacher.dob | date:'dd/MM/yyyy' }}
             </mat-cell>
         </ng-container>
+
 
         <!-- Phone Column -->
         <ng-container matColumnDef="phone">
@@ -69,19 +78,14 @@
             </mat-cell>
         </ng-container>
 
-        <!-- Class Name Column -->
-        <ng-container matColumnDef="className">
-            <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-50 dark:bg-gray-800"> Class Name
-            </mat-header-cell>
-            <mat-cell *matCellDef="let teacher" class="p-2 dark:text-gray-200 dark:bg-gray-600">
-                {{teacher.className}} </mat-cell>
-        </ng-container>
-
         <!-- Status Column -->
         <ng-container matColumnDef="status">
             <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-50 dark:bg-gray-800"> Status </mat-header-cell>
             <mat-cell *matCellDef="let teacher" class="p-2 dark:text-gray-200 dark:bg-gray-600">
-                {{teacher.status}}
+                <span
+                    [ngClass]="{'text-green-500': teacher.status === 'TEACHING', 'text-orange-500': teacher.status === 'ONLEAVE', 'text-red-500': teacher.status === 'LEAVE'}">
+                    {{teacher.status}}
+                </span>
             </mat-cell>
         </ng-container>
 
@@ -101,12 +105,9 @@
             </mat-cell>
         </ng-container>
 
-        <!-- No Teachers Available Message -->
-        <div *ngIf="dataSource.data.length === 0" class="no-teachers text-center text-gray-500">
-            No teachers available.
-        </div>
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 cursor-pointer"></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClick($event, row)"
+            class="hover:bg-gray-50 cursor-pointer"></mat-row>
     </mat-table>
 
     <!-- Paginator -->

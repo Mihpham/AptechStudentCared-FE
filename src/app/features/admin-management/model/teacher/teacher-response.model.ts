@@ -7,6 +7,5 @@ export interface TeacherResponse {
     phone: string;
     dob: string;
     address: string;
-    className: string[];
     status: string;
   }
