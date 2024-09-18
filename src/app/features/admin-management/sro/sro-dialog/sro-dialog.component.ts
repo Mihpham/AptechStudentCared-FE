@@ -27,8 +27,8 @@ export class SroDialogComponent {
       phoneNumber: [data?.phone || '', Validators.required],
       dob: [data?.dob || '', Validators.required],
       status: [data?.status || '', Validators.required],
-      province: [''], // Add this
-      district: [''], // Add this
+      province: [''], 
+      district: [''],
       commune: [''],
     });
   }

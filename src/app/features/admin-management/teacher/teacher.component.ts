@@ -61,7 +61,7 @@ export class TeacherComponent implements OnInit{
   onRowClick(event: MouseEvent, teacher: TeacherResponse, ): void {
     this.dialog.open(TeacherDetailComponent, {
       data: teacher,
-      width: '500px', // Adjust as needed
+      width: '550px', // Adjust as needed
     });
   }
 
@@ -69,7 +69,7 @@ export class TeacherComponent implements OnInit{
   onAdd() {
     // Open dialog for adding a teacher
     const dialogRef = this.dialog.open(TeacherAddComponent, {
-      width: '500px',
+      width: '550px',
     });
 
     dialogRef.afterClosed().subscribe(result => {

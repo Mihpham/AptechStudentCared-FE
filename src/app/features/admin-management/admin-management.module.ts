@@ -34,7 +34,6 @@ import { StudentUpdateDialogComponent } from './student/student-update-dialog/st
 import { StudentDetailDialogComponent } from './student/student-detail/student-detail-dialog.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { HttpClientModule } from '@angular/common/http';
-import { ClassFormComponent } from './class/class-form/class-form.component';
 import { SubjectListComponent } from './subject/subject-list/subject-list.component';
 import { SubjectAddComponent } from './subject/subject-add/subject-add.component';
 import { SubjectUpdateComponent } from './subject/subject-update/subject-update.component';
@@ -57,6 +56,8 @@ import { TeacherUpdateComponent } from './teacher/teacher-update/teacher-update.
 import { TeacherDetailComponent } from './teacher/teacher-detail/teacher-detail.component';
 import { AssignTeacherComponent } from './class/assign-teacher/assign-teacher.component';
 import { AssignEditComponent } from './class/assign-edit/assign-edit.component';
+import { CreateClassComponent } from './class/create-class/create-class.component';
+import { UpdateClassComponent } from './class/update-class/update-class.component';
 
 @NgModule({
   
@@ -84,7 +85,6 @@ import { AssignEditComponent } from './class/assign-edit/assign-edit.component';
     StudentAddComponent,
     StudentUpdateDialogComponent,
     ClassComponent,
-    ClassFormComponent,
     SubjectListComponent,
     SubjectAddComponent,
     SubjectUpdateComponent,
@@ -96,7 +96,6 @@ import { AssignEditComponent } from './class/assign-edit/assign-edit.component';
     LocationSelectorComponent,
     ClassDetailComponent,
     TeacherComponent,
-
     AccountsListComponent,
     SroComponent,
     SroDialogComponent,
@@ -104,7 +103,9 @@ import { AssignEditComponent } from './class/assign-edit/assign-edit.component';
     TeacherUpdateComponent,
     TeacherDetailComponent,
     AssignTeacherComponent,
-    AssignEditComponent
+    AssignEditComponent,
+    CreateClassComponent,
+    UpdateClassComponent
   ],
   imports: [
     CommonModule,

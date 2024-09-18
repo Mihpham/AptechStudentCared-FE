@@ -26,7 +26,7 @@ export class ClassService {
     return this.http.post(`${this.baseUrl}/add`, classData, { responseType: 'text' }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 400) {
-          return throwError(() => new Error('ClassRequest with this name already exists'));
+          return throwError(() => new Error('Class with this name already exists'));
         }
         return throwError(() => new Error('An unexpected error occurred!'));
       })
@@ -41,7 +41,11 @@ export class ClassService {
     return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' });
   }
   assignTeacher(request: AssignTeacherRequest): Observable<string> {
-    return this.http.post<string>(`${this.baseUrl}/assign-teacher`, request);
+    return this.http.post(`${this.baseUrl}/assign-teacher`, request, { responseType: 'text' }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => new Error('Error assigning teacher: ' + error.message));
+      })
+    );
   }
-
+  
 }

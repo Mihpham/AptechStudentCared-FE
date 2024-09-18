@@ -1,0 +1,117 @@
+import { Component, OnInit, WritableSignal, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { ClassService } from 'src/app/core/services/admin/class.service';
+import { CourseService } from 'src/app/core/services/admin/course.service';
+import { ClassRequest } from '../../model/class/class-request.model';
+import { CourseResponse } from '../../model/course/course-response.model';
+
+@Component({
+  selector: 'app-create-class',
+  templateUrl: './create-class.component.html',
+  styleUrls: ['./create-class.component.scss'],
+})
+export class CreateClassComponent implements OnInit {
+  isEditMode: boolean = false;
+
+  class: ClassRequest = {
+    id: 0,
+    className: '',
+    center: '',
+    hour: '',
+    days: '',
+    createdAt: new Date(),
+    status: 'STUDYING',
+    teacherName: '',
+    courseCode: '',
+    sem: 'Sem1'
+  };
+
+  startHour: string = '';
+  finishHour: string = '';
+  selectedDays: string[] = [];
+  isLoading = false; // To prevent multiple submissions
+  courses: CourseResponse[] = [];
+  classes: WritableSignal<ClassRequest[]> = signal([]); // Signal to hold class list
+
+  constructor(
+    private router: Router,
+    private classService: ClassService,
+    private courseService: CourseService,
+    private toastr: ToastrService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadInitialData();
+  }
+
+  loadInitialData(): void {
+    this.courseService.getAllCourse().subscribe({
+      next: (data) => {
+        this.courses = data;
+      },
+      error: (error) => {
+        this.toastr.error('Failed to load courses!', 'Error');
+      }
+    });
+  }
+
+  toggleDay(event: any): void {
+    const value = event.target.value;
+    if (event.target.checked) {
+      this.selectedDays.push(value);
+    } else {
+      this.selectedDays = this.selectedDays.filter(day => day !== value);
+    }
+    this.class.days = this.selectedDays.join(',');
+  }
+
+  saveClass(): void {
+    this.isLoading = true;
+    this.class.hour = `${this.startHour} - ${this.finishHour}`;
+
+    // Add new class
+    this.classService.addClass(this.class).subscribe({
+      next: (response) => {
+        this.toastr.success('Class added successfully!', 'Success');
+        this.addClassToList(response);
+        this.clearForm();
+        this.router.navigate(['/admin/class']);
+      },
+      error: (error) => {
+        if (error.message.includes('Class with this name already exists')) {
+          this.toastr.error('Class name already exists!', 'Error');
+        } else {
+          this.toastr.error('Failed to add class!', 'Error');
+        }
+      },
+      complete: () => {
+        this.isLoading = false;
+      },
+    });
+  }
+
+  addClassToList(newClass: ClassRequest): void {
+    const updatedClasses = [...this.classes(), newClass];
+    this.classes.set(updatedClasses);
+  }
+
+  clearForm(): void {
+    this.class = {
+      id: 0,
+      className: '',
+      center: '',
+      hour: '',
+      days: '',
+      createdAt: new Date(),
+      status: 'STUDYING',
+      teacherName: '',
+      courseCode: '',
+      sem: 'Sem1'
+    };
+  }
+
+  onClosed(): void {
+    this.router.navigate(['/admin/class']);
+  }
+}

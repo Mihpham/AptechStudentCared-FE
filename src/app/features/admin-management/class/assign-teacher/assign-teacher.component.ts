@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ClassService } from './../../../../core/services/admin/class.service';
 import { ClassResponse } from '../../model/class/class-response.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AssignEditComponent } from '../assign-edit/assign-edit.component';
 import { AssignTeacherRequest } from '../../model/class/assign-teacher.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-assign-teacher',
@@ -18,7 +19,10 @@ export class AssignTeacherComponent implements OnInit {
   constructor(
     private classService: ClassService,
     private route: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private toastr: ToastrService,
+    private router: Router 
+
   ) {}
 
   ngOnInit(): void {
@@ -66,14 +70,22 @@ export class AssignTeacherComponent implements OnInit {
       subjectCode: subject,
       teacherName: teacherName
     };
-
+  
     this.classService.assignTeacher(request).subscribe({
-      next: (response: string) => { // Chỉ định kiểu cho response
-        console.log('Gán giáo viên thành công:', response);
+      next: (response: string) => {
+        this.toastr.success('Assign successfully');
+        
+        // Re-fetch the class details to reflect the change
+        if (this.classDetails?.id) {
+          this.getClassDetails(this.classDetails.id);
+        }
       },
-      error: (error: any) => { // Chỉ định kiểu cho error
-        console.error('Lỗi khi gán giáo viên:', error);
+      error: (error: any) => {
+        console.error('Error assigning teacher:', error);
       }
     });
+  }
+  goBack(): void {
+    this.router.navigate(['admin/class']); // Navigate back to the classes page
   }
 }
