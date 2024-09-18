@@ -8,7 +8,6 @@ import {
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
-import { StudentDetailDialogComponent } from '../student-detail/student-detail-dialog.component';
 import { StudentAddComponent } from '../student-add/student-add.component';
 import { StudentUpdateDialogComponent } from '../student-update-dialog/student-update-dialog.component';
 import { StudentRequest } from '../../model/studentRequest.model';

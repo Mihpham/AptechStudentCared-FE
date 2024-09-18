@@ -10,7 +10,7 @@ import { ProfileComponent } from './features/profile/profile.component';
 import { StudentPerformanceComponent } from './features/student-performance/student-performance.component';
 
 const routes: Routes = [
-  //lazy loading routes
+  // Lazy loading routes
   {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
@@ -18,7 +18,7 @@ const routes: Routes = [
   {
     path: 'admin',
     canActivate: [AuthGuard],
-    data: { role: 'ADMIN' },
+    data: { role: 'ROLE_ADMIN' }, // Changed from 'ADMIN' to 'ROLE_ADMIN'
     loadChildren: () =>
       import('./features/admin-management/admin-management.module').then(
         (m) => m.AdminManagementModule
@@ -28,22 +28,22 @@ const routes: Routes = [
     path: 'teacher',
     component: TeacherComponent,
     canActivate: [AuthGuard],
-    data: { role: 'TEACHER' },
+    data: { role: 'ROLE_TEACHER' }, // Changed from 'TEACHER' to 'ROLE_TEACHER'
   },
   {
     path: 'student',
     component: StudentComponent,
     canActivate: [AuthGuard],
-    data: { role: 'STUDENT' },
+    data: { role: 'ROLE_STUDENT' }, // Changed from 'STUDENT' to 'ROLE_STUDENT'
   },
   {
     path: 'sro',
     component: SroComponent,
     canActivate: [AuthGuard],
-    data: { role: 'SRO' },
+    data: { role: 'ROLE_SRO' }, // Changed from 'SRO' to 'ROLE_SRO'
   },
   { path: 'access-denied', component: NotAuthComponent }, // Route for access denied
-  { path: 'student-performance', component: StudentPerformanceComponent },  // Define the route here
+  { path: 'student-performance', component: StudentPerformanceComponent },
 
   {
     path: 'profile',
@@ -54,6 +54,7 @@ const routes: Routes = [
   { path: 'error', component: ErrorComponent },
   { path: '**', redirectTo: 'auth/login' },
 ];
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

@@ -23,6 +23,10 @@ export class AuthService {
     private toastr: ToastrService
   ) {}
 
+  public decodeToken(token: string): any {
+    return this.jwtHelper.decodeToken(token);
+  }
+
   login(credentials: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/login`, credentials).pipe(
       catchError(err => {
