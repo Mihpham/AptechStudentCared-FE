@@ -6,6 +6,7 @@ import { FilterDialogComponent } from './filter-dialog/filter-dialog.component';
 import Swal from 'sweetalert2';
 import { ClassService } from 'src/app/core/services/admin/class.service';
 import { ClassRequest } from '../model/class/class-request.model';
+import { ClassResponse } from '../model/class/class-response.model';
 
 @Component({
   selector: 'app-class',
@@ -13,9 +14,9 @@ import { ClassRequest } from '../model/class/class-request.model';
   styleUrls: ['./class.component.scss'],
 })
 export class ClassComponent implements OnInit {
-  classes: WritableSignal<ClassRequest[]> = signal([]);
-  paginatedClasses: WritableSignal<ClassRequest[]> = signal([]);
-  filteredClasses: WritableSignal<ClassRequest[]> = signal([]);
+  classes: WritableSignal<ClassResponse[]> = signal([]);
+  paginatedClasses: WritableSignal<ClassResponse[]> = signal([]);
+  filteredClasses: WritableSignal<ClassResponse[]> = signal([]);
 
   statusCounts = signal({ studying: 0, finished: 0, cancel: 0, scheduled: 0 });
 

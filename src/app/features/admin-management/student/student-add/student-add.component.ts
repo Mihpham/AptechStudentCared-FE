@@ -19,6 +19,7 @@ import { StudentService } from 'src/app/core/services/admin/student.service';
 import { ClassService } from 'src/app/core/services/admin/class.service';
 import { CourseService } from 'src/app/core/services/admin/course.service';
 import { ClassRequest } from '../../model/class/class-request.model';
+import { ClassResponse } from '../../model/class/class-response.model';
 @Component({
   selector: 'app-student-add',
   templateUrl: './student-add.component.html',
@@ -28,7 +29,7 @@ import { ClassRequest } from '../../model/class/class-request.model';
 export class StudentAddComponent implements AfterViewInit, OnInit {
   studentForm: FormGroup;
   selectedCourses: string[] = [];
-  availableClasses: ClassRequest[] = [];
+  availableClasses: ClassResponse[] = [];
   availableCourses: CourseResponse[] = [];
   dropdownOpen = false;
   courseDropdownOpen = false;

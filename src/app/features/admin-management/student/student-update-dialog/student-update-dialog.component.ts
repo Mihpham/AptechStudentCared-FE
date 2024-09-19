@@ -10,6 +10,7 @@ import { StudentService } from 'src/app/core/services/admin/student.service';
 import { ClassService } from 'src/app/core/services/admin/class.service';
 import { CourseService } from 'src/app/core/services/admin/course.service';
 import { ClassRequest } from '../../model/class/class-request.model';
+import { ClassResponse } from '../../model/class/class-response.model';
 
 @Component({
   selector: 'app-student-update-dialog',
@@ -20,7 +21,7 @@ export class StudentUpdateDialogComponent implements OnInit {
   studentForm: FormGroup;
   imageUrl: string | ArrayBuffer | null = null;
   imageError: string | null = null;
-  availableClasses: ClassRequest[] = [];
+  availableClasses: ClassResponse[] = [];
   availableCourses: CourseResponse[] = [];
   selectedCourses: string[] = [];  // Initialize as an empty array
   isDropdownOpen: boolean = false;
@@ -132,7 +133,7 @@ export class StudentUpdateDialogComponent implements OnInit {
         return throwError(() => err);
       })
     ).subscribe({
-      next: (classes: ClassRequest[]) => (this.availableClasses = classes),
+      next: (classes: ClassResponse[]) => (this.availableClasses = classes),
     });
   }
 

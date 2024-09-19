@@ -14,8 +14,8 @@ export class ClassService {
 
   constructor(private http: HttpClient) {}
 
-  findAllClasses(): Observable<ClassRequest[]> {
-    return this.http.get<ClassRequest[]>(this.baseUrl);
+  findAllClasses(): Observable<ClassResponse[]> {
+    return this.http.get<ClassResponse[]>(this.baseUrl);
   }
 
   findClassById(classId: number): Observable<ClassResponse> {

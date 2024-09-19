@@ -46,6 +46,8 @@
             <th class="py-4">Admission Date</th>
             <th class="py-4">Hour</th>
             <th class="py-4">Center</th>
+            <th class="py-4">Course</th>
+            <th class="py-4">Sem</th>
             <th class="py-4">Status</th>
             <th class="py-4">Actions</th>
           </tr>
@@ -60,6 +62,9 @@
             </td>
             <td class="py-2 px-4 text-center">{{ classItem.hour }}</td>
             <td class="py-2 px-4 text-center">{{ classItem.center }}</td>
+            <td class="py-2 px-4 text-center">{{ classItem.course.courseCode }}</td>
+            <td class="py-2 px-4 text-center">{{ classItem.sem }}</td>
+
             <td class="py-2 px-4 text-center" [ngClass]="{
                 'text-green-500': classItem.status === 'STUDYING',
                 'text-yellow-500': classItem.status === 'FINISHED',

@@ -99,7 +99,10 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
       return (
         data.fullName.toLowerCase().includes(filterLowerCase) ||
         data.className?.toLowerCase().includes(filterLowerCase) ||
-        data.email.toLowerCase().includes(filterLowerCase)
+        data.email.toLowerCase().includes(filterLowerCase) ||
+        data.status.toLowerCase().includes(filterLowerCase) ||
+        data.phoneNumber.toLowerCase().includes(filterLowerCase) ||
+        data.rollNumber.toLowerCase().includes(filterLowerCase)
       );
     };
     this.dataSource.filter = filterValue.trim().toLowerCase();

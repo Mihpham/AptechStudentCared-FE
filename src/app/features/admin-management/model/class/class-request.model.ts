@@ -8,5 +8,6 @@ export interface ClassRequest {
   sem: string;
   teacherName: string;
   courseCode: string;
+  
   createdAt?: Date; // Optional if createdAt is set by the backend on creation
 }
