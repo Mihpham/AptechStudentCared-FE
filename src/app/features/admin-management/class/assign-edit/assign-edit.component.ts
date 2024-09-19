@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TeacherService } from 'src/app/core/services/admin/teacher.service'; // Đường dẫn chính xác đến TeacherService
+import { TeacherService } from 'src/app/core/services/admin/teacher.service'; 
 import { TeacherResponse } from '../../model/teacher/teacher-response.model';
 import { ToastrService } from 'ngx-toastr';
 
@@ -12,24 +12,24 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class AssignEditComponent implements OnInit {
   form: FormGroup;
-  teachers: TeacherResponse[] = []; // Mảng chứa danh sách giáo viên
+  teachers: TeacherResponse[] = []; 
   
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { subject: string; teacherName: string },
     private dialogRef: MatDialogRef<AssignEditComponent>,
     private fb: FormBuilder,
-    private teacherService: TeacherService, // Inject TeacherService
+    private teacherService: TeacherService, 
     private toastr: ToastrService
 
   ) {
     this.form = this.fb.group({
       subject: [data.subject, Validators.required],
-      teacherName: [null, Validators.required] // Sử dụng null cho dropdown
+      teacherName: [null, Validators.required] 
     });
   }
 
   ngOnInit(): void {
-    this.loadTeachers(); // Gọi hàm loadTeachers khi khởi tạo component
+    this.loadTeachers(); 
   }
 
   loadTeachers(): void {
@@ -51,17 +51,16 @@ export class AssignEditComponent implements OnInit {
   }
 
   close(): void {
-    this.dialogRef.close(); // Close the dialog
+    this.dialogRef.close(); 
   }
 
   save(): void {
     if (this.form.valid) {
       const updatedData = this.form.value;
       
-      this.dialogRef.close(updatedData); // Return updated data
+      this.dialogRef.close(updatedData); 
       this.toastr.success('Assign successfully')
 
     }
-
   }
 }

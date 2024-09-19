@@ -21,8 +21,7 @@ export class AssignTeacherComponent implements OnInit {
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private toastr: ToastrService,
-    private router: Router 
-
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -36,10 +35,9 @@ export class AssignTeacherComponent implements OnInit {
     this.classService.findClassById(classId).subscribe(
       (data: ClassResponse) => {
         this.classDetails = data;
-        console.log('Thông tin lớp:', data);
       },
       (error) => {
-        console.error('Lỗi khi lấy thông tin lớp:', error);
+        console.error('Error get class information :', error);
       }
     );
   }
@@ -47,11 +45,10 @@ export class AssignTeacherComponent implements OnInit {
   getCourseDetails(semester: string): { subject: string, teacher: string }[] {
     const subjects = this.classDetails?.course.semesters[semester] || [];
     return subjects.map(subject => ({
-        subject: subject,
-        teacher: this.classDetails?.subjectTeacherMap[subject] || 'Chưa có'
+      subject: subject,
+      teacher: this.classDetails?.subjectTeacherMap[subject] || 'Not available'
     }));
-}
-
+  }
 
   openEditDialog(subject: string, teacherName: string): void {
     const dialogRef = this.dialog.open(AssignEditComponent, {
@@ -71,11 +68,8 @@ export class AssignTeacherComponent implements OnInit {
       teacherName: teacherName
     };
   
-    this.classService.assignTeacher(request).subscribe({
-      next: (response: string) => {
-        this.toastr.success('Assign successfully');
-        
-        // Re-fetch the class details to reflect the change
+    this.classService.assignTeacher(this.classDetails?.id || 0, request).subscribe({
+      next: (response: string) => {        
         if (this.classDetails?.id) {
           this.getClassDetails(this.classDetails.id);
         }
@@ -85,7 +79,8 @@ export class AssignTeacherComponent implements OnInit {
       }
     });
   }
+
   goBack(): void {
-    this.router.navigate(['admin/class']); // Navigate back to the classes page
+    this.router.navigate(['admin/class']); 
   }
 }

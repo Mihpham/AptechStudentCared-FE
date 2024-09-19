@@ -40,12 +40,13 @@ export class ClassService {
   deleteClass(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' });
   }
-  assignTeacher(request: AssignTeacherRequest): Observable<string> {
-    return this.http.post(`${this.baseUrl}/assign-teacher`, request, { responseType: 'text' }).pipe(
+
+  assignTeacher(classId: number, request: AssignTeacherRequest): Observable<string> {
+    return this.http.put(`${this.baseUrl}/${classId}/assign-teacher`, request, { responseType: 'text' }).pipe(
       catchError((error: HttpErrorResponse) => {
         return throwError(() => new Error('Error assigning teacher: ' + error.message));
       })
     );
-  }
-  
+  }  
+
 }

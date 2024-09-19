@@ -1,7 +1,6 @@
 <div class="container mx-auto mt-6 p-6 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-lg relative">
-    <!-- Close Button -->
-    <button (click)="goBack()" class="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 rounded-xl dark:text-gray-300 hover:bg-slate-300 dark:hover:text-gray-100 focus:outline-none transition-transform transform hover:scale-110">
-        <i class="fas fa-times fa-lg"></i> <!-- "X" icon -->
+    <button (click)="goBack()" class="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none transition-transform transform hover:scale-110">
+        <i class="fas fa-times fa-lg"></i>
     </button>
 
     <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-300">Assign Teacher</h2>
@@ -9,31 +8,33 @@
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
         <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Class Information</h3>
 
-        <table class="min-w-full text-left border-collapse border border-gray-300 dark:border-gray-600">
-            <thead>
-                <tr class="bg-gray-200 dark:bg-gray-700">
-                    <th class="border border-gray-300 px-4 py-3 dark:border-gray-600">Semester</th>
-                    <th class="border border-gray-300 px-4 py-3 dark:border-gray-600">Subject</th>
-                    <th class="border border-gray-300 px-4 py-3 dark:border-gray-600">Class Name</th>
-                    <th class="border border-gray-300 px-4 py-3 dark:border-gray-600">Teacher Name</th>
-                    <th class="border border-gray-300 px-4 py-3 text-right dark:border-gray-600">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <ng-container *ngFor="let semester of semesters">
-                    <tr *ngFor="let detail of getCourseDetails(semester)" class="hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">{{ semester }}</td>
-                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">{{ detail.subject }}</td>
-                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">{{ classDetails?.className }}</td>
-                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">{{ detail.teacher }}</td>
-                        <td class="border border-gray-300 px-4 py-2 text-right dark:border-gray-600">
-                            <button (click)="openEditDialog(detail.subject, detail.teacher)" class="text-blue-500 hover:text-blue-700 transition focus:outline-none">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                        </td>
+        <div class="overflow-x-auto">
+            <table class="w-full table-fixed text-left border-collapse rounded-lg overflow-hidden shadow-sm">
+                <thead>
+                    <tr class="text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700">
+                        <th class="w-1/5 px-4 py-3 text-sm font-semibold tracking-wide text-center border-b border-gray-300 dark:border-gray-600">Semester</th>
+                        <th class="w-1/5 px-4 py-3 text-sm font-semibold tracking-wide text-center border-b border-gray-300 dark:border-gray-600">Subject</th>
+                        <th class="w-1/5 px-4 py-3 text-sm font-semibold tracking-wide text-center border-b border-gray-300 dark:border-gray-600">Class Name</th>
+                        <th class="w-1/5 px-4 py-3 text-sm font-semibold tracking-wide text-center border-b border-gray-300 dark:border-gray-600">Teacher Name</th>
+                        <th class="w-1/5 px-4 py-3 text-sm font-semibold tracking-wide text-center border-b border-gray-300 dark:border-gray-600">Action</th>
                     </tr>
-                </ng-container>
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="bg-white dark:bg-gray-800">
+                    <ng-container *ngFor="let semester of semesters">
+                        <tr *ngFor="let detail of getCourseDetails(semester)" class="hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <td class="px-4 py-2 text-center text-gray-800 dark:text-gray-300 border-b border-gray-300 dark:border-gray-600">{{ semester }}</td>
+                            <td class="px-4 py-2 text-center text-gray-800 dark:text-gray-300 border-b border-gray-300 dark:border-gray-600">{{ detail.subject }}</td>
+                            <td class="px-4 py-2 text-center text-gray-800 dark:text-gray-300 border-b border-gray-300 dark:border-gray-600">{{ classDetails?.className }}</td>
+                            <td class="px-4 py-2 text-center text-gray-800 dark:text-gray-300 border-b border-gray-300 dark:border-gray-600">{{ detail.teacher }}</td>
+                            <td class="px-4 py-2 text-center border-b border-gray-300 dark:border-gray-600">
+                                <button (click)="openEditDialog(detail.subject, detail.teacher)" class="px-4 py-2 text-white bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-lg shadow-md hover:shadow-lg focus:outline-none transition duration-200 ease-in-out transform hover:scale-105">
+                                    <i class="fas fa-edit mr-2"></i>Edit
+                                </button>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
