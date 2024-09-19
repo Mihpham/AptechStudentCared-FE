@@ -14,23 +14,33 @@ export class SroDialogComponent {
   provinces: any[] = [];
   districts: any[] = []; // Add this line
   communes: any[] = [];
+  isEditMode: boolean; // Add this line
+
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
     private dialogRef: MatDialogRef<SroDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: SroRequest
   ) {
+    this.isEditMode = !!data?.id; // Check if id is present, meaning it's edit mode
+
     this.sroForm = this.fb.group({
       id: [data?.id || null],
       fullName: [data?.fullName || '', Validators.required],
       email: [data?.email || '', [Validators.required, Validators.email]],
       phoneNumber: [data?.phone || '', Validators.required],
       dob: [data?.dob || '', Validators.required],
-      status: [data?.status || '', Validators.required],
-      province: [''], 
+      province: [''],
       district: [''],
       commune: [''],
+      status: [data?.status || '', Validators.required], // Always include the status in the form
     });
+
+    // Remove 'status' validation if it's create mode
+    if (!this.isEditMode) {
+      this.sroForm.get('status')?.clearValidators();
+      this.sroForm.get('status')?.updateValueAndValidity();
+    }
   }
 
   onSave() {
@@ -43,6 +53,7 @@ export class SroDialogComponent {
       const sro: SroRequest = {
         ...formValues,
         address: fullAddress,
+        status: this.isEditMode ? formValues.status : 'ACTIVE', // Default to 'ACTIVE' if creating
       };
 
       this.dialogRef.close(sro);

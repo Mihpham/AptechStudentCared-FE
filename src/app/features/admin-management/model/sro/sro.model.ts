@@ -8,6 +8,7 @@ export interface SroRequest {
     address: string;
     status: string;
     image?: string;  
+    
   }
   
   export interface SroResponse {

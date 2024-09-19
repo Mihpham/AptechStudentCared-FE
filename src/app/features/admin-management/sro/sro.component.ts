@@ -59,7 +59,7 @@ export class SroComponent implements OnInit {
   openDialog(sro?: SroRequest): void {
     const dialogRef = this.dialog.open(SroDialogComponent, {
       data: sro || {},
-      width: '400px',
+      width: '600px',
     });
 
     dialogRef.afterClosed().subscribe((result) => {

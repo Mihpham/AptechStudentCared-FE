@@ -58,6 +58,7 @@ import { AssignTeacherComponent } from './class/assign-teacher/assign-teacher.co
 import { AssignEditComponent } from './class/assign-edit/assign-edit.component';
 import { CreateClassComponent } from './class/create-class/create-class.component';
 import { UpdateClassComponent } from './class/update-class/update-class.component';
+import { ImportStudentDialogComponent } from './student/import-student-dialog/import-student-dialog.component';
 
 @NgModule({
   
@@ -105,7 +106,8 @@ import { UpdateClassComponent } from './class/update-class/update-class.componen
     AssignTeacherComponent,
     AssignEditComponent,
     CreateClassComponent,
-    UpdateClassComponent
+    UpdateClassComponent,
+    ImportStudentDialogComponent
   ],
   imports: [
     CommonModule,

@@ -18,6 +18,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { StudentResponse } from '../../model/student-response.model.';
 import Swal from 'sweetalert2';
 import { StudentService } from 'src/app/core/services/admin/student.service';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { ImportStudentDialogComponent } from '../import-student-dialog/import-student-dialog.component';
 
 @Component({
   selector: 'app-student-all-statuses',
@@ -31,6 +33,8 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   searchTerm: string = '';
   className: string | null = null; // Thay đổi kiểu thành string | null
   statusCounts = signal({ studying: 0, delay: 0, dropped: 0, graduated: 0 });
+  selectedFile: File | null = null;
+  isImportVisible: boolean = false;
 
   displayedColumns: string[] = [
     'avatar',
@@ -57,20 +61,20 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       this.className = params['className'] || null; // Nhận tên lớp từ query params
       this.loadStudent(); // Tải sinh viên khi component khởi tạo
     });
   }
-
-  
 
   loadStudent(): void {
     this.studentService.getAllStudents().subscribe(
       (data) => {
         console.log('Data received from API:', data);
         if (this.className) {
-          this.students = data.filter(student => student.className === this.className); // Lọc sinh viên dựa trên tên lớp nếu có
+          this.students = data.filter(
+            (student) => student.className === this.className
+          ); // Lọc sinh viên dựa trên tên lớp nếu có
         } else {
           this.students = data; // Hiển thị tất cả sinh viên nếu không có lớp
         }
@@ -101,10 +105,19 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  openFilterDialog(): void {
-    // Cần triển khai nếu bạn muốn sử dụng dialog để lọc
-  }
 
+  onImport(): void {
+    const dialogRef = this.dialog.open(ImportStudentDialogComponent, {
+      width: '500px',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && result.reload) {
+        this.loadStudent(); // Reload student data after import
+      }
+    });
+  }
+  
   updateStatusCounts(): void {
     const counts = { studying: 0, delay: 0, dropped: 0, graduated: 0 };
 
@@ -173,6 +186,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     }
   }
 
+  
   onExport(): void {
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.dataSource.data);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
@@ -212,7 +226,6 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
 
             Swal.fire('Deleted!', 'Student has been deleted.', 'success');
             this.toastr.success('Student has been deleted.');
-
           },
           error: (err) => {
             console.error('Error deleting student:', err);
