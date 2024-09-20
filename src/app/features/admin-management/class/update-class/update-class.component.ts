@@ -6,6 +6,7 @@ import { CourseService } from 'src/app/core/services/admin/course.service';
 import { ClassRequest } from '../../model/class/class-request.model';
 import { CourseResponse } from '../../model/course/course-response.model';
 import { ClassResponse } from '../../model/class/class-response.model';
+import { DayOfWeek } from 'src/app/core/enum/DayOfWeek';
 
 @Component({
   selector: 'app-update-class',
@@ -13,22 +14,24 @@ import { ClassResponse } from '../../model/class/class-response.model';
   styleUrls: ['./update-class.component.scss'],
 })
 export class UpdateClassComponent implements OnInit {
+  DayOfWeek = DayOfWeek; // Khai báo để sử dụng trong template
+
   class: ClassRequest = {
     id: 0,
     className: '',
     center: '',
     hour: '',
-    days: '',
+    days: [],
     createdAt: new Date(),
     status: 'STUDYING',
     teacherName: '',
     courseCode: '',
-    sem: 'Sem1'
+    sem: 'Sem1',
   };
 
   startHour: string = '';
   finishHour: string = '';
-  selectedDays: string[] = [];
+  selectedDays: DayOfWeek[] = []; // Kiểu DayOfWeek[]
   isLoading = false;
   courses: CourseResponse[] = [];
 
@@ -51,23 +54,21 @@ export class UpdateClassComponent implements OnInit {
             className: data.className,
             center: data.center,
             hour: data.hour || '',
-            days: data.days || '',
+            days: data.days,
             createdAt: data.createdAt,
             status: data.status,
             sem: data.sem,
             teacherName: data.subjectTeacherMap?.['someSubjectCode'] || '',
-            courseCode: data.course?.courseCode || ''
+            courseCode: data.course?.courseCode || '',
           };
 
-          // Split the hour into startHour and finishHour
           if (this.class.hour) {
             const [start, finish] = this.class.hour.split(' - ');
             this.startHour = start || '';
             this.finishHour = finish || '';
           }
 
-          // Split the days string into an array
-          this.selectedDays = this.class.days.split(',').filter(day => day.trim() !== '');
+          this.selectedDays = this.class.days as DayOfWeek[]; // Gán lại selectedDays
         },
         error: () => {
           this.toastr.error('Failed to load class details!', 'Error');
@@ -83,24 +84,26 @@ export class UpdateClassComponent implements OnInit {
       },
       error: () => {
         this.toastr.error('Failed to load courses!', 'Error');
-      }
+      },
     });
   }
 
   toggleDay(event: any): void {
-    const value = event.target.value;
+    const day = event.target.value as DayOfWeek; // Không cần chuyển đổi thành số
+  
     if (event.target.checked) {
-      this.selectedDays.push(value);
+      if (!this.selectedDays.includes(day)) {
+        this.selectedDays.push(day);
+      }
     } else {
-      this.selectedDays = this.selectedDays.filter(day => day !== value);
+      this.selectedDays = this.selectedDays.filter((d) => d !== day);
     }
-    this.class.days = this.selectedDays.join(',');
+    this.class.days = this.selectedDays; // Cập nhật danh sách ngày
   }
+  
 
   saveClass(): void {
     this.isLoading = true;
-
-    // Construct the hour string
     this.class.hour = `${this.startHour} - ${this.finishHour}`.trim();
 
     this.classService.updateClass(this.class.id, this.class).subscribe({

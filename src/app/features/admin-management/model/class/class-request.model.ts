@@ -1,9 +1,11 @@
+import { DayOfWeek } from "src/app/core/enum/DayOfWeek";
+
 export interface ClassRequest {
   id: number;
   className: string;
   center: string;
   hour: string;
-  days: string;
+  days: DayOfWeek[];
   status: string;
   sem: string;
   teacherName: string;
