@@ -1,1 +1,35 @@
-<p>exam-mark !</p>
+<div class="p-4 space-y-6">
+    <div class="select-container">
+        <label for="classSelect">Choose Class:</label>
+        <select id="classSelect" [(ngModel)]="selectedClass" (change)="onClassChange($event)">
+            <option value="" disabled>Choose class</option>
+            <option *ngFor="let class of class" [value]="class.id">{{ class.className }}</option>
+        </select>
+    </div>
+
+    <div class="table-container">
+        <div class="table-scroll">
+            <table mat-table [dataSource]="students">
+                <ng-container matColumnDef="fullName">
+                    <th mat-header-cell *matHeaderCellDef>Full Name</th>
+                    <td mat-cell *matCellDef="let student">{{ student.fullName }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="className">
+                    <th mat-header-cell *matHeaderCellDef>Class Name</th>
+                    <td mat-cell *matCellDef="let student">{{ student.className }}</td>
+                </ng-container>
+
+                <ng-container *ngFor="let column of displayedColumns.slice(2)">
+                    <ng-container matColumnDef="{{column}}">
+                        <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
+                        <td mat-cell *matCellDef="let student">{{ student[column] }}</td>
+                    </ng-container>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+    </div>
+</div>
