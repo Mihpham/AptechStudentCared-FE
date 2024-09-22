@@ -56,7 +56,7 @@
           <tr *ngFor="let classItem of paginatedClasses()" [routerLink]="['/admin/class/class-detail', classItem.id]"
             class="cursor-pointer border-b hover:bg-gray-100 dark:hover:bg-gray-600">
             <td class="py-2 px-4 text-center">{{ classItem.className }}</td>
-            <td class="py-2 px-4 text-center">{{ classItem.days }}</td>
+            <td class="py-2 px-4 text-center">{{ getDaysAsNumbers(classItem.days) }}</td>
             <td class="py-2 px-4 text-center">
               {{ classItem.createdAt | date : "dd-MM-yyyy" }}
             </td>

@@ -5,6 +5,7 @@ import { ClassService } from 'src/app/core/services/admin/class.service';
 import { CourseService } from 'src/app/core/services/admin/course.service';
 import { ClassRequest } from '../../model/class/class-request.model';
 import { CourseResponse } from '../../model/course/course-response.model';
+import { DayOfWeek } from 'src/app/core/enum/DayOfWeek';
 
 @Component({
   selector: 'app-create-class',
@@ -12,6 +13,7 @@ import { CourseResponse } from '../../model/course/course-response.model';
   styleUrls: ['./create-class.component.scss'],
 })
 export class CreateClassComponent implements OnInit {
+  public DayOfWeek = DayOfWeek;
   isEditMode: boolean = false;
 
   class: ClassRequest = {
@@ -19,7 +21,7 @@ export class CreateClassComponent implements OnInit {
     className: '',
     center: '',
     hour: '',
-    days: '',
+    days: [],
     createdAt: new Date(),
     status: 'STUDYING',
     teacherName: '',
@@ -29,10 +31,10 @@ export class CreateClassComponent implements OnInit {
 
   startHour: string = '';
   finishHour: string = '';
-  selectedDays: string[] = [];
-  isLoading = false; // To prevent multiple submissions
+  selectedDays: Set<DayOfWeek> = new Set();
+  isLoading = false;
   courses: CourseResponse[] = [];
-  classes: WritableSignal<ClassRequest[]> = signal([]); // Signal to hold class list
+  classes: WritableSignal<ClassRequest[]> = signal([]);
 
   constructor(
     private router: Router,
@@ -57,20 +59,24 @@ export class CreateClassComponent implements OnInit {
   }
 
   toggleDay(event: any): void {
-    const value = event.target.value;
+    const value: DayOfWeek = event.target.value as DayOfWeek;
     if (event.target.checked) {
-      this.selectedDays.push(value);
+      this.selectedDays.add(value);
     } else {
-      this.selectedDays = this.selectedDays.filter(day => day !== value);
+      this.selectedDays.delete(value);
     }
-    this.class.days = this.selectedDays.join(',');
+    this.updateDaysInput();
+  }
+
+  updateDaysInput(): void {
+    this.class.days = Array.from(this.selectedDays); // Cập nhật days trong class
   }
 
   saveClass(): void {
     this.isLoading = true;
     this.class.hour = `${this.startHour} - ${this.finishHour}`;
+    this.class.days = Array.from(this.selectedDays); // Đảm bảo days đã được cập nhật
 
-    // Add new class
     this.classService.addClass(this.class).subscribe({
       next: (response) => {
         this.toastr.success('Class added successfully!', 'Success');
@@ -102,13 +108,15 @@ export class CreateClassComponent implements OnInit {
       className: '',
       center: '',
       hour: '',
-      days: '',
+      days: [],
       createdAt: new Date(),
       status: 'STUDYING',
       teacherName: '',
       courseCode: '',
       sem: 'Sem1'
     };
+    this.selectedDays.clear();
+    this.updateDaysInput(); // Đảm bảo ô input cũng được cập nhật
   }
 
   onClosed(): void {

@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { ClassService } from 'src/app/core/services/admin/class.service';
 import { ClassRequest } from '../model/class/class-request.model';
 import { ClassResponse } from '../model/class/class-response.model';
+import { DayOfWeek } from 'src/app/core/enum/DayOfWeek';
 
 @Component({
   selector: 'app-class',
@@ -34,6 +35,22 @@ export class ClassComponent implements OnInit {
   ngOnInit(): void {
     this.loadClasses();
   }
+
+  getDaysAsNumbers(days: DayOfWeek[]): string {
+    const dayMap: { [key in DayOfWeek]: number } = {
+      [DayOfWeek.MONDAY]: 2,
+      [DayOfWeek.TUESDAY]: 3,
+      [DayOfWeek.WEDNESDAY]: 4,
+      [DayOfWeek.THURSDAY]: 5,
+      [DayOfWeek.FRIDAY]: 6,
+      [DayOfWeek.SATURDAY]: 7,
+      [DayOfWeek.SUNDAY]: 8
+    };
+    
+    return days.map(day => dayMap[day]).join(', ');
+  }
+  
+  
 
   loadClasses(): void {
     this.classService.findAllClasses().subscribe({
