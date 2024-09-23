@@ -77,6 +77,9 @@
               <button [routerLink]="['/admin/class/update', classItem.id]" class="text-blue-400 hover:text-blue-600">
                 <i class="fa fa-edit"></i>
               </button>
+              <button [routerLink]="['/admin/attendance', classItem.id]" class="text-blue-400 hover:text-blue-600">
+                <i class="fa fa-add"></i>
+              </button>
               <button class="text-red-400 hover:text-red-600 p-2"
                 (click)="deleteClass(classItem.id); $event.stopPropagation()">
                 <i class="fa fa-trash"></i>

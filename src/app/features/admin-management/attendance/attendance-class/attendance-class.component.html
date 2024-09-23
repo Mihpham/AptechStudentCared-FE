@@ -1,1 +1,126 @@
-<p>attendance-class works!</p>
+<div class="container mx-auto my-8 p-4">
+    <div class="flex items-center justify-start mb-4">
+        <!-- Heading -->
+        <h1 class="text-2xl font-bold">Manage Student Attendance</h1>
+
+        <!-- Small text for class details -->
+        <small class="px-4 pb-2 text-gray-400 text-sm" *ngIf="classDetails && classDetails.course">
+            {{ classDetails?.className }} - {{ classDetails.course?.courseName }} - {{ classDetails?.createdAt | date:
+            'dd-MM-yyyy' }}
+        </small>
+    </div>
+
+    <div *ngIf="classDetails?.students?.length > 0" class="overflow-x-auto">
+        <table class="min-w-full bg-white border">
+            <thead>
+                <tr class="w-full bg-gray-200 text-left text-xs font-bold text-gray-600 uppercase">
+                    <th class="py-3 px-4" colspan="5">Student Information</th>
+                    <th class="py-3 px-4" colspan="13">Session Attendance Data</th>
+                </tr>
+                <tr class="w-full bg-gray-200 text-left text-xs font-bold text-gray-600 uppercase">
+                    <th class="py-3 px-4">Name</th>
+                    <th class="py-3 px-4">Class</th>
+                    <th class="py-3 px-4">Module</th>
+                    <th class="py-3 px-4">Status</th>
+                    <th class="py-3 px-4">Type</th>
+                    <!-- Loop through class sessions (dates) -->
+                    <th class="py-3 px-4">C2408L-1<br>18/09/2024</th>
+                    <th class="py-3 px-4">C2408L-2<br>20/09/2024</th>
+                    <th class="py-3 px-4">C2408L-3<br>23/09/2024</th>
+                    <th class="py-3 px-4">C2408L-4<br>25/09/2024</th>
+                    <th class="py-3 px-4">C2408L-5<br>27/09/2024</th>
+                    <th class="py-3 px-4">C2408L-6<br>27/09/2024</th>
+
+                    <th class="py-3 px-4">C2408L-7<br>27/09/2024</th>
+                    <th class="py-3 px-4">C2408L-8<br>27/09/2024</th>
+                    <th class="py-3 px-4">C2408L-9<br>27/09/2024</th>
+                    <th class="py-3 px-4">C2408L-10<br>27/09/2024</th>
+                    <th class="py-3 px-4">C2408L-11<br>27/09/2024</th>
+                    <th class="py-3 px-4">C2408L-12<br>27/09/2024</th>
+                    <th class="py-3 px-4">C2408L-13<br>27/09/2024</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Loop through each student -->
+                <tr *ngFor="let student of classDetails.students" class="bg-white border-b"
+                    [ngClass]="{'line-through': student.status !== 'STUDYING'}">
+                    <td class="px-4 py-2">{{ student.fullName }}</td>
+                    <td class="px-4 py-2">{{ classDetails.className }}</td>
+                    <td class="px-4 py-2">{{ classDetails.sem }}</td>
+                    <td class="px-4 py-2">
+                        <span class="rounded px-2 py-1 text-xs text-white" [ngClass]="{
+                          'bg-green-500': student.status === 'STUDYING',
+                          'bg-yellow-500': student.status === 'DELAY',
+                          'bg-red-500': student.status === 'DROPPED',
+                          'bg-orange-500': student.status === 'GRADUATED'
+                        }">
+                            {{ student.status }}
+                        </span>
+                    </td>
+                    <td class="px-4 py-2">
+                        <span class="bg-green-500 text-white rounded px-2 py-1 text-xs">Official</span>
+                    </td>
+                    <!-- Attendance for each session -->
+                    <td class="py-3 px-4 text-center bg-slate-300" *ngFor="let session of sessions">
+                        <div class="relative inline-block" [ngStyle]="{ 'z-index': isDropdownOpen(student.userId, session.id) ? 1000 : 'auto' }">
+                            <button (click)="toggleDropdown(student.userId, session.id)"
+                                class="rounded px-2 py-1 text-xs"
+                                [ngClass]="{
+                                    'bg-green-500 text-white': getAttendanceStatus(student.userId, session.id) === 'P',
+                                    'bg-red-500 text-white': getAttendanceStatus(student.userId, session.id) === 'A',
+                                    'bg-orange-500 text-white': getAttendanceStatus(student.userId, session.id) === 'PA'
+                                }">
+                                {{ getAttendanceStatus(student.userId, session.id) }}
+                            </button>
+                    
+                            <!-- Attendance Status Dropdown -->
+                            <div *ngIf="isDropdownOpen(student.userId, session.id)" class="absolute bg-white shadow-lg rounded mt-1 z-50">
+                                <button (click)="markAttendance(student.userId, 'P', session.id)"
+                                    class="block w-full px-2 py-1 text-sm text-gray-800 relative group">
+                                    <span class="bg-green-500 text-white rounded px-1 py-0.5 text-xs">P</span>
+                                    <div class="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 w-max whitespace-nowrap bg-gray-800 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                        Present (P)
+                                        <div class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-1 w-2 h-2 bg-gray-800 rotate-45"></div>
+                                    </div>
+                                </button>
+                    
+                                <button (click)="markAttendance(student.userId, 'A', session.id)"
+                                    class="block w-full px-2 py-1 text-sm text-gray-800 relative group">
+                                    <span class="bg-red-500 text-white rounded px-1 py-0.5 text-xs">A</span>
+                                    <div class="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 w-max whitespace-nowrap bg-gray-800 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                        Absent (A)
+                                        <div class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-1 w-2 h-2 bg-gray-800 rotate-45"></div>
+                                    </div>
+                                </button>
+                    
+                                <button (click)="markAttendance(student.userId, 'PA', session.id)"
+                                    class="block w-full px-2 py-1 text-sm text-gray-800 relative group">
+                                    <span class="bg-orange-500 text-white rounded px-1 py-0.5 text-xs">PA</span>
+                                    <div class="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 w-max whitespace-nowrap bg-gray-800 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                        Partially Absent (PA)
+                                        <div class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-1 w-2 h-2 bg-gray-800 rotate-45"></div>
+                                    </div>
+                                </button>
+                    
+                                <button (click)="openCommentDialog(student.userId, session.id)"
+                                    class="block w-full px-2 py-1 text-sm text-gray-800 relative group">
+                                    <i class="fas fa-comment text-blue-500"></i>
+                                    <div class="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 w-max whitespace-nowrap bg-gray-800 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                        Add a comment
+                                        <div class="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-1 w-2 h-2 bg-gray-800 rotate-45"></div>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                    
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div *ngIf="!classDetails?.students || classDetails.students.length === 0">
+        No students available.
+    </div>
+</div>

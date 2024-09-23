@@ -11,7 +11,7 @@ const routes: Routes = [
     component: AttendanceComponent,
     children: [
       {
-        path: '',
+        path: ':id',
         component: AttendanceClassComponent,
         data: { breadcrumb: 'Attendance' },
       },
