@@ -33,49 +33,58 @@ export class AssignTeacherComponent implements OnInit {
 
   getClassDetails(classId: number): void {
     this.classService.findClassById(classId).subscribe(
-      (data: ClassResponse) => {
-        this.classDetails = data;
-      },
-      (error) => {
-        console.error('Error get class information :', error);
-      }
+        (data: ClassResponse) => {
+            this.classDetails = data;
+            console.log('Class Details:', this.classDetails); // In thông tin lớp ra console
+        },
+        (error) => {
+            console.error('Error getting class information:', error);
+        }
     );
-  }
+}
 
-  getCourseDetails(semester: string): { subject: string, teacher: string }[] {
-    const subjects = this.classDetails?.course.semesters[semester] || [];
-    return subjects.map(subject => ({
-      subject: subject,
-      teacher: this.classDetails?.subjectTeacherMap[subject] || 'Not available'
-    }));
-  }
+getCourseDetails(semester: string): { subject: string, teacher: string, status: string }[] {
+  const subjects = this.classDetails?.course.semesters[semester] || [];
+  return subjects.map(subject => {
+      const teacherInfo = this.classDetails?.subjectTeachers.find(teacher => teacher.subjectCode === subject);
+      return {
+          subject: subject,
+          teacher: teacherInfo ? teacherInfo.teacherName : 'Not available',
+          status: teacherInfo ? teacherInfo.status : 'Inactive' 
+      };
+  });
+}
 
-  openEditDialog(subject: string, teacherName: string): void {
+
+  openEditDialog(subject: string, teacherName: string, status: string): void {
     const dialogRef = this.dialog.open(AssignEditComponent, {
-      data: { subject, teacherName }
+      data: { subject, teacherName, status }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.assignTeacherToSubject(result.subject, result.teacherName);
+        this.assignTeacherToSubject(result.subject, result.teacherName, result.status);
       }
     });
   }
 
-  assignTeacherToSubject(subject: string, teacherName: string): void {
+  assignTeacherToSubject(subject: string, teacherName: string, status: string): void {
     const request: AssignTeacherRequest = {
       subjectCode: subject,
-      teacherName: teacherName
+      teacherName: teacherName,
+      status: status // Chuyển trạng thái vào request
     };
-  
+
     this.classService.assignTeacher(this.classDetails?.id || 0, request).subscribe({
       next: (response: string) => {        
         if (this.classDetails?.id) {
           this.getClassDetails(this.classDetails.id);
         }
+        this.toastr.success('Teacher assigned successfully!'); // Hiển thị thông báo thành công
       },
       error: (error: any) => {
         console.error('Error assigning teacher:', error);
+        this.toastr.error('Error assigning teacher.'); // Hiển thị thông báo lỗi
       }
     });
   }

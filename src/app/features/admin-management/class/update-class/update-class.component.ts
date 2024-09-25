@@ -7,6 +7,7 @@ import { ClassRequest } from '../../model/class/class-request.model';
 import { CourseResponse } from '../../model/course/course-response.model';
 import { ClassResponse } from '../../model/class/class-response.model';
 import { DayOfWeek } from 'src/app/core/enum/DayOfWeek';
+import { SubjectTeacherResponse } from '../../model/class/subject-teacher-response.model';
 
 @Component({
   selector: 'app-update-class',
@@ -58,7 +59,7 @@ export class UpdateClassComponent implements OnInit {
             createdAt: data.createdAt,
             status: data.status,
             sem: data.sem,
-            teacherName: data.subjectTeacherMap?.['someSubjectCode'] || '',
+            teacherName: this.getTeacherNames(data.subjectTeachers), // Cập nhật ở đây
             courseCode: data.course?.courseCode || '',
           };
 
@@ -76,6 +77,11 @@ export class UpdateClassComponent implements OnInit {
       });
     }
   }
+
+ // Phương thức để lấy tên giáo viên từ subjectTeachers
+private getTeacherNames(subjectTeachers: SubjectTeacherResponse[]): string {
+  return subjectTeachers.map(teacher => teacher.teacherName).join(', ') || 'No teachers assigned';
+}
 
   loadInitialData(): void {
     this.courseService.getAllCourse().subscribe({
