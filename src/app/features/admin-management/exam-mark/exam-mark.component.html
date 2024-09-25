@@ -44,20 +44,28 @@
                     <td>{{ student.className }}</td>
                     <td>
                         <input type="number" [(ngModel)]="tempScores[student.rollNumber].theoretical"
-                            (ngModelChange)="onScoreChange(student)" min="0" max="20" class="score-input">
+                            (ngModelChange)="onScoreChange(student)" min="0" max="20" maxlength="2"
+                            (keypress)="onlyNumberKey($event)" class="score-input" />
                         /20
                     </td>
                     <td>
                         <input type="number" [(ngModel)]="tempScores[student.rollNumber].practical"
-                            (ngModelChange)="onScoreChange(student)" min="0" max="20" class="score-input">
+                            (ngModelChange)="onScoreChange(student)" min="0" max="20" maxlength="2"
+                            (keypress)="onlyNumberKey($event)" class="score-input" />
                         /20
                     </td>
 
 
-                    <td>{{ calculateResult(student) }}</td>
+
+                    <td [ngClass]="getResultClass(calculateResult(student))">
+                        {{ calculateResult(student) }}
+                    </td>
                     <td>
-                        <button *ngIf="student.hasChanges" (click)="saveChanges(student)"
-                            class="save-button">Save</button>
+                        <button (click)="saveChanges(student)" [disabled]="!student.hasChanges"
+                            [ngClass]="student.hasChanges ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-300 cursor-not-allowed'"
+                            class="save-button text-white py-2 px-4 rounded">
+                            Save
+                        </button>
                     </td>
                 </tr>
             </tbody>
