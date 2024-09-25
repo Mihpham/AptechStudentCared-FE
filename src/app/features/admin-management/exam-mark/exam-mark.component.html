@@ -55,11 +55,10 @@
                         /20
                     </td>
 
-
-
                     <td [ngClass]="getResultClass(calculateResult(student))">
                         {{ calculateResult(student) }}
-                    </td>
+                      </td>
+
                     <td>
                         <button (click)="saveChanges(student)" [disabled]="!student.hasChanges"
                             [ngClass]="student.hasChanges ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-300 cursor-not-allowed'"
