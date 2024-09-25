@@ -7,6 +7,7 @@ import { CourseResponse } from '../model/course/course-response.model';
 import { Subject } from '../model/exam-mark/subject.model';
 import { ExamMarkService } from 'src/app/core/services/admin/exam-mark.service';
 import { ToastrService } from 'ngx-toastr';
+import { SubjectClass } from '../model/class/subject-class.model';
 
 @Component({
   selector: 'app-exam-mark',
@@ -57,18 +58,20 @@ export class ExamMarkComponent implements OnInit {
   }
 
   getCourseByClass(classId: number) {
-    this.classService.findClassById(classId).subscribe(classResponse => {
-      const course: CourseResponse = classResponse.course; // Lấy khóa học từ phản hồi
+    this.classService.findAllSubjectByClassId(classId).subscribe(classResponse => {
+      const course: CourseResponse = classResponse; // Lấy khóa học từ phản hồi
       this.subjects = []; // Reset danh sách môn học
 
       // Lấy tất cả các môn học từ các kỳ
-      Object.values(course.semesters).forEach(semesterSubjects => {
+      Object.keys(course.semesters).forEach(key => {
+        const semesterSubjects = course.semesters[key];
         if (semesterSubjects) {
           this.subjects.push(...semesterSubjects); // Thêm các môn học vào danh sách
         }
       });
     });
   }
+  
 
   onSubjectChange(event: Event) {
     const subjectCode = (event.target as HTMLSelectElement).value;
@@ -111,15 +114,18 @@ export class ExamMarkComponent implements OnInit {
     if (this.tempScores[student.rollNumber].theoretical > 20) {
       this.tempScores[student.rollNumber].theoretical = 20;
     }
-
+  
     // Giới hạn điểm thực hành
     if (this.tempScores[student.rollNumber].practical > 20) {
       this.tempScores[student.rollNumber].practical = 20;
     }
-
+  
     // Đánh dấu rằng có sự thay đổi để cho phép nút lưu
     student.hasChanges = true;
+  
+    // Tính toán lại kết quả dựa trên điểm lý thuyết và thực hành
   }
+  
 
   onlyNumberKey(event: KeyboardEvent) {
     const input = event.key;
