@@ -1,13 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  Component,
+  OnInit,
+  HostListener,
+  ElementRef,
+  Renderer2,
+} from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ClassService } from 'src/app/core/services/admin/class.service';
-import { StudentService } from 'src/app/core/services/admin/student.service';
+import { AttendanceService } from 'src/app/core/services/admin/attendance.service';
+import { ScheduleService } from 'src/app/core/services/admin/schedules.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { CommentDialogComponent } from '../comment-dialog/comment-dialog.component';
+import { AttendanceResponse } from '../../model/attendance/attendance-response.model';
+import { Schedule } from '../../model/schedules/schedules.model';
 import { StudentResponse } from '../../model/student-response.model.';
+import { AttendanceRequest } from '../../model/attendance/attendance-request .model';
 
-type StudentStatus =  "STUDYING" | "DELAY" | "DROPPED" | "GRADUATED";
 @Component({
   selector: 'app-attendance-class',
   templateUrl: './attendance-class.component.html',
@@ -17,46 +26,26 @@ export class AttendanceClassComponent implements OnInit {
   showTooltip = false;
   selectedStatus: string = '';
   classId: number | null = null;
-  classDetails: any = {}; // Ensures classDetails is initialized to an empty object
+  classDetails: any = {};
   students: StudentResponse[] = [];
-
-  statusOrder: Record<StudentStatus, number> = {
-    STUDYING: 1,
-    DELAY: 2,
-    DROPPED: 3,
-    GRADUATED: 4,
-  };
-
-  sessions = [
-    { id: 'C2408L-1', name: 'Session 1', date: '2024-09-23' },
-    { id: 'C2408L-2', name: 'Session 2', date: '2024-09-23' },
-    { id: 'C2408L-3', name: 'Session 3', date: '2024-09-23' },
-    { id: 'C2408L-4', name: 'Session 4', date: '2024-09-23' },
-    { id: 'C2408L-5', name: 'Session 5', date: '2024-09-23' },
-    { id: 'C2408L-6', name: 'Session 6', date: '2024-09-23' },
-
-    { id: 'C2408L-7', name: 'Session 7', date: '2024-09-23' },
-    { id: 'C2408L-8', name: 'Session 8', date: '2024-09-23' },
-    { id: 'C2408L-9', name: 'Session 9', date: '2024-09-23' },
-    { id: 'C2408L-10', name: 'Session 10', date: '2024-09-23' },
-    { id: 'C2408L-11', name: 'Session 11', date: '2024-09-23' },
-    { id: 'C2408L-12', name: 'Session 12', date: '2024-09-23' },
-    { id: 'C2408L-13', name: 'Session 13', date: '2024-09-23' },
-  ];
-
-  attendanceStatuses: Record<string, Record<string, string>> = {};
-  dropdownState: Record<string, Record<string, boolean>> = {};
-  attendanceComments: Record<string, Record<string, string>> = {};
+  schedules: Schedule[] = [];
+  attendances: AttendanceResponse[] = [];
+  attendanceStatuses: Record<number,Record<number, { attendanceStatus1: string; attendanceStatus2: string }>> = {};
+  attendanceComments: { [studentId: number]: { [scheduleId: number]: string };} = {};
+  isDropdownOpen: boolean = false; // Default false
+  openDropdownInfo: { studentId: number, scheduleId: number, attendanceStatus: string } | null = null; // Track which dropdown is open
   tooltip: string = '';
   hoverInfo = '';
 
   constructor(
     private route: ActivatedRoute,
     private classService: ClassService,
-    private studentService: StudentService,
-    private router: Router,
+    private attendanceService: AttendanceService,
+    private scheduleService: ScheduleService,
     public dialog: MatDialog,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private el: ElementRef,
+    private renderer: Renderer2
   ) {}
 
   ngOnInit(): void {
@@ -65,10 +54,42 @@ export class AttendanceClassComponent implements OnInit {
       this.classId = id ? +id : null;
       if (this.classId) {
         this.getClassDetails(this.classId);
+        this.loadSchedules();
       } else {
         console.error('Class ID is undefined or invalid.');
       }
     });
+    this.loadAllAttendances();
+    this.renderer.listen('document', 'click', this.onClickOutside.bind(this));
+  }
+
+  loadAllAttendances(): void {
+    this.attendanceService.getAllAttendances().subscribe(
+      (data) => {
+        this.attendances = data;
+
+        this.attendances.forEach((attendance) => {
+          if (!this.attendanceStatuses[attendance.studentId]) {
+            this.attendanceStatuses[attendance.studentId] = {};
+          }
+
+          this.attendanceStatuses[attendance.studentId][attendance.scheduleId] =
+            {
+              attendanceStatus1: attendance.attendanceStatus1 || '',
+              attendanceStatus2: attendance.attendanceStatus2 || '',
+            };
+
+          if (!this.attendanceComments[attendance.studentId]) {
+            this.attendanceComments[attendance.studentId] = {};
+          }
+          this.attendanceComments[attendance.studentId][attendance.scheduleId] =
+            attendance.note || '';
+        });
+      },
+      (error) => {
+        console.error('Error fetching attendance records:', error);
+      }
+    );
   }
 
   getClassDetails(id: number): void {
@@ -78,36 +99,10 @@ export class AttendanceClassComponent implements OnInit {
         const uniqueStudents = new Map<number, StudentResponse>();
 
         data?.students?.forEach((student: any) => {
-          uniqueStudents.set(student.userId, {
-            userId: student.userId,
-            image: student.image || 'assets/images/avatar-default.webp',
-            rollNumber: student.rollNumber,
-            fullName: student.fullName,
-            password: student.password,
-            email: student.email,
-            dob: student.dob,
-            address: student.address,
-            className: student.className,
-            gender: student.gender,
-            phoneNumber: student.phoneNumber,
-            courses: student.courses,
-            status: student.status as StudentStatus, // Ensure the type is StudentStatus
-            parentFullName: student.parentFullName,
-            studentRelation: student.studentRelation,
-            parentPhone: student.parentPhone,
-            parentGender: student.parentGender,
-          });
+          uniqueStudents.set(student.userId, student);
         });
 
         this.students = Array.from(uniqueStudents.values());
-
-        // Sort based on status order
-        this.students.sort((a, b) => {
-          return (
-            this.statusOrder[a.status as StudentStatus] -
-            this.statusOrder[b.status as StudentStatus]
-          );
-        });
       },
       (error) => {
         console.error('Error fetching class details:', error);
@@ -115,55 +110,153 @@ export class AttendanceClassComponent implements OnInit {
     );
   }
 
-  hideTooltip(): void {
-    this.tooltip = '';
-  }
-
-  
-
-  toggleDropdown(studentId: string, sessionId: string): void {
-    this.dropdownState[studentId] = {
-      ...this.dropdownState[studentId],
-      [sessionId]: !this.dropdownState[studentId]?.[sessionId],
-    };
-  }
-
-  isDropdownOpen(studentId: string, sessionId: string): boolean {
-    return this.dropdownState[studentId]?.[sessionId] || false;
-  }
-
-  markAttendance(studentId: string, status: string, sessionId: string): void {
-    if (this.attendanceStatuses[studentId]) {
-      this.attendanceStatuses[studentId][sessionId] = status;
-    } else {
-      // Initialize the inner object if it doesn't exist
-      this.attendanceStatuses[studentId] = {};
-      this.attendanceStatuses[studentId][sessionId] = status;
+  loadSchedules(): void {
+    if (this.classId) {
+      this.scheduleService.getSchedulesByClassId(this.classId).subscribe(
+        (data) => {
+          this.schedules = data;
+        },
+        (error) => {
+          console.error('Error fetching schedules:', error);
+        }
+      );
     }
   }
 
-  getAttendanceStatus(studentId: string, sessionId: string): string {
-    return this.attendanceStatuses[studentId]?.[sessionId] || 'A';
+  // Check if the dropdown is open for a specific studentId, scheduleId, and attendance status
+  isDropdownOpenCheck(studentId: number, scheduleId: number, attendanceStatus: string): boolean {
+    return this.isDropdownOpen &&
+      this.openDropdownInfo?.studentId === studentId &&
+      this.openDropdownInfo?.scheduleId === scheduleId &&
+      this.openDropdownInfo?.attendanceStatus === attendanceStatus;
   }
 
-  openCommentDialog(studentId: string, sessionId: string): void {
+  // Toggle the dropdown for a specific studentId, scheduleId, and attendance status
+  toggleDropdown(studentId: number, scheduleId: number, attendanceStatus: string): void {
+    if (this.isDropdownOpenCheck(studentId, scheduleId, attendanceStatus)) {
+      // Close dropdown if it's already open
+      this.isDropdownOpen = false;
+      this.openDropdownInfo = null;
+    } else {
+      // Open the new dropdown and track its info
+      this.isDropdownOpen = true;
+      this.openDropdownInfo = { studentId, scheduleId, attendanceStatus };
+    }
+  }
+  
+
+  // Listen for clicks outside the component and close the dropdown if necessary
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent): void {
+    const clickedInside = this.el.nativeElement.contains(event.target);
+    if (!clickedInside) {
+      // Close all dropdowns if clicked outside
+      this.isDropdownOpen = false;
+      this.openDropdownInfo = null;
+    }
+  }
+
+  getAttendanceStatus1(studentId: number, scheduleId: number): string {
+    return (
+      this.attendanceStatuses[studentId]?.[scheduleId]?.attendanceStatus1 || ''
+    );
+  }
+
+  getAttendanceStatus2(studentId: number, scheduleId: number): string {
+    return (
+      this.attendanceStatuses[studentId]?.[scheduleId]?.attendanceStatus2 || ''
+    );
+  }
+
+  selectStatus(
+    studentId: number,
+    scheduleId: number,
+    status: string,
+    isStatus1: boolean
+  ): void {
+    if (!this.attendanceStatuses[studentId]) {
+      this.attendanceStatuses[studentId] = {};
+    }
+    if (!this.attendanceStatuses[studentId][scheduleId]) {
+      this.attendanceStatuses[studentId][scheduleId] = {
+        attendanceStatus1: '',
+        attendanceStatus2: '',
+      };
+    }
+
+    if (isStatus1) {
+      this.attendanceStatuses[studentId][scheduleId].attendanceStatus1 = status;
+    } else {
+      this.attendanceStatuses[studentId][scheduleId].attendanceStatus2 = status;
+    }
+
+    const attendanceRequest: AttendanceRequest = {
+      studentId: studentId,
+      scheduleId: scheduleId,
+      attendanceStatus1:
+        this.attendanceStatuses[studentId][scheduleId].attendanceStatus1,
+      attendanceStatus2:
+        this.attendanceStatuses[studentId][scheduleId].attendanceStatus2,
+      note: this.attendanceComments[studentId]?.[scheduleId] || null,
+    };
+
+    this.attendanceService
+      .updateOrCreateAttendance(studentId, scheduleId, attendanceRequest)
+      .subscribe(
+        (response: AttendanceResponse) => {
+          this.attendanceStatuses[studentId][scheduleId].attendanceStatus1 =
+            response.attendanceStatus1;
+          this.attendanceStatuses[studentId][scheduleId].attendanceStatus2 =
+            response.attendanceStatus2;
+          this.toastr.success('Attendance updated successfully.');
+        },
+        (error) => {
+          console.error('Error updating attendance:', error);
+          this.toastr.error('Failed to update attendance.');
+        }
+      );
+  }
+
+  openCommentDialog(studentId: number, scheduleId: number): void {
     const existingComment =
-      this.attendanceComments[studentId]?.[sessionId] || '';
+      this.attendanceComments[studentId]?.[scheduleId] || '';
 
     const dialogRef = this.dialog.open(CommentDialogComponent, {
       width: '400px',
-      data: { studentId, sessionId, comment: existingComment },
+      data: { studentId, sessionId: scheduleId, comment: existingComment },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
+      if (result !== undefined) {
         if (!this.attendanceComments[studentId]) {
           this.attendanceComments[studentId] = {};
         }
-        this.attendanceComments[studentId][sessionId] = result;
-        this.toastr.success(
-          `Comment saved for Student: ${studentId}, Session: ${sessionId}`
-        );
+        this.attendanceComments[studentId][scheduleId] = result;
+
+        const attendanceRequest: AttendanceRequest = {
+          studentId: studentId,
+          scheduleId: scheduleId,
+          attendanceStatus1:
+            this.attendanceStatuses[studentId]?.[scheduleId]
+              ?.attendanceStatus1 || '',
+          attendanceStatus2:
+            this.attendanceStatuses[studentId]?.[scheduleId]
+              ?.attendanceStatus2 || '',
+          note: result,
+        };
+
+        this.attendanceService
+          .updateOrCreateAttendance(studentId, scheduleId, attendanceRequest)
+          .subscribe(
+            (response: AttendanceResponse) => {
+              this.attendanceComments[studentId][scheduleId] = response.note;
+              this.toastr.success('Comment added successfully.');
+            },
+            (error) => {
+              console.error('Error updating attendance with comment:', error);
+              this.toastr.error('Failed to add comment.');
+            }
+          );
       }
     });
   }
