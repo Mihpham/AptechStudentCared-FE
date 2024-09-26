@@ -39,28 +39,32 @@
                         <img [src]="student.image ? student.image : 'assets/images/avatar-default.webp'" alt="Avatar"
                             class="avatar" />
                     </td>
-                    <td>{{ student.fullName }} <br> <small>{{ student.rollNumber }}</small></td>
-                    <td>{{ selectedSubject }}</td>
-                    <td>{{ student.className }}</td>
+                    <!-- Assuming each student has at least one exam score -->
                     <td>
-                        <input type="number" [(ngModel)]="tempScores[student.rollNumber].theoretical"
-                            (ngModelChange)="onScoreChange(student)" min="0" max="20" maxlength="2"
+                        {{ student.listExamScore[0].studentName }} <br>
+                        <small>{{ student.listExamScore[0].rollNumber }}</small>
+                    </td>
+                    <td>{{ selectedSubject }}</td>
+                    <td>{{ student.listExamScore[0].className }}</td>
+                    <td>
+                        <input type="number" [(ngModel)]="tempScores[student.listExamScore[0].rollNumber].theoretical"
+                            (ngModelChange)="onScoreChange(student, student.listExamScore[0])" min="0" max="20" maxlength="2"
                             (keypress)="onlyNumberKey($event)" class="score-input" />
                         /20
                     </td>
                     <td>
-                        <input type="number" [(ngModel)]="tempScores[student.rollNumber].practical"
-                            (ngModelChange)="onScoreChange(student)" min="0" max="20" maxlength="2"
+                        <input type="number" [(ngModel)]="tempScores[student.listExamScore[0].rollNumber].practical"
+                            (ngModelChange)="onScoreChange(student, student.listExamScore[0])" min="0" max="20" maxlength="2"
                             (keypress)="onlyNumberKey($event)" class="score-input" />
                         /20
                     </td>
 
                     <td [ngClass]="getResultClass(calculateResult(student))">
                         {{ calculateResult(student) }}
-                      </td>
+                    </td>
 
                     <td>
-                        <button (click)="saveChanges(student)" [disabled]="!student.hasChanges"
+                        <button (click)="saveChanges(student, student.listExamScore[0])" [disabled]="!student.hasChanges"
                             [ngClass]="student.hasChanges ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-300 cursor-not-allowed'"
                             class="save-button text-white py-2 px-4 rounded">
                             Save

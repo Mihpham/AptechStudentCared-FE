@@ -1,9 +1,7 @@
-import { Subject } from "./subject.model";
+import { ExamScore } from "./exam-score.model";
 export interface Student {
     image: string;
-    rollNumber: string;
-    fullName: string;
     className: string;
-    subjects: Subject[];
+    listExamScore: ExamScore[];
     hasChanges: boolean;
 }
