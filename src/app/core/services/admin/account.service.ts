@@ -1,46 +1,68 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { 
+    HttpClient, 
+    HttpHeaders, 
+    HttpErrorResponse 
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { UserEnviroment } from 'src/app/environments/environment';
-import { AccountRequest } from 'src/app/features/admin-management/accounts/model/accounts-request.model';
-import { AccountResponse } from 'src/app/features/admin-management/accounts/model/accounts-response.model';
+import { AccountRequest } from 'src/app/features/admin-management/model/account/account-request.model';
+import { AccountResponse } from 'src/app/features/admin-management/model/account/account-response.model';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class AccountService {
-  private accountApiUrl = UserEnviroment.apiUrl;
-  private accountsSubject = new BehaviorSubject<AccountResponse[]>([]);
+    private accountApiUrl = UserEnviroment.apiUrl + '/users'; // Đường dẫn API
+    private accountsSubject = new BehaviorSubject<AccountResponse[]>([]); // BehaviorSubject để theo dõi danh sách tài khoản
 
-  constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) { }
 
-  headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-  });
-
-  getAllAccounts(): Observable<AccountResponse[]> {
-    return this.http.get<AccountResponse[]>(`${this.accountApiUrl}/accounts`).pipe(
-        tap(accounts => this.accountsSubject.next(accounts))
-    );;
-}
-
-getAccountById(accountId: number): Observable<AccountRequest> {
-    return this.http.get<AccountRequest>(`${this.accountApiUrl}/accounts/${accountId}`);
-}
-
-
-addAccount(account: AccountResponse): Observable<AccountResponse> {
-    const headers = new HttpHeaders({
-        'Content-Type': 'application/json', // Thay đổi hoặc thêm các tiêu đề nếu cần
+    headers = new HttpHeaders({
+        'Content-Type': 'application/json',
     });
-    return this.http.post<AccountResponse>(`${this.accountApiUrl}/accounts/add`, account, { headers });
-}
 
-updateAccount(id: number, account: AccountRequest): Observable<AccountResponse> {
-    return this.http.put<AccountResponse>(`${this.accountApiUrl}/accounts/${id}`, account);
-}
+    // Hàm lấy tất cả tài khoản
+    getAllAccounts(): Observable<AccountResponse[]> {
+        return this.http.get<AccountResponse[]>(`${this.accountApiUrl}`).pipe(
+            tap(accounts => this.accountsSubject.next(accounts)), // Cập nhật danh sách tài khoản trong BehaviorSubject
+            catchError(this.handleError) // Bắt lỗi
+        );
+    }
+    // Hàm lấy tổng số tài khoản theo role
+    getTotalAccountsByRole(role: string): Observable<{ totalAccount: number }> {
+        return this.http.get<{ totalAccount: number }>(`${this.accountApiUrl}/role/total/${role}`);
+      }
+      
 
-deleteAccount(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.accountApiUrl}/accounts/${id}`);
-}
+    // Hàm lấy tài khoản theo ID
+    getAccountById(accountId: number): Observable<AccountRequest> {
+        return this.http.get<AccountRequest>(`${this.accountApiUrl}/${accountId}`).pipe(
+            catchError(this.handleError) // Bắt lỗi
+        );
+    }
+
+    // Hàm lấy tài khoản theo roleName
+    getAccountsByRole(roleName: string): Observable<AccountResponse[]> {
+        return this.http.get<AccountResponse[]>(`${this.accountApiUrl}/role/${roleName}`);
+    }
+
+    // Hàm xóa tài khoản
+    deleteAccount(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.accountApiUrl}/${id}`, { headers: this.headers });
+    }
+
+    // Xử lý lỗi
+    private handleError(error: HttpErrorResponse) {
+        let errorMessage = 'Unknown error!';
+        if (error.error instanceof ErrorEvent) {
+            // Lỗi từ phía client
+            errorMessage = `Error: ${error.error.message}`;
+        } else {
+            // Lỗi từ phía server
+            errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+        }
+        return throwError(errorMessage);
+    }
 }

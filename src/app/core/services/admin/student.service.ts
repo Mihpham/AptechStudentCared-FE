@@ -15,7 +15,7 @@ import { StudentResponse } from 'src/app/features/admin-management/model/student
 export class StudentService {
   private baseUrl = `${UserEnviroment.apiUrl}/students`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   private headers = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export class StudentService {
 
   importStudents(file: File): Observable<any> {
     const formData: FormData = new FormData();
-    formData.append('file', file); 
+    formData.append('file', file);
 
     const headers = new HttpHeaders();
     headers.append('Content-Type', 'multipart/form-data');
