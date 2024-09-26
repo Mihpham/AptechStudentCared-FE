@@ -1,55 +1,55 @@
-<div class="container mx-auto p-4">
+<div class="container mx-auto p-6 bg-white rounded-lg shadow-md">
     <!-- Title Section -->
-    <div class="flex items-center justify-start mb-4">
-        <h1 class="text-2xl font-bold">Manage Student Attendance</h1>
-        <small class="px-4 pb-2 text-gray-400 text-sm" *ngIf="classDetails && classDetails.course && schedules.length > 0">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold text-gray-700">Manage Student Attendance</h1>
+        <small class="px-4 text-gray-500 text-sm" *ngIf="classDetails && classDetails.course && schedules.length > 0">
             {{ classDetails?.className }} - {{ classDetails.course?.courseName }} -
-            ({{ schedules[0].startDate | date: 'dd-MM-yyyy' }} - {{ schedules[schedules.length - 1].endDate | date: 'dd-MM-yyyy' }})
+            ({{ schedules[0].startDate | date: 'dd-MM-yyyy' }} - {{ schedules[schedules.length - 1].endDate | date: 'dd-MM-yyyy' }}) - {{schedules[0].subjectName}} - 
         </small>
     </div>
 
     <!-- Table Container -->
-    <div class="relative overflow-auto max-h-[calc(100vh-200px)]">
-        <table class="min-w-full table-fixed bg-white border">
-            <thead class="sticky top-0 bg-gray-200 z-10">
+    <div class="overflow-auto rounded-lg shadow-sm max-h-[calc(100vh-220px)]">
+        <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+            <thead class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal sticky top-0 z-10">
                 <!-- Header Row 1: Student Information -->
-                <tr class="text-left text-xs font-bold text-gray-600 uppercase">
-                    <th class="py-3 px-4" colspan="5">Student Information</th>
-                    <th class="py-3 px-4" [attr.colspan]="schedules.length * 2">Session Attendance Data</th>
+                <tr class="border-b border-gray-300">
+                    <th class="py-3 px-4 text-left font-semibold" colspan="5">Student Information</th>
+                    <th class="py-3 px-4 text-left font-semibold" [attr.colspan]="schedules.length * 2">Session Attendance Data</th>
                 </tr>
                 <!-- Header Row 2: Columns for Student Info -->
-                <tr class="text-left text-xs font-bold text-gray-600 uppercase">
-                    <th class="py-3 px-4 w-1/5">Name</th>
-                    <th class="py-3 px-4 w-1/5">Class</th>
-                    <th class="py-3 px-4 w-1/5">Module</th>
-                    <th class="py-3 px-4 w-1/5">Status</th>
-                    <th class="py-3 px-4 w-1/5">Type</th>
+                <tr class="border-b border-gray-300">
+                    <th class="py-3 px-4 text-left font-semibold">Name</th>
+                    <th class="py-3 px-4 text-left font-semibold">Class</th>
+                    <th class="py-3 px-4 text-left font-semibold">Module</th>
+                    <th class="py-3 px-4 text-left font-semibold">Status</th>
+                    <th class="py-3 px-4 text-left font-semibold">Type</th>
 
                     <!-- Session Attendance Header -->
                     <ng-container *ngFor="let schedule of schedules; let i = index">
-                        <th class="py-3 px-4 text-center bg-gray-200" colspan="2">
+                        <th class="py-3 px-4 text-center bg-gray-100" colspan="2">
                             Session {{ i + 1 }}<br>{{ schedule.startDate | date: 'dd/MM/yyyy' }}
                         </th>
                     </ng-container>
                 </tr>
-                <!-- Header Row 3: Ca 1 and Ca 2 Columns -->
-                <tr class="text-left text-xs font-bold text-gray-600 uppercase">
-                    <th colspan="5" class="py-3 px-4"></th> <!-- Empty cells to align Ca headers with attendance -->
+                <!-- Header Row 3: SchoolShift 1 and SchoolShift 2 Columns -->
+                <tr class="border-b border-gray-300">
+                    <th colspan="5" class="py-2"></th>
                     <ng-container *ngFor="let schedule of schedules">
-                        <th class="py-3 px-4 text-center bg-gray-200">SchoolShift 1</th>
-                        <th class="py-3 px-4 text-center bg-gray-200">SchoolShift 2</th>
+                        <th class="py-3 px-4 text-center bg-gray-100">SchoolShift 1</th>
+                        <th class="py-3 px-4 text-center bg-gray-100">SchoolShift 2</th>
                     </ng-container>
                 </tr>
             </thead>
 
             <!-- Table Body -->
-            <tbody *ngIf="students && students.length > 0">
-                <tr *ngFor="let student of students" class="bg-white border-b" [ngClass]="{ 'line-through': student.status !== 'STUDYING' }">
+            <tbody *ngIf="students && students.length > 0" class="text-gray-700">
+                <tr *ngFor="let student of students" class="border-b hover:bg-gray-50" [ngClass]="{ 'line-through': student.status !== 'STUDYING' }">
                     <!-- Student Information Columns -->
-                    <td class="px-4 py-2">{{ student.fullName }}</td>
-                    <td class="px-4 py-2">{{ classDetails.className }}</td>
-                    <td class="px-4 py-2">{{ classDetails.sem }}</td>
-                    <td class="px-4 py-2">
+                    <td class="px-4 py-3">{{ student.fullName }}</td>
+                    <td class="px-4 py-3">{{ classDetails.className }}</td>
+                    <td class="px-4 py-3">{{ classDetails.sem }}</td>
+                    <td class="px-4 py-3">
                         <span class="rounded px-2 py-1 text-xs text-white" [ngClass]="{
                             'bg-green-500': student.status === 'STUDYING',
                             'bg-yellow-500': student.status === 'DELAY',
@@ -59,70 +59,71 @@
                             {{ student.status }}
                         </span>
                     </td>
-                    <td class="px-4 py-2">
+                    <td class="px-4 py-3">
                         <span class="bg-green-500 text-white rounded px-2 py-1 text-xs">Official</span>
                     </td>
 
                     <!-- Session Attendance Data -->
                     <ng-container *ngFor="let schedule of schedules">
-                        <!-- Attendance for Ca 1 -->
+                        <!-- Attendance for SchoolShift 1 -->
                         <td class="relative px-1">
-                            <button class="bg-gray-200 p-2 rounded-md w-full text-center" [ngClass]="{
-                                'bg-green-500': getAttendanceStatus1(student.userId, schedule.id) === 'P',
-                                'bg-orange-500': getAttendanceStatus1(student.userId, schedule.id) === 'PA',
-                                'bg-red-500': getAttendanceStatus1(student.userId, schedule.id) === 'A',
-                                'bg-gray-200': !getAttendanceStatus1(student.userId, schedule.id)
-                            }" (click)="toggleDropdown(student.userId, schedule.id, 'ca1')">
-                                <span *ngIf="getAttendanceStatus1(student.userId, schedule.id); else iconTemplate">
-                                    {{ getAttendanceStatus1(student.userId, schedule.id) }}
+                            <button class="bg-gray-200 p-2 rounded-md w-full text-center transition duration-200 hover:bg-gray-300" 
+                                [ngClass]="{
+                                'bg-green-500': getAttendanceStatus1(student.userId, schedule.scheduleId) === 'P',
+                                'bg-orange-500': getAttendanceStatus1(student.userId, schedule.scheduleId) === 'PA',
+                                'bg-red-500': getAttendanceStatus1(student.userId, schedule.scheduleId) === 'A',
+                                'bg-gray-200': !getAttendanceStatus1(student.userId, schedule.scheduleId)
+                            }" (click)="toggleDropdown(student.userId, schedule.scheduleId, 'ca1')">
+                                <span *ngIf="getAttendanceStatus1(student.userId, schedule.scheduleId); else iconTemplate">
+                                    {{ getAttendanceStatus1(student.userId, schedule.scheduleId) }}
                                 </span>
                                 <ng-template #iconTemplate>
                                     <i class="fa-solid fa-chevron-down"></i>
                                 </ng-template>
                             </button>
 
-                            <div *ngIf="isDropdownOpenCheck(student.userId, schedule.id, 'ca1')" class="absolute z-10 bg-white shadow-md border mt-1 rounded-md w-40">
+                            <!-- Dropdown styling -->
+                            <div *ngIf="isDropdownOpenCheck(student.userId, schedule.scheduleId, 'ca1')" class="absolute z-10 bg-white shadow-md border mt-1 rounded-md w-40">
                                 <ul class="py-1">
                                     <li *ngFor="let status of ['P', 'A', 'PA']"
-                                        (click)="selectStatus(student.userId, schedule.id, status, true)"
-                                        [class.bg-gray-300]="getAttendanceStatus1(student.userId, schedule.id) === status"
-                                        class="px-4 py-2 cursor-pointer hover:bg-gray-200">
+                                        (click)="selectStatus(student.userId, schedule.scheduleId, status, true)"
+                                        [class.bg-gray-300]="getAttendanceStatus1(student.userId, schedule.scheduleId) === status"
+                                        class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
                                         {{ status }}
                                     </li>
-                                    <li class="px-4 py-2 cursor-pointer hover:bg-gray-200 border-t"
-                                        (click)="openCommentDialog(student.userId, schedule.id)">
+                                    <li class="px-4 py-2 cursor-pointer hover:bg-gray-200 border-t transition duration-200"
+                                        (click)="openCommentDialog(student.userId, schedule.scheduleId)">
                                         Add Comment
                                     </li>
                                 </ul>
                             </div>
                         </td>
-
-                        <!-- Attendance for Ca 2 -->
+                        <!-- Attendance for SchoolShift 2 -->
                         <td class="relative px-1">
                             <button class="bg-gray-200 p-2 rounded-md w-full text-center" [ngClass]="{
-                                'bg-green-500': getAttendanceStatus2(student.userId, schedule.id) === 'P',
-                                'bg-orange-500': getAttendanceStatus2(student.userId, schedule.id) === 'PA',
-                                'bg-red-500': getAttendanceStatus2(student.userId, schedule.id) === 'A',
-                                'bg-gray-200': !getAttendanceStatus2(student.userId, schedule.id)
-                            }" (click)="toggleDropdown(student.userId, schedule.id, 'ca2')">
-                                <span *ngIf="getAttendanceStatus2(student.userId, schedule.id); else iconTemplate">
-                                    {{ getAttendanceStatus2(student.userId, schedule.id) }}
+                                'bg-green-500': getAttendanceStatus2(student.userId, schedule.scheduleId) === 'P',
+                                'bg-orange-500': getAttendanceStatus2(student.userId, schedule.scheduleId) === 'PA',
+                                'bg-red-500': getAttendanceStatus2(student.userId, schedule.scheduleId) === 'A',
+                                'bg-gray-200': !getAttendanceStatus2(student.userId, schedule.scheduleId)
+                            }" (click)="toggleDropdown(student.userId, schedule.scheduleId, 'ca2')">
+                                <span *ngIf="getAttendanceStatus2(student.userId, schedule.scheduleId); else iconTemplate">
+                                    {{ getAttendanceStatus2(student.userId, schedule.scheduleId) }}
                                 </span>
                                 <ng-template #iconTemplate>
                                     <i class="fa-solid fa-chevron-down"></i>
                                 </ng-template>
                             </button>
 
-                            <div *ngIf="isDropdownOpenCheck(student.userId, schedule.id, 'ca2')" class="absolute z-10 bg-white shadow-md border mt-1 rounded-md w-40">
+                            <div *ngIf="isDropdownOpenCheck(student.userId, schedule.scheduleId, 'ca2')" class="absolute z-10 bg-white shadow-md border mt-1 rounded-md w-40">
                                 <ul class="py-1">
                                     <li *ngFor="let status of ['P', 'A', 'PA']"
-                                        (click)="selectStatus(student.userId, schedule.id, status, false)"
-                                        [class.bg-gray-300]="getAttendanceStatus2(student.userId, schedule.id) === status"
+                                        (click)="selectStatus(student.userId, schedule.scheduleId, status, false)"
+                                        [class.bg-gray-300]="getAttendanceStatus2(student.userId, schedule.scheduleId) === status"
                                         class="px-4 py-2 cursor-pointer hover:bg-gray-200">
                                         {{ status }}
                                     </li>
                                     <li class="px-4 py-2 cursor-pointer hover:bg-gray-200 border-t"
-                                        (click)="openCommentDialog(student.userId, schedule.id)">
+                                        (click)="openCommentDialog(student.userId, schedule.scheduleId)">
                                         Add Comment
                                     </li>
                                 </ul>

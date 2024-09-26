@@ -18,6 +18,7 @@ export class ClassComponent implements OnInit {
   classes: WritableSignal<ClassResponse[]> = signal([]);
   paginatedClasses: WritableSignal<ClassResponse[]> = signal([]);
   filteredClasses: WritableSignal<ClassResponse[]> = signal([]);
+  isActive: WritableSignal<boolean> = signal(false);
 
   statusCounts = signal({ studying: 0, finished: 0, cancel: 0, scheduled: 0 });
 
@@ -65,14 +66,34 @@ export class ClassComponent implements OnInit {
       },
     });
   }
-
+  
+  
   onRowClick(event: Event, classItem: any): void {
     event.stopPropagation(); // Ngăn chặn sự kiện click không bị lan ra ngoài
     this.router.navigate(['/admin/student/all'], {
       queryParams: { className: classItem.className },
     });
   }
+  
+  getSubjectId(subjectTeachers: any[]): number | null {
+    return subjectTeachers.length > 0 ? +subjectTeachers[0].subjectId : null;
+  }
+  
 
+  navigateToAssign(classId: number): void {
+    this.router.navigate(['/admin/class/assign', classId]).then(() => {
+      // Gọi phương thức để kiểm tra trạng thái lớp khi quay lại
+      this.checkClassStatus(classId);
+    });
+  }
+
+
+  checkClassStatus(classId: number): void {
+    this.classService.findClassById(classId).subscribe((classDetails) => {
+      this.isActive.set(classDetails.status === 'ACTIVE');
+    });
+  }
+  
   getAvatarUrl(avatarName: string | undefined): string {
     return avatarName ? `${avatarName}` : '/assets/images/avatar-default.webp';
   }
@@ -142,14 +163,11 @@ export class ClassComponent implements OnInit {
   updatePagination(): void {
     const classes = this.filteredClasses();
 
-    // Fix signal access by calling it like a function
     const startIndex = (this.currentPage() - 1) * this.itemsPerPage();
     const endIndex = startIndex + this.itemsPerPage();
 
-    // Update the paginated classes
     this.paginatedClasses.set(classes.slice(startIndex, endIndex));
 
-    // Update total pages
     this.totalPages.set(Math.ceil(classes.length / this.itemsPerPage()));
   }
 
@@ -183,7 +201,6 @@ export class ClassComponent implements OnInit {
   }
 
   deleteClass(id: number): void {
-    // Show confirmation dialog with SweetAlert2
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -194,26 +211,20 @@ export class ClassComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        // Proceed with deletion
         this.classService.deleteClass(id).subscribe({
           next: () => {
-            // Update the list of classes by filtering out the deleted class
             const updatedClasses = this.classes().filter(
               (classItem) => classItem.id !== id
             );
             this.classes.set(updatedClasses);
 
-            // Apply any filters that might be set
             this.applyFilters();
 
-            // Update status counts if applicable
             this.updateStatusCounts();
 
-            // Show success message with SweetAlert2
             Swal.fire('Deleted!', 'Class has been deleted.', 'success');
           },
           error: (error) => {
-            // Log error details and show error message with SweetAlert2
             console.error('Error details:', error.message);
             Swal.fire('Error!', 'Failed to delete class.', 'error');
           },

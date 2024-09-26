@@ -1,4 +1,3 @@
-// attendance-routing.module.ts
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AttendanceComponent } from './attendance.component';
@@ -11,7 +10,7 @@ const routes: Routes = [
     component: AttendanceComponent,
     children: [
       {
-        path: ':id',
+        path: ':classId/:subjectId',
         component: AttendanceClassComponent,
         data: { breadcrumb: 'Attendance' },
       },
@@ -19,6 +18,11 @@ const routes: Routes = [
         path: 'attendance-record',
         component: AttendanceRecordComponent,
         data: { breadcrumb: 'Attendance Record' },
+      },
+      {
+        path: '', // Optional: Default route for this module
+        redirectTo: 'attendance', // Redirect to attendance page
+        pathMatch: 'full',
       },
     ],
   },

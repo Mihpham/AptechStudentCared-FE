@@ -3,8 +3,6 @@
     <hr class>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 pb-5">
-        <!-- Roll Number -->
-
         <!-- Full Name -->
         <div>
             <label class="block text-gray-700 text-sm mb-2">Full Name</label>
@@ -99,8 +97,8 @@
       </button>
             <div *ngIf="courseDropdownOpen" class="absolute z-10 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-full">
                 <ul>
-                    <li *ngFor="let course of availableCourses" (click)="onCourseToggle(course.courseName)" class="cursor-pointer py-2 px-4 hover:bg-gray-100">
-                        <input type="checkbox" [checked]="selectedCourses.includes(course.courseName)" (click)="$event.stopPropagation()" /> {{ course.courseName }}
+                    <li *ngFor="let course of availableCourses" (click)="onCourseToggle(course.courseCode)" class="cursor-pointer py-2 px-4 hover:bg-gray-100">
+                        <input type="checkbox" [checked]="selectedCourses.includes(course.courseCode)" (click)="$event.stopPropagation()" /> {{ course.courseCode }}
                     </li>
                 </ul>
             </div>

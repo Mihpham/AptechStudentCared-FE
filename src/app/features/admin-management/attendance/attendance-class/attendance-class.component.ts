@@ -26,6 +26,8 @@ export class AttendanceClassComponent implements OnInit {
   showTooltip = false;
   selectedStatus: string = '';
   classId: number | null = null;
+  subjectId?: number ;
+
   classDetails: any = {};
   students: StudentResponse[] = [];
   schedules: Schedule[] = [];
@@ -49,19 +51,22 @@ export class AttendanceClassComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
-      const id = params.get('id');
-      this.classId = id ? +id : null;
-      if (this.classId) {
-        this.getClassDetails(this.classId);
-        this.loadSchedules();
-      } else {
-        console.error('Class ID is undefined or invalid.');
-      }
+    // Example: Retrieve IDs from route parameters
+    this.route.params.subscribe(params => {
+        this.classId = params['classId'];
+        this.subjectId = params['subjectId'];
+        
+        // Call loadSchedules only if IDs are defined
+        if (this.classId && this.subjectId) {
+            this.loadSchedules();
+            this.getClassDetails(this.classId);
+        } else {
+            console.error("Class ID or Subject ID is undefined");
+        }
+        this.loadAllAttendances();
+        this.renderer.listen('document', 'click', this.onClickOutside.bind(this));
     });
-    this.loadAllAttendances();
-    this.renderer.listen('document', 'click', this.onClickOutside.bind(this));
-  }
+}
 
   loadAllAttendances(): void {
     this.attendanceService.getAllAttendances().subscribe(
@@ -92,8 +97,8 @@ export class AttendanceClassComponent implements OnInit {
     );
   }
 
-  getClassDetails(id: number): void {
-    this.classService.findClassById(id).subscribe(
+  getClassDetails(classId: number): void {
+    this.classService.findClassById(classId).subscribe(
       (data) => {
         this.classDetails = data;
         const uniqueStudents = new Map<number, StudentResponse>();
@@ -111,17 +116,21 @@ export class AttendanceClassComponent implements OnInit {
   }
 
   loadSchedules(): void {
-    if (this.classId) {
-      this.scheduleService.getSchedulesByClassId(this.classId).subscribe(
+    if (this.classId && this.subjectId) { // Ensure subjectId is defined
+      this.scheduleService.getSchedulesByClassId(this.classId, this.subjectId).subscribe(
         (data) => {
           this.schedules = data;
+          console.log(this.schedules);
         },
         (error) => {
           console.error('Error fetching schedules:', error);
         }
       );
+    } else {
+      console.error('Class ID or Subject ID is undefined.');
     }
   }
+  
 
   // Check if the dropdown is open for a specific studentId, scheduleId, and attendance status
   isDropdownOpenCheck(studentId: number, scheduleId: number, attendanceStatus: string): boolean {
@@ -174,6 +183,9 @@ export class AttendanceClassComponent implements OnInit {
     status: string,
     isStatus1: boolean
   ): void {
+
+    console.log('selectStatus called with:', { studentId, scheduleId, status, isStatus1 });
+
     if (!this.attendanceStatuses[studentId]) {
       this.attendanceStatuses[studentId] = {};
     }
