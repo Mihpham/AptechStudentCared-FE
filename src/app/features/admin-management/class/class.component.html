@@ -4,6 +4,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
       <div class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
         <span class="text-3xl font-bold">{{ statusCounts().studying }}</span>
+
         <span class="text-gray-600">Studying</span>
       </div>
       <div class="bg-yellow-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
@@ -66,42 +67,74 @@
             <td class="py-2 px-4 text-center">{{ classItem.course.courseCode }}</td>
             <td class="py-2 px-4 text-center">{{ classItem.sem }}</td>
 
-    <!-- No Classes Available -->
-    <div *ngIf="classes().length === 0" class="text-center text-lg p-4 text-gray-600 dark:text-gray-200 font-bold">
-      There are no classes.
-    </div>
+            <td class="py-2 px-4 text-center" [ngClass]="{
+                'text-green-500': classItem.status === 'STUDYING',
+                'text-yellow-500': classItem.status === 'FINISHED',
+                'text-red-500': classItem.status === 'CANCEL',
+                'text-orange-500': classItem.status === 'SCHEDULED'
+              }">
+              {{ classItem.status }}
+            </td>
+            <td class="py-2 px-4 text-center">
+              <button [routerLink]="['/admin/class/update', classItem.id]" class="text-blue-400 hover:text-blue-600">
+                <i class="fa fa-edit"></i>
+              </button>
+              <button [routerLink]="['/admin/attendance', classItem.id]" class="text-blue-400 hover:text-blue-600">
+                <i class="fa fa-add"></i>
+              </button>
+              <button class="text-red-400 hover:text-red-600 p-2"
+                (click)="deleteClass(classItem.id); $event.stopPropagation()">
+                <i class="fa fa-trash"></i>
+              </button>
+              <button [routerLink]="['/admin/class/assign', classItem.id]"
+                class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
+                <i class="fa-solid fa-plus"></i> Assign
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- Pagination -->
-    <div
-      class="flex items-center justify-between p-4 mt-4 rounded-lg bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-      <div class="flex items-center space-x-6 ml-auto">
-        <div class="flex items-center space-x-4 mr-3">
-          <span class="text-gray-700 dark:text-gray-300">Items per page:</span>
-          <select
-            class="block w-20 p-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-white"
-            [ngModel]="itemsPerPage()" (ngModelChange)="onItemsPerPageChange($event)">
-            <option *ngFor="let option of [5, 10, 20]" [value]="option">{{ option }}</option>
-          </select>
-        </div>
-        <div class="text-gray-700 dark:text-gray-300 mr-10 ml-10">
-          Page {{ currentPage() }} of {{ totalPages() }}
-        </div>
-        <div class="flex items-center space-x-4">
-          <button (click)="goToFirstPage()" [disabled]="currentPage() === 1" class="btn btn-primary dark:text-gray-200">
-            <i class="fas fa-angle-double-left mr-3 ml-3"></i>
-          </button>
-          <button (click)="goToPreviousPage()" [disabled]="currentPage() === 1"
-            class="btn btn-primary dark:text-gray-200">
-            <i class="fa-solid fa-chevron-left mr-3 ml-3"></i>
-          </button>
-          <button (click)="goToNextPage()" [disabled]="currentPage() === totalPages()"
-            class="btn btn-primary dark:text-gray-200">
-            <i class="fa-solid fa-chevron-right mr-3 ml-3"></i>
-          </button>
-          <button (click)="goToLastPage()" [disabled]="currentPage() === totalPages()"
-            class="btn btn-primary dark:text-gray-200">
-            <i class="fas fa-angle-double-right mr-3 ml-3"></i>
-          </button>
+      <!-- No Classes Available -->
+      <div *ngIf="classes().length === 0" class="text-center text-lg p-4 text-gray-600 dark:text-gray-200 font-bold">
+        There are no classes.
+      </div>
+
+      <!-- Pagination -->
+      <div
+        class="flex items-center justify-between p-4 mt-4 rounded-lg bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+        <div class="flex items-center space-x-6 ml-auto">
+          <div class="flex items-center space-x-4 mr-3">
+            <span class="text-gray-700 dark:text-gray-300">Items per page:</span>
+            <select
+              class="block w-20 p-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-white"
+              [ngModel]="itemsPerPage()" (ngModelChange)="onItemsPerPageChange($event)">
+              <option *ngFor="let option of [5, 10, 20]" [value]="option">
+                {{ option }}
+              </option>
+            </select>
+          </div>
+          <div class="text-gray-700 dark:text-gray-300 mr-10 ml-10">
+            Page {{ currentPage() }} of {{ totalPages() }}
+          </div>
+          <div class="flex items-center space-x-4">
+            <button (click)="goToFirstPage()" [disabled]="currentPage() === 1"
+              class="btn btn-primary dark:text-gray-200">
+              <i class="fas fa-angle-double-left mr-3 ml-3"></i>
+            </button>
+            <button (click)="goToPreviousPage()" [disabled]="currentPage() === 1"
+              class="btn btn-primary dark:text-gray-200">
+              <i class="fa-solid fa-chevron-left mr-3 ml-3"></i>
+            </button>
+            <button (click)="goToNextPage()" [disabled]="currentPage() === totalPages()"
+              class="btn btn-primary dark:text-gray-200">
+              <i class="fa-solid fa-chevron-right mr-3 ml-3"></i>
+            </button>
+            <button (click)="goToLastPage()" [disabled]="currentPage() === totalPages()"
+              class="btn btn-primary dark:text-gray-200">
+              <i class="fas fa-angle-double-right mr-3 ml-3"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
