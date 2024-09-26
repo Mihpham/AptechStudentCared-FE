@@ -7,7 +7,8 @@ export interface ClassResponse {
     id: number;
     className: string;
     center: string;
-    hour: string; 
+    startHour: string; 
+    endHour: string;   
     days: DayOfWeek[]; 
     createdAt: Date;
     status: string;
