@@ -1,1 +1,9 @@
-<router-outlet></router-outlet>
+<!-- accounts.component.html -->
+<div class="accounts-container flex">
+  <div class="sidebar w-1/4 p-4"> <!-- Sidebar takes 25% of width -->
+    <app-account-sidebar (roleSelected)="onRoleSelected($event)"></app-account-sidebar>
+  </div>
+  <div class="content w-3/4 p-4"> <!-- Content takes 75% of width -->
+    <app-all-account [selectedRole]="selectedRole"></app-all-account>
+  </div>
+</div>

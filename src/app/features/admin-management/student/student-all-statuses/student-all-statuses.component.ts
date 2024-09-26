@@ -26,6 +26,7 @@ import { ImportStudentDialogComponent } from '../import-student-dialog/import-st
   templateUrl: './student-all-statuses.component.html',
   styleUrls: ['./student-all-statuses.component.scss'],
 })
+
 export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   students: StudentResponse[] = [];
   selectedStudent: StudentRequest | undefined;

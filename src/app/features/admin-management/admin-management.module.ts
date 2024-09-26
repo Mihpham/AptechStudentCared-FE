@@ -26,6 +26,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
+import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -46,7 +47,6 @@ import { CourseDetailDialogComponent } from './course/course-detail-dialog/cours
 import { CourseUpdateDialogComponent } from './course/course-update-dialog/course-update-dialog.component';
 import { LocationSelectorComponent } from '../location-selector/location-selector.component';
 import { ClassDetailComponent } from './class/class-detail/class-detail.component';
-import { AccountsListComponent } from './accounts/accounts-list/accounts-list.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { TeacherComponent } from './teacher/teacher.component';
 import { SroDialogComponent } from './sro/sro-dialog/sro-dialog.component';
@@ -60,6 +60,12 @@ import { CreateClassComponent } from './class/create-class/create-class.componen
 import { UpdateClassComponent } from './class/update-class/update-class.component';
 import { ImportStudentDialogComponent } from './student/import-student-dialog/import-student-dialog.component';
 import { CommentDialogComponent } from './attendance/comment-dialog/comment-dialog.component';
+import { AccountSidebarComponent } from './accounts/account-sidebar/account-sidebar.component';
+
+import { AllAccountComponent } from './accounts/all-account/all-account.component';
+import { SroAccountComponent } from './accounts/account-sidebar/sro-account/sro-account.component';
+import { TeacherAccountComponent } from './accounts/account-sidebar/teacher-account/teacher-account.component';
+import { StudentAccountComponent } from './accounts/account-sidebar/student-account/student-account.component';
 
 @NgModule({
   
@@ -98,7 +104,6 @@ import { CommentDialogComponent } from './attendance/comment-dialog/comment-dial
     LocationSelectorComponent,
     ClassDetailComponent,
     TeacherComponent,
-    AccountsListComponent,
     SroComponent,
     SroDialogComponent,
     TeacherAddComponent,
@@ -109,7 +114,12 @@ import { CommentDialogComponent } from './attendance/comment-dialog/comment-dial
     CreateClassComponent,
     UpdateClassComponent,
     ImportStudentDialogComponent,
-    CommentDialogComponent
+    CommentDialogComponent,
+    AccountSidebarComponent,
+    AllAccountComponent,
+    SroAccountComponent,
+    TeacherAccountComponent,
+    StudentAccountComponent
   ],
   imports: [
     CommonModule,
@@ -121,6 +131,7 @@ import { CommentDialogComponent } from './attendance/comment-dialog/comment-dial
     MatInputModule,
     MatButtonModule,
     MatTableModule,
+    MatCardModule,
     MatPaginatorModule,
     MatIconModule,
     MatDialogModule,
