@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ClassService } from 'src/app/core/services/admin/class.service';
 import { ClassResponse } from '../model/class/class-response.model';
-import { Student } from '../model/exam-mark/student.model';
+import { Student } from '../model/exam-mark/student.model'; // Đã thêm `ExamScore`
+import { ExamScore } from '../model/exam-mark/exam-score.model';
 import { HttpClient } from '@angular/common/http';
 import { CourseResponse } from '../model/course/course-response.model';
-import { Subject } from '../model/exam-mark/subject.model';
 import { ExamMarkService } from 'src/app/core/services/admin/exam-mark.service';
 import { ToastrService } from 'ngx-toastr';
-import { SubjectClass } from '../model/class/subject-class.model';
 
 @Component({
   selector: 'app-exam-mark',
@@ -17,7 +16,7 @@ import { SubjectClass } from '../model/class/subject-class.model';
 export class ExamMarkComponent implements OnInit {
   classes: ClassResponse[] = []; // Danh sách các lớp
   selectedClass: number | null = null; // Lớp học được chọn
-  subjects: string[] = []; // Danh sách mã môn học (Subject[])
+  subjects: string[] = []; // Danh sách mã môn học (Subject[] hoặc listExamScore.subjectCode)
   selectedSubject: string | null = null; // Môn học được chọn (nullable)
   students: Student[] = []; // Danh sách sinh viên trong lớp
   showTable: boolean = false;
@@ -35,11 +34,10 @@ export class ExamMarkComponent implements OnInit {
     this.loadClassNames(); // Tải danh sách lớp khi khởi động component
   }
 
-  // Phương thức để load danh sách tên các lớp học
   loadClassNames(): void {
     this.classService.findAllClasses().subscribe(
       (classes: ClassResponse[]) => {
-        this.classes = classes; // Lưu trực tiếp danh sách lớp
+        this.classes = classes;
       },
       (error) => {
         console.error('Lỗi khi lấy danh sách lớp:', error);
@@ -47,40 +45,36 @@ export class ExamMarkComponent implements OnInit {
     );
   }
 
-  // Phương thức khi lớp học được chọn
   onClassChange(event: Event) {
     const classId = Number((event.target as HTMLSelectElement).value);
-    this.selectedClass = classId; // Lưu lớp đã chọn
-    this.getCourseByClass(classId); // Lấy thông tin khóa học và môn học
-    this.selectedSubject = null; // Reset môn học đã chọn
-    this.students = []; // Reset danh sách sinh viên khi thay đổi lớp
-    this.showTable = false; // Ẩn bảng
+    this.selectedClass = classId;
+    this.getCourseByClass(classId);
+    this.selectedSubject = null;
+    this.students = [];
+    this.showTable = false;
   }
 
   getCourseByClass(classId: number) {
     this.classService.findAllSubjectByClassId(classId).subscribe(classResponse => {
-      const course: CourseResponse = classResponse; // Lấy khóa học từ phản hồi
-      this.subjects = []; // Reset danh sách môn học
+      const course: CourseResponse = classResponse;
+      this.subjects = [];
 
-      // Lấy tất cả các môn học từ các kỳ
       Object.keys(course.semesters).forEach(key => {
         const semesterSubjects = course.semesters[key];
         if (semesterSubjects) {
-          this.subjects.push(...semesterSubjects); // Thêm các môn học vào danh sách
+          this.subjects.push(...semesterSubjects);
         }
       });
     });
   }
-  
 
   onSubjectChange(event: Event) {
     const subjectCode = (event.target as HTMLSelectElement).value;
     this.selectedSubject = subjectCode;
 
-    // Kiểm tra xem cả lớp và môn học đã được chọn chưa
     if (this.selectedClass && this.selectedSubject) {
-      this.showTable = true; // Hiển thị bảng
-      this.getExamScoresByClass(this.selectedClass); // Lấy điểm theo lớp và môn học
+      this.showTable = true;
+      this.getExamScoresByClass(this.selectedClass);
     }
   }
 
@@ -88,7 +82,7 @@ export class ExamMarkComponent implements OnInit {
     this.http.get<Student[]>(`http://localhost:1010/api/exam-score/${classId}`).subscribe(
       (data: Student[]) => {
         this.students = data;
-        this.initializeTempScores(); // Khởi tạo điểm số tạm thời cho sinh viên
+        this.initializeTempScores();
       },
       (error) => {
         console.error('Error fetching students', error);
@@ -96,36 +90,20 @@ export class ExamMarkComponent implements OnInit {
     );
   }
 
-  // Khởi tạo điểm số tạm thời cho sinh viên
   initializeTempScores() {
     this.students.forEach(student => {
       if (this.selectedSubject) {
-        this.tempScores[student.rollNumber] = {
-          theoretical: this.getTheoreticalScore(student.subjects, this.selectedSubject),
-          practical: this.getPracticalScore(student.subjects, this.selectedSubject),
-        };
+        const examScore = this.getExamScore(student.listExamScore, this.selectedSubject);
+        if (examScore) {
+          // Sử dụng rollNumber từ ExamScore thay vì Student
+          this.tempScores[examScore.rollNumber] = {
+            theoretical: examScore.theoreticalScore ?? 0,
+            practical: examScore.practicalScore ?? 0
+          };
+        }
       }
     });
   }
-
-  // Cập nhật điểm số
-  onScoreChange(student: Student) {
-    // Giới hạn điểm lý thuyết
-    if (this.tempScores[student.rollNumber].theoretical > 20) {
-      this.tempScores[student.rollNumber].theoretical = 20;
-    }
-  
-    // Giới hạn điểm thực hành
-    if (this.tempScores[student.rollNumber].practical > 20) {
-      this.tempScores[student.rollNumber].practical = 20;
-    }
-  
-    // Đánh dấu rằng có sự thay đổi để cho phép nút lưu
-    student.hasChanges = true;
-  
-    // Tính toán lại kết quả dựa trên điểm lý thuyết và thực hành
-  }
-  
 
   onlyNumberKey(event: KeyboardEvent) {
     const input = event.key;
@@ -141,60 +119,66 @@ export class ExamMarkComponent implements OnInit {
     }
   }
 
+  getExamScore(listExamScore: ExamScore[], subjectCode: string): ExamScore | undefined {
+    return listExamScore.find(examScore => examScore.subjectCode === subjectCode);
+  }
 
-  // Tính toán kết quả dựa trên điểm LT và TH
+  onScoreChange(student: Student, examScore: ExamScore) {
+    if (this.tempScores[examScore.rollNumber].theoretical > 20) {
+      this.tempScores[examScore.rollNumber].theoretical = 20;
+    }
+
+    if (this.tempScores[examScore.rollNumber].practical > 20) {
+      this.tempScores[examScore.rollNumber].practical = 20;
+    }
+
+    student.hasChanges = true; // Đánh dấu sự thay đổi
+  }
+
+
   calculateResult(student: Student): string {
-    const theoreticalScore = this.getTheoreticalScore(student.subjects, this.selectedSubject || '');
-    const practicalScore = this.getPracticalScore(student.subjects, this.selectedSubject || '');
+    const examScore = this.getExamScore(student.listExamScore, this.selectedSubject || '');
+    if (!examScore) return 'Fail';
 
-    // Tạo một mảng chứa điểm lý thuyết và thực hành
-    const scores = [theoreticalScore, practicalScore];
+    const scores = [examScore.theoreticalScore, examScore.practicalScore];
 
-    // Kiểm tra các trường hợp khác nhau
     if (scores.every(score => score < 8)) {
-      return 'Fail'; // Cả 2 môn đều dưới 8 điểm
+      return 'Fail';
     } else if (scores.every(score => score >= 8 && score <= 11)) {
-      return 'Pass'; // Cả 2 môn từ 8 đến 11 điểm
+      return 'Pass';
     } else if (scores.every(score => score >= 12 && score <= 14)) {
-      return 'Credit'; // Cả 2 môn từ 12 đến 14 điểm
+      return 'Credit';
     } else if (scores.every(score => score >= 15)) {
-      return 'Distinction'; // Cả 2 môn từ 15 trở lên
+      return 'Distinction';
     } else {
-      // Nếu không thuộc trường hợp nào ở trên, kiểm tra điểm thấp hơn
       const minScore = Math.min(...scores);
-      if (minScore < 8) {
-        return 'Fail'; // Một trong hai điểm dưới 8
-      } else if (minScore >= 8 && minScore <= 11) {
-        return 'Pass'; // Điểm thấp hơn từ 8 đến 11
-      } else if (minScore >= 12 && minScore <= 14) {
-        return 'Credit'; // Điểm thấp hơn từ 12 đến 14
-      } else {
-        return 'Distinction'; // Điểm thấp hơn từ 15 trở lên
-      }
+      if (minScore < 8) return 'Fail';
+      if (minScore >= 8 && minScore <= 11) return 'Pass';
+      if (minScore >= 12 && minScore <= 14) return 'Credit';
+      return 'Distinction';
     }
   }
 
   getResultClass(result: string): string {
     switch (result) {
       case 'Fail':
-        return 'text-red-600'; // Màu đỏ
+        return 'text-red-600';
       case 'Pass':
-        return 'text-yellow-500'; // Màu cam
+        return 'text-yellow-500';
       case 'Credit':
-        return 'text-green-500'; // Màu xanh lá
+        return 'text-green-500';
       case 'Distinction':
-        return 'text-blue-500'; // Màu xanh lam
+        return 'text-blue-500';
       default:
-        return ''; // Không có lớp
+        return '';
     }
   }
 
-
-  // Lưu thay đổi khi bấm nút Save
-  saveChanges(student: Student) {
-    const updatedScore = this.tempScores[student.rollNumber];
+  saveChanges(student: Student, examScore: ExamScore) {
+    const updatedScore = this.tempScores[examScore.rollNumber];
     const scoreData = {
-      rollNumber: student.rollNumber,
+      rollNumber: examScore.rollNumber, // Sử dụng rollNumber từ ExamScore
+      studentName: examScore.studentName,
       subjectCode: this.selectedSubject,
       theoreticalScore: updatedScore.theoretical,
       practicalScore: updatedScore.practical
@@ -202,29 +186,17 @@ export class ExamMarkComponent implements OnInit {
 
     if (this.selectedClass !== null) {
       this.examMarkService.updateStudentExamScore(this.selectedClass, scoreData).subscribe({
-        next: (response) => {
-          student.hasChanges = false; // Đặt lại cờ sau khi lưu thành công
+        next: () => {
+          student.hasChanges = false;
           this.toastr.success('Update mark success!', 'Success');
         },
-        error: (error) => {
+        error: () => {
           this.toastr.error('An error occurred while updating mark.', 'Fail');
         }
       });
     } else {
-      // Handle case where `selectedClass` is `null`
       this.toastr.warning('Please select a class first.', 'Warning');
     }
-
   }
 
-  // Các phương thức lấy điểm số
-  getTheoreticalScore(subjects: Subject[], subjectCode: string): number {
-    const subject = subjects.find(sub => sub.subjectCode === subjectCode);
-    return subject ? subject.theoreticalScore ?? 0 : 0; // Fallback to 0 if `theoreticalScore` is null
-  }
-
-  getPracticalScore(subjects: Subject[], subjectCode: string): number {
-    const subject = subjects.find(sub => sub.subjectCode === subjectCode);
-    return subject ? subject.practicalScore ?? 0 : 0; // Fallback to 0 if `practicalScore` is null
-  }
 }
