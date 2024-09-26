@@ -20,7 +20,8 @@ export class CreateClassComponent implements OnInit {
     id: 0,
     className: '',
     center: '',
-    hour: '',
+    startHour: '',
+    endHour: '',
     days: [],
     createdAt: new Date(),
     status: 'STUDYING',
@@ -74,8 +75,8 @@ export class CreateClassComponent implements OnInit {
 
   saveClass(): void {
     this.isLoading = true;
-    this.class.hour = `${this.startHour} - ${this.finishHour}`;
-    this.class.days = Array.from(this.selectedDays); // Đảm bảo days đã được cập nhật
+    this.class.startHour = this.startHour; 
+    this.class.endHour = this.finishHour;  
 
     this.classService.addClass(this.class).subscribe({
       next: (response) => {
@@ -107,7 +108,8 @@ export class CreateClassComponent implements OnInit {
       id: 0,
       className: '',
       center: '',
-      hour: '',
+      startHour: '',
+      endHour: '',
       days: [],
       createdAt: new Date(),
       status: 'STUDYING',
