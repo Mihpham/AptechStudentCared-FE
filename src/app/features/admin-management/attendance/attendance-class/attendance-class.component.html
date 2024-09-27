@@ -1,10 +1,12 @@
-<div class="container mx-auto p-6 bg-white rounded-lg shadow-md">
+<div class="container mx-auto p-6 bg-white rounded-lg shadow-md w-[180vh]">
     <!-- Title Section -->
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-start mb-6">
         <h1 class="text-3xl font-bold text-gray-700">Manage Student Attendance</h1>
-        <small class="px-4 text-gray-500 text-sm" *ngIf="classDetails && classDetails.course && schedules.length > 0">
+        <small class="px-4 pb-3 text-gray-500 text-sm" *ngIf="classDetails && classDetails.course && schedules.length > 0">
             {{ classDetails?.className }} - {{ classDetails.course?.courseName }} -
-            ({{ schedules[0].startDate | date: 'dd-MM-yyyy' }} - {{ schedules[schedules.length - 1].endDate | date: 'dd-MM-yyyy' }}) - {{schedules[0].subjectName}} - 
+            ({{ schedules[0].startDate | date: 'dd-MM-yyyy' }} - {{ schedules[schedules.length - 1].endDate | date:
+            'dd-MM-yyyy' }}) - {{schedules[0].subjectName}} - {{ classDetails.subjectTeachers[0].teacherName }}
+
         </small>
     </div>
 
@@ -15,7 +17,8 @@
                 <!-- Header Row 1: Student Information -->
                 <tr class="border-b border-gray-300">
                     <th class="py-3 px-4 text-left font-semibold" colspan="5">Student Information</th>
-                    <th class="py-3 px-4 text-left font-semibold" [attr.colspan]="schedules.length * 2">Session Attendance Data</th>
+                    <th class="py-3 px-4 text-left font-semibold" [attr.colspan]="schedules.length * 2">Session
+                        Attendance Data</th>
                 </tr>
                 <!-- Header Row 2: Columns for Student Info -->
                 <tr class="border-b border-gray-300">
@@ -44,11 +47,12 @@
 
             <!-- Table Body -->
             <tbody *ngIf="students && students.length > 0" class="text-gray-700">
-                <tr *ngFor="let student of students" class="border-b hover:bg-gray-50" [ngClass]="{ 'line-through': student.status !== 'STUDYING' }">
+                <tr *ngFor="let student of students" class="border-b hover:bg-gray-50"
+                    [ngClass]="{ 'line-through': student.status !== 'STUDYING' }">
                     <!-- Student Information Columns -->
-                    <td class="px-4 py-3">{{ student.fullName }}</td>
+                    <td class="px-4 py-3 whitespace-nowrap">{{ student.fullName }}</td>
                     <td class="px-4 py-3">{{ classDetails.className }}</td>
-                    <td class="px-4 py-3">{{ classDetails.sem }}</td>
+                    <td class="px-4 py-3">{{ schedules[0].subjectName }}</td>
                     <td class="px-4 py-3">
                         <span class="rounded px-2 py-1 text-xs text-white" [ngClass]="{
                             'bg-green-500': student.status === 'STUDYING',
@@ -67,14 +71,16 @@
                     <ng-container *ngFor="let schedule of schedules">
                         <!-- Attendance for SchoolShift 1 -->
                         <td class="relative px-1">
-                            <button class="bg-gray-200 p-2 rounded-md w-full text-center transition duration-200 hover:bg-gray-300" 
+                            <button
+                                class="bg-gray-200 p-2 rounded-md w-full text-center transition duration-200 hover:bg-gray-300"
                                 [ngClass]="{
                                 'bg-green-500': getAttendanceStatus1(student.userId, schedule.scheduleId) === 'P',
                                 'bg-orange-500': getAttendanceStatus1(student.userId, schedule.scheduleId) === 'PA',
                                 'bg-red-500': getAttendanceStatus1(student.userId, schedule.scheduleId) === 'A',
                                 'bg-gray-200': !getAttendanceStatus1(student.userId, schedule.scheduleId)
                             }" (click)="toggleDropdown(student.userId, schedule.scheduleId, 'ca1')">
-                                <span *ngIf="getAttendanceStatus1(student.userId, schedule.scheduleId); else iconTemplate">
+                                <span
+                                    *ngIf="getAttendanceStatus1(student.userId, schedule.scheduleId); else iconTemplate">
                                     {{ getAttendanceStatus1(student.userId, schedule.scheduleId) }}
                                 </span>
                                 <ng-template #iconTemplate>
@@ -83,7 +89,8 @@
                             </button>
 
                             <!-- Dropdown styling -->
-                            <div *ngIf="isDropdownOpenCheck(student.userId, schedule.scheduleId, 'ca1')" class="absolute z-10 bg-white shadow-md border mt-1 rounded-md w-40">
+                            <div *ngIf="isDropdownOpenCheck(student.userId, schedule.scheduleId, 'ca1')"
+                                class="absolute z-10 bg-white shadow-md border mt-1 rounded-md w-40">
                                 <ul class="py-1">
                                     <li *ngFor="let status of ['P', 'A', 'PA']"
                                         (click)="selectStatus(student.userId, schedule.scheduleId, status, true)"
@@ -106,7 +113,8 @@
                                 'bg-red-500': getAttendanceStatus2(student.userId, schedule.scheduleId) === 'A',
                                 'bg-gray-200': !getAttendanceStatus2(student.userId, schedule.scheduleId)
                             }" (click)="toggleDropdown(student.userId, schedule.scheduleId, 'ca2')">
-                                <span *ngIf="getAttendanceStatus2(student.userId, schedule.scheduleId); else iconTemplate">
+                                <span
+                                    *ngIf="getAttendanceStatus2(student.userId, schedule.scheduleId); else iconTemplate">
                                     {{ getAttendanceStatus2(student.userId, schedule.scheduleId) }}
                                 </span>
                                 <ng-template #iconTemplate>
@@ -114,7 +122,8 @@
                                 </ng-template>
                             </button>
 
-                            <div *ngIf="isDropdownOpenCheck(student.userId, schedule.scheduleId, 'ca2')" class="absolute z-10 bg-white shadow-md border mt-1 rounded-md w-40">
+                            <div *ngIf="isDropdownOpenCheck(student.userId, schedule.scheduleId, 'ca2')"
+                                class="absolute z-10 bg-white shadow-md border mt-1 rounded-md w-40">
                                 <ul class="py-1">
                                     <li *ngFor="let status of ['P', 'A', 'PA']"
                                         (click)="selectStatus(student.userId, schedule.scheduleId, status, false)"

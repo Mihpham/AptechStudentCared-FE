@@ -27,7 +27,7 @@ export class AttendanceClassComponent implements OnInit {
   selectedStatus: string = '';
   classId: number | null = null;
   subjectId?: number ;
-
+  subjectTeachers : any;
   classDetails: any = {};
   students: StudentResponse[] = [];
   schedules: Schedule[] = [];
@@ -102,7 +102,7 @@ export class AttendanceClassComponent implements OnInit {
       (data) => {
         this.classDetails = data;
         const uniqueStudents = new Map<number, StudentResponse>();
-
+        console.log(data);
         data?.students?.forEach((student: any) => {
           uniqueStudents.set(student.userId, student);
         });
