@@ -61,23 +61,28 @@ export class AssignTeacherComponent implements OnInit {
     });
   }
 
-  goToAttendance(): void {
-    const classId = this.classDetails?.id; // Get class ID
-    // Ensure subjectTeachers array exists and is not empty
-    const subjectId = this.classDetails?.subjectTeachers && this.classDetails.subjectTeachers.length > 0 
-        ? this.classDetails.subjectTeachers[0].subjectId 
-        : null; // Get subject code from the first teacher or null
-  
-    console.log('Class ID:', classId, 'Subject Id:', subjectId); // Debug info
-  
-    if (classId && subjectId) {
-      this.router.navigate([`admin/attendance/${classId}/${subjectId}`]).then(() => {
-        this.toastr.success('Navigated to attendance page successfully!');
-      });
+  goToAttendance(detail: { subject: string; teacher: string; status: string }): void {
+    if (detail.status === 'ACTIVE') {
+        const classId = this.classDetails?.id;
+        const subjectInfo = this.classDetails?.subjectTeachers.find(
+            (teacher) => teacher.subjectCode === detail.subject
+        );
+        const subjectId = subjectInfo ? subjectInfo.subjectId : null;
+
+        console.log('Class ID:', classId, 'Subject Id:', subjectId); // Debug info
+
+        if (classId && subjectId) {
+            this.router.navigate([`admin/attendance/${classId}/${subjectId}`]).then(() => {
+                this.toastr.success('Navigated to attendance page successfully!');
+            });
+        } else {
+            this.toastr.error('Class ID or Subject Code is missing.');
+        }
     } else {
-      this.toastr.error('Class ID or Subject Code is missing.');
+        this.toastr.error('Cannot navigate to attendance page because the status is LOCK.');
     }
-  }
+}
+
   
   
 
