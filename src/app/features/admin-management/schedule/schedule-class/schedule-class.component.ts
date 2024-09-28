@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DayOfWeek } from 'src/app/core/enum/DayOfWeek';
@@ -6,7 +7,6 @@ import { ClassService } from 'src/app/core/services/admin/class.service';
 import { ScheduleService } from 'src/app/core/services/admin/schedules.service';
 import { ClassResponse } from '../../model/class/class-response.model';
 import { Schedule } from '../../model/schedules/schedules.model';
-import { MatDialog } from '@angular/material/dialog';
 import { AddScheduleComponent } from '../add-schedule/add-schedule.component';
 
 @Component({
@@ -33,7 +33,7 @@ export class ScheduleClassComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router, // Inject the Router service
     private classService: ClassService,
-    private dialog: MatDialog ,
+    private dialog: MatDialog,
     private scheduleService: ScheduleService
   ) {}
 
@@ -50,18 +50,29 @@ export class ScheduleClassComponent implements OnInit {
       }
     });
   }
+
   navigateToAddSchedule() {
     const dialogRef = this.dialog.open(AddScheduleComponent, {
       width: '400px',
-      data: { classId: this.classId, subjectId: this.subjectId } // Pass data if needed
+      data: { classId: this.classId, subjectId: this.subjectId }, // Pass data if needed
     });
-  
-    dialogRef.afterClosed().subscribe(result => {
+
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // Reload schedules if needed
         this.loadSchedules();
       }
     });
+  }
+
+  getSubjectCodeById(subjectId: number | null): string | undefined {
+    if (!this.classDetails || !this.classDetails.subjectTeachers) {
+      return undefined;
+    }
+    const subject = this.classDetails.subjectTeachers.find(
+      (teacher) => teacher.subjectId === subjectId
+    );
+    return subject ? subject.subjectCode : undefined;
   }
 
   onPageChange(event: any) {

@@ -1,62 +1,87 @@
-<div class="overflow-x-auto bg-white shadow-md space-y-6 mx-5 rounded-lg p-4 dark:bg-gray-800">
-    <!-- Add Schedule Button -->
-    <div class="flex justify-end mb-4">
-        <button (click)="navigateToAddSchedule()"
-                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded shadow hover:bg-blue-600 transition duration-150">
-            Add Schedule
-        </button>
-    </div>
+<div
+  class="overflow-x-auto bg-white shadow-md space-y-6 mx-5 rounded-lg p-4 dark:bg-gray-800"
+>
+  <!-- Add Schedule Button -->
+  <div class="flex justify-end mb-4">
+    <button
+      (click)="navigateToAddSchedule()"
+      class="bg-blue-500 text-white font-semibold py-2 px-4 rounded shadow hover:bg-blue-600 transition duration-150"
+    >
+      Add Schedule
+    </button>
+  </div>
 
-    <table class="min-w-full bg-white dark:bg-gray-700">
-        <thead class="dark:bg-gray-900">
-            <tr class="text-gray-800 dark:text-gray-200">
-                <th class="py-3 px-4 text-left">Class Name</th>
-                <th class="py-3 px-4 text-left">Batch</th>
-                <th class="py-3 px-4 text-left">Hour</th>
-                <th class="py-3 px-4 text-left">Date</th>
-                <th class="py-3 px-4 text-left">Module</th>
-                <th class="py-3 px-4 text-left">Sem</th>
-                <th class="py-3 px-4 text-left">Status</th>
-                <th class="py-3 px-4 text-left">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <ng-container *ngIf="classDetails">
-                <ng-container *ngFor="let schedule of paginatedSchedules">
-                    <tr class="cursor-pointer border-b hover:bg-gray-100 dark:hover:bg-gray-600">
-                        <td class="py-3 px-4">{{ classDetails.className }}</td>
-                        <td class="py-3 px-4">{{ getDaysAsNumbers(classDetails.days) }}</td>
-                        <td class="py-3 px-4">{{ classDetails.startHour.substring(0, 5) + 'h - ' + classDetails.endHour.substring(0, 5) + 'h' }}</td>
-                        <td class="py-3 px-4">{{ schedule.startDate | date: 'dd-MM-yyyy' }}</td>
-                        <td class="py-3 px-4">{{ classDetails.subjectTeachers[0]?.subjectCode }}</td>
-                        <td class="py-3 px-4">{{ classDetails.sem }}</td>
-                        <td class="py-3 px-4">
-                            <span class="inline-block px-2 py-1 text-sm font-semibold text-blue-700 bg-blue-200 rounded">Status Here</span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-blue-500 hover:text-blue-700">Edit</button>
-                            <button class="text-red-500 hover:text-red-700">Delete</button>
-                        </td>
-                    </tr>
-                </ng-container>
-            </ng-container>
-        </tbody>
-    </table>
+  <table class="min-w-full bg-white dark:bg-gray-700">
+    <thead class="dark:bg-gray-900">
+      <tr class="text-gray-800 dark:text-gray-200">
+        <th class="py-3 px-4 text-left">Class Name</th>
+        <th class="py-3 px-4 text-left">Batch</th>
+        <th class="py-3 px-4 text-left">Hour</th>
+        <th class="py-3 px-4 text-left">Date</th>
+        <th class="py-3 px-4 text-left">Module</th>
+        <th class="py-3 px-4 text-left">Sem</th>
+        <th class="py-3 px-4 text-left">Status</th>
+        <th class="py-3 px-4 text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngIf="classDetails">
+        <ng-container *ngFor="let schedule of paginatedSchedules">
+          <tr
+            class="cursor-pointer border-b hover:bg-gray-100 dark:hover:bg-gray-600"
+          >
+            <td class="py-3 px-4">{{ classDetails.className }}</td>
+            <td class="py-3 px-4">{{ getDaysAsNumbers(classDetails.days) }}</td>
+            <td class="py-3 px-4">
+              {{
+                classDetails.startHour.substring(0, 5) +
+                  "h - " +
+                  classDetails.endHour.substring(0, 5) +
+                  "h"
+              }}
+            </td>
+            <td class="py-3 px-4">
+              {{ schedule.startDate | date : "dd-MM-yyyy" }}
+            </td>
+            <td class="py-3 px-4">
+              {{ getSubjectCodeById(subjectId) || "N/A" }}
+            </td>
+            <td class="py-3 px-4">{{ classDetails.sem }}</td>
+            <td class="py-3 px-4">
+              <span
+                class="inline-block px-2 py-1 text-sm font-semibold text-blue-700 bg-blue-200 rounded"
+                >Status Here</span
+              >
+            </td>
+            <td class="py-3 px-4">
+              <button class="text-blue-500 hover:text-blue-700">Edit</button>
+              <button class="text-red-500 hover:text-red-700">Delete</button>
+            </td>
+          </tr>
+        </ng-container>
+      </ng-container>
+    </tbody>
+  </table>
 
-    <!-- Paginator and Total Records -->
-    <div class="flex justify-between items-center mt-4">
-        <span class="text-sm font-bold text-gray-600 dark:text-gray-200">
-            Total Records: {{ schedules.length }}
-        </span>
-        <mat-paginator [length]="schedules.length"
-                       [pageSize]="itemsPerPage"
-                       [pageSizeOptions]="[5, 10, 20]"
-                       (page)="onPageChange($event)"
-                       class="ml-4"></mat-paginator>
-    </div>
+  <!-- Paginator and Total Records -->
+  <div class="flex justify-between items-center mt-4">
+    <span class="text-sm font-bold text-gray-600 dark:text-gray-200">
+      Total Records: {{ schedules.length }}
+    </span>
+    <mat-paginator
+      [length]="schedules.length"
+      [pageSize]="itemsPerPage"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="onPageChange($event)"
+      class="ml-4"
+    ></mat-paginator>
+  </div>
 
-    <!-- No Class Details Available -->
-    <div *ngIf="!classDetails" class="text-center text-lg p-4 text-gray-600 dark:text-gray-200 font-bold">
-        No class details available.
-    </div>
+  <!-- No Class Details Available -->
+  <div
+    *ngIf="!classDetails"
+    class="text-center text-lg p-4 text-gray-600 dark:text-gray-200 font-bold"
+  >
+    No class details available.
+  </div>
 </div>
