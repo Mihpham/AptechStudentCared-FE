@@ -65,6 +65,14 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'schedule',
+    loadChildren: () =>
+      import('./schedule/schedule-routing.module').then(
+        (m) => m.ScheduleRoutingModule
+      ),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'calendar',
     component: CalendarComponent,
     canActivate: [AuthGuard],

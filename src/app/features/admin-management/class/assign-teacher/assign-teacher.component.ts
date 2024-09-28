@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ClassService } from './../../../../core/services/admin/class.service';
-import { ClassResponse } from '../../model/class/class-response.model';
-import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { AssignEditComponent } from '../assign-edit/assign-edit.component';
-import { AssignTeacherRequest } from '../../model/class/assign-teacher.model';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { AssignTeacherRequest } from '../../model/class/assign-teacher.model';
+import { ClassResponse } from '../../model/class/class-response.model';
+import { AssignEditComponent } from '../assign-edit/assign-edit.component';
+import { ClassService } from './../../../../core/services/admin/class.service';
 
 @Component({
   selector: 'app-assign-teacher',
@@ -31,7 +31,6 @@ export class AssignTeacherComponent implements OnInit {
       this.getClassDetails(classId);
     });
   }
-
 
   getClassDetails(classId: number): void {
     this.classService.findClassById(classId).subscribe(
@@ -61,30 +60,57 @@ export class AssignTeacherComponent implements OnInit {
     });
   }
 
-  goToAttendance(detail: { subject: string; teacher: string; status: string }): void {
+  goToAttendance(detail: {
+    subject: string;
+    teacher: string;
+    status: string;
+  }): void {
     if (detail.status === 'ACTIVE') {
-        const classId = this.classDetails?.id;
-        const subjectInfo = this.classDetails?.subjectTeachers.find(
-            (teacher) => teacher.subjectCode === detail.subject
-        );
-        const subjectId = subjectInfo ? subjectInfo.subjectId : null;
+      const classId = this.classDetails?.id;
+      const subjectInfo = this.classDetails?.subjectTeachers.find(
+        (teacher) => teacher.subjectCode === detail.subject
+      );
+      const subjectId = subjectInfo ? subjectInfo.subjectId : null;
 
-        console.log('Class ID:', classId, 'Subject Id:', subjectId); // Debug info
+      console.log('Class ID:', classId, 'Subject Id:', subjectId); // Debug info
 
-        if (classId && subjectId) {
-            this.router.navigate([`admin/attendance/${classId}/${subjectId}`]).then(() => {
-                this.toastr.success('Navigated to attendance page successfully!');
-            });
-        } else {
-            this.toastr.error('Class ID or Subject Code is missing.');
-        }
+      if (classId && subjectId) {
+        this.router
+          .navigate([`admin/attendance/${classId}/${subjectId}`])
+          .then(() => {
+            this.toastr.success('Navigated to attendance page successfully!');
+          });
+      } else {
+        this.toastr.error('Class ID or Subject Code is missing.');
+      }
     } else {
-        this.toastr.error('Cannot navigate to attendance page because the status is LOCK.');
+      this.toastr.error(
+        'Cannot navigate to attendance page because the status is LOCK.'
+      );
     }
-}
+  }
 
-  
-  
+  loadSchedule(detail: {
+    subject: string;
+    teacher: string;
+    status: string;
+  }): void {
+    const classId = this.classDetails?.id;
+    const subjectInfo = this.classDetails?.subjectTeachers.find(
+      (teacher) => teacher.subjectCode === detail.subject
+    );
+    const subjectId = subjectInfo ? subjectInfo.subjectId : null;
+
+    console.log('Class ID:', classId, 'Subject Id:', subjectId);
+
+    if (classId && subjectId) {
+      this.router
+        .navigate([`/admin/schedule/${classId}/${subjectId}`])
+        .then(() => {});
+    } else {
+      this.toastr.error('Class ID or Subject ID is missing.');
+    }
+  }
 
   openEditDialog(subject: string, teacherName: string, status: string): void {
     const dialogRef = this.dialog.open(AssignEditComponent, {

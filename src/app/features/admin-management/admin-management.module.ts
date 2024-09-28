@@ -66,6 +66,9 @@ import { AllAccountComponent } from './accounts/all-account/all-account.componen
 import { SroAccountComponent } from './accounts/account-sidebar/sro-account/sro-account.component';
 import { TeacherAccountComponent } from './accounts/account-sidebar/teacher-account/teacher-account.component';
 import { StudentAccountComponent } from './accounts/account-sidebar/student-account/student-account.component';
+import { ScheduleComponent } from './schedule/schedule.component';
+import { ScheduleClassComponent } from './schedule/schedule-class/schedule-class.component';
+import { AddScheduleComponent } from './schedule/add-schedule/add-schedule.component';
 
 @NgModule({
   
@@ -119,7 +122,10 @@ import { StudentAccountComponent } from './accounts/account-sidebar/student-acco
     AllAccountComponent,
     SroAccountComponent,
     TeacherAccountComponent,
-    StudentAccountComponent
+    StudentAccountComponent,
+    ScheduleComponent,
+    ScheduleClassComponent,
+    AddScheduleComponent
   ],
   imports: [
     CommonModule,

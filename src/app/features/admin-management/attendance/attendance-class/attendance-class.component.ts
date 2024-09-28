@@ -1,21 +1,22 @@
 import {
   Component,
-  OnInit,
-  HostListener,
   ElementRef,
+  HostListener,
+  OnInit,
   Renderer2,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ClassService } from 'src/app/core/services/admin/class.service';
-import { AttendanceService } from 'src/app/core/services/admin/attendance.service';
-import { ScheduleService } from 'src/app/core/services/admin/schedules.service';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { CommentDialogComponent } from '../comment-dialog/comment-dialog.component';
+import { AttendanceService } from 'src/app/core/services/admin/attendance.service';
+import { ClassService } from 'src/app/core/services/admin/class.service';
+import { ScheduleService } from 'src/app/core/services/admin/schedules.service';
+import { AttendanceRequest } from '../../model/attendance/attendance-request .model';
 import { AttendanceResponse } from '../../model/attendance/attendance-response.model';
+import { SubjectTeacherResponse } from '../../model/class/subject-teacher-response.model';
 import { Schedule } from '../../model/schedules/schedules.model';
 import { StudentResponse } from '../../model/student-response.model.';
-import { AttendanceRequest } from '../../model/attendance/attendance-request .model';
+import { CommentDialogComponent } from '../comment-dialog/comment-dialog.component';
 
 @Component({
   selector: 'app-attendance-class',
@@ -26,16 +27,25 @@ export class AttendanceClassComponent implements OnInit {
   showTooltip = false;
   selectedStatus: string = '';
   classId: number | null = null;
-  subjectId?: number ;
-  subjectTeachers : any;
+  subjectId?: number;
+  subjectTeachers: SubjectTeacherResponse[] = [];
   classDetails: any = {};
   students: StudentResponse[] = [];
   schedules: Schedule[] = [];
   attendances: AttendanceResponse[] = [];
-  attendanceStatuses: Record<number,Record<number, { attendanceStatus1: string; attendanceStatus2: string }>> = {};
-  attendanceComments: { [studentId: number]: { [scheduleId: number]: string };} = {};
+  attendanceStatuses: Record<
+    number,
+    Record<number, { attendanceStatus1: string; attendanceStatus2: string }>
+  > = {};
+  attendanceComments: {
+    [studentId: number]: { [scheduleId: number]: string };
+  } = {};
   isDropdownOpen: boolean = false; // Default false
-  openDropdownInfo: { studentId: number, scheduleId: number, attendanceStatus: string } | null = null; // Track which dropdown is open
+  openDropdownInfo: {
+    studentId: number;
+    scheduleId: number;
+    attendanceStatus: string;
+  } | null = null; // Track which dropdown is open
   tooltip: string = '';
   hoverInfo = '';
 
@@ -52,21 +62,28 @@ export class AttendanceClassComponent implements OnInit {
 
   ngOnInit(): void {
     // Example: Retrieve IDs from route parameters
-    this.route.params.subscribe(params => {
-        this.classId = params['classId'];
-        this.subjectId = params['subjectId'];
-        
-        // Call loadSchedules only if IDs are defined
-        if (this.classId && this.subjectId) {
-            this.loadSchedules();
-            this.getClassDetails(this.classId);
-        } else {
-            console.error("Class ID or Subject ID is undefined");
-        }
-        this.loadAllAttendances();
-        this.renderer.listen('document', 'click', this.onClickOutside.bind(this));
+    this.route.params.subscribe((params) => {
+      this.classId = params['classId'];
+      this.subjectId = params['subjectId'];
+
+      // Call loadSchedules only if IDs are defined
+      if (this.classId && this.subjectId) {
+        this.loadSchedules();
+        this.getClassDetails(this.classId);
+      } else {
+        console.error('Class ID or Subject ID is undefined');
+      }
+      this.loadAllAttendances();
+      this.renderer.listen('document', 'click', this.onClickOutside.bind(this));
     });
-}
+  }
+
+  getTeacherName(subjectCode: string): string | undefined {
+    const teacher = this.classDetails?.subjectTeachers.find(
+      (teacher: SubjectTeacherResponse) => teacher.subjectCode === subjectCode
+    );
+    return teacher ? teacher.teacherName : undefined;
+  }
 
   loadAllAttendances(): void {
     this.attendanceService.getAllAttendances().subscribe(
@@ -116,32 +133,44 @@ export class AttendanceClassComponent implements OnInit {
   }
 
   loadSchedules(): void {
-    if (this.classId && this.subjectId) { // Ensure subjectId is defined
-      this.scheduleService.getSchedulesByClassId(this.classId, this.subjectId).subscribe(
-        (data) => {
-          this.schedules = data;
-          console.log(this.schedules);
-        },
-        (error) => {
-          console.error('Error fetching schedules:', error);
-        }
-      );
+    if (this.classId && this.subjectId) {
+      // Ensure subjectId is defined
+      this.scheduleService
+        .getSchedulesByClassId(this.classId, this.subjectId)
+        .subscribe(
+          (data) => {
+            this.schedules = data;
+            console.log(this.schedules);
+          },
+          (error) => {
+            console.error('Error fetching schedules:', error);
+          }
+        );
     } else {
       console.error('Class ID or Subject ID is undefined.');
     }
   }
-  
 
   // Check if the dropdown is open for a specific studentId, scheduleId, and attendance status
-  isDropdownOpenCheck(studentId: number, scheduleId: number, attendanceStatus: string): boolean {
-    return this.isDropdownOpen &&
+  isDropdownOpenCheck(
+    studentId: number,
+    scheduleId: number,
+    attendanceStatus: string
+  ): boolean {
+    return (
+      this.isDropdownOpen &&
       this.openDropdownInfo?.studentId === studentId &&
       this.openDropdownInfo?.scheduleId === scheduleId &&
-      this.openDropdownInfo?.attendanceStatus === attendanceStatus;
+      this.openDropdownInfo?.attendanceStatus === attendanceStatus
+    );
   }
 
   // Toggle the dropdown for a specific studentId, scheduleId, and attendance status
-  toggleDropdown(studentId: number, scheduleId: number, attendanceStatus: string): void {
+  toggleDropdown(
+    studentId: number,
+    scheduleId: number,
+    attendanceStatus: string
+  ): void {
     if (this.isDropdownOpenCheck(studentId, scheduleId, attendanceStatus)) {
       // Close dropdown if it's already open
       this.isDropdownOpen = false;
@@ -152,7 +181,6 @@ export class AttendanceClassComponent implements OnInit {
       this.openDropdownInfo = { studentId, scheduleId, attendanceStatus };
     }
   }
-  
 
   // Listen for clicks outside the component and close the dropdown if necessary
   @HostListener('document:click', ['$event'])
@@ -183,8 +211,12 @@ export class AttendanceClassComponent implements OnInit {
     status: string,
     isStatus1: boolean
   ): void {
-
-    console.log('selectStatus called with:', { studentId, scheduleId, status, isStatus1 });
+    console.log('selectStatus called with:', {
+      studentId,
+      scheduleId,
+      status,
+      isStatus1,
+    });
 
     if (!this.attendanceStatuses[studentId]) {
       this.attendanceStatuses[studentId] = {};

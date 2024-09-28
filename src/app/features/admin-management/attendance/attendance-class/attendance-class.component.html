@@ -8,10 +8,10 @@
             ({{ schedules[0].startDate | date: 'dd-MM-yyyy' }} -
             {{ schedules[schedules.length - 1].endDate | date: 'dd-MM-yyyy' }}) -
             {{ schedules[0].subjectName }} -
-            {{ classDetails.subjectTeachers[0].teacherName }}
+            {{ getTeacherName(schedules[0].subjectName) }}
         </small>
     </div>
-
+    
     <!-- Table Container -->
     <div class="overflow-auto rounded-lg shadow-sm max-h-[calc(100vh-220px)]">
         <table class="min-w-full bg-white border border-gray-300 rounded-lg">
