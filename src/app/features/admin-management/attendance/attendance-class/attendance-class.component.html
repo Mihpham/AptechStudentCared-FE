@@ -2,11 +2,13 @@
     <!-- Title Section -->
     <div class="flex items-center justify-start mb-6">
         <h1 class="text-3xl font-bold text-gray-700">Manage Student Attendance</h1>
-        <small class="px-4 pb-3 text-gray-500 text-sm" *ngIf="classDetails && classDetails.course && schedules.length > 0">
+        <small class="px-4 pb-3 text-gray-500 text-sm"
+            *ngIf="classDetails && classDetails.course && schedules.length > 0">
             {{ classDetails?.className }} - {{ classDetails.course?.courseName }} -
-            ({{ schedules[0].startDate | date: 'dd-MM-yyyy' }} - {{ schedules[schedules.length - 1].endDate | date:
-            'dd-MM-yyyy' }}) - {{schedules[0].subjectName}} - {{ classDetails.subjectTeachers[0].teacherName }}
-
+            ({{ schedules[0].startDate | date: 'dd-MM-yyyy' }} -
+            {{ schedules[schedules.length - 1].endDate | date: 'dd-MM-yyyy' }}) -
+            {{ schedules[0].subjectName }} -
+            {{ classDetails.subjectTeachers[0].teacherName }}
         </small>
     </div>
 
@@ -14,46 +16,39 @@
     <div class="overflow-auto rounded-lg shadow-sm max-h-[calc(100vh-220px)]">
         <table class="min-w-full bg-white border border-gray-300 rounded-lg">
             <thead class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal sticky top-0 z-10">
-                <!-- Header Row 1: Student Information -->
                 <tr class="border-b border-gray-300">
-                    <th class="py-3 px-4 text-left font-semibold" colspan="5">Student Information</th>
-                    <th class="py-3 px-4 text-left font-semibold" [attr.colspan]="schedules.length * 2">Session
-                        Attendance Data</th>
-                </tr>
-                <!-- Header Row 2: Columns for Student Info -->
-                <tr class="border-b border-gray-300">
-                    <th class="py-3 px-4 text-left font-semibold">Name</th>
-                    <th class="py-3 px-4 text-left font-semibold">Class</th>
-                    <th class="py-3 px-4 text-left font-semibold">Module</th>
-                    <th class="py-3 px-4 text-left font-semibold">Status</th>
-                    <th class="py-3 px-4 text-left font-semibold">Type</th>
-
-                    <!-- Session Attendance Header -->
+                    <!-- Student Info Headers -->
+                    <th class="py-3 px-4 text-left bg-gray-100 border border-gray-300 sticky left-[-4px] z-20" rowspan="2">Name</th>
+                    <th class="py-3 px-4 text-center bg-gray-100 border border-gray-300 sticky left-[135px] z-20" rowspan="2">Class</th>
+                    <th class="py-3 px-4 text-center bg-gray-100 border border-gray-300 sticky left-[220px] z-20" rowspan="2">Module</th>
+                    <th class="py-3 px-4 text-center bg-gray-100 border border-gray-300 sticky left-[309px] z-20" rowspan="2">Status</th>
+                    <th class="py-3 px-4 text-center bg-gray-100 border border-gray-300 sticky left-[418px] z-20" rowspan="2">Type</th>
+                    
+                    <!-- Session Headers -->
                     <ng-container *ngFor="let schedule of schedules; let i = index">
-                        <th class="py-3 px-4 text-center bg-gray-100" colspan="2">
+                        <th class="py-3 px-4 text-center bg-gray-100 border border-gray-300" colspan="2">
                             Session {{ i + 1 }}<br>{{ schedule.startDate | date: 'dd/MM/yyyy' }}
                         </th>
                     </ng-container>
                 </tr>
-                <!-- Header Row 3: SchoolShift 1 and SchoolShift 2 Columns -->
                 <tr class="border-b border-gray-300">
-                    <th colspan="5" class="py-2"></th>
                     <ng-container *ngFor="let schedule of schedules">
-                        <th class="py-3 px-4 text-center bg-gray-100">SchoolShift 1</th>
-                        <th class="py-3 px-4 text-center bg-gray-100">SchoolShift 2</th>
+                        <th class="py-3 px-4 text-center bg-gray-100 border border-gray-300">SchoolShift 1</th>
+                        <th class="py-3 px-4 text-center bg-gray-100 border border-gray-300">SchoolShift 2</th>
                     </ng-container>
                 </tr>
             </thead>
+            
 
             <!-- Table Body -->
             <tbody *ngIf="students && students.length > 0" class="text-gray-700">
-                <tr *ngFor="let student of students" class="border-b hover:bg-gray-50"
+                <tr *ngFor="let student of students" class="border-b border-gray-300 hover:bg-gray-50"
                     [ngClass]="{ 'line-through': student.status !== 'STUDYING' }">
-                    <!-- Student Information Columns -->
-                    <td class="px-4 py-3 whitespace-nowrap">{{ student.fullName }}</td>
-                    <td class="px-4 py-3">{{ classDetails.className }}</td>
-                    <td class="px-4 py-3">{{ schedules[0].subjectName }}</td>
-                    <td class="px-4 py-3">
+                    <!-- Student Information -->
+                    <td class="px-4 py-3 sticky left-[-4px] whitespace-nowrap bg-white z-10">{{ student.fullName }}</td>
+                    <td class="px-4 py-3 sticky left-[135px] bg-white z-10">{{ classDetails.className }}</td>
+                    <td class="px-4 py-3 sticky left-[220px] bg-white z-10">{{ schedules[0].subjectName }}</td>
+                    <td class="px-4 py-3 sticky left-[309px] bg-white z-10">
                         <span class="rounded px-2 py-1 text-xs text-white" [ngClass]="{
                             'bg-green-500': student.status === 'STUDYING',
                             'bg-yellow-500': student.status === 'DELAY',
@@ -63,14 +58,14 @@
                             {{ student.status }}
                         </span>
                     </td>
-                    <td class="px-4 py-3">
+                    <td class="px-4 py-3 sticky left-[418px] bg-white z-10">
                         <span class="bg-green-500 text-white rounded px-2 py-1 text-xs">Official</span>
                     </td>
 
                     <!-- Session Attendance Data -->
                     <ng-container *ngFor="let schedule of schedules">
                         <!-- Attendance for SchoolShift 1 -->
-                        <td class="relative px-1">
+                        <td class="relative px-2 border border-gray-300 bg-gray-100">
                             <button
                                 class="bg-gray-200 p-2 rounded-md w-full text-center transition duration-200 hover:bg-gray-300"
                                 [ngClass]="{
@@ -87,10 +82,9 @@
                                     <i class="fa-solid fa-chevron-down"></i>
                                 </ng-template>
                             </button>
-
-                            <!-- Dropdown styling -->
+                            <!-- Dropdown for Shift 1 -->
                             <div *ngIf="isDropdownOpenCheck(student.userId, schedule.scheduleId, 'ca1')"
-                                class="absolute z-10 bg-white shadow-md border mt-1 rounded-md w-40">
+                                class="absolute  left-0 bottom-full mb-2 bg-white border border-gray-300 rounded-md shadow-lg z-40">
                                 <ul class="py-1">
                                     <li *ngFor="let status of ['P', 'A', 'PA']"
                                         (click)="selectStatus(student.userId, schedule.scheduleId, status, true)"
@@ -106,7 +100,7 @@
                             </div>
                         </td>
                         <!-- Attendance for SchoolShift 2 -->
-                        <td class="relative px-1">
+                        <td class="relative px-2 border border-gray-300 bg-gray-100">
                             <button class="bg-gray-200 p-2 rounded-md w-full text-center" [ngClass]="{
                                 'bg-green-500': getAttendanceStatus2(student.userId, schedule.scheduleId) === 'P',
                                 'bg-orange-500': getAttendanceStatus2(student.userId, schedule.scheduleId) === 'PA',
@@ -121,7 +115,7 @@
                                     <i class="fa-solid fa-chevron-down"></i>
                                 </ng-template>
                             </button>
-
+                            <!-- Dropdown for Shift 2 -->
                             <div *ngIf="isDropdownOpenCheck(student.userId, schedule.scheduleId, 'ca2')"
                                 class="absolute z-10 bg-white shadow-md border mt-1 rounded-md w-40">
                                 <ul class="py-1">
@@ -145,5 +139,7 @@
     </div>
 
     <!-- Message for no students -->
-    <div *ngIf="students.length === 0" class="text-center py-4 text-gray-600">No students available.</div>
+    <div *ngIf="students.length === 0" class="text-center py-4 text-gray-600">
+        No students found.
+    </div>
 </div>
