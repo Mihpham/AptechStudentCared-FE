@@ -2,6 +2,8 @@ export interface Schedule {
   scheduleId: number;
   startDate: string;
   endDate: string;
-  subjectName: string;
+  subjectCode: string;
   className: string;
+  status: string;
+  note: string;
 }

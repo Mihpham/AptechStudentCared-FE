@@ -31,7 +31,7 @@ export class ScheduleClassComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router, // Inject the Router service
+    private router: Router,
     private classService: ClassService,
     private dialog: MatDialog,
     private scheduleService: ScheduleService
@@ -54,17 +54,24 @@ export class ScheduleClassComponent implements OnInit {
   navigateToAddSchedule() {
     const dialogRef = this.dialog.open(AddScheduleComponent, {
       width: '400px',
-      data: { classId: this.classId, subjectId: this.subjectId }, // Pass data if needed
+      data: { classId: this.classId, subjectId: this.subjectId }, 
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        // Reload schedules if needed
         this.loadSchedules();
       }
     });
   }
 
+  navigateToAttendance(): void {
+    if (this.classId && this.subjectId) {
+      this.router.navigate([`admin/attendance/${this.classId}/${this.subjectId}`]);
+    } else {
+      console.error('Class ID or Subject ID is undefined.');
+    }
+  }
+  
   getSubjectCodeById(subjectId: number | null): string | undefined {
     if (!this.classDetails || !this.classDetails.subjectTeachers) {
       return undefined;

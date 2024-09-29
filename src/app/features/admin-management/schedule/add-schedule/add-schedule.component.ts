@@ -11,7 +11,7 @@ import { ScheduleRequest } from 'src/app/features/admin-management/model/schedul
 export class AddScheduleComponent implements OnInit {
   classId: number | null = null;
   subjectId: number | null = null;
-  scheduleRequest: ScheduleRequest = { startDate: '' };
+  scheduleRequest: ScheduleRequest = { startDate: '', status: '', note: '' };
 
   constructor(
     private scheduleService: ScheduleService,
@@ -26,15 +26,17 @@ export class AddScheduleComponent implements OnInit {
 
   submitSchedule() {
     if (this.classId && this.subjectId) {
-      this.scheduleService.createSchedule(this.classId, this.subjectId, this.scheduleRequest).subscribe(
-        (response) => {
-          console.log('Schedule created:', response);
-          this.dialogRef.close(true); // Close dialog and pass true to indicate success
-        },
-        (error) => {
-          console.error('Error creating schedule:', error);
-        }
-      );
+      this.scheduleService
+        .createSchedule(this.classId, this.subjectId, this.scheduleRequest)
+        .subscribe(
+          (response) => {
+            console.log('Schedule created:', response);
+            this.dialogRef.close(true); // Close dialog and pass true to indicate success
+          },
+          (error) => {
+            console.error('Error creating schedule:', error);
+          }
+        );
     } else {
       console.error('Class ID or Subject ID is undefined.');
     }

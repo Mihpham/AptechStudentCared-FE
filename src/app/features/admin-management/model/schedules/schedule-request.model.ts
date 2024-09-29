@@ -1,3 +1,5 @@
 export interface ScheduleRequest {
-    startDate: string; 
+  startDate: string;
+  status: string;
+  note: string;
 }
