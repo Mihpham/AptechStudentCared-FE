@@ -58,7 +58,6 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
   ) {
     this.studentForm = this.fb.group({
       image: ['avatar-default.webp'],
-      rollNumber: ['', Validators.required],
       fullName: ['', [Validators.required, Validators.minLength(2)]],
       gender: ['', Validators.required],
       className: ['', Validators.required],

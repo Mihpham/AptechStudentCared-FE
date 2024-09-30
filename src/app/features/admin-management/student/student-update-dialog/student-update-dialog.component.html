@@ -124,9 +124,9 @@
       <div *ngIf="isDropdownOpen" class="absolute z-10 bg-white border border-gray-300 rounded mt-1 w-full shadow-lg">
         <div *ngFor="let course of availableCourses" (click)="onCourseToggle(course)"
           class="flex items-center p-2 hover:bg-gray-200 cursor-pointer">
-          <input type="checkbox" [value]="course.courseName" [checked]="selectedCourses.includes(course.courseName)"
+          <input type="checkbox" [value]="course.courseCode" [checked]="selectedCourses.includes(course.courseCode)"
             class="form-checkbox text-blue-600 mr-2" (click)="onCheckboxClick($event, course)" />
-          <span>{{ course.courseName || 'Unknown Course' }}</span>
+          <span>{{ course.courseCode || 'Unknown Course' }}</span>
         </div>
       </div>
       <!-- Icon for the dropdown -->

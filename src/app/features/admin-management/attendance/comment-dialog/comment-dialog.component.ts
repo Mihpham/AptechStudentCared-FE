@@ -10,17 +10,16 @@ export class CommentDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<CommentDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { studentId: string; sessionId: string; comment: string }
+    @Inject(MAT_DIALOG_DATA) public data: { studentId: number; sessionId: number; comment: string }
   ) {
     this.comment = data.comment; // Load existing comment if available
   }
 
   onCancel(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(); // Close without returning data
   }
 
   onSave(): void {
-    this.dialogRef.close(this.comment);
+    this.dialogRef.close(this.comment); // Close and return the updated comment
   }
 }
-

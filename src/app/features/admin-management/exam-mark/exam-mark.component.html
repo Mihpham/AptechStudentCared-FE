@@ -1,1 +1,77 @@
-<p>exam-mark !</p>
+<div class="p-4 space-y-6">
+    <!-- Chọn lớp và môn học nằm cạnh nhau -->
+    <div class="flex space-x-4">
+        <div class="select-container">
+            <label for="classSelect">Choose Class:</label>
+            <select id="classSelect" [(ngModel)]="selectedClass" (change)="onClassChange($event)">
+                <option value="" disabled>Choose class</option>
+                <option *ngFor="let class of classes" [value]="class.id">{{ class.className }}</option>
+            </select>
+        </div>
+
+        <div *ngIf="subjects.length > 0" class="select-container">
+            <label for="subjectSelect">Choose Subject:</label>
+            <select id="subjectSelect" [(ngModel)]="selectedSubject" (change)="onSubjectChange($event)">
+                <option value="" disabled>Choose subject</option>
+                <option *ngFor="let subject of subjects" [value]="subject">{{ subject }}</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Hiển thị bảng khi cả lớp và môn học được chọn -->
+    <div *ngIf="showTable && students && students.length > 0" class="table-container">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Avatar</th>
+                    <th>Full Name</th>
+                    <th>Module</th>
+                    <th>Class Name</th>
+                    <th>Mark LT</th>
+                    <th>Mark TH</th>
+                    <th>Result</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let student of students">
+                    <td>
+                        <img [src]="student.image ? student.image : 'assets/images/avatar-default.webp'" alt="Avatar"
+                            class="avatar" />
+                    </td>
+                    <!-- Assuming each student has at least one exam score -->
+                    <td>
+                        {{ student.listExamScore[0].studentName }} <br>
+                        <small>{{ student.listExamScore[0].rollNumber }}</small>
+                    </td>
+                    <td>{{ selectedSubject }}</td>
+                    <td>{{ student.listExamScore[0].className }}</td>
+                    <td>
+                        <input type="number" [(ngModel)]="tempScores[student.listExamScore[0].rollNumber].theoretical"
+                            (ngModelChange)="onScoreChange(student, student.listExamScore[0])" min="0" max="20" maxlength="2"
+                            (keypress)="onlyNumberKey($event)" class="score-input" />
+                        /20
+                    </td>
+                    <td>
+                        <input type="number" [(ngModel)]="tempScores[student.listExamScore[0].rollNumber].practical"
+                            (ngModelChange)="onScoreChange(student, student.listExamScore[0])" min="0" max="20" maxlength="2"
+                            (keypress)="onlyNumberKey($event)" class="score-input" />
+                        /20
+                    </td>
+
+                    <td [ngClass]="getResultClass(calculateResult(student))">
+                        {{ calculateResult(student) }}
+                    </td>
+
+                    <td>
+                        <button (click)="saveChanges(student, student.listExamScore[0])" [disabled]="!student.hasChanges"
+                            [ngClass]="student.hasChanges ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-300 cursor-not-allowed'"
+                            class="save-button text-white py-2 px-4 rounded">
+                            Save
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

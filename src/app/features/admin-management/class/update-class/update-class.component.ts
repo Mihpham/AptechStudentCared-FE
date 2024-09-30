@@ -7,6 +7,7 @@ import { ClassRequest } from '../../model/class/class-request.model';
 import { CourseResponse } from '../../model/course/course-response.model';
 import { ClassResponse } from '../../model/class/class-response.model';
 import { DayOfWeek } from 'src/app/core/enum/DayOfWeek';
+import { SubjectTeacherResponse } from '../../model/class/subject-teacher-response.model';
 
 @Component({
   selector: 'app-update-class',
@@ -14,13 +15,14 @@ import { DayOfWeek } from 'src/app/core/enum/DayOfWeek';
   styleUrls: ['./update-class.component.scss'],
 })
 export class UpdateClassComponent implements OnInit {
-  DayOfWeek = DayOfWeek; // Khai báo để sử dụng trong template
+  DayOfWeek = DayOfWeek;
 
   class: ClassRequest = {
     id: 0,
     className: '',
     center: '',
-    hour: '',
+    startHour: '',
+    endHour: '',
     days: [],
     createdAt: new Date(),
     status: 'STUDYING',
@@ -31,7 +33,7 @@ export class UpdateClassComponent implements OnInit {
 
   startHour: string = '';
   finishHour: string = '';
-  selectedDays: DayOfWeek[] = []; // Kiểu DayOfWeek[]
+  selectedDays: DayOfWeek[] = [];
   isLoading = false;
   courses: CourseResponse[] = [];
 
@@ -41,7 +43,7 @@ export class UpdateClassComponent implements OnInit {
     private classService: ClassService,
     private courseService: CourseService,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadInitialData();
@@ -53,28 +55,30 @@ export class UpdateClassComponent implements OnInit {
             id: data.id,
             className: data.className,
             center: data.center,
-            hour: data.hour || '',
+            startHour: data.startHour || '',
+            endHour: data.endHour || '',
             days: data.days,
             createdAt: data.createdAt,
             status: data.status,
             sem: data.sem,
-            teacherName: data.subjectTeacherMap?.['someSubjectCode'] || '',
+            teacherName: this.getTeacherNames(data.subjectTeachers),
             courseCode: data.course?.courseCode || '',
           };
 
-          if (this.class.hour) {
-            const [start, finish] = this.class.hour.split(' - ');
-            this.startHour = start || '';
-            this.finishHour = finish || '';
-          }
+          this.startHour = this.class.startHour;
+          this.finishHour = this.class.endHour;
 
-          this.selectedDays = this.class.days as DayOfWeek[]; // Gán lại selectedDays
+          this.selectedDays = this.class.days as DayOfWeek[];
         },
         error: () => {
           this.toastr.error('Failed to load class details!', 'Error');
         },
       });
     }
+  }
+
+  private getTeacherNames(subjectTeachers: SubjectTeacherResponse[]): string {
+    return subjectTeachers.map(teacher => teacher.teacherName).join(', ') || 'No teachers assigned';
   }
 
   loadInitialData(): void {
@@ -89,8 +93,8 @@ export class UpdateClassComponent implements OnInit {
   }
 
   toggleDay(event: any): void {
-    const day = event.target.value as DayOfWeek; // Không cần chuyển đổi thành số
-  
+    const day = event.target.value as DayOfWeek;
+
     if (event.target.checked) {
       if (!this.selectedDays.includes(day)) {
         this.selectedDays.push(day);
@@ -98,13 +102,13 @@ export class UpdateClassComponent implements OnInit {
     } else {
       this.selectedDays = this.selectedDays.filter((d) => d !== day);
     }
-    this.class.days = this.selectedDays; // Cập nhật danh sách ngày
+    this.class.days = this.selectedDays;
   }
-  
 
   saveClass(): void {
     this.isLoading = true;
-    this.class.hour = `${this.startHour} - ${this.finishHour}`.trim();
+    this.class.startHour = this.startHour;
+    this.class.endHour = this.finishHour;
 
     this.classService.updateClass(this.class.id, this.class).subscribe({
       next: () => {

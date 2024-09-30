@@ -4,12 +4,13 @@ export interface ClassRequest {
   id: number;
   className: string;
   center: string;
-  hour: string;
+  startHour: string;
+  endHour: string;
   days: DayOfWeek[];
   status: string;
   sem: string;
   teacherName: string;
   courseCode: string;
-  
-  createdAt?: Date; // Optional if createdAt is set by the backend on creation
+
+  createdAt?: Date;
 }

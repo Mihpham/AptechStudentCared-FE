@@ -2,5 +2,6 @@
 export interface AssignTeacherRequest {
     subjectCode: string;
     teacherName: string;
+    status:string;
   }
   

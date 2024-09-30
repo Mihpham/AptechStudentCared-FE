@@ -14,7 +14,7 @@ import { CourseService } from 'src/app/core/services/admin/course.service';
 })
 export class CourseUpdateDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   courseForm!: FormGroup;
-  semesters = ['sem1', 'sem2', 'sem3', 'sem4'];
+  semesters = ['Sem1', 'Sem2', 'Sem3', 'Sem4'];
   availableSubjects: string[] = [];
   selectedSubjectsBySemester: { [key: string]: string[] } = {};
   isDropdownOpen: { [key: string]: boolean } = {};
@@ -61,10 +61,10 @@ export class CourseUpdateDialogComponent implements OnInit, AfterViewInit, OnDes
       courseCode: [course.courseCode, Validators.required],
       courseCompTime: [course.courseCompTime, Validators.required],
       semesters: this.fb.group({
-        sem1: this.fb.array([]),
-        sem2: this.fb.array([]),
-        sem3: this.fb.array([]),
-        sem4: this.fb.array([])
+        Sem1: this.fb.array([]),
+        Sem2: this.fb.array([]),
+        Sem3: this.fb.array([]),
+        Sem4: this.fb.array([])
       })
     });
   }

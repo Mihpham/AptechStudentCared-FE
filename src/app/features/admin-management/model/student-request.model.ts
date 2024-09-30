@@ -2,7 +2,6 @@
 export interface StudentRequest {
   userId : string;
   image?: string;
-  rollNumber: string;
   fullName: string;
   password?: string;
   gender?: string;
