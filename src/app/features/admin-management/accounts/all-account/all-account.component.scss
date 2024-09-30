@@ -14,8 +14,8 @@
     }
 
     th {
-      background-color: #4a5568; // Màu nền cho tiêu đề
-      color: white; // Màu chữ cho tiêu đề
+      background-color: #ffffff; // Màu nền cho tiêu đề
+      color: rgb(17, 4, 4); // Màu chữ cho tiêu đề
     }
 
     tr:hover {
@@ -26,6 +26,7 @@
       width: auto; // Căn chỉnh chiều rộng tự động với số
       min-width: 30px; // Thiết lập chiều rộng tối thiểu để đảm bảo không gian
       text-align: center; // Căn giữa cho cột STT
+      align-items: center;
     }
 
     .email-label .mat-cell {
@@ -62,7 +63,22 @@
     }
 
     .action {
-      width: 15%; // Đặt chiều rộng cho cột Action
+      width: 15%;
+      text-align: center;
     }
+
+    button.mat-icon-button {
+      transition: color 0.3s ease;
+    }
+
+    // Colors based on status
+    .text-green-500 {
+      color: #48bb78; // Green for unlocked
+    }
+
+    .text-red-500 {
+      color: #f56565; // Red for locked
+    }
+
   }
 }

@@ -1,75 +1,81 @@
-<div class="account-table p-4 space-y-6 bg-slate-200 rounded-lg shadow-md dark:bg-gray-900 dark:border-white">
+<div class="account-table">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 table-auto w-full dark:bg-gray-900">
     <!-- STT -->
-    <ng-container matColumnDef="stt">
-      <mat-header-cell *matHeaderCellDef style="width: 50px;" class="p-2 dark:text-gray-200 dark:bg-gray-600"> STT
-      </mat-header-cell>
-      <mat-cell *matCellDef="let account; let i = index" style="width: 50px;"
-        class="p-2 dark:text-gray-50 dark:bg-gray-600">
+    <ng-container matColumnDef="stt" class="stt">
+      <th mat-header-cell *matHeaderCellDef> STT </th>
+      <td mat-cell *matCellDef="let account; 
+      let i = index" class="w-10 h-10" style="text-align: center;">
         {{ getDisplayIndex(i) }} <!-- Use getDisplayIndex to show the correct index -->
-      </mat-cell>
+      </td>
     </ng-container>
 
     <!-- Email Column -->
     <ng-container matColumnDef="email" class="email-label">
-      <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-50 dark:bg-gray-800"> Email </mat-header-cell>
-      <mat-cell *matCellDef="let account" class="p-2 dark:text-gray-200 dark:bg-gray-600">
+      <th mat-header-cell *matHeaderCellDef> Email </th>
+      <td mat-cell *matCellDef="let account">
         <span class="email" matTooltip="{{ account.email }}">
           {{ account.email }}
         </span>
-      </mat-cell>
+      </td>
     </ng-container>
 
     <!-- Username Column -->
     <ng-container matColumnDef="username">
-      <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-50 dark:bg-gray-800"> Username </mat-header-cell>
-      <mat-cell *matCellDef="let account" class="p-2 dark:text-gray-200 dark:bg-gray-600"> {{ account.fullName }}
-      </mat-cell>
+      <th mat-header-cell *matHeaderCellDef> Username </th>
+      <td mat-cell *matCellDef="let account"> {{ account.fullName }}
+      </td>
     </ng-container>
 
     <!-- Role Column -->
     <ng-container matColumnDef="role">
-      <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-50 dark:bg-gray-800"> Role </mat-header-cell>
-      <mat-cell *matCellDef="let account" class="p-2 dark:text-gray-200 dark:bg-gray-600"> {{ account.roleName }}
-      </mat-cell>
+      <th mat-header-cell *matHeaderCellDef> Role </th>
+      <td mat-cell *matCellDef="let account"> {{ account.roleName }}
+      </td>
     </ng-container>
 
     <!-- Created At Column -->
     <ng-container matColumnDef="createdAt">
-      <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-50 dark:bg-gray-800"> Created At </mat-header-cell>
-      <mat-cell *matCellDef="let account" class="p-2 dark:text-gray-200 dark:bg-gray-600"> {{ account.createdAt |
-        date:'dd-MM-yyyy HH:mm' }} </mat-cell>
+      <th mat-header-cell *matHeaderCellDef> Created At </th>
+      <td mat-cell *matCellDef="let account"> {{ account.createdAt |
+        date:'dd-MM-yyyy' }} </td>
     </ng-container>
 
     <!-- Status Column -->
     <ng-container matColumnDef="status">
-      <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-50 dark:bg-gray-800"> Status </mat-header-cell>
-      <mat-cell *matCellDef="let account" class="p-2 dark:text-gray-200 dark:bg-gray-600">
+      <th mat-header-cell *matHeaderCellDef> Status </th>
+      <td mat-cell *matCellDef="let account">
         <span
           [ngClass]="{'bg-green-100 text-green-500': account.status === 'Active', 'bg-red-100 text-red-500': account.status === 'Lock'}"
           class="p-1 rounded">
           {{ account.status }}
         </span>
-      </mat-cell>
+      </td>
     </ng-container>
 
     <!-- Action Column -->
     <ng-container matColumnDef="action">
-      <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-50 dark:bg-gray-800"> Action </mat-header-cell>
-      <mat-cell *matCellDef="let account" class="p-2 dark:text-gray-200 dark:bg-gray-600">
-        <button (click)="deleteAccount(account.id)"
-          class="text-red-500 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 py-1 px-2 rounded">
-          Delete
+      <th mat-header-cell *matHeaderCellDef> Action </th>
+      <td mat-cell *matCellDef="let account">
+        <button (click)="updateStatus(account.id)" mat-icon-button
+          class="focus:outline-none focus:ring-2 py-1 px-2 rounded"
+          [ngClass]="{'text-green-500': account.status === 'ACTIVE', 'text-red-500': account.status !== 'ACTIVE'}">
+          <mat-icon>
+            {{ account.status === 'ACTIVE' ? 'lock_open' : 'lock' }} <!-- Toggle lock/unlock icon -->
+          </mat-icon>
         </button>
-      </mat-cell>
+      </td>
     </ng-container>
 
     <!-- Table Header and Rows -->
-    <mat-header-row
-      *matHeaderRowDef="['stt', 'email', 'username', 'role', 'createdAt', 'status', 'action']"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: ['stt', 'email', 'username', 'role', 'createdAt', 'status', 'action'];"
-      class="hover:bg-gray-50 cursor-pointer"></mat-row>
+    <tr mat-header-row *matHeaderRowDef="['stt', 'email', 'username', 'role', 'createdAt', 'status', 'action']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['stt', 'email', 'username', 'role', 'createdAt', 'status', 'action'];"
+      class="hover:bg-gray-50 cursor-pointer"></tr>
   </table>
+
+  <!-- No Data Message -->
+  <div *ngIf="dataSource.filteredData.length === 0" class="text-red-600 text-center my-8">
+    No results found.
+  </div>
 
   <!-- Paginator -->
   <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons

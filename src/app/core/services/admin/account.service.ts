@@ -1,7 +1,7 @@
-import { 
-    HttpClient, 
-    HttpHeaders, 
-    HttpErrorResponse 
+import {
+    HttpClient,
+    HttpHeaders,
+    HttpErrorResponse
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
@@ -33,8 +33,8 @@ export class AccountService {
     // Hàm lấy tổng số tài khoản theo role
     getTotalAccountsByRole(role: string): Observable<{ totalAccount: number }> {
         return this.http.get<{ totalAccount: number }>(`${this.accountApiUrl}/role/total/${role}`);
-      }
-      
+    }
+
 
     // Hàm lấy tài khoản theo ID
     getAccountById(accountId: number): Observable<AccountRequest> {
@@ -48,10 +48,13 @@ export class AccountService {
         return this.http.get<AccountResponse[]>(`${this.accountApiUrl}/role/${roleName}`);
     }
 
-    // Hàm xóa tài khoản
-    deleteAccount(id: number): Observable<void> {
-        return this.http.delete<void>(`${this.accountApiUrl}/${id}`, { headers: this.headers });
+    // Hàm cập nhật trạng thái tài khoản
+    updateAccountStatus(accountId: number): Observable<AccountResponse> {
+        return this.http.put<AccountResponse>(`${this.accountApiUrl}/${accountId}/status`, {}).pipe(
+            catchError(this.handleError) // Bắt lỗi
+        );
     }
+
 
     // Xử lý lỗi
     private handleError(error: HttpErrorResponse) {

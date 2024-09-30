@@ -1,19 +1,19 @@
 .side-menu {
   display: flex;
   flex-direction: column;
-  gap: 1rem; // Khoảng cách giữa các card
+  gap: 2rem; // Khoảng cách giữa các card
   padding: 10px;
   max-width: 350px;
-  background-color: #f4f4f4;
+  // background-color: #f4f4f4;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin-top: 20px; /* Thêm margin-top để thụt xuống */
+  // box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 45px; /* Thêm margin-top để thụt xuống */
 }
 
 .menu-card {
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border-radius: 10px; // Tạo các góc tròn cho card
+  border-radius: 9px; // Tạo các góc tròn cho card
 
   &:hover {
     transform: scale(1.05); // Tăng kích thước nhẹ khi hover
