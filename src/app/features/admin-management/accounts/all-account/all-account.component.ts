@@ -16,6 +16,7 @@ import { MatTableDataSource } from '@angular/material/table';
 export class AllAccountComponent implements OnInit, AfterViewInit {
   accounts: AccountResponse[] = [];
   allAccounts: AccountResponse[] = []; // To store all accounts
+  
   @Input() selectedRole: string | null = null;
 
   pageSize: number = 5; // Default page size (number of items per page)
@@ -103,11 +104,19 @@ export class AllAccountComponent implements OnInit, AfterViewInit {
     return (this.paginator.pageIndex * this.paginator.pageSize) + index + 1;
   }
 
-  deleteAccount(id: number): void {
-    this.accountService.deleteAccount(id).subscribe(() => {
-      this.accounts = this.accounts.filter(account => account.id !== id);
-      this.allAccounts = this.allAccounts.filter(account => account.id !== id); // Update allAccounts as well
-      this.dataSource.data = this.accounts; // Update the data source after deletion
-    });
+  // Method to update the account status
+  updateStatus(accountId: number): void {
+    this.accountService.updateAccountStatus(accountId).subscribe(
+      (response) => {
+        this.toastr.success('Account status updated successfully', 'Success'); // Show success message
+        this.loadAllAccounts(); // Refresh the account list to reflect status changes
+      },
+      (error) => {
+        this.toastr.error('Failed to update account status', 'Error');
+        console.error('Error updating account status', error);
+      }
+    );
   }
+
+
 }

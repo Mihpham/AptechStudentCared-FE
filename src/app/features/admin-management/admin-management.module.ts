@@ -63,9 +63,6 @@ import { CommentDialogComponent } from './attendance/comment-dialog/comment-dial
 import { AccountSidebarComponent } from './accounts/account-sidebar/account-sidebar.component';
 
 import { AllAccountComponent } from './accounts/all-account/all-account.component';
-import { SroAccountComponent } from './accounts/account-sidebar/sro-account/sro-account.component';
-import { TeacherAccountComponent } from './accounts/account-sidebar/teacher-account/teacher-account.component';
-import { StudentAccountComponent } from './accounts/account-sidebar/student-account/student-account.component';
 
 @NgModule({
   
@@ -116,10 +113,7 @@ import { StudentAccountComponent } from './accounts/account-sidebar/student-acco
     ImportStudentDialogComponent,
     CommentDialogComponent,
     AccountSidebarComponent,
-    AllAccountComponent,
-    SroAccountComponent,
-    TeacherAccountComponent,
-    StudentAccountComponent
+    AllAccountComponent
   ],
   imports: [
     CommonModule,
