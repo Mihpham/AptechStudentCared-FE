@@ -63,11 +63,8 @@ import { CommentDialogComponent } from './attendance/comment-dialog/comment-dial
 import { AccountSidebarComponent } from './accounts/account-sidebar/account-sidebar.component';
 
 import { AllAccountComponent } from './accounts/all-account/all-account.component';
-import { SroAccountComponent } from './accounts/account-sidebar/sro-account/sro-account.component';
-import { TeacherAccountComponent } from './accounts/account-sidebar/teacher-account/teacher-account.component';
-import { StudentAccountComponent } from './accounts/account-sidebar/student-account/student-account.component';
-import { ScheduleComponent } from './schedule/schedule.component';
 import { ScheduleClassComponent } from './schedule/schedule-class/schedule-class.component';
+import { ScheduleComponent } from './schedule/schedule.component';
 import { AddScheduleComponent } from './schedule/add-schedule/add-schedule.component';
 
 @NgModule({
@@ -120,11 +117,8 @@ import { AddScheduleComponent } from './schedule/add-schedule/add-schedule.compo
     CommentDialogComponent,
     AccountSidebarComponent,
     AllAccountComponent,
-    SroAccountComponent,
-    TeacherAccountComponent,
-    StudentAccountComponent,
-    ScheduleComponent,
     ScheduleClassComponent,
+    ScheduleComponent,
     AddScheduleComponent
   ],
   imports: [
