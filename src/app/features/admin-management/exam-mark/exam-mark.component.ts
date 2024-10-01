@@ -7,6 +7,10 @@ import { HttpClient } from '@angular/common/http';
 import { CourseResponse } from '../model/course/course-response.model';
 import { ExamMarkService } from 'src/app/core/services/admin/exam-mark.service';
 import { ToastrService } from 'ngx-toastr';
+import { ImportExamMarkDialogComponent } from './import-exam-mark-dialog/import-exam-mark-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import * as XLSX from 'xlsx'; // Thư viện để xuất file CSV
+import { saveAs } from 'file-saver'; // Thư viện để lưu file
 
 @Component({
   selector: 'app-exam-mark',
@@ -25,13 +29,64 @@ export class ExamMarkComponent implements OnInit {
   displayedColumns: string[] = ['avatar', 'fullName', 'module', 'className', 'theoreticalScore', 'practicalScore', 'result', 'action'];
 
   constructor(private classService: ClassService,
-    private http: HttpClient,
-    private examMarkService: ExamMarkService,
-    private toastr: ToastrService
+              private http: HttpClient,
+              private examMarkService: ExamMarkService,
+              private toastr: ToastrService,
+              private dialog: MatDialog // Sử dụng MatDialog cho import
   ) { }
 
   ngOnInit(): void {
     this.loadClassNames(); // Tải danh sách lớp khi khởi động component
+  }
+
+  // Hàm mở dialog để import điểm
+  onImport(): void {
+    console.log('Opening import dialog...');
+
+    const dialogRef = this.dialog.open(ImportExamMarkDialogComponent, {
+        width: '500px',
+        data: {
+            selectedClass: this.selectedClass // Truyền lớp học đã chọn
+        }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+        console.log('Dialog closed with result:', result);
+        if (result && result.reload) {
+            this.loadClassNames(); // Reload student data after import
+            // Kiểm tra xem selectedClass có phải là null không
+            if (this.selectedClass !== null) {
+                this.getExamScoresByClass(this.selectedClass); // Tải lại điểm cho lớp đã chọn
+            } else {
+                console.warn('No class selected, cannot reload exam scores.');
+            }
+        }
+    });
+}
+
+
+  // Hàm xuất dữ liệu điểm thi thành file CSV
+  onExport(): void {
+    const dataToExport = this.students.map(student => {
+      const examScore = this.getExamScore(student.listExamScore, this.selectedSubject || '');
+
+      return {
+        'Roll Number': student.listExamScore[0].rollNumber,
+        'Full Name': student.listExamScore[0].studentName,
+        'Class Name': student.listExamScore[0].className,
+        'Subject': this.selectedSubject,
+        'Theoretical Score': examScore?.theoreticalScore || 0,
+        'Practical Score': examScore?.practicalScore || 0,
+        'Result': this.calculateResult(student)
+      };
+    });
+
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataToExport);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Students');
+    const wbout: Uint8Array = XLSX.write(wb, { bookType: 'csv', type: 'array' });
+    const blob = new Blob([wbout], { type: 'text/csv;charset=utf-8' });
+    saveAs(blob, 'students.csv');
   }
 
   loadClassNames(): void {
@@ -199,4 +254,5 @@ export class ExamMarkComponent implements OnInit {
     }
   }
 
+ 
 }

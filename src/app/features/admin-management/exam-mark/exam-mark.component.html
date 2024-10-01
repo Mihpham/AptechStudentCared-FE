@@ -1,21 +1,37 @@
 <div class="p-4 space-y-6">
     <!-- Chọn lớp và môn học nằm cạnh nhau -->
-    <div class="flex space-x-4">
-        <div class="select-container">
-            <label for="classSelect">Choose Class:</label>
-            <select id="classSelect" [(ngModel)]="selectedClass" (change)="onClassChange($event)">
-                <option value="" disabled>Choose class</option>
-                <option *ngFor="let class of classes" [value]="class.id">{{ class.className }}</option>
-            </select>
+    <div class="flex justify-between items-center">
+        <div class="flex space-x-4">
+            <!-- Select Class -->
+            <div class="select-container">
+                <label for="classSelect">Choose Class:</label>
+                <select id="classSelect" [(ngModel)]="selectedClass" (change)="onClassChange($event)">
+                    <option value="" disabled>Choose class</option>
+                    <option *ngFor="let class of classes" [value]="class.id">{{ class.className }}</option>
+                </select>
+            </div>
+
+            <!-- Select Subject -->
+            <div *ngIf="subjects.length > 0" class="select-container">
+                <label for="subjectSelect">Choose Subject:</label>
+                <select id="subjectSelect" [(ngModel)]="selectedSubject" (change)="onSubjectChange($event)">
+                    <option value="" disabled>Choose subject</option>
+                    <option *ngFor="let subject of subjects" [value]="subject">{{ subject }}</option>
+                </select>
+            </div>
         </div>
 
-        <div *ngIf="subjects.length > 0" class="select-container">
-            <label for="subjectSelect">Choose Subject:</label>
-            <select id="subjectSelect" [(ngModel)]="selectedSubject" (change)="onSubjectChange($event)">
-                <option value="" disabled>Choose subject</option>
-                <option *ngFor="let subject of subjects" [value]="subject">{{ subject }}</option>
-            </select>
+        <!-- Nút Import và Export căn sang phải -->
+        <div *ngIf="showTable && students && students.length > 0" class="flex space-x-4">
+            <button class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow" (click)="onImport()">
+                <i class="fa-solid fa-file-import"></i> Import
+            </button>
+            <button class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow" (click)="onExport()">
+                <i class="fa-solid fa-file-export"></i> Export
+            </button>
         </div>
+
+
     </div>
 
     <!-- Hiển thị bảng khi cả lớp và môn học được chọn -->
@@ -36,10 +52,8 @@
             <tbody>
                 <tr *ngFor="let student of students">
                     <td>
-                        <img [src]="student.image ? student.image : 'assets/images/avatar-default.webp'" alt="Avatar"
-                            class="avatar" />
+                        <img [src]="student.image ? student.image : 'assets/images/avatar-default.webp'" alt="Avatar" class="avatar" />
                     </td>
-                    <!-- Assuming each student has at least one exam score -->
                     <td>
                         {{ student.listExamScore[0].studentName }} <br>
                         <small>{{ student.listExamScore[0].rollNumber }}</small>
@@ -58,11 +72,9 @@
                             (keypress)="onlyNumberKey($event)" class="score-input" />
                         /20
                     </td>
-
                     <td [ngClass]="getResultClass(calculateResult(student))">
                         {{ calculateResult(student) }}
                     </td>
-
                     <td>
                         <button (click)="saveChanges(student, student.listExamScore[0])" [disabled]="!student.hasChanges"
                             [ngClass]="student.hasChanges ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-300 cursor-not-allowed'"
