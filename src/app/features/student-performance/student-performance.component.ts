@@ -16,7 +16,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   performanceMarks = [
     { label: 'Theory Mark', value: 76.5 },
     { label: 'Practical Mark', value: 53.6 },
-    { label: 'Evaluation Mark', value: 75 },
+    { label: 'Evaluation Mark', value: 100 },
     { label: 'Avg Homework Mark', value: 85 },
     { label: 'Attendance', value: 90 },
     { label: 'Participation', value: 95 },
