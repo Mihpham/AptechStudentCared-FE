@@ -3,14 +3,15 @@
   <div class="flex justify-end mb-4">
     <button
       (click)="navigateToAddSchedule()"
-      class="bg-blue-500 text-white font-semibold py-2 px-4 rounded shadow hover:bg-blue-600 transition duration-150"
+      class="bg-blue-500 text-white  py-2 px-4 rounded shadow hover:bg-blue-600 transition duration-150"
     >
-      Add Schedule
+    <i class="fa-solid fa-plus"></i> Add Schedule
     </button>
     <button
       (click)="navigateToAttendance()"
-      class="ml-2 bg-green-500 text-white font-semibold py-2 px-4 rounded shadow hover:bg-green-600 transition duration-150"
+      class="ml-2 bg-green-500 text-white py-2 px-4 rounded shadow hover:bg-green-600 transition duration-150"
     >
+    <i class="fa-solid fa-clipboard-user"></i>
       Attendance
     </button>
   </div>
@@ -66,7 +67,7 @@
         </ng-container>
         <ng-template #noSchedules>
           <tr>
-            <td colspan="8" class="text-center py-4 text-red-600 dark:text-gray-200 font-bold">
+            <td colspan="8" class="text-center py-4 text-red-400 dark:text-gray-200 font-bold">
               No schedule details available.
             </td>
           </tr>
