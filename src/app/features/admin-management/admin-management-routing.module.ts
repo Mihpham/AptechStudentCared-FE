@@ -6,6 +6,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ExamMarkComponent } from './exam-mark/exam-mark.component';
 import { TeacherComponent } from './teacher/teacher.component';
 import { CalendarComponent } from './calendar/calendar.component';
+import { StudentPerformanceComponent } from '../student-performance/student-performance.component';
 
 const routes: Routes = [
   {
@@ -93,6 +94,12 @@ const routes: Routes = [
         (m) => m.SubjectRoutingModule
       ),
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'student-performance/:classId/:studentId',
+    component: StudentPerformanceComponent,
+    canActivate: [AuthGuard],
+    data: { breadcrumb: 'Student Performance' }, 
   },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'dashboard' },

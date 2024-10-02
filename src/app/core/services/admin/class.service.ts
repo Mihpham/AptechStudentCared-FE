@@ -6,6 +6,7 @@ import { ClassRequest } from 'src/app/features/admin-management/model/class/clas
 import { ClassResponse } from 'src/app/features/admin-management/model/class/class-response.model';
 import { AssignTeacherRequest } from 'src/app/features/admin-management/model/class/assign-teacher.model';
 import { CourseResponse } from 'src/app/features/admin-management/model/course/course-response.model';
+import { StudentPerformanceResponse } from 'src/app/features/admin-management/model/student-performance/student-performance-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -54,4 +55,17 @@ export class ClassService {
     );
   }  
 
+  getSubjects(classId: number, semester: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/${classId}/subjects?semester=${semester}`);
+  }
+
+  getStudentPerformance(classId: number, userId: number, subjectId: string): Observable<StudentPerformanceResponse> {
+    const url = `${this.baseUrl}/class/${classId}/user/${userId}/subject/${subjectId}`;
+    return this.http.get<StudentPerformanceResponse>(url).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => new Error('Error fetching student performance: ' + error.message));
+      })
+    );
+  }
+  
 }
