@@ -43,6 +43,15 @@ export class ClassDetailComponent implements OnInit {
     return `/assets/images/${avatarName}`;
   }
 
+  navigateToStudentPerformance(
+    classId: number,
+    userId: number,
+    subjectId: number
+  ) {
+    this.router.navigate([`/student-performance`, classId, userId, subjectId]);
+    
+  }
+
   getClassDetails(id: number): void {
     this.classService.findClassById(id).subscribe(
       (data) => {

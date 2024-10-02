@@ -43,18 +43,24 @@ const routes: Routes = [
     data: { role: 'ROLE_SRO' }, // Changed from 'SRO' to 'ROLE_SRO'
   },
   { path: 'access-denied', component: NotAuthComponent }, // Route for access denied
-  { path: 'student-performance', component: StudentPerformanceComponent },
 
   {
     path: 'profile',
     component: ProfileComponent,
     data: { breadcrumb: 'Profile' },
   },
+  {
+    path: 'student-performance',
+    loadChildren: () =>
+      import('./features/student-performance/student-performance-routing.module').then(
+        (m) => m.StudentPerformanceRoutingModule
+      ),
+  },
+  
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
   { path: 'error', component: ErrorComponent },
   { path: '**', redirectTo: 'auth/login' },
 ];
-
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

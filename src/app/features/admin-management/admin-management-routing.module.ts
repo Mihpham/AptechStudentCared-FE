@@ -35,6 +35,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { breadcrumb: 'Exam Marks' },
   },
+
   {
     path: 'teacher',
     component: TeacherComponent,

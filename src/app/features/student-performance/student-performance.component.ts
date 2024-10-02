@@ -1,5 +1,8 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import * as d3 from 'd3';
+import { StudentPerformanceService } from 'src/app/core/services/admin/student-performance.service';
+import { StudentPerformanceResponse } from 'src/app/shared/models/student-performance.model';
 
 @Component({
   selector: 'app-student-performance',
@@ -7,6 +10,9 @@ import * as d3 from 'd3';
   styleUrls: ['./student-performance.component.scss'],
 })
 export class StudentPerformanceComponent implements OnInit, AfterViewInit {
+  studentPerformance: StudentPerformanceResponse | null = null;
+  errorMessage: string | null = null;
+
   studentName = 'Nguyễn Văn A';
   selectedSubject = 'EPC';
   selectedSemester = 'All';
@@ -29,11 +35,32 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     { semester: '1', attendance: 85, theory: 72, practice: 65, evaluation: 70 },
     { semester: '2', attendance: 90, theory: 76, practice: 68, evaluation: 75 },
     { semester: '3', attendance: 88, theory: 78, practice: 71, evaluation: 78 },
-    { semester: '4', attendance: 92, theory: 80, practice: 75, evaluation: 80 },
+    {
+      semester: '4',
+      attendance: 92,
+      theory: 80,
+      practice: 75,
+      evaluation: 100,
+    },
   ];
 
+  constructor(
+    private performanceService: StudentPerformanceService,
+    private route: ActivatedRoute
+  ) {}
+
   ngOnInit(): void {
-    // Additional initialization if required
+    const userId = +this.route.snapshot.paramMap.get('userId')!;
+    const subjectId = +this.route.snapshot.paramMap.get('subjectId')!;
+    const classId = +this.route.snapshot.paramMap.get('classId')!;
+
+    this.performanceService
+      .getStudentPerformance(userId, subjectId, classId)
+      .subscribe({
+        next: (data) => (this.studentPerformance = data),
+        error: (error) =>
+          (this.errorMessage = 'Failed to load student performance data.'),
+      });
   }
 
   ngAfterViewInit(): void {
@@ -144,9 +171,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       .attr('width', x1.bandwidth())
       .attr('height', (d) => height - y(+d.value)) // Cast to number
       .attr('fill', (d) => color(d.key))
-      .on('mouseover', (event: any, d: any) => {
-        d3.select(event.target).transition().attr('opacity', 0.7);
-      })
+
       .on('mouseout', (event: any) => {
         d3.select(event.target).transition().attr('opacity', 1);
       })
@@ -158,13 +183,12 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
         svg
           .append('text')
           .attr('class', 'label')
-          .attr('x', +d3.select(event.target).attr('x') + x1.bandwidth() * 1.5)
+          .attr('x', +d3.select(event.target).attr('x') + x1.bandwidth() * 1.6)
           .attr('y', +d3.select(event.target).attr('y') - 5) // Position slightly above the bar
           .attr('text-anchor', 'middle')
           .style('fill', 'black')
           .text(`${d.value}%`)
           .style('font-size', '10px')
-          .style('text-again', 'center') // Adjust font size if needed
           .transition()
           .duration(300)
           .style('opacity', 1);
@@ -203,7 +227,6 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     if (target) {
       this.selectedSubject = target.value;
       console.log('Selected Subject:', this.selectedSubject);
-      
     }
   }
 
@@ -212,7 +235,6 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     if (target) {
       this.selectedSemester = target.value;
       console.log('Selected Semester:', this.selectedSemester);
-
     }
   }
 }
