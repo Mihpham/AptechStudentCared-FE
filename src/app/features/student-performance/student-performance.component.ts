@@ -1,5 +1,5 @@
 import { StudentPerformanceService } from './../../core/services/admin/studentperformance.service';
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as d3 from 'd3';
 import { ClassService } from 'src/app/core/services/admin/class.service';
@@ -62,7 +62,9 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private classService: ClassService,
-    private studentPFService: StudentPerformanceService
+    private studentPFService: StudentPerformanceService,
+    private cdr: ChangeDetectorRef // Inject ChangeDetectorRef
+
   ) {}
 
   ngOnInit(): void {
@@ -308,10 +310,15 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
                 },
               ];
 
-              // Call the chart function for each mark with its specific index
-              this.performanceMarks.forEach((mark, i) => {
-                this.createCircularCharts(`chart${i}`, mark.value);
-              });
+              // Trigger change detection to update the view
+              this.cdr.detectChanges();
+
+              // Use setTimeout to ensure the view has been updated
+              setTimeout(() => {
+                this.performanceMarks.forEach((mark, i) => {
+                  this.createCircularCharts(`chart${i}`, mark.value);
+                });
+              }, 0);
             } else {
               this.performanceMarks = []; // Reset if no data
             }
@@ -322,4 +329,5 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
         );
     }
   }
+
 }
