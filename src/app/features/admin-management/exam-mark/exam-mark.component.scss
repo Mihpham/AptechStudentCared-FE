@@ -189,3 +189,14 @@ th {
 .text-white {
     color: white;
 }
+
+  .header-container {
+    display: flex;  
+    align-items: center;  
+}
+
+.class-code {
+    margin-left: 10px;  
+    font-size: 0.9em;  
+    color: gray;  
+} 

@@ -10,6 +10,14 @@ export class ExamMarkService {
 
   constructor(private http: HttpClient) { }
 
+
+  
+  importStudentExamScore(classId: number, file: File): Observable<any> {
+    const formData: FormData = new FormData();
+    formData.append('file', file);
+
+    return this.http.put(`${this.apiUrl}/import/${classId}`, formData); 
+  }
   // Phương thức cập nhật điểm thi
   updateStudentExamScore(classId: number, scoreData: any): Observable<any> {
     const url = `${this.apiUrl}/update-score/${classId}`;
