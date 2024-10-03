@@ -8,6 +8,10 @@ import { ScheduleService } from 'src/app/core/services/admin/schedules.service';
 import { ClassResponse } from '../../model/class/class-response.model';
 import { Schedule } from '../../model/schedules/schedules.model';
 import { AddScheduleComponent } from '../add-schedule/add-schedule.component';
+import { UpdateClassComponent } from '../../class/update-class/update-class.component';
+import { UpdateScheduleComponent } from '../update-schedule/update-schedule.component';
+import { ToastrService } from 'ngx-toastr';
+import { RegenerateScheduleComponent } from '../regenerate-schedule/regenerate-schedule.component';
 
 @Component({
   selector: 'app-schedule-class',
@@ -34,7 +38,8 @@ export class ScheduleClassComponent implements OnInit {
     private router: Router,
     private classService: ClassService,
     private dialog: MatDialog,
-    private scheduleService: ScheduleService
+    private scheduleService: ScheduleService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -54,7 +59,7 @@ export class ScheduleClassComponent implements OnInit {
   navigateToAddSchedule() {
     const dialogRef = this.dialog.open(AddScheduleComponent, {
       width: '400px',
-      data: { classId: this.classId, subjectId: this.subjectId }, 
+      data: { classId: this.classId, subjectId: this.subjectId },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -66,12 +71,14 @@ export class ScheduleClassComponent implements OnInit {
 
   navigateToAttendance(): void {
     if (this.classId && this.subjectId) {
-      this.router.navigate([`admin/attendance/${this.classId}/${this.subjectId}`]);
+      this.router.navigate([
+        `admin/attendance/${this.classId}/${this.subjectId}`,
+      ]);
     } else {
       console.error('Class ID or Subject ID is undefined.');
     }
   }
-  
+
   getSubjectCodeById(subjectId: number | null): string | undefined {
     if (!this.classDetails || !this.classDetails.subjectTeachers) {
       return undefined;
@@ -130,4 +137,41 @@ export class ScheduleClassComponent implements OnInit {
       console.error('Class ID or Subject ID is undefined.');
     }
   }
+  openEditSchedule(schedule: Schedule) {
+    const dialogRef = this.dialog.open(UpdateScheduleComponent, {
+      width: '400px',
+      data: { schedule }, // Pass the schedule data to the dialog
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadSchedules(); // Reload schedules if the edit was successful
+      }
+    });
+  }
+
+  deleteSchedule(id: number): void {
+    this.scheduleService.deleteScheduleById(id).subscribe(
+      () => {
+        this.loadSchedules();
+        this.toastr.success('Delete Sucessfully');
+      },
+      (error) => {
+        this.toastr.error('Delete failed', error);
+      }
+    );
+  }
+
+  openRegenerateDialog(): void {
+    const dialogRef = this.dialog.open(RegenerateScheduleComponent, {
+        width: '400px',
+        data: { classId: this.classId, subjectId: this.subjectId },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+            this.loadSchedules(); // Reload schedules if regeneration was successful
+        }
+    });
+}
 }

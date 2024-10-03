@@ -66,6 +66,8 @@ import { AllAccountComponent } from './accounts/all-account/all-account.componen
 import { ScheduleClassComponent } from './schedule/schedule-class/schedule-class.component';
 import { ScheduleComponent } from './schedule/schedule.component';
 import { AddScheduleComponent } from './schedule/add-schedule/add-schedule.component';
+import { UpdateScheduleComponent } from './schedule/update-schedule/update-schedule.component';
+import { RegenerateScheduleComponent } from './schedule/regenerate-schedule/regenerate-schedule.component';
 
 @NgModule({
   
@@ -119,7 +121,9 @@ import { AddScheduleComponent } from './schedule/add-schedule/add-schedule.compo
     AllAccountComponent,
     ScheduleClassComponent,
     ScheduleComponent,
-    AddScheduleComponent
+    AddScheduleComponent,
+    UpdateScheduleComponent,
+    RegenerateScheduleComponent
   ],
   imports: [
     CommonModule,

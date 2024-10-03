@@ -165,6 +165,10 @@ export class AttendanceClassComponent implements OnInit {
     );
   }
 
+  trackByStudentId(index: number, student: StudentResponse): number {
+    return student.userId;
+  }
+
   // Toggle the dropdown for a specific studentId, scheduleId, and attendance status
   toggleDropdown(
     studentId: number,
@@ -260,6 +264,9 @@ export class AttendanceClassComponent implements OnInit {
         }
       );
   }
+
+
+
 
   openCommentDialog(studentId: number, scheduleId: number): void {
     const existingComment =

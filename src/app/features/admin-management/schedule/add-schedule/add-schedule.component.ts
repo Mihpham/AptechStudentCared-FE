@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ScheduleService } from 'src/app/core/services/admin/schedules.service';
-import { ScheduleRequest } from 'src/app/features/admin-management/model/schedules/schedule-request.model';
+import { CreateScheduleRequest } from '../../model/schedules/create-schedule-request.model';
 
 @Component({
   selector: 'app-add-schedule',
@@ -11,7 +11,11 @@ import { ScheduleRequest } from 'src/app/features/admin-management/model/schedul
 export class AddScheduleComponent implements OnInit {
   classId: number | null = null;
   subjectId: number | null = null;
-  scheduleRequest: ScheduleRequest = { startDate: '', status: '', note: '' };
+  scheduleRequest: CreateScheduleRequest = {
+    startDate: '',
+    status: '',
+    note: '',
+  };
 
   constructor(
     private scheduleService: ScheduleService,
