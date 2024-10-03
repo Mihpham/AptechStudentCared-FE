@@ -59,7 +59,7 @@
             <tbody>
                 <tr *ngFor="let student of classDetails.students"
                     class="border-t border-gray-200 dark:border-gray-600 cursor-pointer"
-                    routerLink="/student-performance">                
+                    [routerLink]="['/admin/student-performance', classDetails.id,student.userId]">
                     <td class="px-4 py-2">
                         <img [src]="student.image ? student.image : 'assets/images/avatar-default.webp'" alt="Avatar"
                             class="w-10 h-10 rounded-full object-cover" />
