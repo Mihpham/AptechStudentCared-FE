@@ -16,7 +16,8 @@ import { ProfileModule } from './features/profile/profile.module';
 import { BreadcrumbsComponent } from './layout/components/breadcrumbs/breadcrumbs.component';
 
 import {  LocationStrategy, PathLocationStrategy } from '@angular/common';
-import { StudentPerformanceComponent } from './features/student-performance/student-performance.component';
+import { StudentPerformanceRoutingModule } from './features/student-performance/student-performance-routing.module';
+import { StudentPerformanceModule } from './features/student-performance/student-performance.module';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -28,7 +29,6 @@ export function tokenGetter() {
     NavbarComponent,
     SidebarComponent,
     BreadcrumbsComponent,
-    StudentPerformanceComponent,
   ],
   imports: [
     BrowserModule,
@@ -39,6 +39,7 @@ export function tokenGetter() {
     PagesModule,
     SharedModule,
     ProfileModule,
+    StudentPerformanceModule,
     ToastrModule.forRoot({
       positionClass: 'toast-top-right',
       preventDuplicates: true,
