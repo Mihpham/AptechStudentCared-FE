@@ -8,7 +8,7 @@
 
   <!-- Subject and Semester Selection -->
   <div class="bg-white rounded-lg shadow-md p-6 mb-5">
-    <div class="flex flex-col md:flex-row justify-between items-center mb-8 space-y-4 md:space-y-0">
+    <div class="flex flex-col md:flex-row justify-start items-center mb-8 space-y-4 md:space-y-0">
       <div class="flex items-center">
         <!-- Semester Selection -->
         <label for="semester" class="font-semibold mr-2">Semester:</label>
@@ -21,7 +21,7 @@
           </option>
         </select>
       </div>
-      <div class="flex items-center">
+      <div class="flex items-center pl-5">
         <!-- Subject Selection -->
         <label for="subject" class="font-semibold mr-2">Subject:</label>
         <select id="subject" [(ngModel)]="selectedSubjectId" (change)="onSubjectChange($event)"
@@ -36,10 +36,7 @@
 
     <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
       <div class="col-span-2 grid grid-cols-2 md:grid-cols-3 gap-6 mb-8 bg-white">
-        <div
-          *ngFor="let mark of performanceMarks; let i = index"
-          class="text-center text-sm p-4 rounded-md shadow-sm"
-        >
+        <div *ngFor="let mark of performanceMarks; let i = index" class="text-center text-sm p-4 rounded-md shadow-sm">
           <div class="font-semibold mb-2 whitespace-nowrap">
             {{ mark.label }}
           </div>
@@ -48,8 +45,6 @@
         </div>
       </div>
 
-
-      <!-- Attendance and Marks Summary -->
       <div *ngFor="let performance of perfperformanceData1"
         class="col-span-1 grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 rounded-md">
         <!-- Present -->
