@@ -1,8 +1,10 @@
 import { StudentPerformanceService } from './../../core/services/admin/studentperformance.service';
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as d3 from 'd3';
 import { ClassService } from 'src/app/core/services/admin/class.service';
+import { StudentRequest } from '../admin-management/model/student-request.model';
+import { StudentPerformanceResponse } from '../admin-management/model/student-performance/student-performance-response.model';
 
 @Component({
   selector: 'app-student-performance',
@@ -14,24 +16,17 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   studentId: number | null = null; // Khai báo userId
   selectedSubjectId: number | null = null; // ID môn học đã chọn
 
-  selectedSubject: string | null = null; 
-  studentName = 'Nguyễn Văn A';
+  selectedSubject: string | null = null;
 
   selectedSemester = 'All';
-  subjects: { id: number, code: string }[] = []; // Khai báo subjects như một mảng đối tượng
+  subjects: { id: number; code: string }[] = []; // Khai báo subjects như một mảng đối tượng
+  performanceMarks: { label: string; value: number }[] = [];
+
   semesters = ['SEM1', 'SEM2', 'SEM3', 'SEM4'];
 
-  performanceMarks = [
-    { label: 'Theory Mark', value: 76.5 },
-    { label: 'Practical Mark', value: 53.6 },
-    { label: 'Evaluation Mark', value: 100 },
-    { label: 'Avg Homework Mark', value: 85 },
-    { label: 'Attendance', value: 90 },
-    { label: 'Participation', value: 95 },
-  ];
-
-  attendanceData = [56, 4, 2]; // Present, Absent, Absent Today
   marksSummary = [53.6, 75, 76.5]; // Avg Mark of Practice, Evaluation, Theory
+
+  perfperformanceData1: StudentPerformanceResponse[] | undefined;
 
   performanceData = [
     {
@@ -68,32 +63,47 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private classService: ClassService,
     private studentPFService: StudentPerformanceService,
+    private cdr: ChangeDetectorRef // Inject ChangeDetectorRef
+
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.classId = +params['classId']; 
-      this.studentId = +params['studentId']; 
+    this.route.params.subscribe((params) => {
+      this.classId = +params['classId'];
+      this.studentId = +params['studentId'];
       this.getSubjectsBySemester(this.selectedSemester); // Gọi API cho semester đầu tiên
-      this.getStudentPerformance()
+      this.getStudentPerformance();
     });
   }
 
   ngAfterViewInit(): void {
-    this.createCircularCharts();
-    this.createPerformanceGroupedBarChart();
+    // this.createPerformanceGroupedBarChart();
+    // this.performanceMarks.forEach((mark, i) => {
+    //   this.createCircularCharts(`chart${i}`, mark.value); // Gọi hàm vẽ cho mỗi biểu đồ
+    // });
+    setTimeout(() => {
+      this.createPerformanceGroupedBarChart();
+      this.performanceMarks.forEach((mark, i) => {
+        this.createCircularCharts(`chart${i}`, mark.value);
+      });
+   }, 0);
   }
 
   getSubjectsBySemester(semester: string): void {
     if (semester && this.classId) {
       this.classService.getSubjects(this.classId, semester).subscribe(
         (data: any) => {
-          this.subjects = data[semester].map((subject: any) => ({
-            id: subject.id, // ID môn học
-            code: subject.subjectCode, // Tên môn học
-          }));
-          this.selectedSubjectId = this.subjects[0]?.id; // Chọn ID của môn học đầu tiên
-          this.getStudentPerformance(); // Gọi lại dữ liệu hiệu suất cho môn học đã chọn
+          if (data && data[semester]) {
+            this.subjects = data[semester].map((subject: any) => ({
+              id: subject.id, // ID of the subject
+              code: subject.subjectCode, // Code of the subject
+            }));
+            this.selectedSubjectId = this.subjects[0]?.id; // Select the ID of the first subject
+            this.getStudentPerformance(); // Fetch performance data for the selected subject
+          } else {
+            console.error(`No subjects found for semester: ${semester}`);
+            this.subjects = []; // Set an empty array if no subjects are found
+          }
         },
         (error) => {
           console.error('Error fetching subjects:', error);
@@ -101,49 +111,49 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       );
     }
   }
+
+  createCircularCharts(chartId: string, value: number) {
+    console.log(`Creating chart for ${chartId} with value ${value}`);
+    console.log("ELEMENT",document.getElementById(chartId));
+    const width = 100;
+    const height = 100;
+    const radius = Math.min(width, height) / 2;
   
+    d3.select(`#${chartId}`).selectAll('*').remove();
 
-  createCircularCharts() {
-    this.performanceMarks.forEach((mark, index) => {
-      const width = 100;
-      const height = 100;
-      const radius = Math.min(width, height) / 2;
-
-      const svg = d3
-        .select(`#chart${index}`)
-        .attr('width', width)
-        .attr('height', height)
-        .append('g')
-        .attr('transform', `translate(${width / 2},${height / 2})`);
-
-      const arc = d3.arc().innerRadius(30).outerRadius(radius);
-
-      const pie = d3.pie<number>().value((d) => d);
-      const data = [mark.value, 100 - mark.value];
-
-      const arcs = svg
-        .selectAll('.arc')
-        .data(pie(data))
-        .enter()
-        .append('g')
-        .attr('class', 'arc');
-
-      // Add smooth transitions
+  
+    const svg = d3
+      .select(`#${chartId}`)
+      .attr('width', width)
+      .attr('height', height)
+      .append('g') 
+      .attr('transform', `translate(${width / 2},${height / 2})`);
+  
+    const arc = d3.arc().innerRadius(30).outerRadius(radius);
+    const pie = d3.pie<number>().value((d) => d);
+  
+    const data = [value, 100 - value]; 
+  
+    const arcs = svg
+      .selectAll('.arc')
+      .data(pie(data))
+      .enter()
+      .append('g')
+      .attr('class', 'arc');
+  
       arcs
-        .append('path')
-        .attr('d', arc as any)
-        .style('fill', (d, i) => (i === 0 ? '#4CAF50' : '#ddd'))
-        .transition()
-        .duration(1000)
-        .attrTween('d', function (d: any) {
-          const i = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
-          return (t: any) => arc(i(t)) || ''; // Ensure that the return value is always a string
-        });
+      .append('path')
+      .attr('d', arc as any)
+      .style('fill', (d, i) => (i === 0 ? '#4CAF50' : '#ddd'))
+      .attr('stroke', 'black') // Thêm viền để kiểm tra
+      .attr('stroke-width', 1);
 
-      // Add labels or tooltips (optional)
-      arcs.append('title').text((d) => `${mark.label}: ${mark.value}%`);
-    });
+      console.log("CHECKSVG",d3.select(`#${chartId}`).node()); // Kiểm tra xem SVG có tồn tại hay không
+      console.log(pie(data)); // Kiểm tra cấu trúc dữ liệu sau khi qua pie()
+      console.log(svg.selectAll('.arc').data(pie(data))); // Kiểm tra dữ liệu bind vào các phần tử
+          
   }
+  
 
   createPerformanceGroupedBarChart() {
     const margin = { top: 20, right: 30, bottom: 30, left: 40 };
@@ -264,8 +274,6 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       this.getStudentPerformance(); // Gọi lại phương thức để lấy dữ liệu hiệu suất mới
     }
   }
-  
-  
 
   onSemesterChange(event: Event) {
     const target = event.target as HTMLSelectElement;
@@ -277,22 +285,49 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
 
   getStudentPerformance(): void {
     if (this.classId && this.studentId && this.selectedSubjectId) {
-      const subjectId = this.selectedSubjectId.toString(); // Chuyển đổi ID thành chuỗi
-  
-      this.studentPFService.getStudentPerformance(this.classId, this.studentId, subjectId).subscribe(
-        (data: any) => {
-          console.log('Student Performance Data:', data); // In ra console response
-          this.performanceData = data; // Lưu dữ liệu hiệu suất học tập
-        },
-        (error) => {
-          console.error('Error fetching student performance:', error);
-        }
-      );
+      const subjectId = this.selectedSubjectId.toString();
+
+      this.studentPFService
+        .getStudentPerformance(this.classId, this.studentId, subjectId)
+        .subscribe(
+          (data: StudentPerformanceResponse) => {
+            if (data) {
+              this.perfperformanceData1 = [data];
+
+              // Prepare data for specific marks
+              this.performanceMarks = [
+                {
+                  label: 'Theoretical Mark',
+                  value: data.theoreticalPercentage || 0,
+                },
+                {
+                  label: 'Attendance',
+                  value: data.attendancePercentage || 0,
+                },
+                {
+                  label: 'Participation',
+                  value: data.practicalPercentage || 0,
+                },
+              ];
+
+              // Trigger change detection to update the view
+              this.cdr.detectChanges();
+
+              // Use setTimeout to ensure the view has been updated
+              setTimeout(() => {
+                this.performanceMarks.forEach((mark, i) => {
+                  this.createCircularCharts(`chart${i}`, mark.value);
+                });
+              }, 0);
+            } else {
+              this.performanceMarks = []; // Reset if no data
+            }
+          },
+          (error) => {
+            console.error('Error fetching student performance:', error);
+          }
+        );
     }
   }
-  
-  
-  
-  
- 
+
 }
