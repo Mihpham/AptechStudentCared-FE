@@ -77,10 +77,6 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // this.createPerformanceGroupedBarChart();
-    // this.performanceMarks.forEach((mark, i) => {
-    //   this.createCircularCharts(`chart${i}`, mark.value); // Gọi hàm vẽ cho mỗi biểu đồ
-    // });
     setTimeout(() => {
       this.createPerformanceGroupedBarChart();
       this.performanceMarks.forEach((mark, i) => {
@@ -113,8 +109,6 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   }
 
   createCircularCharts(chartId: string, value: number) {
-    console.log(`Creating chart for ${chartId} with value ${value}`);
-    console.log("ELEMENT",document.getElementById(chartId));
     const width = 100;
     const height = 100;
     const radius = Math.min(width, height) / 2;
@@ -145,13 +139,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       .append('path')
       .attr('d', arc as any)
       .style('fill', (d, i) => (i === 0 ? '#4CAF50' : '#ddd'))
-      .attr('stroke', 'black') // Thêm viền để kiểm tra
       .attr('stroke-width', 1);
-
-      console.log("CHECKSVG",d3.select(`#${chartId}`).node()); // Kiểm tra xem SVG có tồn tại hay không
-      console.log(pie(data)); // Kiểm tra cấu trúc dữ liệu sau khi qua pie()
-      console.log(svg.selectAll('.arc').data(pie(data))); // Kiểm tra dữ liệu bind vào các phần tử
-          
   }
   
 
@@ -221,10 +209,8 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
         d3.select(event.target).transition().attr('opacity', 1);
       })
       .on('mouseover', (event: any, d: any) => {
-        // Remove any existing labels
         svg.selectAll('.label').remove();
 
-        // Append text labels showing the percentage value
         svg
           .append('text')
           .attr('class', 'label')
@@ -246,7 +232,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     y: any,
     key: keyof (typeof this.performanceData)[0],
     color: string,
-    height: number // Add height as an argument
+    height: number 
   ) {
     svg
       .selectAll(`.bar-${key}`)
@@ -254,10 +240,10 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       .enter()
       .append('rect')
       .attr('class', `bar-${key}`)
-      .attr('x', (d: any) => x(d.semester)! + x.bandwidth() / 4) // Adjust position
+      .attr('x', (d: any) => x(d.semester)! + x.bandwidth() / 4) 
       .attr('y', (d: any) => y(d[key]))
-      .attr('width', x.bandwidth() / 2) // Adjust width for multiple bars
-      .attr('height', (d: any) => height - y(d[key])) // Use height passed as argument
+      .attr('width', x.bandwidth() / 2) 
+      .attr('height', (d: any) => height - y(d[key])) 
       .attr('fill', color)
       .on('mouseover', (event: any, d: any) => {
         d3.select(event.target).transition().attr('opacity', 0.7);
@@ -270,8 +256,8 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   onSubjectChange(event: Event) {
     const target = event.target as HTMLSelectElement;
     if (target) {
-      this.selectedSubjectId = +target.value; // Lấy ID môn học từ giá trị của tùy chọn
-      this.getStudentPerformance(); // Gọi lại phương thức để lấy dữ liệu hiệu suất mới
+      this.selectedSubjectId = +target.value;
+      this.getStudentPerformance(); 
     }
   }
 
@@ -279,7 +265,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     const target = event.target as HTMLSelectElement;
     if (target) {
       this.selectedSemester = target.value;
-      this.getSubjectsBySemester(this.selectedSemester); // Gọi API khi semester thay đổi
+      this.getSubjectsBySemester(this.selectedSemester); 
     }
   }
 
@@ -309,18 +295,14 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
                   value: data.practicalPercentage || 0,
                 },
               ];
-
-              // Trigger change detection to update the view
               this.cdr.detectChanges();
-
-              // Use setTimeout to ensure the view has been updated
               setTimeout(() => {
                 this.performanceMarks.forEach((mark, i) => {
                   this.createCircularCharts(`chart${i}`, mark.value);
                 });
               }, 0);
             } else {
-              this.performanceMarks = []; // Reset if no data
+              this.performanceMarks = []; 
             }
           },
           (error) => {
