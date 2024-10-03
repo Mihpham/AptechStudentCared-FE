@@ -1,24 +1,23 @@
-.table-container {
-    // border-radius: 10px; /* Rounded corners for the table container */
-    overflow: hidden; /* Ensures that the rounded corners are applied */
-    background-color: #fff; /* White background for the table container */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    margin-top: 20px; /* Space above the table */
+.table-container { 
+    overflow: hidden;  
+    background-color: #fff;  
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);  
+    // margin-top: 20px; 
+    width: fit-content;
 }
 .custom-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
+    width: auto;
+    border-collapse: collapse; 
     font-size: 1em;
     text-align: left;
 }
 
 .custom-table th,
 .custom-table td {
-    padding: 12px 15px;
-    border: 1px solid #ffffff;
     border-bottom: 1px solid #eaeaea; 
+    // text-align: center;
 }
+
 
 .custom-table th {
     background-color: #ffffff;
@@ -62,21 +61,20 @@ select {
 }
 
 .table-container {
-    width: fit-content; /* Đặt chiều rộng tối đa cho bảng */
-    max-width: 1315px; /* Giới hạn chiều rộng tối đa */
+    max-width: 100%; 
     border: 1px solid #ccc; /* Đường viền cho container */
 }
 
 
 table {
-min-width: 1315px; /* Đặt chiều rộng tối thiểu cho bảng */
+min-width: 1305px; /* Đặt chiều rộng tối thiểu cho bảng */
 border-collapse: collapse; /* Gộp viền cho bảng */
 }
 
 th,
 td {
     border: 1px solid #ccc; /* Đường viền cho các ô */
-    padding: 8px; /* Padding cho các ô */
+    padding: 5px; /* Padding cho các ô */
     text-align: center; /* Căn giữa nội dung */
     white-space: nowrap; /* Ngăn nội dung xuống dòng */
 }
@@ -96,4 +94,7 @@ td:nth-child(2) {
     left: 100px; /* Cố định cột thứ hai sau cột đầu tiên */
     background-color: white; /* Màu nền của cột */
     z-index: 9; /* Đảm bảo cột này ở trên cùng, nhưng dưới cột đầu tiên */
+}
+.text-left-custom {
+    text-align: left; /* Căn trái nội dung */
 }
