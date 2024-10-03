@@ -1,0 +1,68 @@
+<div class="p-4 space-y-6">
+    <div class="header-container">
+        <h1>Student Exam Marks</h1>
+        <p class="class-code">{{ classDetails?.className }}</p>
+    </div>
+    <div class="flex ">
+        <!-- Chọn Kỳ Học -->
+        <div *ngIf="terms.length > 0" class="select-container">
+            <label for="termSelect">Semester:</label>
+            <select id="termSelect" [(ngModel)]="selectedTerm" (change)="filterMarks()">
+                <option value="" disabled>Choose a semester</option>
+                <option *ngFor="let term of terms" [value]="term.id">{{ term.name }}</option>
+            </select>
+        </div>
+
+        <!-- Nút Edit và Export căn sang phải -->
+        <div class="ml-auto flex space-x-4"> <!-- Thêm ml-auto để đẩy sang phải -->
+
+            <a routerLink="/admin/exam/exam-mark-edit/1" routerLinkActive="active-link">
+                <button
+                    class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
+                    <i class="fa-solid fa-file-edit text-orange-500"></i> Edit
+                </button>
+            </a>
+            <button
+                class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow" (click)="onExport()">
+                <i class="fa-solid fa-file-export"></i> Export
+            </button>
+        </div>
+    </div>
+
+
+    <div class="overflow-x-auto table-container">
+        <table class="min-w-full bg-white border border-gray-300 custom-table">
+            <thead>
+                <tr>
+                    <th class="border border-gray-300 px-4 py-2 w-32">Name</th>
+                    <th class="border border-gray-300 px-4 py-2 w-32">Class</th>
+                    <ng-container *ngFor="let subject of subjects">
+                        <th class="border border-gray-300 px-4 py-2">{{ subject }} - LT</th> <!-- Cột điểm lý thuyết -->
+                        <th class="border border-gray-300 px-4 py-2">{{ subject }} - TH</th> <!-- Cột điểm thực hành -->
+                    </ng-container>
+                    <th class="border border-gray-300 px-4 py-2 w-32">Project Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let student of students">
+                    <!-- Hiển thị tên học sinh -->
+                    <td class="border border-gray-300 px-4 py-2">{{ student.listExamScore[0].studentName }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ student.className }}</td>
+
+                    <ng-container *ngFor="let subject of subjects">
+                        <ng-container *ngIf="student.listExamScore.length > 0">
+                            <ng-container *ngFor="let score of student.listExamScore">
+                                <ng-container *ngIf="score.subjectCode === subject">
+                                    <td class="border border-gray-300 px-4 py-2">{{ score.theoreticalScore }}</td>
+                                    <td class="border border-gray-300 px-4 py-2">{{ score.practicalScore }}</td>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                    <td class="border border-gray-300 px-4 py-2">00/100</td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+</div>

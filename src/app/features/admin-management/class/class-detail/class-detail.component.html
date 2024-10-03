@@ -32,13 +32,29 @@
         <div class="flex gap-2">
             <button (click)="onAdd()"
                 class="bg-white mt-6 text-gray-700 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow-md transition duration-300 ease-in-out">
-                <i class="fa-solid fa-plus mr-1  "></i> Add
+                <i class="fa-solid fa-plus mr-1"></i> Add
+            </button>
+
+            <a routerLink="/admin/exam/exam-mark-all-subject/{{classDetails.id}}" routerLinkActive="active-link">
+                <button 
+                    class="bg-white mt-6 text-gray-700 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow-md transition duration-300 ease-in-out">
+                    <i class="fa-solid fa-book-open mr-1"></i> Điểm
+                </button>
+            </a>
+            <button
+                class="bg-white mt-6 text-gray-700 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow-md transition duration-300 ease-in-out">
+                <i class="fa-solid fa-check mr-1"></i> Điểm danh
+            </button>
+            <button
+                class="bg-white mt-6 text-gray-700 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow-md transition duration-300 ease-in-out">
+                <i class="fa-solid fa-calendar-alt mr-1"></i> Thời khóa biểu
             </button>
             <button
                 class="bg-white mt-6 text-gray-700 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow-md transition duration-300 ease-in-out">
                 <i class="fa-solid fa-filter mr-1"></i> Filter
             </button>
         </div>
+
     </div>
 
 

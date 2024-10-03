@@ -6,6 +6,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ExamMarkComponent } from './exam-mark/exam-mark.component';
 import { TeacherComponent } from './teacher/teacher.component';
 import { CalendarComponent } from './calendar/calendar.component';
+import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/exam-mark-all-subject.component';
 
 const routes: Routes = [
   {
@@ -30,11 +31,14 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'exam-mark',
-    component: ExamMarkComponent,
+    path: 'exam',
+    loadChildren: () =>
+      import('./exam-mark/exam-mark-routing.module').then(
+        (m) => m.ExamMarkRoutingModule
+      ),
     canActivate: [AuthGuard],
-    data: { breadcrumb: 'Exam Marks' },
   },
+  
   {
     path: 'teacher',
     component: TeacherComponent,
@@ -102,4 +106,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AdminManagementRoutingModule {}
+export class AdminManagementRoutingModule { }

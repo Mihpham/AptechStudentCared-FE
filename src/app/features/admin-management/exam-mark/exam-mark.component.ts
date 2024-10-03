@@ -11,6 +11,7 @@ import { ImportExamMarkDialogComponent } from './import-exam-mark-dialog/import-
 import { MatDialog } from '@angular/material/dialog';
 import * as XLSX from 'xlsx'; // Thư viện để xuất file CSV
 import { saveAs } from 'file-saver'; // Thư viện để lưu file
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-exam-mark',
@@ -19,50 +20,80 @@ import { saveAs } from 'file-saver'; // Thư viện để lưu file
 })
 export class ExamMarkComponent implements OnInit {
   classes: ClassResponse[] = []; // Danh sách các lớp
-  selectedClass: number | null = null; // Lớp học được chọn
+  // selectedClass: number | null = null; // Lớp học được chọn
   subjects: string[] = []; // Danh sách mã môn học (Subject[] hoặc listExamScore.subjectCode)
   selectedSubject: string | null = null; // Môn học được chọn (nullable)
   students: Student[] = []; // Danh sách sinh viên trong lớp
   showTable: boolean = false;
   tempScores: { [key: string]: { theoretical: number; practical: number } } = {};
+  classID: number | null = null;
+  selectedClass: ClassResponse | null = null;  // Lớp học được chọn (full object)
+
+ 
 
   displayedColumns: string[] = ['avatar', 'fullName', 'module', 'className', 'theoreticalScore', 'practicalScore', 'result', 'action'];
 
   constructor(private classService: ClassService,
-              private http: HttpClient,
-              private examMarkService: ExamMarkService,
-              private toastr: ToastrService,
-              private dialog: MatDialog // Sử dụng MatDialog cho import
+    private http: HttpClient,
+    private examMarkService: ExamMarkService,
+    private toastr: ToastrService,
+    private dialog: MatDialog,
+    private route: ActivatedRoute// Sử dụng MatDialog cho import
   ) { }
 
-  ngOnInit(): void {
-    this.loadClassNames(); // Tải danh sách lớp khi khởi động component
-  }
 
+  ngOnInit(): void {
+    // Get the classID from the URL
+    this.route.params.subscribe(params => {
+      this.classID = params['classID'];
+      if (!this.classID) {
+        console.error('No classID provided in the URL.');
+      } else {
+        console.log('Class ID:', this.classID);
+        this.loadClassNames(); // Load classes to populate the select options
+        this.getCourseByClass(this.classID);
+        this.loadClassDetails(this.classID); 
+         // Fetch subjects for the class
+      }
+    });
+  } 
+
+loadClassDetails(classID: number): void {
+  this.classService.findClassById(classID).subscribe(
+    (classDetails: ClassResponse) => {
+      this.selectedClass = classDetails;  // Assign the full class object to selectedClass
+    },
+    (error) => {
+      console.error('Error fetching class details:', error);
+    }
+  );
+}
+
+  
   // Hàm mở dialog để import điểm
   onImport(): void {
     console.log('Opening import dialog...');
 
     const dialogRef = this.dialog.open(ImportExamMarkDialogComponent, {
-        width: '500px',
-        data: {
-            selectedClass: this.selectedClass // Truyền lớp học đã chọn
-        }
+      width: '500px',
+      data: {
+        selectedClass: this.selectedClass // Truyền lớp học đã chọn
+      }
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-        console.log('Dialog closed with result:', result);
-        if (result && result.reload) {
-            this.loadClassNames(); // Reload student data after import
-            // Kiểm tra xem selectedClass có phải là null không
-            if (this.selectedClass !== null) {
-                this.getExamScoresByClass(this.selectedClass); // Tải lại điểm cho lớp đã chọn
-            } else {
-                console.warn('No class selected, cannot reload exam scores.');
-            }
+      console.log('Dialog closed with result:', result);
+      if (result && result.reload) {
+        this.loadClassNames(); // Reload student data after import
+        // Kiểm tra xem selectedClass có phải là null không
+        if (this.classID !== null) {
+          this.getExamScoresByClass(this.classID); // Tải lại điểm cho lớp đã chọn
+        } else {
+          console.warn('No class selected, cannot reload exam scores.');
         }
+      }
     });
-}
+  }
 
 
   // Hàm xuất dữ liệu điểm thi thành file CSV
@@ -100,15 +131,8 @@ export class ExamMarkComponent implements OnInit {
     );
   }
 
-  onClassChange(event: Event) {
-    const classId = Number((event.target as HTMLSelectElement).value);
-    this.selectedClass = classId;
-    this.getCourseByClass(classId);
-    this.selectedSubject = null;
-    this.students = [];
-    this.showTable = false;
-  }
 
+  // Fetch subjects for the class from the URL
   getCourseByClass(classId: number) {
     this.classService.findAllSubjectByClassId(classId).subscribe(classResponse => {
       const course: CourseResponse = classResponse;
@@ -127,9 +151,9 @@ export class ExamMarkComponent implements OnInit {
     const subjectCode = (event.target as HTMLSelectElement).value;
     this.selectedSubject = subjectCode;
 
-    if (this.selectedClass && this.selectedSubject) {
+    if (this.classID && this.selectedSubject) {
       this.showTable = true;
-      this.getExamScoresByClass(this.selectedClass);
+      this.getExamScoresByClass(this.classID);
     }
   }
 
@@ -239,8 +263,8 @@ export class ExamMarkComponent implements OnInit {
       practicalScore: updatedScore.practical
     };
 
-    if (this.selectedClass !== null) {
-      this.examMarkService.updateStudentExamScore(this.selectedClass, scoreData).subscribe({
+    if (this.classID !== null) {
+      this.examMarkService.updateStudentExamScore(this.classID, scoreData).subscribe({
         next: () => {
           student.hasChanges = false;
           this.toastr.success('Update mark success!', 'Success');
@@ -254,5 +278,5 @@ export class ExamMarkComponent implements OnInit {
     }
   }
 
- 
+
 }
