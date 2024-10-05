@@ -265,9 +265,6 @@ export class AttendanceClassComponent implements OnInit {
       );
   }
 
-
-
-
   openCommentDialog(studentId: number, scheduleId: number): void {
     const existingComment =
       this.attendanceComments[studentId]?.[scheduleId] || '';

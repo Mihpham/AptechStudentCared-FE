@@ -46,12 +46,14 @@ input:not(:placeholder-shown)~label {
 
 .search-bar mat-form-field {
     width: 100%;
+    
 }
 
 .mat-table {
     table-layout: fixed;
     width: 100%;
     border: 1px solid white;
+    border-radius: 10%;
 }
 
 .mat-row {

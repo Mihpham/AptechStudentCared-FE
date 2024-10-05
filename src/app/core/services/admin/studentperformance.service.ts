@@ -12,7 +12,7 @@ export class StudentPerformanceService {
 
   constructor(private http: HttpClient) {}
 
-  getStudentPerformance(classId: number, userId: number, subjectId: string): Observable<StudentPerformanceResponse> {
+  getStudentPerformance(classId: number, userId: number, subjectId: string): Observable<any> {
     const url = `${this.baseUrl}/class/${classId}/user/${userId}/subject/${subjectId}`;
     return this.http.get<StudentPerformanceResponse>(url).pipe(
       catchError((error: HttpErrorResponse) => {
