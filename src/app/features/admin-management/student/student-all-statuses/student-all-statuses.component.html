@@ -1,4 +1,4 @@
-<div class="student-list p-4 space-y-6 bg-slate-200 rounded-lg shadow-md dark:bg-gray-900 dark:border-white">
+<div class="student-list p-4 space-y-6 bg-slate-200 dark:bg-gray-900 dark:border-white ">
 
     <div class="container mx-auto">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
@@ -63,7 +63,7 @@
     </div>
 
     <!-- Table for Displaying Students -->
-    <mat-table *ngIf="dataSource.data.length > 0" [dataSource]="dataSource" class="mat-elevation-z8 table-auto w-full dark:bg-gray-900">
+    <mat-table *ngIf="dataSource.data.length > 0" [dataSource]="dataSource" class="mat-elevation-z8 table-auto w-full dark:bg-gray-900 ">
         <!-- Avatar Column -->
         <ng-container matColumnDef="avatar">
             <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-200 dark:bg-gray-600"> Avatar

@@ -1,15 +1,12 @@
 .side-menu {
   display: flex;
   flex-direction: column;
-  gap: 2rem; // Khoảng cách giữa các card
-  padding: 10px;
-  max-width: 350px;
-  // background-color: #f4f4f4;
-  border-radius: 8px;
-  // box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin-top: 45px; /* Thêm margin-top để thụt xuống */
+  gap: 3rem; // Khoảng cách giữa các card
 }
-
+.mat-mdc-card-header {
+  display: flex;
+  padding: 10px;
+}
 .menu-card {
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;

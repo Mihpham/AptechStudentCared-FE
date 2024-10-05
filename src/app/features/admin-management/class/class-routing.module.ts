@@ -14,7 +14,7 @@ const routes: Routes = [
     path: '',
     component: ClassComponent,
     canActivate: [AuthGuard],
-    data: { breadcrumb: 'Class Management' },
+    data: { breadcrumb: 'Class List' },
   },
   {
     path: 'create',

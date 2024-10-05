@@ -7,6 +7,7 @@ import { ExamMarkComponent } from './exam-mark/exam-mark.component';
 import { TeacherComponent } from './teacher/teacher.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/exam-mark-all-subject.component';
+import { StudentPerformanceComponent } from '../student-performance/student-performance.component';
 
 const routes: Routes = [
   {
@@ -20,7 +21,7 @@ const routes: Routes = [
     loadChildren: () =>
       import('./class/class-routing.module').then((m) => m.ClassRoutingModule),
     canActivate: [AuthGuard],
-    data: { breadcrumb: 'Class Management' },
+    data: { breadcrumb: 'Class ' },
   },
   {
     path: 'student',
@@ -39,6 +40,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   
+
   {
     path: 'teacher',
     component: TeacherComponent,
@@ -97,6 +99,12 @@ const routes: Routes = [
         (m) => m.SubjectRoutingModule
       ),
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'student-performance/:classId/:studentId',
+    component: StudentPerformanceComponent,
+    canActivate: [AuthGuard],
+    data: { breadcrumb: 'Student Performance' }, 
   },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'dashboard' },

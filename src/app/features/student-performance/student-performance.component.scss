@@ -6,10 +6,7 @@
   gap: 20px;
   justify-content: center;
 
-  svg {
-    display: inline;
-    margin: 0 auto;
-  }
+
 
   p {
     text-align: center;
@@ -47,4 +44,20 @@ svg {
 .legend {
   font-size: 12px;
   text-anchor: start;
+}
+
+#tooltip {
+  position: absolute;
+  text-align: center;
+  width: auto;
+  height: auto;
+  padding: 5px 10px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 1px solid #333;
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 10; /* Ensure tooltip appears above other elements */
 }

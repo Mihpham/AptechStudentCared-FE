@@ -1,5 +1,10 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { StudentPerformanceService } from './../../core/services/admin/studentperformance.service';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import * as d3 from 'd3';
+import { ClassService } from 'src/app/core/services/admin/class.service';
+import { StudentRequest } from '../admin-management/model/student-request.model';
+import { StudentPerformanceResponse } from '../admin-management/model/student-performance/student-performance-response.model';
 
 @Component({
   selector: 'app-student-performance',
@@ -7,81 +12,136 @@ import * as d3 from 'd3';
   styleUrls: ['./student-performance.component.scss'],
 })
 export class StudentPerformanceComponent implements OnInit, AfterViewInit {
-  studentName = 'Nguyễn Văn A';
-  selectedSubject = 'EPC';
+  classId: number | null = null; // Khởi tạo với null
+  studentId: number | null = null; // Khai báo userId
+  selectedSubjectId: number | null = null; // ID môn học đã chọn
+
+  selectedSubject: string | null = null;
+
   selectedSemester = 'All';
-  subjects = ['EPC', 'EAD', 'MVC', 'JAVA1'];
-  semesters = ['1', '2', '3', '4'];
+  subjects: { id: number; code: string }[] = []; // Khai báo subjects như một mảng đối tượng
+  performanceMarks: { label: string; value: number }[] = [];
 
-  performanceMarks = [
-    { label: 'Theory Mark', value: 76.5 },
-    { label: 'Practical Mark', value: 53.6 },
-    { label: 'Evaluation Mark', value: 100 },
-    { label: 'Avg Homework Mark', value: 85 },
-    { label: 'Attendance', value: 90 },
-    { label: 'Participation', value: 95 },
-  ];
+  semesters = ['SEM1', 'SEM2', 'SEM3', 'SEM4'];
 
-  attendanceData = [56, 4, 2]; // Present, Absent, Absent Today
   marksSummary = [53.6, 75, 76.5]; // Avg Mark of Practice, Evaluation, Theory
 
+  perfperformanceData1: StudentPerformanceResponse[] | undefined;
+
   performanceData = [
-    { semester: '1', attendance: 85, theory: 72, practice: 65, evaluation: 70 },
-    { semester: '2', attendance: 90, theory: 76, practice: 68, evaluation: 75 },
-    { semester: '3', attendance: 88, theory: 78, practice: 71, evaluation: 78 },
-    { semester: '4', attendance: 92, theory: 80, practice: 75, evaluation: 80 },
+    {
+      semester: 'SEM1',
+      attendance: 85,
+      theory: 72,
+      practice: 65,
+      evaluation: 70,
+    },
+    {
+      semester: 'SEM2',
+      attendance: 90,
+      theory: 76,
+      practice: 68,
+      evaluation: 75,
+    },
+    {
+      semester: 'SEM3',
+      attendance: 88,
+      theory: 78,
+      practice: 71,
+      evaluation: 78,
+    },
+    {
+      semester: 'SEM4',
+      attendance: 92,
+      theory: 80,
+      practice: 75,
+      evaluation: 80,
+    },
   ];
 
+  constructor(
+    private route: ActivatedRoute,
+    private classService: ClassService,
+    private studentPFService: StudentPerformanceService,
+    private cdr: ChangeDetectorRef // Inject ChangeDetectorRef
+
+  ) {}
+
   ngOnInit(): void {
-    // Additional initialization if required
+    this.route.params.subscribe((params) => {
+      this.classId = +params['classId'];
+      this.studentId = +params['studentId'];
+      this.getSubjectsBySemester(this.selectedSemester); // Gọi API cho semester đầu tiên
+      this.getStudentPerformance();
+    });
   }
 
   ngAfterViewInit(): void {
-    this.createCircularCharts();
-    this.createPerformanceGroupedBarChart();
+    setTimeout(() => {
+      this.createPerformanceGroupedBarChart();
+      this.performanceMarks.forEach((mark, i) => {
+        this.createCircularCharts(`chart${i}`, mark.value);
+      });
+   }, 0);
   }
 
-  createCircularCharts() {
-    this.performanceMarks.forEach((mark, index) => {
-      const width = 100;
-      const height = 100;
-      const radius = Math.min(width, height) / 2;
+  getSubjectsBySemester(semester: string): void {
+    if (semester && this.classId) {
+      this.classService.getSubjects(this.classId, semester).subscribe(
+        (data: any) => {
+          if (data && data[semester]) {
+            this.subjects = data[semester].map((subject: any) => ({
+              id: subject.id, // ID of the subject
+              code: subject.subjectCode, // Code of the subject
+            }));
+            this.selectedSubjectId = this.subjects[0]?.id; // Select the ID of the first subject
+            this.getStudentPerformance(); // Fetch performance data for the selected subject
+          } else {
+            console.error(`No subjects found for semester: ${semester}`);
+            this.subjects = []; // Set an empty array if no subjects are found
+          }
+        },
+        (error) => {
+          console.error('Error fetching subjects:', error);
+        }
+      );
+    }
+  }
 
-      const svg = d3
-        .select(`#chart${index}`)
-        .attr('width', width)
-        .attr('height', height)
-        .append('g')
-        .attr('transform', `translate(${width / 2},${height / 2})`);
+  createCircularCharts(chartId: string, value: number) {
+    const width = 100;
+    const height = 100;
+    const radius = Math.min(width, height) / 2;
+  
+    d3.select(`#${chartId}`).selectAll('*').remove();
 
-      const arc = d3.arc().innerRadius(30).outerRadius(radius);
-
-      const pie = d3.pie<number>().value((d) => d);
-      const data = [mark.value, 100 - mark.value];
-
-      const arcs = svg
-        .selectAll('.arc')
-        .data(pie(data))
-        .enter()
-        .append('g')
-        .attr('class', 'arc');
-
-      // Add smooth transitions
+  
+    const svg = d3
+      .select(`#${chartId}`)
+      .attr('width', width)
+      .attr('height', height)
+      .append('g') 
+      .attr('transform', `translate(${width / 2},${height / 2})`);
+  
+    const arc = d3.arc().innerRadius(30).outerRadius(radius);
+    const pie = d3.pie<number>().value((d) => d);
+  
+    const data = [value, 100 - value]; 
+  
+    const arcs = svg
+      .selectAll('.arc')
+      .data(pie(data))
+      .enter()
+      .append('g')
+      .attr('class', 'arc');
+  
       arcs
-        .append('path')
-        .attr('d', arc as any)
-        .style('fill', (d, i) => (i === 0 ? '#4CAF50' : '#ddd'))
-        .transition()
-        .duration(1000)
-        .attrTween('d', function (d: any) {
-          const i = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
-          return (t: any) => arc(i(t)) || ''; // Ensure that the return value is always a string
-        });
-
-      // Add labels or tooltips (optional)
-      arcs.append('title').text((d) => `${mark.label}: ${mark.value}%`);
-    });
+      .append('path')
+      .attr('d', arc as any)
+      .style('fill', (d, i) => (i === 0 ? '#4CAF50' : '#ddd'))
+      .attr('stroke-width', 1);
   }
+  
 
   createPerformanceGroupedBarChart() {
     const margin = { top: 20, right: 30, bottom: 30, left: 40 };
@@ -144,27 +204,22 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       .attr('width', x1.bandwidth())
       .attr('height', (d) => height - y(+d.value)) // Cast to number
       .attr('fill', (d) => color(d.key))
-      .on('mouseover', (event: any, d: any) => {
-        d3.select(event.target).transition().attr('opacity', 0.7);
-      })
+
       .on('mouseout', (event: any) => {
         d3.select(event.target).transition().attr('opacity', 1);
       })
       .on('mouseover', (event: any, d: any) => {
-        // Remove any existing labels
         svg.selectAll('.label').remove();
 
-        // Append text labels showing the percentage value
         svg
           .append('text')
           .attr('class', 'label')
-          .attr('x', +d3.select(event.target).attr('x') + x1.bandwidth() * 1.5)
+          .attr('x', +d3.select(event.target).attr('x') + x1.bandwidth() * 1.6)
           .attr('y', +d3.select(event.target).attr('y') - 5) // Position slightly above the bar
           .attr('text-anchor', 'middle')
           .style('fill', 'black')
           .text(`${d.value}%`)
           .style('font-size', '10px')
-          .style('text-again', 'center') // Adjust font size if needed
           .transition()
           .duration(300)
           .style('opacity', 1);
@@ -177,7 +232,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     y: any,
     key: keyof (typeof this.performanceData)[0],
     color: string,
-    height: number // Add height as an argument
+    height: number 
   ) {
     svg
       .selectAll(`.bar-${key}`)
@@ -185,10 +240,10 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       .enter()
       .append('rect')
       .attr('class', `bar-${key}`)
-      .attr('x', (d: any) => x(d.semester)! + x.bandwidth() / 4) // Adjust position
+      .attr('x', (d: any) => x(d.semester)! + x.bandwidth() / 4) 
       .attr('y', (d: any) => y(d[key]))
-      .attr('width', x.bandwidth() / 2) // Adjust width for multiple bars
-      .attr('height', (d: any) => height - y(d[key])) // Use height passed as argument
+      .attr('width', x.bandwidth() / 2) 
+      .attr('height', (d: any) => height - y(d[key])) 
       .attr('fill', color)
       .on('mouseover', (event: any, d: any) => {
         d3.select(event.target).transition().attr('opacity', 0.7);
@@ -201,9 +256,8 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   onSubjectChange(event: Event) {
     const target = event.target as HTMLSelectElement;
     if (target) {
-      this.selectedSubject = target.value;
-      console.log('Selected Subject:', this.selectedSubject);
-      
+      this.selectedSubjectId = +target.value;
+      this.getStudentPerformance(); 
     }
   }
 
@@ -211,8 +265,51 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     const target = event.target as HTMLSelectElement;
     if (target) {
       this.selectedSemester = target.value;
-      console.log('Selected Semester:', this.selectedSemester);
-
+      this.getSubjectsBySemester(this.selectedSemester); 
     }
   }
+
+  getStudentPerformance(): void {
+    if (this.classId && this.studentId && this.selectedSubjectId) {
+      const subjectId = this.selectedSubjectId.toString();
+
+      this.studentPFService
+        .getStudentPerformance(this.classId, this.studentId, subjectId)
+        .subscribe(
+          (data: StudentPerformanceResponse) => {
+            if (data) {
+              this.perfperformanceData1 = [data];
+
+              // Prepare data for specific marks
+              this.performanceMarks = [
+                {
+                  label: 'Theoretical Mark',
+                  value: data.theoreticalPercentage || 0,
+                },
+                {
+                  label: 'Attendance',
+                  value: data.attendancePercentage || 0,
+                },
+                {
+                  label: 'Participation',
+                  value: data.practicalPercentage || 0,
+                },
+              ];
+              this.cdr.detectChanges();
+              setTimeout(() => {
+                this.performanceMarks.forEach((mark, i) => {
+                  this.createCircularCharts(`chart${i}`, mark.value);
+                });
+              }, 0);
+            } else {
+              this.performanceMarks = []; 
+            }
+          },
+          (error) => {
+            console.error('Error fetching student performance:', error);
+          }
+        );
+    }
+  }
+
 }

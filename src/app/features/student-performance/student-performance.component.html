@@ -1,78 +1,101 @@
 <div class="container bg-slate-200 mx-auto p-6 w-full">
   <!-- Header: Student Name -->
-  <div class="text-center text-2xl font-bold mb-6">
-    {{ studentName }}
+  <div *ngFor="let performance of perfperformanceData1">
+    <div class="text-center text-2xl font-bold mb-6">
+      {{ performance.studentName }} <!-- Accessing the studentName property -->
+    </div>
   </div>
 
   <!-- Subject and Semester Selection -->
   <div class="bg-white rounded-lg shadow-md p-6 mb-5">
-    <div class="flex flex-col md:flex-row justify-between items-center mb-8 space-y-4 md:space-y-0">
+    <div class="flex flex-col md:flex-row justify-start items-center mb-8 space-y-4 md:space-y-0">
       <div class="flex items-center">
-        <label for="subject" class="font-semibold mr-2">Subject:</label>
-        <select id="subject" [(ngModel)]="selectedSubject" (change)="onSubjectChange($event)"
+        <!-- Semester Selection -->
+        <label for="semester" class="font-semibold mr-2">Semester:</label>
+        <select id="semester" [(ngModel)]="selectedSemester" (change)="onSemesterChange($event)"
           class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          aria-label="Select Subject">
-          <option *ngFor="let subject of subjects" [value]="subject">{{ subject }}</option>
+          aria-label="Select Semester">
+          <option value="SEM1">All</option>
+          <option *ngFor="let semester of semesters" [value]="semester">
+            {{ semester }}
+          </option>
         </select>
       </div>
-
+      <div class="flex items-center pl-5">
+        <!-- Subject Selection -->
+        <label for="subject" class="font-semibold mr-2">Subject:</label>
+        <select id="subject" [(ngModel)]="selectedSubjectId" (change)="onSubjectChange($event)"
+          class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          aria-label="Select Subject">
+          <option *ngFor="let subject of subjects" [value]="subject.id">
+            {{ subject.code }} <!-- Display subject code -->
+          </option>
+        </select>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-
-      <!-- Circular Performance Mark Indicators -->
       <div class="col-span-2 grid grid-cols-2 md:grid-cols-3 gap-6 mb-8 bg-white">
         <div *ngFor="let mark of performanceMarks; let i = index" class="text-center text-sm p-4 rounded-md shadow-sm">
-          <div class="font-semibold mb-2 whitespace-nowrap ">{{ mark.label }}</div>
-          <svg class="" id="chart{{ i }}" width="100" height="100" [attr.aria-label]="mark.label + ' Chart'"></svg>
+          <div class="font-semibold mb-2 whitespace-nowrap">
+            {{ mark.label }}
+          </div>
+          <svg [id]="'chart' + i" width="100" height="100" [attr.aria-label]="mark.label + ' Chart'"></svg>
           <div class="text-xl font-bold mt-2">{{ mark.value }}%</div>
         </div>
       </div>
 
-      <!-- Attendance and Marks Summary -->
-      <div class="col-span-1 grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 rounded-md">
+      <div *ngFor="let performance of perfperformanceData1"
+        class="col-span-1 grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 rounded-md">
         <!-- Present -->
         <div class="p-6 bg-green-100 rounded-lg text-center shadow-sm">
-          <div class="font-bold text-2xl text-green-700">{{ attendanceData[0] }}</div>
+          <div class="font-bold text-2xl text-green-700">
+            {{ performance.presentCount }} <!-- Show present count for each performance -->
+          </div>
           <div class="text-gray-700">Present</div>
         </div>
         <!-- Absent -->
         <div class="p-6 bg-yellow-100 rounded-lg text-center shadow-sm">
-          <div class="font-bold text-2xl text-yellow-700">{{ attendanceData[1] }}</div>
+          <div class="font-bold text-2xl text-yellow-700">
+            {{ performance.absentCount }} <!-- Show absent count for each performance -->
+          </div>
           <div class="text-gray-700">Absent</div>
         </div>
-        <!-- Absent Today -->
+        <!-- Present With Permission -->
         <div class="p-6 bg-red-100 rounded-lg text-center shadow-sm">
-          <div class="font-bold text-2xl text-red-700">{{ attendanceData[2] }}</div>
-          <div class="text-gray-700">Absent Today</div>
+          <div class="font-bold text-2xl text-red-700">
+            {{ performance.presentWithPermissionCount }}
+            <!-- Assuming this is what you want to show for "Present With Permission" -->
+          </div>
+          <div class="text-gray-700">Present With Permission</div>
         </div>
-        <!-- Avg Mark of Practice -->
+        <!-- Attendance Percentage -->
         <div class="p-6 bg-blue-100 rounded-lg text-center shadow-sm">
-          <div class="font-bold text-2xl text-blue-700">{{ marksSummary[0] }}%</div>
-          <div class="text-gray-700">Avg Mark of Practice</div>
+          <div class="font-bold text-2xl text-blue-700">
+            {{ performance.attendancePercentage }}% <!-- Assuming this is Attendance Percentage -->
+          </div>
+          <div class="text-gray-700">Attendance Percentage</div>
         </div>
-        <!-- Avg Mark of Evaluation -->
+        <!-- Practical Percentage -->
         <div class="p-6 bg-blue-100 rounded-lg text-center shadow-sm">
-          <div class="font-bold text-2xl text-blue-700">{{ marksSummary[1] }}%</div>
-          <div class="text-gray-700">Avg Mark of Evaluation</div>
+          <div class="font-bold text-2xl text-blue-700">
+            {{ performance.practicalPercentage }}% <!-- Assuming this is Avg Mark of Practical -->
+          </div>
+          <div class="text-gray-700">Practical Percentage</div>
         </div>
-        <!-- Avg Mark of Theory -->
+        <!-- Theoretical Score -->
         <div class="p-6 bg-blue-100 rounded-lg text-center shadow-sm">
-          <div class="font-bold text-2xl text-blue-700">{{ marksSummary[2] }}%</div>
+          <div class="font-bold text-2xl text-blue-700">
+            {{ performance.theoreticalScore }}% <!-- Assuming this is Avg Mark of Theory -->
+          </div>
           <div class="text-gray-700">Avg Mark of Theory</div>
         </div>
       </div>
     </div>
   </div>
+
   <!-- Performance Line Chart -->
   <div class="bg-white rounded-lg shadow-md p-6">
-    <label for="semester" class="font-semibold mr-2">Semester:</label>
-    <select id="semester" [(ngModel)]="selectedSemester" (change)="onSemesterChange($event)"
-      class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-      aria-label="Select Semester">
-      <option value="All">All</option>
-      <option *ngFor="let semester of semesters" [value]="semester">{{ semester }}</option>
-    </select>
     <svg id="performance-chart" viewBox="0 0 600 300" class="w-full h-full" aria-label="Performance Line Chart"></svg>
     <div class="flex justify-center space-x-6 mt-6">
       <div><span class="text-green-500">●</span> Attendance</div>
@@ -81,5 +104,4 @@
       <div><span class="text-blue-500">●</span> Evaluation</div>
     </div>
   </div>
-
 </div>
