@@ -68,6 +68,8 @@ import { ScheduleComponent } from './schedule/schedule.component';
 import { AddScheduleComponent } from './schedule/add-schedule/add-schedule.component';
 import { UpdateScheduleComponent } from './schedule/update-schedule/update-schedule.component';
 import { RegenerateScheduleComponent } from './schedule/regenerate-schedule/regenerate-schedule.component';
+import { ImportExamMarkDialogComponent } from './exam-mark/import-exam-mark-dialog/import-exam-mark-dialog.component';
+import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/exam-mark-all-subject.component';
 
 @NgModule({
   
@@ -123,7 +125,9 @@ import { RegenerateScheduleComponent } from './schedule/regenerate-schedule/rege
     ScheduleComponent,
     AddScheduleComponent,
     UpdateScheduleComponent,
-    RegenerateScheduleComponent
+    RegenerateScheduleComponent,
+    ImportExamMarkDialogComponent,
+    ExamMarkAllSubjectComponent
   ],
   imports: [
     CommonModule,
