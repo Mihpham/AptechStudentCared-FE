@@ -91,25 +91,7 @@
         <span *ngIf="!collapsed" class="dark:text-white">Accounts</span>
       </a>
     </li>
-    <li>
-      <a (click)="toggleAttendanceDropdown()" routerLink="/admin/attendance" routerLinkActive="active-link"
-        class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg cursor-pointer transition duration-300">
-        <i class="fas fa-user-check w-6 h-3 mr-2 dark:text-white"></i>
-        <span *ngIf="!collapsed" class="dark:text-white">Attendance</span>
-        <i *ngIf="!collapsed" [ngClass]="isAttendanceDropdownOpen ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"
-          class="ml-auto dark:text-white chevron-icon"></i>
-      </a>
-      <ul *ngIf="isAttendanceDropdownOpen && !collapsed" class="ml-8 space-y-1">
-        <li>
-          <a routerLink="/admin/attendance/attendance-record" routerLinkActive="active-link"
-            class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">
-            <i class="fas fa-file-alt w-6 h-3 mr-3 dark:text-white"></i>
-            <span class="ml-2">Attendance Record</span>
-          </a>
-        </li>
-      </ul>
-
-    </li>
+    
     <li>
       <a routerLink="/admin/calendar" routerLinkActive="active-link"
         class="flex items-center p-2 text-gray-700 hover:bg-gray-200 dark:hover:bg-blue-200 rounded-lg transition duration-300">

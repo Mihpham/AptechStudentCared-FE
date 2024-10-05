@@ -18,6 +18,7 @@ import { BreadcrumbsComponent } from './layout/components/breadcrumbs/breadcrumb
 import {  LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { StudentPerformanceRoutingModule } from './features/student-performance/student-performance-routing.module';
 import { StudentPerformanceModule } from './features/student-performance/student-performance.module';
+import { AuthModule } from './auth/auth.module';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -32,6 +33,7 @@ export function tokenGetter() {
   ],
   imports: [
     BrowserModule,
+    AuthModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,

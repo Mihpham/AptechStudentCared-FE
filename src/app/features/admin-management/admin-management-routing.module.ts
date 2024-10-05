@@ -21,7 +21,7 @@ const routes: Routes = [
     loadChildren: () =>
       import('./class/class-routing.module').then((m) => m.ClassRoutingModule),
     canActivate: [AuthGuard],
-    data: { breadcrumb: 'Class Management' },
+    data: { breadcrumb: 'Class ' },
   },
   {
     path: 'student',

@@ -52,11 +52,11 @@ const routes: Routes = [
   {
     path: 'student-performance',
     loadChildren: () =>
-      import('./features/student-performance/student-performance-routing.module').then(
-        (m) => m.StudentPerformanceRoutingModule
-      ),
+      import(
+        './features/student-performance/student-performance-routing.module'
+      ).then((m) => m.StudentPerformanceRoutingModule),
   },
-  
+
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
   { path: 'error', component: ErrorComponent },
   { path: '**', redirectTo: 'auth/login' },

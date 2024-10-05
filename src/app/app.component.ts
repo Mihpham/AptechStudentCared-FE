@@ -33,6 +33,12 @@ export class AppComponent {
     return this.authService.isAuthenticated();
   }
 
+  hasRole(expectedRole: string): boolean {
+    const role = this.authService.getRole();
+    return role === expectedRole;
+  }
+  
+
   isAdminPage(): boolean {
     return this.router.url.includes('/admin');
   }
