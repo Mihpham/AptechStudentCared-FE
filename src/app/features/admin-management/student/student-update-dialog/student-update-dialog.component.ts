@@ -23,7 +23,7 @@ export class StudentUpdateDialogComponent implements OnInit {
   imageError: string | null = null;
   availableClasses: ClassResponse[] = [];
   availableCourses: CourseResponse[] = [];
-  selectedCourses: string[] = [];  // Initialize as an empty array
+  selectedCourses: string[] = [];  
   isDropdownOpen: boolean = false;
 
   constructor(
@@ -88,9 +88,9 @@ export class StudentUpdateDialogComponent implements OnInit {
   }
 
   selectCourse(courseItem: CourseResponse) {
-    const courseName = courseItem.courseName;
-    if (!this.selectedCourses.includes(courseName)) {
-      this.selectedCourses.push(courseName);
+    const courseCode = courseItem.courseCode;
+    if (!this.selectedCourses.includes(courseCode)) {
+      this.selectedCourses.push(courseCode);
     }
     this.studentForm.get('courses')?.setValue(this.selectedCourses);
     this.isDropdownOpen = false; // Close dropdown after selection
@@ -105,13 +105,13 @@ export class StudentUpdateDialogComponent implements OnInit {
   }
 
   onCourseToggle(course: CourseResponse) {
-    const courseName = course.courseName;
-    if (courseName) {
-      const index = this.selectedCourses.indexOf(courseName);
+    const courseCode = course.courseCode;
+    if (courseCode) {
+      const index = this.selectedCourses.indexOf(courseCode);
       if (index > -1) {
         this.selectedCourses.splice(index, 1);  // Remove the course if already selected
       } else {
-        this.selectedCourses.push(courseName);  // Add the course if not selected
+        this.selectedCourses.push(courseCode);  // Add the course if not selected
       }
       this.studentForm.get('courses')?.setValue(this.selectedCourses);  // Update form control
     }
@@ -149,7 +149,7 @@ export class StudentUpdateDialogComponent implements OnInit {
   onImageChange(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
-      const file = input.files[0];
+      const file = input.files[0];  
       if (file.size > 1048576) { // 1MB
         this.imageError = 'File size should not exceed 1MB.';
         return;

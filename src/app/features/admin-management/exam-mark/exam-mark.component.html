@@ -10,10 +10,10 @@
         <!-- Select Subject -->
         <div *ngIf="subjects.length > 0" class="select-container">
           <label for="subjectSelect">Choose Subject:</label>
-          <select id="subjectSelect" [(ngModel)]="selectedSubject" (change)="onSubjectChange($event)">
+          <select id="subjectSelect" [(ngModel)]="selectedSubject" (change)="onSubjectChange()">
             <option value="" disabled>Choose subject</option>
             <option *ngFor="let subject of subjects" [value]="subject">{{ subject }}</option>
-          </select>
+          </select> 
         </div>
       </div>
   

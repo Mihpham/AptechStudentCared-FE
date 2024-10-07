@@ -3,11 +3,11 @@
     <div class="flex items-center justify-start mb-6">
         <h1 class="text-3xl font-bold text-gray-700">Manage Student Attendance</h1>
         <small class="px-4 pb-3 text-gray-500 text-sm"
-            *ngIf="classDetails && classDetails.course && schedules.length > 0">
+            *ngIf="classDetails && classDetails.course && schedules.length > 0 && attendances">
             {{ classDetails?.className }} - {{ classDetails.course?.courseName }} -
             ({{ schedules[0].startDate | date: 'dd-MM-yyyy' }} -
             {{ schedules[schedules.length - 1].endDate | date: 'dd-MM-yyyy' }}) -
-            {{ schedules[0].subjectCode }} -
+            {{ attendances[0].subjectCode }} -
             {{ getTeacherName(schedules[0].subjectCode) }}
         </small>
     </div>

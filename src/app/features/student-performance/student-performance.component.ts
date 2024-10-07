@@ -1,9 +1,10 @@
+// src/app/features/student-performance/student-performance.component.ts
+
 import { StudentPerformanceService } from './../../core/services/admin/studentperformance.service';
 import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as d3 from 'd3';
 import { ClassService } from 'src/app/core/services/admin/class.service';
-import { StudentRequest } from '../admin-management/model/student-request.model';
 import { StudentPerformanceResponse } from '../admin-management/model/student-performance/student-performance-response.model';
 
 @Component({
@@ -12,77 +13,42 @@ import { StudentPerformanceResponse } from '../admin-management/model/student-pe
   styleUrls: ['./student-performance.component.scss'],
 })
 export class StudentPerformanceComponent implements OnInit, AfterViewInit {
-  classId: number | null = null; // Khởi tạo với null
-  studentId: number | null = null; // Khai báo userId
-  selectedSubjectId: number | null = null; // ID môn học đã chọn
-
-  selectedSubject: string | null = null;
-
+  classId: number | null = null;
+  studentId: number | null = null;
+  selectedSubjectId: number | null = null;
   selectedSemester = 'All';
-  subjects: { id: number; code: string }[] = []; // Khai báo subjects như một mảng đối tượng
+  subjects: { id: number; code: string }[] = [];
   performanceMarks: { label: string; value: number }[] = [];
-
   semesters = ['SEM1', 'SEM2', 'SEM3', 'SEM4'];
 
-  marksSummary = [53.6, 75, 76.5]; // Avg Mark of Practice, Evaluation, Theory
-
-  perfperformanceData1: StudentPerformanceResponse[] | undefined;
-
-  performanceData = [
-    {
-      semester: 'SEM1',
-      attendance: 85,
-      theory: 72,
-      practice: 65,
-      evaluation: 70,
-    },
-    {
-      semester: 'SEM2',
-      attendance: 90,
-      theory: 76,
-      practice: 68,
-      evaluation: 75,
-    },
-    {
-      semester: 'SEM3',
-      attendance: 88,
-      theory: 78,
-      practice: 71,
-      evaluation: 78,
-    },
-    {
-      semester: 'SEM4',
-      attendance: 92,
-      theory: 80,
-      practice: 75,
-      evaluation: 80,
-    },
-  ];
+  // Correctly declare and initialize performanceData as an array
+  performanceData: StudentPerformanceResponse[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private classService: ClassService,
     private studentPFService: StudentPerformanceService,
-    private cdr: ChangeDetectorRef // Inject ChangeDetectorRef
-
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.classId = +params['classId'];
       this.studentId = +params['studentId'];
-      this.getSubjectsBySemester(this.selectedSemester); // Gọi API cho semester đầu tiên
+      this.getSubjectsBySemester(this.selectedSemester);
       this.getStudentPerformance();
     });
   }
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.createPerformanceGroupedBarChart();
+      if (this.performanceData.length > 0) {
+        this.createPerformanceLineChart(this.performanceData);
+      }
       this.performanceMarks.forEach((mark, i) => {
         this.createCircularCharts(`chart${i}`, mark.value);
       });
-   }, 0);
+    }, 0);
   }
 
   getSubjectsBySemester(semester: string): void {
@@ -91,14 +57,14 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
         (data: any) => {
           if (data && data[semester]) {
             this.subjects = data[semester].map((subject: any) => ({
-              id: subject.id, // ID of the subject
-              code: subject.subjectCode, // Code of the subject
+              id: subject.id,
+              code: subject.subjectCode,
             }));
-            this.selectedSubjectId = this.subjects[0]?.id; // Select the ID of the first subject
-            this.getStudentPerformance(); // Fetch performance data for the selected subject
+            this.selectedSubjectId = this.subjects[0]?.id;
+            this.getStudentPerformance();
           } else {
             console.error(`No subjects found for semester: ${semester}`);
-            this.subjects = []; // Set an empty array if no subjects are found
+            this.subjects = [];
           }
         },
         (error) => {
@@ -108,164 +74,190 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     }
   }
 
-  createCircularCharts(chartId: string, value: number) {
+  createCircularCharts(chartId: string, value: number): void {
     const width = 100;
     const height = 100;
     const radius = Math.min(width, height) / 2;
-  
+
     d3.select(`#${chartId}`).selectAll('*').remove();
 
-  
     const svg = d3
       .select(`#${chartId}`)
       .attr('width', width)
       .attr('height', height)
-      .append('g') 
+      .append('g')
       .attr('transform', `translate(${width / 2},${height / 2})`);
-  
+
     const arc = d3.arc().innerRadius(30).outerRadius(radius);
     const pie = d3.pie<number>().value((d) => d);
-  
-    const data = [value, 100 - value]; 
-  
+
+    const data = [value, 100 - value];
+
     const arcs = svg
       .selectAll('.arc')
       .data(pie(data))
       .enter()
       .append('g')
       .attr('class', 'arc');
-  
-      arcs
+
+    arcs
       .append('path')
       .attr('d', arc as any)
       .style('fill', (d, i) => (i === 0 ? '#4CAF50' : '#ddd'))
       .attr('stroke-width', 1);
   }
-  
 
-  createPerformanceGroupedBarChart() {
-    const margin = { top: 20, right: 30, bottom: 30, left: 40 };
-    const width = 600 - margin.left - margin.right;
-    const height = 300 - margin.top - margin.bottom;
+  createPerformanceLineChart(performanceData: StudentPerformanceResponse[]): void {
+    if (performanceData.length > 0) {
+      // Clear any existing SVG content
+      d3.select('#performance-chart').selectAll('*').remove();
 
-    const svg = d3
-      .select('#performance-chart')
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
-      .append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
+      const margin = { top: 20, right: 30, bottom: 50, left: 60 };
+      const width = 600 - margin.left - margin.right;
+      const height = 300 - margin.top - margin.bottom;
 
-    const x0 = d3
-      .scaleBand<string>()
-      .domain(this.performanceData.map((d) => d.semester))
-      .range([0, width])
-      .padding(0.2);
+      const svg = d3
+        .select('#performance-chart')
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom)
+        .append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    const x1 = d3
-      .scaleBand<string>()
-      .domain(['attendance', 'theory', 'practice', 'evaluation'])
-      .range([0, x0.bandwidth()])
-      .padding(0.05);
+      // Define scales
+      const x = d3
+        .scalePoint<string>()
+        .domain(performanceData.map((d) => d.subjectCode))
+        .range([0, width])
+        .padding(0.5);
 
-    const y = d3.scaleLinear<number>().domain([0, 100]).range([height, 0]);
+      const y = d3
+        .scaleLinear<number>()
+        .domain([0, 100])
+        .range([height, 0]);
 
-    const color = d3
-      .scaleOrdinal<string>()
-      .domain(['attendance', 'theory', 'practice', 'evaluation'])
-      .range(['#4285F4', '#34A853', '#FBBC05', '#EA4335']); // Pastel colors
+      // Define line generators for the three metrics
+      const lineAttendance = d3
+        .line<StudentPerformanceResponse>()
+        .x((d) => x(d.subjectCode)!)
+        .y((d) => y(d.attendancePercentage))
+        .curve(d3.curveMonotoneX);
 
-    // Draw axes
-    svg
-      .append('g')
-      .call(d3.axisBottom(x0))
-      .attr('transform', `translate(0,${height})`);
+      const lineTheory = d3
+        .line<StudentPerformanceResponse>()
+        .x((d) => x(d.subjectCode)!)
+        .y((d) => y(d.theoreticalPercentage))
+        .curve(d3.curveMonotoneX);
 
-    svg.append('g').call(d3.axisLeft(y));
+      const linePractice = d3
+        .line<StudentPerformanceResponse>()
+        .x((d) => x(d.subjectCode)!)
+        .y((d) => y(d.practicalPercentage))
+        .curve(d3.curveMonotoneX);
+    
+      // Add X axis
+      svg
+        .append('g')
+        .attr('transform', `translate(0,${height})`)
+        .call(d3.axisBottom(x))
+        .selectAll('text')
+        .attr('dy', '1em')
+        .attr('dx', '-0.8em')
+        .attr('transform', 'rotate(-45)')
+        .style('text-anchor', 'end');
 
-    // Grouped bars
-    svg
-      .selectAll('.semester-group')
-      .data(this.performanceData)
-      .enter()
-      .append('g')
-      .attr('class', 'semester-group')
-      .attr('transform', (d) => `translate(${x0(d.semester)}, 0)`)
-      .selectAll('rect')
-      .data((d) =>
-        ['attendance', 'theory', 'practice', 'evaluation'].map((key) => ({
-          key,
-          value: +d[key as keyof typeof d], // Ensure the value is cast to a number
-        }))
-      )
-      .enter()
-      .append('rect')
-      .attr('x', (d) => x1(d.key)!)
-      .attr('y', (d) => y(+d.value)) // Cast to number
-      .attr('width', x1.bandwidth())
-      .attr('height', (d) => height - y(+d.value)) // Cast to number
-      .attr('fill', (d) => color(d.key))
+      // Add Y axis
+      svg.append('g').call(d3.axisLeft(y));
 
-      .on('mouseout', (event: any) => {
-        d3.select(event.target).transition().attr('opacity', 1);
-      })
-      .on('mouseover', (event: any, d: any) => {
-        svg.selectAll('.label').remove();
+      // Add lines
+      svg
+        .append('path')
+        .datum(performanceData)
+        .attr('fill', 'none')
+        .attr('stroke', '#4285F4') // Attendance - Blue
+        .attr('stroke-width', 2)
+        .attr('d', lineAttendance);
 
+      svg
+        .append('path')
+        .datum(performanceData)
+        .attr('fill', 'none')
+        .attr('stroke', '#FBBC05') // Theory - Yellow
+        .attr('stroke-width', 2)
+        .attr('d', lineTheory);
+
+      svg
+        .append('path')
+        .datum(performanceData)
+        .attr('fill', 'none')
+        .attr('stroke', '#34A853') // Practice - Green
+        .attr('stroke-width', 2)
+        .attr('d', linePractice);
+
+      // Define categories with type-safe keys
+      const categories: { 
+        key: 'attendancePercentage' | 'theoreticalPercentage' | 'practicalPercentage'; 
+        color: string; 
+        label: string 
+      }[] = [
+        { key: 'attendancePercentage', color: '#4285F4', label: 'Attendance' },
+        { key: 'theoreticalPercentage', color: '#FBBC05', label: 'Theoretical' },
+        { key: 'practicalPercentage', color: '#34A853', label: 'Practical' },
+      ];
+
+      // Add points for each category
+      categories.forEach((category) => {
         svg
-          .append('text')
-          .attr('class', 'label')
-          .attr('x', +d3.select(event.target).attr('x') + x1.bandwidth() * 1.6)
-          .attr('y', +d3.select(event.target).attr('y') - 5) // Position slightly above the bar
-          .attr('text-anchor', 'middle')
-          .style('fill', 'black')
-          .text(`${d.value}%`)
-          .style('font-size', '10px')
-          .transition()
-          .duration(300)
-          .style('opacity', 1);
-      });
-  }
+          .selectAll(`.dot-${category.key}`)
+          .data(performanceData)
+          .enter()
+          .append('circle')
+          .attr('class', `dot-${category.key}`)
+          .attr('cx', (d) => x(d.semester)!)
+          .attr('cy', (d) => y(d[category.key]))
+          .attr('r', 4)
+          .attr('fill', category.color)
+          .on('mouseover', (event: any, d) => {
+            const tooltip = d3
+              .select('body')
+              .append('div')
+              .attr('class', 'tooltip')
+              .style('position', 'absolute')
+              .style('background', '#f4f4f4')
+              .style('padding', '5px')
+              .style('border', '1px solid #d4d4d4')
+              .style('border-radius', '4px')
+              .style('pointer-events', 'none')
+              .html(`${category.label}: ${d[category.key]}%`);
 
-  drawBar(
-    svg: any,
-    x: any,
-    y: any,
-    key: keyof (typeof this.performanceData)[0],
-    color: string,
-    height: number 
-  ) {
-    svg
-      .selectAll(`.bar-${key}`)
-      .data(this.performanceData)
-      .enter()
-      .append('rect')
-      .attr('class', `bar-${key}`)
-      .attr('x', (d: any) => x(d.semester)! + x.bandwidth() / 4) 
-      .attr('y', (d: any) => y(d[key]))
-      .attr('width', x.bandwidth() / 2) 
-      .attr('height', (d: any) => height - y(d[key])) 
-      .attr('fill', color)
-      .on('mouseover', (event: any, d: any) => {
-        d3.select(event.target).transition().attr('opacity', 0.7);
-      })
-      .on('mouseout', (event: any) => {
-        d3.select(event.target).transition().attr('opacity', 1);
-      });
-  }
+            tooltip
+              .style('left', event.pageX + 10 + 'px')
+              .style('top', event.pageY - 28 + 'px');
 
-  onSubjectChange(event: Event) {
-    const target = event.target as HTMLSelectElement;
-    if (target) {
-      this.selectedSubjectId = +target.value;
-      this.getStudentPerformance(); 
+            d3.select(event.currentTarget).transition().attr('r', 6).attr('fill', '#000');
+          })
+          .on('mouseout', (event) => {
+            d3.select('.tooltip').remove();
+            d3.select(event.currentTarget).transition().attr('r', 4).attr('fill', category.color);
+          });
+      });
+    } else {
+      console.warn('No performance data available to create the chart.');
     }
   }
 
-  onSemesterChange(event: Event) {
+  onSubjectChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    if (target) {
+      this.selectedSubjectId = +target.value;
+      this.getStudentPerformance();
+    }
+  }
+
+  onSemesterChange(event: Event): void {
     const target = event.target as HTMLSelectElement;
     if (target) {
       this.selectedSemester = target.value;
-      this.getSubjectsBySemester(this.selectedSemester); 
+      this.getSubjectsBySemester(this.selectedSemester);
     }
   }
 
@@ -278,31 +270,25 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
         .subscribe(
           (data: StudentPerformanceResponse) => {
             if (data) {
-              this.perfperformanceData1 = [data];
+              // Assign as an array
+              this.performanceData = [data];
 
-              // Prepare data for specific marks
+              // Setup performance marks
               this.performanceMarks = [
-                {
-                  label: 'Theoretical Mark',
-                  value: data.theoreticalPercentage || 0,
-                },
-                {
-                  label: 'Attendance',
-                  value: data.attendancePercentage || 0,
-                },
-                {
-                  label: 'Participation',
-                  value: data.practicalPercentage || 0,
-                },
+                { label: 'Theoretical Mark', value: data.theoreticalPercentage || 0 },
+                { label: 'Attendance', value: data.attendancePercentage || 0 },
+                { label: 'Practical', value: data.practicalPercentage || 0 },
               ];
+
               this.cdr.detectChanges();
               setTimeout(() => {
                 this.performanceMarks.forEach((mark, i) => {
                   this.createCircularCharts(`chart${i}`, mark.value);
                 });
+                this.createPerformanceLineChart(this.performanceData); // Pass performanceData correctly
               }, 0);
             } else {
-              this.performanceMarks = []; 
+              this.performanceMarks = [];
             }
           },
           (error) => {
@@ -311,5 +297,4 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
         );
     }
   }
-
 }
