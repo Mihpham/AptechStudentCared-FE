@@ -74,10 +74,14 @@ export class CourseAddComponent implements AfterViewInit, OnDestroy, OnInit {
         return throwError(error);
       })
     ).subscribe(subjects => {
-      this.availableSubjects = subjects.map(subject => subject.subjectCode);
+      // Lọc bỏ môn có tên chứa "Project" trước khi ánh xạ các subjectCode
+      this.availableSubjects = subjects
+        .filter(subject => !subject.subjectName.includes('Project')) // Bỏ qua tất cả các môn có tên chứa "Project"
+        .map(subject => subject.subjectCode);
     });
   }
-
+  
+  
   toggleDropdown(semester: string): void {
     this.isDropdownOpen[semester] = !this.isDropdownOpen[semester];
   }

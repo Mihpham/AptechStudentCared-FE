@@ -28,18 +28,11 @@ export class ExamMarkComponent implements OnInit {
   tempScores: { [key: string]: { theoretical: number; practical: number } } =
     {};
   classID: number | null = null;
-  selectedClass: ClassResponse | null = null; // Lớp học được chọn (full object)
-
-  displayedColumns: string[] = [
-    'avatar',
-    'fullName',
-    'module',
-    'className',
-    'theoreticalScore',
-    'practicalScore',
-    'result',
-    'action',
-  ];
+  selectedClass: ClassResponse | null = null;
+  // selectedSemester: string | null = null; // Kỳ học đã chọn
+  semesters: string[] = [];
+  allSubjectsBySemester: { [key: string]: string[] } = {};
+  selectedSemester: string = 'Sem1';
 
   constructor(
     private classService: ClassService,
@@ -142,45 +135,56 @@ export class ExamMarkComponent implements OnInit {
       }
     );
   }
-
-  // Fetch subjects for the class from the URL
+ 
   getCourseByClass(classId: number) {
     this.classService.findAllSubjectByClassId(classId).subscribe(classResponse => {
-      const course: CourseResponse = classResponse;
+      const course: CourseResponse = classResponse; 
       this.subjects = [];
-  
-      // Lấy danh sách các môn học của kỳ 1 và các kỳ khác nếu cần
+      this.semesters = Object.keys(course.semesters); // Get semester keys
+ 
       Object.keys(course.semesters).forEach(key => {
         const semesterSubjects = course.semesters[key];
         if (semesterSubjects) {
+          // this.allSubjectsBySemester[key] = semesterSubjects; // Store subjects by semester
           this.subjects.push(...semesterSubjects);
+          this.allSubjectsBySemester[key] = semesterSubjects; // Store subjects by semester
         }
       });
-  
-      // Chọn môn học đầu tiên của kỳ 1 làm mặc định
-      if (this.subjects.length > 0) {
-        this.selectedSubject = this.subjects[0];
-        this.onSubjectChange(); // Gọi phương thức để tải dữ liệu điểm thi của môn mặc định
+
+      if (this.selectedSemester) {
+        this.subjects = this.allSubjectsBySemester[this.selectedSemester] || [];
       }
     });
   }
 
-  onSubjectChange() {
-    if (this.classID && this.selectedSubject) {
+  onSemesterChange(selectedSemester: string) {
+    this.selectedSemester = selectedSemester;
+    this.subjects = this.allSubjectsBySemester[selectedSemester] || [];
+     
+    this.selectedSubject = null; 
+    this.showTable = false;  
+}
+
+
+onSubjectChange(event: Event) {
+  const subjectCode = (event.target as HTMLSelectElement).value;
+  this.selectedSubject = subjectCode;
+
+  if (this.classID && this.selectedSubject) {
       this.showTable = true;
       this.getExamScoresByClass(this.classID);
-    }
+      if (this.selectedSubject.toLowerCase()?.includes('project')) {
+          this.students.forEach(student => {
+              const rollNumber = student.listExamScore[0].rollNumber;
+              this.tempScores[rollNumber] = {
+                  theoretical: 0, 
+                  practical: this.tempScores[rollNumber]?.practical || 0  
+              };
+          });
+      }
   }
-  
-  // onSubjectChange(event: Event) {
-  //   const subjectCode = (event.target as HTMLSelectElement).value;
-  //   this.selectedSubject = subjectCode;
+}
 
-  //   if (this.classID && this.selectedSubject) {
-  //     this.showTable = true;
-  //     this.getExamScoresByClass(this.classID);
-  //   }
-  // }
 
   getExamScoresByClass(classId: number): void {
     this.http
@@ -197,22 +201,26 @@ export class ExamMarkComponent implements OnInit {
   }
 
   initializeTempScores() {
-    this.students.forEach((student) => {
-      if (this.selectedSubject) {
-        const examScore = this.getExamScore(
-          student.listExamScore,
-          this.selectedSubject
-        );
-        if (examScore) {
-          // Sử dụng rollNumber từ ExamScore thay vì Student
-          this.tempScores[examScore.rollNumber] = {
-            theoretical: examScore.theoreticalScore ?? 0,
-            practical: examScore.practicalScore ?? 0,
-          };
+    this.students.forEach(student => {
+        const rollNumber = student.listExamScore[0].rollNumber;
+        if (this.selectedSubject) {
+            const examScore = this.getExamScore(student.listExamScore, this.selectedSubject);
+            if (examScore) {
+                if (this.selectedSubject.toLowerCase()?.includes('project')) { 
+                    this.tempScores[rollNumber] = {
+                        theoretical: 0,
+                        practical: Math.min(examScore.practicalScore ?? 0, 100) // Điểm không quá 100
+                    };
+                } else {
+                    this.tempScores[rollNumber] = {
+                        theoretical: examScore.theoreticalScore ?? 0,
+                        practical: examScore.practicalScore ?? 0
+                    };
+                }
+            }
         }
-      }
     });
-  }
+}
 
   onlyNumberKey(event: KeyboardEvent) {
     const input = event.key;
@@ -238,16 +246,27 @@ export class ExamMarkComponent implements OnInit {
   }
 
   onScoreChange(student: Student, examScore: ExamScore) {
-    if (this.tempScores[examScore.rollNumber].theoretical > 20) {
-      this.tempScores[examScore.rollNumber].theoretical = 20;
-    }
+    const rollNumber = examScore.rollNumber;
 
-    if (this.tempScores[examScore.rollNumber].practical > 20) {
-      this.tempScores[examScore.rollNumber].practical = 20;
+    // Kiểm tra môn học
+    if (this.selectedSubject?.toLowerCase()?.includes('project')) {
+        // Đối với môn đồ án, chỉ kiểm tra điểm thực hành
+        if (this.tempScores[rollNumber].practical > 100) {
+            this.tempScores[rollNumber].practical = 100; // Điểm thực hành không quá 100
+        }
+    } else {
+        // Đối với các môn học khác
+        if (this.tempScores[rollNumber].theoretical > 20) {
+            this.tempScores[rollNumber].theoretical = 20; // Điểm lý thuyết không quá 20
+        }
+
+        if (this.tempScores[rollNumber].practical > 20) {
+            this.tempScores[rollNumber].practical = 20; // Điểm thực hành không quá 20
+        }
     }
 
     student.hasChanges = true; // Đánh dấu sự thay đổi
-  }
+}
 
   calculateResult(student: Student): string {
     const examScore = this.getExamScore(
