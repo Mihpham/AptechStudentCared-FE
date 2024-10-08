@@ -16,7 +16,6 @@ import { ProfileModule } from './features/profile/profile.module';
 import { BreadcrumbsComponent } from './layout/components/breadcrumbs/breadcrumbs.component';
 
 import {  LocationStrategy, PathLocationStrategy } from '@angular/common';
-import { StudentPerformanceRoutingModule } from './features/student-performance/student-performance-routing.module';
 import { StudentPerformanceModule } from './features/student-performance/student-performance.module';
 import { AuthModule } from './auth/auth.module';
 

@@ -1,33 +1,173 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
+// sidebar.component.ts
+
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AuthService } from 'src/app/core/auth/auth.service';
+
+interface SidebarItem {
+  route?: string;
+  label: string;
+  icon: string;
+  children?: SidebarItem[]; // Optional for dropdowns
+  isOpen?: boolean; // Added to track dropdown state
+}
 
 @Component({
   selector: 'app-sidebar',
-  templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss']
+  templateUrl: './sidebar.component.html', // Ensure correct path
+  styleUrls: ['./sidebar.component.scss'], // If needed
 })
 export class SidebarComponent {
-  isLoggedIn: boolean = false;
+  role: string = '';
+  sidebarItems: SidebarItem[] = [];
   @Input() collapsed: boolean = false;
-  @Output() toggle = new EventEmitter<void>();
-  isStudentDropdownOpen: boolean = false;
-  isAttendanceDropdownOpen: boolean = false;
-
-  constructor(private authService: AuthService) { }
-
-  ngOnInit() {
-    this.isLoggedIn = this.authService.isAuthenticated();
+  @Output() toggle = new EventEmitter<void>();  constructor(public authService: AuthService) {
+    this.role = this.authService.getRole()!; // Assert not null
+    this.setSidebarItems();
   }
 
+  // Set sidebarItems based on role
+  private setSidebarItems() {
+    const adminItems: SidebarItem[] = [
+      {
+        route: '/admin/dashboard',
+        label: 'Dashboard',
+        icon: 'fas fa-tachometer-alt',
+      },
+      {
+        route: '/admin/class',
+        label: 'Class',
+        icon: 'fas fa-chalkboard-teacher',
+      },
+      {
+        label: 'Student',
+        route: '/admin/student/all',
+        icon: 'fas fa-user-graduate',
+        isOpen: false, 
+        children: [
+          {
+            route: '/admin/student/all',
+            label: 'All Students',
+            icon: 'fas fa-users',
+          },
+          {
+            route: '/admin/student/studying',
+            label: 'Studying',
+            icon: 'fas fa-book-reader',
+          },
+          {
+            route: '/admin/student/delay',
+            label: 'Delay',
+            icon: 'fas fa-clock',
+          },
+          {
+            route: '/admin/student/dropout',
+            label: 'Dropout',
+            icon: 'fas fa-door-open',
+          },
+          {
+            route: '/admin/student/graduated',
+            label: 'Graduated',
+            icon: 'fas fa-graduation-cap',
+          },
+        ],
+      },
+      { route: '/admin/teacher', label: 'Teacher', icon: 'fas fa-chalkboard' },
+      { route: '/admin/sro', label: 'SRO', icon: 'fas fa-id-badge' },
+      { route: '/admin/accounts', label: 'Accounts', icon: 'fas fa-book' },
+      {
+        route: '/admin/calendar',
+        label: 'Calendar',
+        icon: 'fas fa-calendar-alt',
+      },
+      { route: '/admin/course', label: 'Course', icon: 'fas fa-book-open' },
+      { route: '/admin/subject', label: 'Subject', icon: 'fas fa-book-reader' },
+    ];
+
+    const sroItems: SidebarItem[] = [
+      {
+        route: '/sro/dashboard',
+        label: 'Dashboard',
+        icon: 'fas fa-tachometer-alt',
+      },
+      {
+        route: '/sro/class',
+        label: 'Class',
+        icon: 'fas fa-chalkboard-teacher',
+      },
+      {
+        route: '/sro/student/all',
+        label: 'Student',
+        icon: 'fas fa-user-graduate',
+      },
+      { route: '/sro/teacher', label: 'Teacher', icon: 'fas fa-chalkboard' },
+      {
+        route: '/sro/calendar',
+        label: 'Calendar',
+        icon: 'fas fa-calendar-alt',
+      },
+      { route: '/sro/course', label: 'Course', icon: 'fas fa-book-open' },
+      { route: '/sro/subject', label: 'Subject', icon: 'fas fa-book-reader' },
+    ];
+
+    const teacherItems: SidebarItem[] = [
+      {
+        route: '/teacher/dashboard',
+        label: 'Dashboard',
+        icon: 'fas fa-tachometer-alt',
+      },
+      {
+        route: '/teacher/class',
+        label: 'Class',
+        icon: 'fas fa-chalkboard-teacher',
+      },
+      {
+        route: '/teacher/student',
+        label: 'Student',
+        icon: 'fas fa-user-graduate',
+      },
+    ];
+
+    const studentItems: SidebarItem[] = [
+      {
+        route: '/student/dashboard',
+        label: 'Dashboard',
+        icon: 'fas fa-tachometer-alt',
+      },
+      {
+        route: '/student/assignments',
+        label: 'Assignments',
+        icon: 'fas fa-tasks',
+      },
+    ];
+
+    switch (this.role) {
+      case 'ROLE_ADMIN':
+        this.sidebarItems = adminItems;
+        break;
+      case 'ROLE_SRO':
+        this.sidebarItems = sroItems;
+        break;
+      case 'ROLE_TEACHER':
+        this.sidebarItems = teacherItems;
+        break;
+      case 'ROLE_STUDENT':
+        this.sidebarItems = studentItems;
+        break;
+      // Add other roles if needed
+      default:
+        this.sidebarItems = []; // Show nothing if role is invalid
+        break;
+    }
+  }
 
   toggleSidebar() {
     this.toggle.emit();
   }
 
-  toggleStudentDropdown() {
-    this.isStudentDropdownOpen = !this.isStudentDropdownOpen;
-  }
-  toggleAttendanceDropdown() {
-    this.isAttendanceDropdownOpen = !this.isAttendanceDropdownOpen;
+  // Method to toggle dropdowns
+  toggleDropdown(item: SidebarItem) {
+    if (item.children) {
+      item.isOpen = !item.isOpen;
+    }
   }
 }

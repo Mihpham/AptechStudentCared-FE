@@ -10,7 +10,7 @@ import { DarkModeService } from './core/services/dark-mode.service';
 })
 export class AppComponent {
   title = 'school_management';
-  collapsed = false;
+  collapsed: boolean = false; // Hoặc true nếu muốn sidebar mở rộng ban đầu
 
   constructor(
     private router: Router,
@@ -28,7 +28,6 @@ export class AppComponent {
   handleToggleSidebar() {
     this.collapsed = !this.collapsed;
   }
-
   isAuthenticated(): boolean {
     return this.authService.isAuthenticated();
   }

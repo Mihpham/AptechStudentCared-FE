@@ -1,43 +1,22 @@
-<div *ngIf="isAuthenticated() && hasRole('ROLE_ADMIN')"  class="flex h-full w-full" [ngClass]="darkModeService.darkModeSignal()">
-  <aside [ngClass]="{'sidebar-collapsed': collapsed, 'sidebar-expanded': !collapsed}" class="sidebar bg-gray-200 h-screen p-4">
-    <app-sidebar class="bg-slate-200" [collapsed]="collapsed" (toggle)="handleToggleSidebar()"></app-sidebar>
+<div *ngIf="isAuthenticated(); else unauthenticated" class="flex h-full full-height w-full"
+  [ngClass]="darkModeService.darkModeSignal()">
+
+  <aside *ngIf="hasRole('ROLE_ADMIN') || hasRole('ROLE_SRO') || hasRole('ROLE_TEACHER') || hasRole('ROLE_STUDENT')"
+    [class.sidebar-collapsed]="collapsed" 
+    [class.sidebar-expanded]="!collapsed"
+    class="sidebar p-4 bg-slate-200 dark:bg-stone-900 transition-width duration-300">
+    <app-sidebar [collapsed]="collapsed" (toggle)="handleToggleSidebar()"></app-sidebar>
   </aside>
 
-  <div class="main-content flex-1 flex flex-col bg-slate-200 dark:bg-gray-700">
+  <div class="main-content flex-1 flex flex-col bg-slate-200 dark:bg-gray-700 transition-colors duration-300">
     <app-navbar></app-navbar>
-    <app-breadcrumbs class=" dark:bg-gray-900"></app-breadcrumbs>
+    <app-breadcrumbs class="dark:bg-gray-900"></app-breadcrumbs>
     <main class="flex-1 h-full dark:bg-gray-900">
       <router-outlet></router-outlet>
     </main>
   </div>
 </div>
 
-<div *ngIf="!isAuthenticated()">
+<ng-template #unauthenticated>
   <router-outlet></router-outlet>
-</div>
-
-<ng-container *ngIf="hasRole('ROLE_STUDENT')">
-  <div class="main-content flex-1 flex flex-col bg-slate-200 dark:bg-gray-700">
-    <app-navbar></app-navbar>
-    <app-breadcrumbs class=" dark:bg-gray-900"></app-breadcrumbs>
-    <main class="flex-1 h-full dark:bg-gray-900">
-      <router-outlet></router-outlet>
-    </main>
-  </div>
-</ng-container>
-<ng-container *ngIf="hasRole('ROLE_TEACHER')">
-  <div class="main-content flex-1 flex flex-col bg-slate-200 dark:bg-gray-700">
-    <app-navbar></app-navbar>
-    <app-breadcrumbs class=" dark:bg-gray-900"></app-breadcrumbs>
-    <main class="flex-1 h-full dark:bg-gray-900">
-      <router-outlet></router-outlet>
-    </main>
-  </div></ng-container>
-<ng-container *ngIf="hasRole('ROLE_SRO')">
-  <div class="main-content flex-1 flex flex-col bg-slate-200 dark:bg-gray-700">
-    <app-navbar></app-navbar>
-    <app-breadcrumbs class=" dark:bg-gray-900"></app-breadcrumbs>
-    <main class="flex-1 h-full dark:bg-gray-900">
-      <router-outlet></router-outlet>
-    </main>
-  </div></ng-container>
+</ng-template>
