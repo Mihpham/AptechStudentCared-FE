@@ -20,7 +20,8 @@ export class SidebarComponent {
   role: string = '';
   sidebarItems: SidebarItem[] = [];
   @Input() collapsed: boolean = false;
-  @Output() toggle = new EventEmitter<void>();  constructor(public authService: AuthService) {
+  @Output() toggle = new EventEmitter<void>();
+  constructor(public authService: AuthService) {
     this.role = this.authService.getRole()!; // Assert not null
     this.setSidebarItems();
   }
@@ -42,7 +43,7 @@ export class SidebarComponent {
         label: 'Student',
         route: '/admin/student/all',
         icon: 'fas fa-user-graduate',
-        isOpen: false, 
+        isOpen: false,
         children: [
           {
             route: '/admin/student/all',
@@ -95,9 +96,37 @@ export class SidebarComponent {
         icon: 'fas fa-chalkboard-teacher',
       },
       {
-        route: '/sro/student/all',
         label: 'Student',
+        route: '/admin/student/all',
         icon: 'fas fa-user-graduate',
+        isOpen: false,
+        children: [
+          {
+            route: '/admin/student/all',
+            label: 'All Students',
+            icon: 'fas fa-users',
+          },
+          {
+            route: '/admin/student/studying',
+            label: 'Studying',
+            icon: 'fas fa-book-reader',
+          },
+          {
+            route: '/admin/student/delay',
+            label: 'Delay',
+            icon: 'fas fa-clock',
+          },
+          {
+            route: '/admin/student/dropout',
+            label: 'Dropout',
+            icon: 'fas fa-door-open',
+          },
+          {
+            route: '/admin/student/graduated',
+            label: 'Graduated',
+            icon: 'fas fa-graduation-cap',
+          },
+        ],
       },
       { route: '/sro/teacher', label: 'Teacher', icon: 'fas fa-chalkboard' },
       {
