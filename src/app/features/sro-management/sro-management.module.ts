@@ -2,8 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SroManagementRoutingModule } from './sro-management-routing.module';
 import { SroComponent } from './sro.component';
-import { SidebarSroComponent } from 'src/app/layout/components/sidebar-sro/sidebar-sro.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -15,7 +15,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
   ],
   imports: [
     CommonModule,
-    SroManagementRoutingModule
+    SroManagementRoutingModule,
+    RouterModule // Add RouterModule here
   ]
 })
 export class SroManagementModule { }
