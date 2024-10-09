@@ -149,6 +149,7 @@ import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/e
     MatTooltipModule,
     CdkTableModule, 
     NgxPaginationModule,
-  ]
+  ],
+  
 })
 export class AdminManagementModule { }

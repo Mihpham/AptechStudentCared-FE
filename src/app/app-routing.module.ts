@@ -38,9 +38,12 @@ const routes: Routes = [
   },
   {
     path: 'sro',
-    component: SroComponent,
     canActivate: [AuthGuard],
     data: { role: 'ROLE_SRO' }, // Changed from 'SRO' to 'ROLE_SRO'
+    loadChildren: () =>
+    import('./features/sro-management/sro-management.module').then(
+      (m) => m.SroManagementModule
+    ),
   },
   { path: 'access-denied', component: NotAuthComponent }, // Route for access denied
 

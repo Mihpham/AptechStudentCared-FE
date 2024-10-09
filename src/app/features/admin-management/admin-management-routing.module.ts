@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../core/auth/auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { ExamMarkComponent } from './exam-mark/exam-mark.component';
 import { TeacherComponent } from './teacher/teacher.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/exam-mark-all-subject.component';

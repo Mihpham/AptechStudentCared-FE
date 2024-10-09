@@ -1,6 +1,6 @@
 <div class="container bg-slate-200 mx-auto p-6 w-full">
   <!-- Header: Student Name -->
-  <div *ngFor="let performance of perfperformanceData1">
+  <div *ngFor="let performance of performanceData">
     <div class="text-center text-2xl font-bold mb-6">
       {{ performance.studentName }} <!-- Accessing the studentName property -->
     </div>
@@ -35,7 +35,7 @@
     </div>
 
     <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-      <div class="col-span-2 grid grid-cols-2 md:grid-cols-3 gap-6 mb-8 bg-white">
+      <div class="col-span-2 grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 bg-white">
         <div *ngFor="let mark of performanceMarks; let i = index" class="text-center text-sm p-4 rounded-md shadow-sm">
           <div class="font-semibold mb-2 whitespace-nowrap">
             {{ mark.label }}
@@ -45,7 +45,7 @@
         </div>
       </div>
 
-      <div *ngFor="let performance of perfperformanceData1"
+      <div *ngFor="let performance of performanceData"
         class="col-span-1 grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 rounded-md">
         <!-- Present -->
         <div class="p-6 bg-green-100 rounded-lg text-center shadow-sm">
@@ -95,13 +95,14 @@
   </div>
 
   <!-- Performance Line Chart -->
-  <div class="bg-white rounded-lg shadow-md p-6">
-    <svg id="performance-chart" viewBox="0 0 600 300" class="w-full h-full" aria-label="Performance Line Chart"></svg>
-    <div class="flex justify-center space-x-6 mt-6">
-      <div><span class="text-green-500">●</span> Attendance</div>
-      <div><span class="text-purple-500">●</span> Theory Exam</div>
-      <div><span class="text-red-500">●</span> Practical Exam</div>
-      <div><span class="text-blue-500">●</span> Evaluation</div>
-    </div>
+ <!-- Performance Line Chart -->
+ <div class="bg-white rounded-lg shadow-md p-6">
+  <svg id="performance-chart" viewBox="0 0 600 300" class="w-full h-full" aria-label="Performance Line Chart"></svg>
+  <div class="flex justify-center space-x-6 mt-6">
+    <div><span class="text-green-500">●</span> Attendance</div>
+    <div><span class="text-yellow-500">●</span> Theory</div>
+    <div><span class="text-green-700">●</span> Practical</div>
   </div>
+</div>
+
 </div>

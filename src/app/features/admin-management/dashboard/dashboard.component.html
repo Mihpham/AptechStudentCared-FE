@@ -1,20 +1,20 @@
 <div class="flex-1 bg-gray-50 p-6 dark:bg-slate-900">
     <div class="grid grid-cols-4 gap-4 mb-4">
-        <div class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">48</span>
-            <span class="text-gray-600">Student</span>
+        <div *ngIf="students" class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
+            <span class="text-3xl font-bold">{{totalStudents}}</span>
+            <span class="text-gray-600">STUDENT</span>
         </div>
-        <div class="bg-yellow-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">4</span>
-            <span class="text-gray-600">Teacher</span>
+        <div *ngIf="teachers" class="bg-yellow-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
+            <span class="text-3xl font-bold">{{totalTeacher}}</span>
+            <span class="text-gray-600">TEACHER</span>
         </div>
-        <div class="bg-yellow-200 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">16</span>
-            <span class="text-gray-600">Sro</span>
+        <div *ngIf="sros" class="bg-yellow-200 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
+            <span class="text-3xl font-bold">{{totalSros}}</span>
+            <span class="text-gray-600">SRO</span>
         </div>
-        <div class="bg-cyan-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">2</span>
-            <span class="text-gray-600">Class</span>
+        <div *ngIf="classes" class="bg-cyan-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
+            <span class="text-3xl font-bold">{{totalClasses}}</span>
+            <span class="text-gray-600">CLASS</span>
         </div>
     </div>
 </div>

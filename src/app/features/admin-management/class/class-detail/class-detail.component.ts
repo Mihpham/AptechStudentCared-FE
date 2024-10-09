@@ -15,6 +15,8 @@ import { StudentResponse } from '../../model/student-response.model.';
 })
 export class ClassDetailComponent implements OnInit {
   classId: number | null = null;
+  subjectId: number | null = null;
+
   classDetails: any;
   students: StudentResponse[] = [];
 
