@@ -1,4 +1,5 @@
 export interface StudentPerformanceResponse {
+    id:number;
     studentName: string;
     subjectCode: string;
     theoreticalScore: number;
