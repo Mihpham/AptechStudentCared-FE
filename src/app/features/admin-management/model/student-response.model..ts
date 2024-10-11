@@ -1,5 +1,6 @@
 export interface StudentResponse {
   userId: number;
+  classId:number;
   image?: string;
   rollNumber: string;
   fullName: string;

@@ -1,6 +1,7 @@
 // src/app/models/student-request.model.ts
 export interface StudentRequest {
   userId : string;
+  classId:number;
   image?: string;
   fullName: string;
   password?: string;
