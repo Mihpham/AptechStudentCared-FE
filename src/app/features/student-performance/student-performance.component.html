@@ -3,7 +3,6 @@
     <div *ngFor="let performance of performanceData">
         <div class="text-center text-2xl font-bold mb-6">
             {{ performance.studentName }}
-            <!-- Accessing the studentName property -->
         </div>
     </div>
 
@@ -13,11 +12,12 @@
             <div class="flex items-center">
                 <!-- Semester Selection -->
                 <label for="semester" class="font-semibold mr-2">Semester:</label>
-                <select id="semester" [(ngModel)]="selectedSemester" (change)="onSemesterChange($event)" class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" aria-label="Select Semester">
-                  <option value="All">All</option> 
-                  <option *ngFor="let semester of semesters" [value]="semester">
-                    {{ semester }}
-                  </option>
+                <select id="semester" [(ngModel)]="selectedSemester" (change)="onSemesterChange($event)"
+                    class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    aria-label="Select Semester">
+                    <option *ngFor="let semester of semesters" [value]="semester">
+                        {{ semester }}
+                    </option>
                 </select>
 
             </div>
@@ -25,7 +25,8 @@
 
         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
             <div class="col-span-2 grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 bg-white">
-                <div *ngFor="let mark of performanceMarks; let i = index" class="text-center text-sm p-4 rounded-md shadow-sm">
+                <div *ngFor="let mark of performanceMarks; let i = index"
+                    class="text-center text-sm p-4 rounded-md shadow-sm">
                     <div class="font-semibold mb-2 whitespace-nowrap">
                         {{ mark.label }}
                     </div>
@@ -34,7 +35,8 @@
                 </div>
             </div>
 
-            <div *ngFor="let performance of performanceData" class="col-span-1 grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 rounded-md">
+            <div *ngFor="let performance of performanceData"
+                class="col-span-1 grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 rounded-md">
                 <!-- Present -->
                 <div class="p-6 bg-green-100 rounded-lg text-center shadow-sm">
                     <div class="font-bold text-2xl text-green-700">
@@ -90,7 +92,8 @@
     <!-- Performance Line Chart -->
     <!-- Performance Line Chart -->
     <div class="bg-white rounded-lg shadow-md p-6">
-        <svg id="performance-chart" viewBox="0 0 600 300" class="w-full h-full" aria-label="Performance Line Chart"></svg>
+        <svg id="performance-chart" viewBox="0 0 600 300" class="w-full h-full"
+            aria-label="Performance Line Chart"></svg>
         <div class="flex justify-center space-x-6 mt-6">
             <div><span class="text-green-500">●</span> Attendance</div>
             <div><span class="text-yellow-500">●</span> Theory</div>

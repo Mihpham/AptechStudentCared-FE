@@ -114,111 +114,64 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     if (performanceData.length > 0) {
       // Clear any existing SVG content
       d3.select('#performance-chart').selectAll('*').remove();
-
+  
       const margin = { top: 20, right: 30, bottom: 50, left: 60 };
       const width = 600 - margin.left - margin.right;
       const height = 300 - margin.top - margin.bottom;
-
+  
       const svg = d3
         .select('#performance-chart')
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom)
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
-
+  
       // Define scales
       const x = d3
         .scalePoint<string>()
-        .domain(performanceData.map((d) => d.subjectCode))
+        .domain(this.semesters) // Use semesters for x-axis
         .range([0, width])
         .padding(0.5);
-
+  
       const y = d3
         .scaleLinear<number>()
-        .domain([0, 100])
+        .domain([0, 100]) // Assuming percentage scale
         .range([height, 0]);
-
-      // Define line generators for the three metrics
-      const lineAttendance = d3
+  
+      // Define line generator for subject marks over semesters
+      const line = d3
         .line<StudentPerformanceResponse>()
-        .x((d) => x(d.subjectCode)!)
-        .y((d) => y(d.attendancePercentage))
+        .x((d) => x(d.semester)!)
+        .y((d) => y(d.theoreticalPercentage)) // Adjust based on the desired metric (e.g., theoreticalPercentage)
         .curve(d3.curveMonotoneX);
-
-      const lineTheory = d3
-        .line<StudentPerformanceResponse>()
-        .x((d) => x(d.subjectCode)!)
-        .y((d) => y(d.theoreticalPercentage))
-        .curve(d3.curveMonotoneX);
-
-      const linePractice = d3
-        .line<StudentPerformanceResponse>()
-        .x((d) => x(d.subjectCode)!)
-        .y((d) => y(d.practicalPercentage))
-        .curve(d3.curveMonotoneX);
-    
-      // Add X axis
-      svg
-        .append('g')
-        .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(x))
-        .selectAll('text')
-        .attr('dy', '1em')
-        .attr('dx', '-0.8em')
-        .attr('transform', 'rotate(-45)')
-        .style('text-anchor', 'end');
-
-      // Add Y axis
-      svg.append('g').call(d3.axisLeft(y));
-
-      // Add lines
-      svg
-        .append('path')
-        .datum(performanceData)
-        .attr('fill', 'none')
-        .attr('stroke', '#4285F4') // Attendance - Blue
-        .attr('stroke-width', 2)
-        .attr('d', lineAttendance);
-
-      svg
-        .append('path')
-        .datum(performanceData)
-        .attr('fill', 'none')
-        .attr('stroke', '#FBBC05') // Theory - Yellow
-        .attr('stroke-width', 2)
-        .attr('d', lineTheory);
-
-      svg
-        .append('path')
-        .datum(performanceData)
-        .attr('fill', 'none')
-        .attr('stroke', '#34A853') // Practice - Green
-        .attr('stroke-width', 2)
-        .attr('d', linePractice);
-
-      // Define categories with type-safe keys
-      const categories: { 
-        key: 'attendancePercentage' | 'theoreticalPercentage' | 'practicalPercentage'; 
-        color: string; 
-        label: string 
-      }[] = [
-        { key: 'attendancePercentage', color: '#4285F4', label: 'Attendance' },
-        { key: 'theoreticalPercentage', color: '#FBBC05', label: 'Theoretical' },
-        { key: 'practicalPercentage', color: '#34A853', label: 'Practical' },
-      ];
-
-      // Add points for each category
-      categories.forEach((category) => {
+  
+      // Group data by subjectCode
+      const subjects = d3.group(performanceData, (d) => d.subjectCode);
+  
+      // Define color scale for subjects
+      const color = d3.scaleOrdinal(d3.schemeCategory10).domain([...subjects.keys()]);
+  
+      // Draw a line for each subject
+      subjects.forEach((subjectData, subjectCode) => {
         svg
-          .selectAll(`.dot-${category.key}`)
-          .data(performanceData)
+          .append('path')
+          .datum(subjectData)
+          .attr('fill', 'none')
+          .attr('stroke', color(subjectCode) as string)
+          .attr('stroke-width', 2)
+          .attr('d', line);
+  
+        // Add points for each semester
+        svg
+          .selectAll(`.dot-${subjectCode}`)
+          .data(subjectData)
           .enter()
           .append('circle')
-          .attr('class', `dot-${category.key}`)
+          .attr('class', `dot-${subjectCode}`)
           .attr('cx', (d) => x(d.semester)!)
-          .attr('cy', (d) => y(d[category.key]))
+          .attr('cy', (d) => y(d.theoreticalPercentage)) // Adjust based on the desired metric
           .attr('r', 4)
-          .attr('fill', category.color)
+          .attr('fill', color(subjectCode) as string)
           .on('mouseover', (event: any, d) => {
             const tooltip = d3
               .select('body')
@@ -230,23 +183,38 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
               .style('border', '1px solid #d4d4d4')
               .style('border-radius', '4px')
               .style('pointer-events', 'none')
-              .html(`${category.label}: ${d[category.key]}%`);
-
+              .html(`${subjectCode}: ${d.theoreticalPercentage}%`);
+  
             tooltip
               .style('left', event.pageX + 10 + 'px')
               .style('top', event.pageY - 28 + 'px');
-
+  
             d3.select(event.currentTarget).transition().attr('r', 6).attr('fill', '#000');
           })
           .on('mouseout', (event) => {
             d3.select('.tooltip').remove();
-            d3.select(event.currentTarget).transition().attr('r', 4).attr('fill', category.color);
+            d3.select(event.currentTarget).transition().attr('r', 4).attr('fill', color(subjectCode) as string);
           });
       });
+  
+      // Add X axis
+      svg
+        .append('g')
+        .attr('transform', `translate(0,${height})`)
+        .call(d3.axisBottom(x))
+        .selectAll('text')
+        .attr('dy', '1em')
+        .attr('dx', '-0.8em')
+        .attr('transform', 'rotate(-45)')
+        .style('text-anchor', 'end');
+  
+      // Add Y axis
+      svg.append('g').call(d3.axisLeft(y));
     } else {
       console.warn('No performance data available to create the chart.');
     }
   }
+  
 
   onSubjectChange(event: Event): void {
     const target = event.target as HTMLSelectElement;
