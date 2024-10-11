@@ -52,9 +52,10 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   }
 
   getSubjectsBySemester(semester: string): void {
-    if (semester && this.classId) {
-      this.classService.getSubjects(this.classId, semester).subscribe(
+    if (this.classId && this.studentId) { // Ensure both classId and studentId are available
+      this.classService.getSubjects(this.classId, this.studentId, semester === 'All' ? undefined : semester).subscribe(
         (data: any) => {
+          console.log('Subjects response:', data); // Log the full response for debugging
           if (data && data[semester]) {
             this.subjects = data[semester].map((subject: any) => ({
               id: subject.id,
@@ -73,6 +74,8 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       );
     }
   }
+  
+  
 
   createCircularCharts(chartId: string, value: number): void {
     const width = 100;
@@ -260,6 +263,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       this.getSubjectsBySemester(this.selectedSemester);
     }
   }
+  
 
   getStudentPerformance(): void {
     if (this.classId && this.studentId && this.selectedSubjectId) {
