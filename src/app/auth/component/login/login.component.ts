@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
           returnUrl = '/teacher';
           break;
         case 'ROLE_STUDENT':
-          returnUrl = '/student';
+          returnUrl = '/student/dashboard-student';
           break;
       }
       this.router.navigate([returnUrl]);
@@ -108,7 +108,7 @@ export class LoginComponent implements OnInit {
                 returnUrl = '/teacher';
                 break;
             case 'ROLE_STUDENT':
-                returnUrl = '/student';
+                returnUrl = '/student/dashboard-student';
                 break;
             default:
                 returnUrl = '/'; // Fallback for undefined roles

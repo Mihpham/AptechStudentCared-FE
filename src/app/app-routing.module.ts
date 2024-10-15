@@ -32,10 +32,14 @@ const routes: Routes = [
   },
   {
     path: 'student',
-    component: StudentComponent,
     canActivate: [AuthGuard],
-    data: { role: 'ROLE_STUDENT' }, // Changed from 'STUDENT' to 'ROLE_STUDENT'
-  },
+    data: { role: 'ROLE_STUDENT' }, // Kiểm tra vai trò cho sinh viên
+    loadChildren: () =>
+      import('./features/student-management/student-management.module').then(
+        (m) => m.StudentManagementModule
+      ),
+  }, 
+
   {
     path: 'sro',
     canActivate: [AuthGuard],

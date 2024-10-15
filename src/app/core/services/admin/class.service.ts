@@ -67,5 +67,13 @@ export class ClassService {
       })
     );
   }
-  
+  getClassesByUser(userId: number): Observable<ClassResponse[]> {
+    const url = `${this.baseUrl}/user/${userId}`;
+    return this.http.get<ClassResponse[]>(url).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => new Error('Error fetching classes for user: ' + error.message));
+      })
+    );
+  }
+
 }
