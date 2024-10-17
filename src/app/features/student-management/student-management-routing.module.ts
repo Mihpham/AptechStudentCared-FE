@@ -1,22 +1,18 @@
 import { NgModule } from '@angular/core';
 import { Router, RouterModule, Routes } from '@angular/router';
-import { StudentDashboardComponent } from './student-dashboard/student-dashboard.component';
 import { AuthGuard } from 'src/app/core/auth/auth.guard';
-import { ClassResponse } from '../admin-management/model/class/class-response.model';
-import { ClassService } from 'src/app/core/services/admin/class.service';
-import { UserProfile } from 'src/app/shared/models/user-profile.model';
-import { UserProfileService } from 'src/app/core/services/profile.service';
 import { ClassStudentDetailComponent } from './class-student-detail/class-student-detail.component';
 import { ClassmatesComponent } from './classmates/classmates.component';
 import { ExamMarkStudentComponent } from './exam-mark-student/exam-mark-student.component';
 import { AttendanceStudentComponent } from './attendance-student/attendance-student.component';
 import { StudentAssignmentMarkComponent } from './student-assignment-mark/student-assignment-mark.component';
 import { TeachersStudentComponent } from './teachers-student/teachers-student.component';
+import { StudentComponent } from './student.component';
 
 const routes: Routes = [
   {
-    path: 'dashboard-student',
-    component: StudentDashboardComponent,
+    path: 'dashboard',
+    component: StudentComponent,
     canActivate: [AuthGuard],
     data: { breadcrumb: 'Student Dashboard' },
   },

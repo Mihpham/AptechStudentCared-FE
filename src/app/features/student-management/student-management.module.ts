@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { StudentManagementRoutingModule } from './student-management-routing.module';
 import { RouterModule } from '@angular/router';
-import { StudentDashboardComponent } from './student-dashboard/student-dashboard.component';
 import { ClassService } from 'src/app/core/services/admin/class.service';
 import { UserProfileService } from 'src/app/core/services/profile.service';
 import { ClassStudentDetailComponent } from './class-student-detail/class-student-detail.component';
@@ -27,12 +26,11 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { AttendanceStudentComponent } from './attendance-student/attendance-student.component';
 import { TeachersStudentComponent } from './teachers-student/teachers-student.component';
 import { StudentAssignmentMarkComponent } from './student-assignment-mark/student-assignment-mark.component';
-
+import { CalendarModule } from 'primeng/calendar'; // Import CalendarModule
 @NgModule({
   
   schemas: [NO_ERRORS_SCHEMA  ],
   declarations: [
-    StudentDashboardComponent,
     ClassStudentDetailComponent,
     ClassmatesComponent,
     ExamMarkStudentComponent,
@@ -63,6 +61,8 @@ import { StudentAssignmentMarkComponent } from './student-assignment-mark/studen
     MatTooltipModule,
     CdkTableModule, 
     NgxPaginationModule,
+    CalendarModule,
+    
   ],
   providers: [
     ClassService,

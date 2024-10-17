@@ -1,7 +1,12 @@
 // sidebar.component.ts
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/auth/auth.service';
+import { ClassService } from 'src/app/core/services/admin/class.service';
+import { UserProfileService } from 'src/app/core/services/profile.service';
+import { ClassResponse } from 'src/app/features/admin-management/model/class/class-response.model';
+import { UserProfile } from 'src/app/shared/models/user-profile.model';
 
 interface SidebarItem {
   route?: string;
@@ -19,13 +24,52 @@ interface SidebarItem {
 export class SidebarComponent {
   role: string = '';
   sidebarItems: SidebarItem[] = [];
+  userProfile: UserProfile | undefined;
+  userId: number | null = null;  // giả sử userId lấy từ session hoặc từ route
+  classes: ClassResponse[] = [];
   @Input() collapsed: boolean = false;
   @Output() toggle = new EventEmitter<void>();
-  constructor(public authService: AuthService) {
+  constructor(
+    public authService: AuthService,
+    private classService: ClassService,
+    private router: Router,
+    private profileService: UserProfileService
+  ) {
     this.role = this.authService.getRole()!; // Assert not null
     this.setSidebarItems();
   }
+  
+ 
+  ngOnInit(): void {
+    this.loadUserProfile(); 
+    // this.getClassesByUser(this.userId); 
+  } 
 
+
+  loadUserProfile(): void {
+    this.profileService.getUserProfile().subscribe(
+      (data) => {
+        this.userProfile = data;
+        this.userId = this.userProfile.id;
+        this.getClassesByUser(this.userId);
+      },
+      (error) => {
+        console.error('Error fetching user profile', error);
+      }
+    );
+  }
+  
+  getClassesByUser(userId: number) {
+    this.classService.getClassesByUser(userId).subscribe({
+      next: (data) => {
+        this.classes = data;
+        this.setSidebarItems(); // Ensure this is called here
+      },
+      error: (err) => {
+        console.error('Error fetching classes for user', err);
+      }
+    });
+  }
   // Set sidebarItems based on role
   private setSidebarItems() {
     const adminItems: SidebarItem[] = [
@@ -163,11 +207,28 @@ export class SidebarComponent {
         icon: 'fas fa-tachometer-alt',
       },
       {
+        label: 'Enrolled',
+        icon: 'fa-solid fa-circle-check',
+        isOpen: false,
+        children: [
+          ...this.classes.map(classItem => ({
+            route: `/student/class-student-detail/${classItem.id}`,  
+            label: classItem.className,  
+            icon: 'fas fa-school',  
+          })),
+        ],  
+      },
+     
+      {
         route: '/student/assignments',
         label: 'Assignments',
         icon: 'fas fa-tasks',
       },
+      
+      
     ];
+    
+    console.log(studentItems);
 
     switch (this.role) {
       case 'ROLE_ADMIN':
