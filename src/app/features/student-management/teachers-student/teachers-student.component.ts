@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ClassService } from 'src/app/core/services/admin/class.service';
 import { StudentResponse } from '../../admin-management/model/student-response.model.';
 import { ClassResponse } from '../../admin-management/model/class/class-response.model';
+import { TeacherResponse } from '../../admin-management/model/teacher/teacher-response.model';
+import { TeacherService } from 'src/app/core/services/admin/teacher.service';
 
 @Component({
   selector: 'app-teachers-student',
@@ -15,11 +17,13 @@ export class TeachersStudentComponent implements OnInit {
 
   classDetails: ClassResponse | null = null;
   students: StudentResponse[] = [];
+  teachers: TeacherResponse[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private classService: ClassService,
     private router: Router,
+    private teacherService : TeacherService
   ) {}
 
   ngOnInit(): void {
@@ -28,6 +32,7 @@ export class TeachersStudentComponent implements OnInit {
       this.classId = id ? +id : null;
       if (this.classId) {
         this.getClassDetails(this.classId);
+        this.loadTeachers(this.classId);
       } else {
         console.error('Class ID is undefined or invalid.');
       }
@@ -78,6 +83,18 @@ export class TeachersStudentComponent implements OnInit {
       this.getClassDetails(this.classId);
     }
   }
+  loadTeachers(id: number) {
+    this.teacherService.getTeachersByClassId(id).subscribe({
+        next: (data) => {
+          this.teachers = data;
+          console.log(this.teachers)
+        },
+        error: (err) => {
+          console.error('Error fetching classes for user', err);
+        }
+      });
+  }
+
 
   
 
