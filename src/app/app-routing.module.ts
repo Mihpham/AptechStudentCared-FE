@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/auth/auth.guard';
 import { TeacherComponent } from './features/teacher-management/teacher.component';
 import { StudentComponent } from './features/student-management/student.component';
@@ -8,6 +7,7 @@ import { ErrorComponent } from './features/pages/error/error.component';
 import { NotAuthComponent } from './features/pages/not-auth/not-auth.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { StudentPerformanceComponent } from './features/student-performance/student-performance.component';
+import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   // Lazy loading routes

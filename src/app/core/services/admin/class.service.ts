@@ -55,16 +55,17 @@ export class ClassService {
     );
   }  
 
-  getSubjects(classId: number, userId: number, semester?: string): Observable<any> {
+  getAllSubjectsBySemester(classId: number, userId: number, semesterName?: string): Observable<StudentPerformanceResponse[]> {
     let url = `${this.baseUrl}/${classId}/user/${userId}/subjects`;
-    if (semester) {
-      url += `?semesterName=${semester}`;
+    if (semesterName) {
+      url += `?semesterName=${semesterName}`;
     }
 
-    return this.http.get(url).pipe(
+    return this.http.get<StudentPerformanceResponse[]>(url).pipe(
       catchError((error: HttpErrorResponse) => {
         return throwError(() => new Error('Error fetching subjects: ' + error.message));
       })
     );
   }
+  
 }
