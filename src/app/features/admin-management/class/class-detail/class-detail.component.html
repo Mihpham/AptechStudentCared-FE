@@ -30,31 +30,15 @@
         </div>
         <!-- Right-aligned buttons -->
         <div class="flex gap-2">
-            <button (click)="onAdd()"
-                class="bg-white mt-6 text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow-md transition duration-300 ease-in-out">
+            <button (click)="onAdd()" class="bg-white mt-6 text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow-md transition duration-300 ease-in-out">
                 <i class="fa-solid fa-plus mr-1"></i> Add
             </button>
 
             <a routerLink="/admin/exam/exam-mark-all-subject/{{classDetails.id}}" routerLinkActive="active-link">
-                <button
-                    class="bg-white mt-6 text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow-md transition duration-300 ease-in-out">
+                <button class="bg-white mt-6 text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow-md transition duration-300 ease-in-out">
                     <i class="fa-solid fa-book-open mr-1"></i> Mark
                 </button>
             </a>
-            <a routerLink="/admin/attendance/{{classDetails.id}}/{{classDetails.subjectId}}" routerLinkActive="active-link">
-                <button
-                    class="bg-white mt-6 text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow-md transition duration-300 ease-in-out">
-                    <i class="fa-solid fa-check mr-1"></i> Attendance
-                </button>
-            </a>
-            <button
-                class="bg-white mt-6 text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow-md transition duration-300 ease-in-out">
-                <i class="fa-solid fa-calendar-alt mr-1"></i>Calendel
-            </button>
-            <button
-                class="bg-white mt-6 text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow-md transition duration-300 ease-in-out">
-                <i class="fa-solid fa-filter mr-1"></i> Filter
-            </button>
         </div>
 
     </div>
@@ -75,12 +59,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let student of classDetails.students"
-                    class="border-t border-gray-200 dark:border-gray-600 cursor-pointer"
-                    [routerLink]="['/admin/student-performance', classDetails.id,student.userId]">
+                <tr *ngFor="let student of classDetails.students" class="border-t border-gray-200 dark:border-gray-600 cursor-pointer" [routerLink]="['/admin/student-performance', classDetails.id,student.userId]">
                     <td class="px-4 py-2">
-                        <img [src]="student.image ? student.image : 'assets/images/avatar-default.webp'" alt="Avatar"
-                            class="w-10 h-10 rounded-full object-cover" />
+                        <img [src]="student.image ? student.image : 'assets/images/avatar-default.webp'" alt="Avatar" class="w-10 h-10 rounded-full object-cover" />
                     </td>
                     <td class="px-4 py-2">{{ student.fullName }}</td>
                     <td class="px-4 py-2">{{ student.rollNumber }}</td>
@@ -98,10 +79,6 @@
                     <td class="py-2 px-4 text-center">
                         <button (click)="onUpdate(student, $event)">
                             <i class="fa fa-edit"></i>
-                        </button>
-                        <button class="text-red-400 hover:text-red-600 p-2"
-                            (click)="deleteStudent(student.userId); $event.stopPropagation()">
-                            <i class="fa fa-trash"></i>
                         </button>
                     </td>
                 </tr>
