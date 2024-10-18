@@ -131,26 +131,29 @@
                 {{student.status || 'Unknown'}}
             </mat-cell>
         </ng-container>
-
         <!-- Actions Column -->
         <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-50 dark:bg-gray-800"> Actions
             </mat-header-cell>
             <mat-cell *matCellDef="let student" class="p-2 dark:text-gray-200 dark:bg-gray-600">
-                <button class="text-blue-400 hover:text-blue-600" matTooltip="Edit Student" (click)="onUpdate(student, $event)">
-                    <mat-icon>edit</mat-icon>
-                </button>
+                <div class="actions flex flex-wrap space-x-2">
+                    <button class="text-blue-400 hover:text-blue-600" matTooltip="Edit Student" (click)="onUpdate(student, $event)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button [routerLink]="['/admin/student-performance', student.classId,student.userId]" class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
+                        <i class="fa-solid fa-filter"></i> Filter
+                    </button>
+                </div>
             </mat-cell>
         </ng-container>
 
         <!-- No Students Available Message -->
-        <div *ngIf="dataSource.data.length === 0" class="no-students text-center text-gray-500">
+        <div *ngIf="dataSource.data.length===0 " class="no-students text-center text-gray-500 ">
             No students available.
         </div>
 
         <!-- No Results Found Message -->
-        <div *ngIf="dataSource.filteredData.length === 0 && dataSource.data.length > 0" class="no-results text-gray-600">
-            No results found.
+        <div *ngIf="dataSource.filteredData.length===0 && dataSource.data.length> 0" class="no-results text-gray-600"> No results found.
         </div>
 
         <!-- Table Header and Rows -->
