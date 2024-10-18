@@ -8,7 +8,7 @@
   
   <!-- Toggle Button -->
   <button (click)="toggleSidebar()"
-          class="p-4 text-gray-700 hover:bg-gray-200 rounded-lg transition dark:text-gray-100 dark:bg-gray-300 dark:hover:bg-gray-700">
+          class="p-4 text-gray-700 hover:bg-gray-200 rounded-lg transition dark:text-gray-100 dark:bg-gray-200 dark:hover:bg-gray-700">
     <i class="fas fa-bars"></i>
   </button>
   
@@ -17,7 +17,7 @@
     <li *ngFor="let item of sidebarItems">
       <ng-container *ngIf="!item.children; else hasChildren">
         <a [routerLink]="item.route" routerLinkActive="active-link"
-           class="flex items-center p-2 text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition duration-300">
+           class="flex items-center p-2 text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-slate-300 ">
           <i [class]="item.icon + ' w-6 h-4 mr-3'"></i>
           <span *ngIf="!collapsed" class="ml-2">{{ item.label }}</span>
         </a>
@@ -26,7 +26,7 @@
       <ng-template #hasChildren>
         <div>
           <button (click)="toggleDropdown(item)"
-                  class="flex items-center  p-2 text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition duration-300 focus:outline-none">
+                  class="flex items-center p-2 text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition focus:bg-slate-300">
             <i [class]="item.icon + ' w-6 h-4 mr-3'"></i>
             <span *ngIf="!collapsed" class=" ml-2">{{ item.label }}</span>
             <i *ngIf="!collapsed" [ngClass]="item.isOpen ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"

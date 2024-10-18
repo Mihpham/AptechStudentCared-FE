@@ -141,32 +141,32 @@ export class SidebarComponent {
       },
       {
         label: 'Student',
-        route: '/admin/student/all',
+        route: '/sro/student/all',
         icon: 'fas fa-user-graduate',
         isOpen: false,
         children: [
           {
-            route: '/admin/student/all',
+            route: '/sro/student/all',
             label: 'All Students',
             icon: 'fas fa-users',
           },
           {
-            route: '/admin/student/studying',
+            route: '/sro/student/studying',
             label: 'Studying',
             icon: 'fas fa-book-reader',
           },
           {
-            route: '/admin/student/delay',
+            route: '/sro/student/delay',
             label: 'Delay',
             icon: 'fas fa-clock',
           },
           {
-            route: '/admin/student/dropout',
+            route: '/sro/student/dropout',
             label: 'Dropout',
             icon: 'fas fa-door-open',
           },
           {
-            route: '/admin/student/graduated',
+            route: '/sro/student/graduated',
             label: 'Graduated',
             icon: 'fas fa-graduation-cap',
           },

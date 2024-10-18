@@ -73,7 +73,15 @@ nav ul li button {
   text-align: left;
   cursor: pointer;
 }
+.fa-chevron-right:before {
+  content: "\f054";
+  padding-left: 28px;
+}
 
+.fa-chevron-down:before {
+  content: "\f078";
+  padding-left: 28px;
+}
 nav.sidebar-collapsed ul li > ul {
   display: none; /* Ensure dropdown is hidden when collapsed */
 }
@@ -83,9 +91,6 @@ nav .chevron-icon {
   transition: transform 0.3s ease-in-out; /* Smooth rotation effect */
 }
 
-nav .chevron-icon.fa-chevron-down {
-  transform: rotate(180deg); /* Rotate icon when dropdown is open */
-}
 
 nav.sidebar-collapsed .chevron-icon {
   display: none; /* Hide dropdown icon when collapsed */
