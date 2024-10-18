@@ -50,6 +50,7 @@ export class StudentAssignmentMarkComponent implements OnInit {
             image: student.image
               ? student.image
               : 'assets/images/avatar-default.webp',
+              classId : student.classId,
             rollNumber: student.rollNumber,
             fullName: student.fullName,
             password: student.password,
