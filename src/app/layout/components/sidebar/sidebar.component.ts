@@ -178,8 +178,7 @@ export class SidebarComponent {
         label: 'Calendar',
         icon: 'fas fa-calendar-alt',
       },
-      { route: '/sro/course', label: 'Course', icon: 'fas fa-book-open' },
-      { route: '/sro/subject', label: 'Subject', icon: 'fas fa-book-reader' },
+   
     ];
 
     const teacherItems: SidebarItem[] = [

@@ -6,7 +6,7 @@
                 <div class=" flex bg-blue-600 text-white p-4 items-center justify-between ">
                     <div>
                         <h2 class="text-xl font-semibold">{{ class.className }}_{{ class.center }}</h2>
-                        <p class=" font-serif">Đào tạo Support</p>
+                        <p class=" ">Train Support</p>
                     </div>
                     <img src="assets/images/logo.png" alt="Logo" class="w-10 h-10 rounded-full border-2  shadow-md">
     
@@ -14,9 +14,9 @@
                 <div class="items-center justify-between p-4">
                     <div class="flex justify-between w-full">
                         <div class="flex flex-col">
-                            <p class="text-gray-700 font-serif">Course : {{ class.course.courseName }}</p>
-                            <p class="text-gray-700 font-serif">Semester : {{ class.sem }}</p>
-                            <p class="text-gray-700 font-serif">Time : {{ convertToDate(class.startHour) | date: 'HH:mm' }}
+                            <p class="text-gray-700 ">Course : {{ class.course.courseName }}</p>
+                            <p class="text-gray-700 ">Semester : {{ class.sem }}</p>
+                            <p class="text-gray-700 ">Time : {{ convertToDate(class.startHour) | date: 'HH:mm' }}
                                 - {{ convertToDate(class.endHour) | date: 'HH:mm' }}</p>
                             <!-- <p class="text-blue-500 font-serif">{{ class.status }}</p> -->
     

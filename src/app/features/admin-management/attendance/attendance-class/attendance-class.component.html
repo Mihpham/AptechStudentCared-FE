@@ -73,7 +73,8 @@
                                     'bg-orange-500': getAttendanceStatus1(student.userId, schedule.scheduleId) === 'PA',
                                     'bg-red-500': getAttendanceStatus1(student.userId, schedule.scheduleId) === 'A',
                                     'bg-gray-200': !getAttendanceStatus1(student.userId, schedule.scheduleId)
-                                }" (click)="toggleDropdown(student.userId, schedule.scheduleId, 'ca1')" [title]="attendanceComments[student.userId]?.[schedule.scheduleId] || 'No comments'">
+                                }" (click)="toggleDropdown(student.userId, schedule.scheduleId, 'ca1')" [title]="attendanceComments[student.userId][schedule.scheduleId] || 'No comments'"
+>
                                 
                                 <span *ngIf="getAttendanceStatus1(student.userId, schedule.scheduleId); else iconTemplate">
                                     {{ getAttendanceStatus1(student.userId, schedule.scheduleId) }}

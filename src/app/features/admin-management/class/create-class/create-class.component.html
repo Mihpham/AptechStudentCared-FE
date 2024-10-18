@@ -1,8 +1,8 @@
-<div class="container mx-auto max-w-lg bg-slate-200">
+<div class="container mx-auto max-w-2xl bg-slate-200">
   <form
     (ngSubmit)="saveClass()"
     #classForm="ngForm"
-    class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8"
+    class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 "
   >
     <h2 class="text-3xl font-semibold text-center text-gray-800 mb-6">
       Add Class
@@ -142,30 +142,30 @@
       >Days</label>
 
       <!-- Checkbox days -->
-      <div class="mt-2 flex flex-wrap">
-        <label class="inline-flex items-center">
+      <div class="mt-2 mr-2 flex flex-wrap">
+        <label class="inline-flex mr-2 items-center">
           <input type="checkbox" [value]="DayOfWeek.MONDAY" (change)="toggleDay($event)" />
-          <span class="ml-1">Monday</span>
+          <span class="ml-2">Monday</span>
         </label>
-        <label class="inline-flex items-center">
+        <label class="inline-flex  mr-6 items-center">
           <input type="checkbox" [value]="DayOfWeek.TUESDAY" (change)="toggleDay($event)" />
-          <span class="ml-1">Tuesday</span>
+          <span class="ml-2">Tuesday</span>
         </label>
-        <label class="inline-flex items-center">
+        <label class="inline-flex  mr-6 items-center">
           <input type="checkbox" [value]="DayOfWeek.WEDNESDAY" (change)="toggleDay($event)" />
-          <span class="ml-1">Wednesday</span>
+          <span class="ml-2">Wednesday</span>
         </label>
-        <label class="inline-flex items-center">
+        <label class="inline-flex  mr-6 items-center">
           <input type="checkbox" [value]="DayOfWeek.THURSDAY" (change)="toggleDay($event)" />
-          <span class="ml-1">Thursday</span>
+          <span class="ml-2">Thursday</span>
         </label>
-        <label class="inline-flex items-center">
+        <label class="inline-flex  mr-6 items-center">
           <input type="checkbox" [value]="DayOfWeek.FRIDAY" (change)="toggleDay($event)" />
-          <span class="ml-1">Friday</span>
+          <span class="ml-2">Friday</span>
         </label>
-        <label class="inline-flex items-center">
+        <label class="inline-flex  mr-6 items-center">
           <input type="checkbox" [value]="DayOfWeek.SATURDAY" (change)="toggleDay($event)" />
-          <span class="ml-1">Saturday</span>
+          <span class="ml-2">Saturday</span>
         </label>
       </div>
 

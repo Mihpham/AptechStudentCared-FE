@@ -26,7 +26,6 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { AttendanceStudentComponent } from './attendance-student/attendance-student.component';
 import { TeachersStudentComponent } from './teachers-student/teachers-student.component';
 import { StudentAssignmentMarkComponent } from './student-assignment-mark/student-assignment-mark.component';
-import { CalendarModule } from 'primeng/calendar'; // Import CalendarModule
 @NgModule({
   
   schemas: [NO_ERRORS_SCHEMA  ],
@@ -40,8 +39,8 @@ import { CalendarModule } from 'primeng/calendar'; // Import CalendarModule
     // NavbarStudentComponent
   ],
   imports: [
-    CommonModule,  // Đảm bảo nhập CommonModule
-    StudentManagementRoutingModule,  // Nhập Routing module
+    CommonModule, 
+    StudentManagementRoutingModule,  
     RouterModule ,CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -55,13 +54,11 @@ import { CalendarModule } from 'primeng/calendar'; // Import CalendarModule
     MatPaginatorModule,
     MatIconModule,
     MatDialogModule,
-    // ReactiveFormsModule,
     MatSelectModule,
     MatOptionModule,
     MatTooltipModule,
     CdkTableModule, 
     NgxPaginationModule,
-    CalendarModule,
     
   ],
   providers: [
