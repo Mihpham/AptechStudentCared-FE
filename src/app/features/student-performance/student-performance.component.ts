@@ -126,87 +126,145 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
 
   createPerformanceLineChart(): void {
     if (this.performanceData.length === 0) return;
-  
+
     // Clear the previous chart
     d3.select('#performance-chart').selectAll('*').remove();
-  
+
     const margin = { top: 20, right: 30, bottom: 50, left: 60 };
     const width = 600 - margin.left - margin.right;
     const height = 300 - margin.top - margin.bottom;
-  
+
     const svg = d3
       .select('#performance-chart')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
-  
+
     // Define the x and y scales
-    const x = d3.scaleBand<string>()
-      .domain(this.performanceData.map(d => d.subjectCode)) // X-axis labels
+    const x = d3
+      .scaleBand<string>()
+      .domain(this.performanceData.map((d) => d.subjectCode)) // X-axis labels
       .range([0, width])
       .padding(0.1);
-  
-    const y = d3.scaleLinear<number>()
+
+    const y = d3
+      .scaleLinear<number>()
       .domain([0, 100]) // Set domain starting from 0
       .range([height, 0]);
-  
-    // Create the line generator
-    const line = d3.line<StudentPerformanceResponse>()
-      .x((d) => x(d.subjectCode)! + x.bandwidth() / 2) // Center the points in the bands
-      .y((d) => y(d.theoreticalPercentage)) // Use scaleLinear for y position
-      .curve(d3.curveMonotoneX); // Optional: smooth curve
-  
-    // Add the line to the chart
-    svg.append('path')
-      .datum(this.performanceData)
-      .attr('fill', 'none')
-      .attr('stroke', 'steelblue')
-      .attr('stroke-width', 2)
-      .attr('d', line);
-  
+
+    // Create separate line generators for each percentage
+    // Create the line generator function with type guard for y values
+    const lineGenerator = (valueKey: keyof StudentPerformanceResponse) =>
+      d3
+        .line<StudentPerformanceResponse>()
+        .x((d) => x(d.subjectCode)! + x.bandwidth() / 2) // Center the points in the bands
+        .y((d) => y(Number(d[valueKey]) || 0)) // Convert the value to a number and use 0 as a fallback
+        .curve(d3.curveMonotoneX); // Optional: smooth curve
+
+    // Draw lines for each percentage type
+    const percentageTypes = [
+      'theoreticalPercentage',
+      'attendancePercentage',
+      'practicalPercentage',
+    ] as const;
+    const colors = ['steelblue', 'orange', 'green'];
+
+    percentageTypes.forEach((type, index) => {
+      svg
+        .append('path')
+        .datum(this.performanceData)
+        .attr('fill', 'none')
+        .attr('stroke', colors[index])
+        .attr('stroke-width', 2)
+        .attr('d', lineGenerator(type));
+    });
+
     // Add circles for each data point
-    svg.selectAll('.dot')
-      .data(this.performanceData)
-      .enter().append('circle')
+    svg
+      .selectAll('.dot')
+      .data(
+        this.performanceData.flatMap((d) => [
+          {
+            ...d,
+            type: 'theoreticalPercentage',
+            value: d.theoreticalPercentage,
+          },
+          { ...d, type: 'attendancePercentage', value: d.attendancePercentage },
+          { ...d, type: 'practicalPercentage', value: d.practicalPercentage },
+        ])
+      )
+      .enter()
+      .append('circle')
       .attr('class', 'dot')
       .attr('cx', (d) => x(d.subjectCode)! + x.bandwidth() / 2) // Center the circles
-      .attr('cy', (d) => y(d.theoreticalPercentage)) // Position based on theoreticalPercentage
+      .attr('cy', (d) => y(d.value)) // Position based on the value
       .attr('r', 4)
-      .on('mouseover', (event, d: StudentPerformanceResponse) => {
-        // Calculate the average score
-        const averageScore = (d.attendancePercentage + d.practicalPercentage + d.theoreticalPercentage) / 3;
-        this.showTooltip(event, d.subjectCode, averageScore); // Show tooltip with average score
+      .attr('fill', (d) => {
+        switch (d.type) {
+          case 'theoreticalPercentage':
+            return 'steelblue';
+          case 'attendancePercentage':
+            return 'orange';
+          case 'practicalPercentage':
+            return 'green';
+          default:
+            return 'black';
+        }
       })
+      .on('mouseover', (event, d: any) => {
+        const averageScore =
+          (d.attendancePercentage + d.practicalPercentage + d.theoreticalPercentage) / 3;
+      
+        let tooltipContent = `<strong>${d.subjectCode}</strong><br>`;
+        switch (d.type) {
+          case 'attendancePercentage':
+            tooltipContent += `Attendance: ${d.attendancePercentage}%<br>`;
+            break;
+          case 'theoreticalPercentage':
+            tooltipContent += `Theoretical: ${d.theoreticalPercentage}%<br>`;
+            break;
+          case 'practicalPercentage':
+            tooltipContent += `Practical: ${d.practicalPercentage}%<br>`;
+            break;
+        }
+      
+        // tooltipContent += `Average Score: ${averageScore.toFixed(2)}%`;
+      
+        this.showTooltip(event, tooltipContent);
+      })
+      
+
       .on('mouseout', () => this.hideTooltip());
-  
+
     // Add the x-axis
-    svg.append('g')
+    svg
+      .append('g')
       .attr('transform', `translate(0,${height})`)
       .call(d3.axisBottom(x));
-  
-    // Add the y-axis
-    svg.append('g')
-      .call(d3.axisLeft(y));
-  }
-  
-  
 
-  showTooltip(
-    event: MouseEvent,
-    subjectCode: string,
-    averageScore: number
-  ): void {
-    const tooltip = d3.select('#tooltip'); // Adjust the selector to your tooltip element
-    tooltip.transition().duration(200).style('opacity', 0.9);
-    tooltip
-      .html(`Subject: ${subjectCode}<br/>Score: ${averageScore}%`)
-      .style('left', event.pageX + 5 + 'px') // Position tooltip
-      .style('top', event.pageY - 28 + 'px'); // Position tooltip
+    // Add the y-axis
+    svg.append('g').call(d3.axisLeft(y));
   }
+
+  showTooltip(event: MouseEvent, content: string) {
+    d3.select('body')
+      .append('div')
+      .attr('class', 'tooltip')
+      .style('position', 'absolute')
+      .style('background', '#f4f4f4')
+      .style('padding', '5px')
+      .style('border', '1px solid #d4d4d4')
+      .style('border-radius', '4px')
+      .style('pointer-events', 'none')
+      .style('left', `${event.pageX + 10}px`)
+      .style('top', `${event.pageY + 10}px`)
+      .html(content);
+  }
+  
 
   hideTooltip(): void {
-    d3.select('#tooltip').transition().duration(500).style('opacity', 0);
+    d3.select('.tooltip').remove();
   }
 
   // showTooltip(
@@ -296,6 +354,13 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
               ) || 0,
           };
           this.performanceMarks = [
+            {
+              label: 'Project Percentage',
+              value:
+                this.getAverage(
+                  semesterData.map((d: any) => d.practicalScore)
+                ) || 0,
+            },
             {
               label: 'Attendance Percentage',
               value:
