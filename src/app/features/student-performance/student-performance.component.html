@@ -1,9 +1,7 @@
 <div class="container bg-slate-200 mx-auto p-6 w-full">
     <!-- Header: Student Name -->
-    <div *ngFor="let performance of performanceData">
-        <div class="text-center text-2xl font-bold mb-6">
-            {{ performance.studentName }}
-        </div>
+    <div class="text-center text-2xl font-bold mb-6">
+        {{ performanceData.length > 0 ? performanceData[0].studentName : 'Please Select Sem!' }}
     </div>
 
     <!-- Subject and Semester Selection -->
@@ -27,19 +25,21 @@
             <div class="col-span-2 grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 bg-white">
                 <div *ngFor="let mark of performanceMarks; let i = index"
                     class="text-center text-sm p-4 rounded-md shadow-sm">
-                  <div class="font-semibold mb-2 whitespace-nowrap">
-                    {{ mark.label }}
-                  </div>
-                  <!-- Ensure the SVG is properly defined and the chart is created dynamically -->
-                  <svg [id]="'chart' + i" width="100" height="100" [attr.aria-label]="mark.label + ' Chart'"></svg>
-                  <div class="text-xl font-bold mt-2">{{ mark.value.toFixed(2) }}%</div>
+                    <div class="font-semibold mb-2 whitespace-nowrap">
+                        {{ mark.label }}
+                    </div>
+                    <!-- Ensure the SVG is properly defined and the chart is created dynamically -->
+                    <svg [id]="'chart' + i" width="100" height="100" [attr.aria-label]="mark.label + ' Chart'"></svg>
+                    <div class="text-xl font-bold mt-2">{{ mark.value.toFixed(2) }}%</div>
                 </div>
-              </div>
-              
+            </div>
 
-            <div class="col-span-1 grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 rounded-md">
+            <div *ngIf="!selectedSemester">
+
+            </div>
+            <div class="col-span-1 grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 rounded-md" *ngIf="selectedSemester">
                 <!-- Present -->
-                <div class="p-6 bg-green-100 rounded-lg text-center shadow-sm">
+                <div class="p-6 bg-green-100 rounded-lg text-center shadow-sm" >
                     <div class="font-bold text-2xl text-green-700">
                         {{ totalPerformance.presentCount }}
                     </div>
@@ -48,14 +48,14 @@
                 <!-- Absent -->
                 <div class="p-6 bg-yellow-100 rounded-lg text-center shadow-sm">
                     <div class="font-bold text-2xl text-yellow-700">
-                        {{ totalPerformance.absentCount}}
+                        {{ totalPerformance.absentCount }}
                     </div>
                     <div class="text-gray-700">Absent</div>
                 </div>
                 <!-- Present With Permission -->
                 <div class="p-6 bg-red-100 rounded-lg text-center shadow-sm">
                     <div class="font-bold text-2xl text-red-700">
-                        {{ totalPerformance.presentWithPermissionCount}}
+                        {{ totalPerformance.presentWithPermissionCount }}
                     </div>
                     <div class="text-gray-700">Present With Permission</div>
                 </div>
