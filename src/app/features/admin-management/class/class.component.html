@@ -76,19 +76,25 @@
               {{ classItem.status }}
             </td>
             <td class="py-2 px-4 text-center">
-              <button [routerLink]="['/admin/class/update', classItem.id]" class="text-blue-400 hover:text-blue-600">
+              <!-- Edit button with tooltip -->
+              <button [routerLink]="['/admin/class/update', classItem.id]" class="text-blue-400 hover:text-blue-600"
+                title="Edit Class">
                 <i class="fa fa-edit"></i>
               </button>
-             
+
+              <!-- Delete button with tooltip -->
               <button class="text-red-400 hover:text-red-600 p-2"
-                (click)="deleteClass(classItem.id); $event.stopPropagation()">
+                (click)="deleteClass(classItem.id); $event.stopPropagation()" title="Delete Class">
                 <i class="fa fa-trash"></i>
               </button>
+
+              <!-- Assign button with tooltip -->
               <button [routerLink]="['/admin/class/assign', classItem.id]"
-                class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
-                <i class="fa-solid fa-plus"></i> Assign
+                class="text-green-400 hover:text-green-600 p-2" title="Assign to Class">
+                <i class="fas fa-chalkboard-teacher"></i>
               </button>
             </td>
+
           </tr>
         </tbody>
       </table>
