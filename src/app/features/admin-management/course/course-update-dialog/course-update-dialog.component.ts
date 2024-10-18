@@ -77,10 +77,15 @@ export class CourseUpdateDialogComponent implements OnInit, AfterViewInit, OnDes
         return throwError(error);
       })
     ).subscribe(subjects => {
-      this.availableSubjects = subjects.map(subject => subject.subjectCode);
+      // Loại bỏ các môn học có tên chứa từ "project"
+      const filteredSubjects = subjects.filter(subject => 
+        !subject.subjectName.toLowerCase().includes('project')
+      );
+  
+      // Gán mã môn học cho availableSubjects
+      this.availableSubjects = filteredSubjects.map(subject => subject.subjectCode);
     });
   }
-
   loadCourse(): void {
     if (!this.data.id) {
       console.error('Course ID is missing.');

@@ -42,4 +42,8 @@ export class TeacherService {
     const url = `${this.apiUrl}/${id}`;
     return this.http.delete<void>(url);
   }
+  getTeachersByClassId(classId: number): Observable<TeacherResponse[]> {
+    return this.http.get<TeacherResponse[]>(`${this.apiUrl}/class/${classId}`);
+}
+
 }
