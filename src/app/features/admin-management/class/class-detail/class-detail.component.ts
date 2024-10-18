@@ -61,6 +61,7 @@ export class ClassDetailComponent implements OnInit {
         this.students =
           data.students?.map((student: any) => ({
             userId: student.userId,
+            classId:student.classId,
             image: student.image
               ? student.image
               : 'assets/images/avatar-default.webp',

@@ -88,6 +88,8 @@ export class AttendanceClassComponent implements OnInit {
   loadAllAttendances(): void {
     this.attendanceService.getAllAttendances().subscribe(
       (data) => {
+        console.log("attendance",data);
+        
         this.attendances = data;
 
         this.attendances.forEach((attendance) => {

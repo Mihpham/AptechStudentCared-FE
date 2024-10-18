@@ -1,8 +1,7 @@
 export interface StudentPerformanceResponse {
-  
   id: number; // Thêm id
   semester: string; 
-  studentName: string | null; // Có thể là null
+  studentName: string
   subjectCode: string; 
   theoreticalScore: number; 
   presentCount: number; 
