@@ -3,7 +3,6 @@
     <div *ngFor="let performance of performanceData">
         <div class="text-center text-2xl font-bold mb-6">
             {{ performance.studentName }}
-            <!-- Accessing the studentName property -->
         </div>
     </div>
 
@@ -13,11 +12,12 @@
             <div class="flex items-center">
                 <!-- Semester Selection -->
                 <label for="semester" class="font-semibold mr-2">Semester:</label>
-                <select id="semester" [(ngModel)]="selectedSemester" (change)="onSemesterChange($event)" class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" aria-label="Select Semester">
-                  <option value="All">All</option> 
-                  <option *ngFor="let semester of semesters" [value]="semester">
-                    {{ semester }}
-                  </option>
+                <select id="semester" [(ngModel)]="selectedSemester" (change)="onSemesterChange($event)"
+                    class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    aria-label="Select Semester">
+                    <option *ngFor="let semester of semesters" [value]="semester">
+                        {{ semester }}
+                    </option>
                 </select>
 
             </div>
@@ -25,72 +25,70 @@
 
         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
             <div class="col-span-2 grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 bg-white">
-                <div *ngFor="let mark of performanceMarks; let i = index" class="text-center text-sm p-4 rounded-md shadow-sm">
-                    <div class="font-semibold mb-2 whitespace-nowrap">
-                        {{ mark.label }}
-                    </div>
-                    <svg [id]="'chart' + i" width="100" height="100" [attr.aria-label]="mark.label + ' Chart'"></svg>
-                    <div class="text-xl font-bold mt-2">{{ mark.value }}%</div>
+                <div *ngFor="let mark of performanceMarks; let i = index"
+                    class="text-center text-sm p-4 rounded-md shadow-sm">
+                  <div class="font-semibold mb-2 whitespace-nowrap">
+                    {{ mark.label }}
+                  </div>
+                  <!-- Ensure the SVG is properly defined and the chart is created dynamically -->
+                  <svg [id]="'chart' + i" width="100" height="100" [attr.aria-label]="mark.label + ' Chart'"></svg>
+                  <div class="text-xl font-bold mt-2">{{ mark.value.toFixed(2) }}%</div>
                 </div>
-            </div>
+              </div>
+              
 
-            <div *ngFor="let performance of performanceData" class="col-span-1 grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 rounded-md">
+            <div class="col-span-1 grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 rounded-md">
                 <!-- Present -->
                 <div class="p-6 bg-green-100 rounded-lg text-center shadow-sm">
                     <div class="font-bold text-2xl text-green-700">
-                        {{ performance.presentCount }}
-                        <!-- Show present count for each performance -->
+                        {{ totalPerformance.presentCount }}
                     </div>
                     <div class="text-gray-700">Present</div>
                 </div>
                 <!-- Absent -->
                 <div class="p-6 bg-yellow-100 rounded-lg text-center shadow-sm">
                     <div class="font-bold text-2xl text-yellow-700">
-                        {{ performance.absentCount }}
-                        <!-- Show absent count for each performance -->
+                        {{ totalPerformance.absentCount}}
                     </div>
                     <div class="text-gray-700">Absent</div>
                 </div>
                 <!-- Present With Permission -->
                 <div class="p-6 bg-red-100 rounded-lg text-center shadow-sm">
                     <div class="font-bold text-2xl text-red-700">
-                        {{ performance.presentWithPermissionCount }}
-                        <!-- Assuming this is what you want to show for "Present With Permission" -->
+                        {{ totalPerformance.presentWithPermissionCount}}
                     </div>
                     <div class="text-gray-700">Present With Permission</div>
                 </div>
                 <!-- Attendance Percentage -->
                 <div class="p-6 bg-blue-100 rounded-lg text-center shadow-sm">
                     <div class="font-bold text-2xl text-blue-700">
-                        {{ performance.attendancePercentage }}%
-                        <!-- Assuming this is Attendance Percentage -->
+                        {{ totalPerformance.attendancePercentage.toFixed(2) }}%
                     </div>
                     <div class="text-gray-700">Attendance Percentage</div>
                 </div>
                 <!-- Practical Percentage -->
                 <div class="p-6 bg-blue-100 rounded-lg text-center shadow-sm">
                     <div class="font-bold text-2xl text-blue-700">
-                        {{ performance.practicalPercentage }}%
-                        <!-- Assuming this is Avg Mark of Practical -->
+                        {{ totalPerformance.practicalPercentage.toFixed(2) }}%
                     </div>
                     <div class="text-gray-700">Practical Percentage</div>
                 </div>
                 <!-- Theoretical Score -->
                 <div class="p-6 bg-blue-100 rounded-lg text-center shadow-sm">
                     <div class="font-bold text-2xl text-blue-700">
-                        {{ performance.theoreticalScore }}%
-                        <!-- Assuming this is Avg Mark of Theory -->
+                        {{ totalPerformance.theoreticalScore.toFixed(2) }}%
                     </div>
                     <div class="text-gray-700">Avg Mark of Theory</div>
                 </div>
             </div>
+
         </div>
     </div>
 
     <!-- Performance Line Chart -->
-    <!-- Performance Line Chart -->
     <div class="bg-white rounded-lg shadow-md p-6">
-        <svg id="performance-chart" viewBox="0 0 600 300" class="w-full h-full" aria-label="Performance Line Chart"></svg>
+        <svg id="performance-chart" viewBox="0 0 600 300" class="w-full h-full"
+            aria-label="Performance Line Chart"></svg>
         <div class="flex justify-center space-x-6 mt-6">
             <div><span class="text-green-500">●</span> Attendance</div>
             <div><span class="text-yellow-500">●</span> Theory</div>

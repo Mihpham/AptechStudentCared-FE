@@ -84,10 +84,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
         this.updateStatusCounts(); // Cập nhật số lượng khi tải sinh viên
         this.dataSource.paginator = this.paginator;
       },
-      (error) => {
-        this.toastr.error('Failed to load students', 'Error');
-        console.error('Error fetching students', error);
-      }
+      
     );
   }
 
