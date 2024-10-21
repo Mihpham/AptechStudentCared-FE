@@ -49,7 +49,7 @@ const routes: Routes = [
   {
     path: 'sro',
     loadChildren: () =>
-      import('./sro/sro-routing.model').then((m) => m.SroRoutingModule), // Lazy load SroModule
+      import('./sro/sro-routing.module').then((m) => m.SroRoutingModule), // Lazy load SroModule
     canActivate: [AuthGuard],
     data: { breadcrumb: 'SRO Management' },
   },

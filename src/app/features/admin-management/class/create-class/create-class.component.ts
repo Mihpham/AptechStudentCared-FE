@@ -27,7 +27,7 @@ export class CreateClassComponent implements OnInit {
     status: 'STUDYING',
     teacherName: '',
     courseCode: '',
-    sem: 'Sem1'
+    sem: 'Sem1',
   };
 
   startHour: string = '';
@@ -55,7 +55,7 @@ export class CreateClassComponent implements OnInit {
       },
       error: (error) => {
         this.toastr.error('Failed to load courses!', 'Error');
-      }
+      },
     });
   }
 
@@ -75,15 +75,17 @@ export class CreateClassComponent implements OnInit {
 
   saveClass(): void {
     this.isLoading = true;
-    this.class.startHour = this.startHour; 
-    this.class.endHour = this.finishHour;  
+    this.class.startHour = this.startHour;
+    this.class.endHour = this.finishHour;
 
     this.classService.addClass(this.class).subscribe({
       next: (response) => {
         this.toastr.success('Class added successfully!', 'Success');
         this.addClassToList(response);
         this.clearForm();
-        this.router.navigate(['/admin/class']);
+        this.currentUserRole === 'ROLE_ADMIN'
+          ? this.router.navigate(['/admin/class'])
+          : this.router.navigate(['/sro/class']);
       },
       error: (error) => {
         if (error.message.includes('Class with this name already exists')) {
@@ -115,13 +117,16 @@ export class CreateClassComponent implements OnInit {
       status: 'STUDYING',
       teacherName: '',
       courseCode: '',
-      sem: 'Sem1'
+      sem: 'Sem1',
     };
     this.selectedDays.clear();
     this.updateDaysInput(); // Đảm bảo ô input cũng được cập nhật
   }
+  currentUserRole!: string | null;
 
   onClosed(): void {
-    this.router.navigate(['/admin/class']);
+    this.currentUserRole === 'ROLE_ADMIN'
+      ? this.router.navigate(['/admin/class'])
+      : this.router.navigate(['/sro/class']);
   }
 }

@@ -8,6 +8,7 @@ import { ClassService } from 'src/app/core/services/admin/class.service';
 import { ClassRequest } from '../model/class/class-request.model';
 import { ClassResponse } from '../model/class/class-response.model';
 import { DayOfWeek } from 'src/app/core/enum/DayOfWeek';
+import { AuthService } from 'src/app/core/auth/auth.service';
 
 @Component({
   selector: 'app-class',
@@ -19,6 +20,7 @@ export class ClassComponent implements OnInit {
   paginatedClasses: WritableSignal<ClassResponse[]> = signal([]);
   filteredClasses: WritableSignal<ClassResponse[]> = signal([]);
   isActive: WritableSignal<boolean> = signal(false);
+  currentUserRole!: string | null;
 
   statusCounts = signal({ studying: 0, finished: 0, cancel: 0, scheduled: 0 });
 
@@ -28,12 +30,15 @@ export class ClassComponent implements OnInit {
 
   constructor(
     private classService: ClassService,
+    private authService: AuthService, 
     private toastr: ToastrService,
     private router: Router,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    this.currentUserRole = this.authService.getRole();
+
     this.loadClasses();
   }
 
@@ -45,13 +50,11 @@ export class ClassComponent implements OnInit {
       [DayOfWeek.THURSDAY]: 5,
       [DayOfWeek.FRIDAY]: 6,
       [DayOfWeek.SATURDAY]: 7,
-      [DayOfWeek.SUNDAY]: 8
+      [DayOfWeek.SUNDAY]: 8,
     };
-    
-    return days.map(day => dayMap[day]).join(', ');
+
+    return days.map((day) => dayMap[day]).join(', ');
   }
-  
-  
 
   loadClasses(): void {
     this.classService.findAllClasses().subscribe({
@@ -66,19 +69,17 @@ export class ClassComponent implements OnInit {
       },
     });
   }
-  
-  
+
   onRowClick(event: Event, classItem: any): void {
     event.stopPropagation(); // Ngăn chặn sự kiện click không bị lan ra ngoài
     this.router.navigate(['/admin/student/all'], {
       queryParams: { className: classItem.className },
     });
   }
-  
+
   getSubjectId(subjectTeachers: any[]): number | null {
     return subjectTeachers.length > 0 ? +subjectTeachers[0].subjectId : null;
   }
-  
 
   navigateToAssign(classId: number): void {
     this.router.navigate(['/admin/class/assign', classId]).then(() => {
@@ -87,13 +88,12 @@ export class ClassComponent implements OnInit {
     });
   }
 
-
   checkClassStatus(classId: number): void {
     this.classService.findClassById(classId).subscribe((classDetails) => {
       this.isActive.set(classDetails.status === 'ACTIVE');
     });
   }
-  
+
   getAvatarUrl(avatarName: string | undefined): string {
     return avatarName ? `${avatarName}` : '/assets/images/avatar-default.webp';
   }

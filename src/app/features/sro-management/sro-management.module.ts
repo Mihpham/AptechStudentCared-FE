@@ -6,6 +6,8 @@ import { RouterModule } from '@angular/router';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PaginationService } from 'ngx-pagination';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -14,11 +16,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    MatSelectModule,
     SroManagementRoutingModule,
     RouterModule,
     MatDialogModule,
     MatTooltipModule,
-
   ],
+  providers: [PaginationService], 
 })
 export class SroManagementModule {}

@@ -43,7 +43,7 @@ export class UpdateClassComponent implements OnInit {
     private classService: ClassService,
     private courseService: CourseService,
     private toastr: ToastrService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.loadInitialData();
@@ -78,7 +78,10 @@ export class UpdateClassComponent implements OnInit {
   }
 
   private getTeacherNames(subjectTeachers: SubjectTeacherResponse[]): string {
-    return subjectTeachers.map(teacher => teacher.teacherName).join(', ') || 'No teachers assigned';
+    return (
+      subjectTeachers.map((teacher) => teacher.teacherName).join(', ') ||
+      'No teachers assigned'
+    );
   }
 
   loadInitialData(): void {
@@ -113,8 +116,9 @@ export class UpdateClassComponent implements OnInit {
     this.classService.updateClass(this.class.id, this.class).subscribe({
       next: () => {
         this.toastr.success('Class updated successfully!', 'Success');
-        this.router.navigate(['/admin/class']);
-      },
+        this.currentUserRole === 'ROLE_ADMIN'
+        ? this.router.navigate(['/admin/class'])
+        : this.router.navigate(['/sro/class']);      },
       error: () => {
         this.toastr.error('Failed to update class!', 'Error');
       },
@@ -123,8 +127,11 @@ export class UpdateClassComponent implements OnInit {
       },
     });
   }
+  currentUserRole!: string | null;
 
   onClosed(): void {
-    this.router.navigate(['/admin/class']);
+    this.currentUserRole === 'ROLE_ADMIN'
+      ? this.router.navigate(['/admin/class'])
+      : this.router.navigate(['/sro/class']);
   }
 }

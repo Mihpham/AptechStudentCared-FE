@@ -20,6 +20,7 @@ import Swal from 'sweetalert2';
 import { StudentService } from 'src/app/core/services/admin/student.service';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { ImportStudentDialogComponent } from '../import-student-dialog/import-student-dialog.component';
+import { AuthService } from 'src/app/core/auth/auth.service';
 
 @Component({
   selector: 'app-student-all-statuses',
@@ -36,6 +37,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   statusCounts = signal({ studying: 0, delay: 0, dropped: 0, graduated: 0 });
   selectedFile: File | null = null;
   isImportVisible: boolean = false;
+  currentUserRole!: string | null;
 
   displayedColumns: string[] = [
     'avatar',
@@ -55,6 +57,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
+    private authService: AuthService,
     private studentService: StudentService,
     private toastr: ToastrService,
     private router: Router,
@@ -62,6 +65,8 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
+    this.currentUserRole = this.authService.getRole();
+
     this.route.queryParams.subscribe((params) => {
       this.className = params['className'] || null; // Nhận tên lớp từ query params
       this.loadStudent(); // Tải sinh viên khi component khởi tạo

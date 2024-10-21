@@ -4,13 +4,14 @@ import { AuthGuard } from 'src/app/core/auth/auth.guard';
 import { DashboardComponent } from '../admin-management/dashboard/dashboard.component';
 import { TeacherComponent } from '../admin-management/teacher/teacher.component';
 import { CalendarComponent } from '../admin-management/calendar/calendar.component';
+import { StudentPerformanceComponent } from '../student-performance/student-performance.component';
 
 const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [AuthGuard],
-    data: { breadcrumb: 'Sro Dashboard' },
+    data: { role: 'ROLE_SRO', breadcrumb: 'Sro Dashboard' },
   },
   {
     path: 'class',
@@ -19,7 +20,7 @@ const routes: Routes = [
         (m) => m.ClassRoutingModule
       ),
     canActivate: [AuthGuard],
-    data: { breadcrumb: 'Class' },
+    data: { role: 'ROLE_SRO', breadcrumb: 'Class' },
   },
   {
     path: 'student',
@@ -28,32 +29,40 @@ const routes: Routes = [
         (m) => m.StudentRoutingModule
       ),
     canActivate: [AuthGuard],
+    data: { role: 'ROLE_SRO' },
   },
   {
     path: 'teacher',
     component: TeacherComponent,
     canActivate: [AuthGuard],
-    data: { breadcrumb: 'Teacher Management' },
+    data: { role: 'ROLE_SRO', breadcrumb: 'Teacher Management' },
   },
   {
     path: 'calendar',
     component: CalendarComponent,
     canActivate: [AuthGuard],
-    data: { breadcrumb: 'Calendar' },
+    data: { role: 'ROLE_SRO', breadcrumb: 'Calendar' },
+  },
+ 
+  {
+    path: 'student-performance/:classId/:studentId',
+    component: StudentPerformanceComponent,
+    canActivate: [AuthGuard],
+    data: { breadcrumb: 'Student Performance' }, 
   },
   {
-    path: 'course',
+    path: 'schedule',
     loadChildren: () =>
-      import('../admin-management/course/course-routing.module').then(
-        (m) => m.CourseRoutingModule
+      import('../admin-management/schedule/schedule-routing.module').then(
+        (m) => m.ScheduleRoutingModule
       ),
     canActivate: [AuthGuard],
   },
   {
-    path: 'subject',
+    path: 'attendance',
     loadChildren: () =>
-      import('../admin-management/subject/subject-routing.module').then(
-        (m) => m.SubjectRoutingModule
+      import('../admin-management/attendance/attendance-routing.module').then(
+        (m) => m.AttendanceRoutingModule
       ),
     canActivate: [AuthGuard],
   },

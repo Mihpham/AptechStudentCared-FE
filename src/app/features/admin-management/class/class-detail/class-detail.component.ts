@@ -8,6 +8,7 @@ import { StudentService } from 'src/app/core/services/admin/student.service';
 import { StudentRequest } from '../../model/studentRequest.model';
 import { StudentUpdateDialogComponent } from '../../student/student-update-dialog/student-update-dialog.component';
 import { StudentResponse } from '../../model/student-response.model.';
+import { AuthService } from 'src/app/core/auth/auth.service';
 
 @Component({
   selector: 'app-class-detail',
@@ -16,6 +17,7 @@ import { StudentResponse } from '../../model/student-response.model.';
 export class ClassDetailComponent implements OnInit {
   classId: number | null = null;
   subjectId: number | null = null;
+  currentUserRole!: string | null;
 
   classDetails: any;
   students: StudentResponse[] = [];
@@ -24,12 +26,14 @@ export class ClassDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private classService: ClassService,
     private studentService: StudentService,
+    private authService: AuthService,
     private router: Router,
     public dialog: MatDialog,
     private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
+    this.currentUserRole = this.authService.getRole();
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       this.classId = id ? +id : null;
