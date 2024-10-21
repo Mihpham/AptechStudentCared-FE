@@ -1,36 +1,9 @@
-.subject-list {
-    padding: 16px;
-    background-color: #E0EDF0;
-}
 
 .total-subjects {
     font-weight: bold;
     margin-bottom: 10px;
 }
 
-/* Di chuyển label lên trên khi input được focus hoặc khi có nội dung */
-input:focus~label,
-input:not(:placeholder-shown)~label {
-    top: 0rem;
-    /* Di chuyển lên trên */
-    left: 1rem;
-    /* Điều chỉnh vị trí sang trái */
-    font-size: 1rem;
-    /* Kích thước chữ nhỏ hơn */
-    color: #000000;
-    /* Màu chữ khi focus */
-    background-color: #E0EDF0;
-    /* Màu nền của label để tránh bị viền đè lên */
-    padding: 0 0.25rem;
-    /* Padding để tạo khoảng cách cho viền bo tròn */
-    border-top-left-radius: 0.25rem;
-    /* Bo tròn góc trên bên trái */
-    z-index: 1;
-    /* Đảm bảo label nằm trên input */
-    border-top: white;
-    transition: all 0.3s ease;
-    /* Hiệu ứng chuyển động */
-}
 
 
 .mat-icon {

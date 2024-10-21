@@ -1,4 +1,4 @@
-<div class="course-list p-4 space-y-6 bg-white rounded-lg shadow-md">
+<div class="course-list p-4 space-y-6">
   <!-- Total Courses Display -->
   <div class="total-courses text-lg font-semibold text-gray-800">
     Total Courses: <span>{{ totalCourses }}</span>
@@ -38,52 +38,53 @@
   </div>
 
   <!-- No Results Message -->
-  <div *ngIf="dataSource.filteredData.length === 0 && dataSource.data.length > 0" class="no-results text-gray-600">
+  <div *ngIf="dataSource.filteredData.length === 0 && dataSource.data.length > 0" class="no-results text-gray-600 text-center py-4">
     No results found.
   </div>
   
-  <div *ngIf="dataSource.data.length === 0" class="no-results text-gray-600">
+  <div *ngIf="dataSource.data.length === 0" class="no-results text-gray-600 text-center py-4">
     There are no courses.
   </div>
 
-  <!-- Table for Displaying Courses -->
-  <mat-table *ngIf="dataSource.data.length > 0" [dataSource]="dataSource" class="mat-elevation-z8 table-auto w-full">
-    <!-- Course Name Column -->
-    <ng-container matColumnDef="courseName">
-      <mat-header-cell *matHeaderCellDef> Course Name </mat-header-cell>
-      <mat-cell *matCellDef="let course"> {{course.courseName}} </mat-cell>
-    </ng-container>
-    
-    <!-- Course Code Column -->
-    <ng-container matColumnDef="courseCode">
-      <mat-header-cell *matHeaderCellDef> Course Code </mat-header-cell>
-      <mat-cell *matCellDef="let course"> {{course.courseCode}} </mat-cell>
-    </ng-container>
-    
-    <!-- Course Completion Time Column -->
-    <ng-container matColumnDef="courseCompTime">
-      <mat-header-cell *matHeaderCellDef> Course Completion Time </mat-header-cell>
-      <mat-cell *matCellDef="let course"> {{course.courseCompTime}} </mat-cell>
-    </ng-container>
-    
-    <!-- Actions Column -->
-    <ng-container matColumnDef="actions">
-      <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
-      <mat-cell *matCellDef="let course" class="actions-cell">
-        <button class="text-blue-400 hover:text-blue-600" (click)="onUpdate($event, course)">
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button class="text-red-400 hover:text-red-600" (click)="onDelete($event, course)">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-cell>
-    </ng-container>
-    
-    <!-- Table Header and Rows -->
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClick(row.id)"></mat-row>
-  </mat-table>
+  <!-- Responsive Table Wrapper -->
+  <div class="overflow-x-auto rounded-lg border border-gray-300">
+    <mat-table *ngIf="dataSource.data.length > 0" [dataSource]="dataSource" class="min-w-full table-auto w-full bg-white">
+      <!-- Course Name Column -->
+      <ng-container matColumnDef="courseName">
+        <mat-header-cell *matHeaderCellDef class="px-4 py-2 text-left"> Course Name </mat-header-cell>
+        <mat-cell *matCellDef="let course" class="px-4 py-2"> {{course.courseName}} </mat-cell>
+      </ng-container>
+      
+      <!-- Course Code Column -->
+      <ng-container matColumnDef="courseCode">
+        <mat-header-cell *matHeaderCellDef class="px-4 py-2 text-left"> Course Code </mat-header-cell>
+        <mat-cell *matCellDef="let course" class="px-4 py-2"> {{course.courseCode}} </mat-cell>
+      </ng-container>
+      
+      <!-- Course Completion Time Column -->
+      <ng-container matColumnDef="courseCompTime">
+        <mat-header-cell *matHeaderCellDef class="px-4 py-2 text-left"> Course Completion Time </mat-header-cell>
+        <mat-cell *matCellDef="let course" class="px-4 py-2"> {{course.courseCompTime}} </mat-cell>
+      </ng-container>
+      
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef class="px-4 py-2 text-left"> Actions </mat-header-cell>
+        <mat-cell *matCellDef="let course" class="px-4 py-2 flex space-x-2">
+          <button class="text-blue-400 hover:text-blue-600" (click)="onUpdate($event, course)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button class="text-red-400 hover:text-red-600" (click)="onDelete($event, course)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+      
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClick(row.id)"></mat-row>
+    </mat-table>
+  </div>
 
   <!-- Paginator -->
   <mat-paginator pageSize="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons class="mt-4"></mat-paginator>
-</div>
+</div>  

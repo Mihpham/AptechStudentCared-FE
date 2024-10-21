@@ -70,6 +70,7 @@ import { UpdateScheduleComponent } from './schedule/update-schedule/update-sched
 import { RegenerateScheduleComponent } from './schedule/regenerate-schedule/regenerate-schedule.component';
 import { ImportExamMarkDialogComponent } from './exam-mark/import-exam-mark-dialog/import-exam-mark-dialog.component';
 import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/exam-mark-all-subject.component';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 
 @NgModule({
   
@@ -150,6 +151,8 @@ import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/e
     CdkTableModule, 
     NgxPaginationModule,
   ],
+  providers: [DialogService]
+
   
 })
 export class AdminManagementModule { }
