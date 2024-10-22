@@ -6,6 +6,7 @@ import { CourseService } from 'src/app/core/services/admin/course.service';
 import { ClassRequest } from '../../model/class/class-request.model';
 import { CourseResponse } from '../../model/course/course-response.model';
 import { DayOfWeek } from 'src/app/core/enum/DayOfWeek';
+import { AuthService } from 'src/app/core/auth/auth.service';
 
 @Component({
   selector: 'app-create-class',
@@ -40,6 +41,7 @@ export class CreateClassComponent implements OnInit {
   constructor(
     private router: Router,
     private classService: ClassService,
+    private authService: AuthService,
     private courseService: CourseService,
     private toastr: ToastrService
   ) {}
@@ -49,6 +51,8 @@ export class CreateClassComponent implements OnInit {
   }
 
   loadInitialData(): void {
+    this.currentUserRole = this.authService.getRole();
+
     this.courseService.getAllCourse().subscribe({
       next: (data) => {
         this.courses = data;
