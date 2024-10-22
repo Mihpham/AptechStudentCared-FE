@@ -41,34 +41,26 @@ export class SubjectListComponent implements OnInit {
     this.subjectService.getAllSubjects().subscribe(
       (data: SubjectResponse[]) => {
         console.log('Loaded subjects:', data);
-  
-        // Loại bỏ các môn học có tên chứa từ "project" (không phân biệt chữ hoa/chữ thường)
-        const filteredData = data.filter(subject => 
-          !subject.subjectName.toLowerCase().includes('project')
-        );
-  
-        // Chuyển đổi chuỗi ngày thành đối tượng Date nếu cần
-        filteredData.forEach(subject => {
+
+        data.forEach(subject => {
           if (typeof subject.createdAt === 'string') {
             subject.createdAt = new Date(subject.createdAt);
           }
         });
-  
-        // Sắp xếp danh sách theo ngày tạo (mới nhất trước)
-        filteredData.sort((a, b) => (b.createdAt.getTime() - a.createdAt.getTime()));
-  
-        // Cập nhật dataSource với danh sách đã lọc và sắp xếp
-        this.dataSource.data = [...filteredData];
-        this.totalSubjects = filteredData.length;
+
+        data.sort((a, b) => (b.createdAt.getTime() - a.createdAt.getTime()));
+
+        this.dataSource.data = [...data]; // Thay thế dữ liệu cũ
+        this.totalSubjects = data.length;
         this.dataSource.paginator = this.paginator;
-        this.applyFilter(this.searchTerm); // Áp dụng bộ lọc nếu có
+        this.applyFilter(this.searchTerm); // Apply the filter after loading data
       },
       (error) => {
         console.error('Error fetching subjects', error);
       }
     );
   }
-  
+
 
   applyFilter(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
