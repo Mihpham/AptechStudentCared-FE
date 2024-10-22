@@ -14,7 +14,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class CourseAddComponent implements AfterViewInit, OnDestroy, OnInit {
   courseForm!: FormGroup;
-  semesters = ['Sem1', 'Sem2', 'Sem3', 'Sem4'];
+  semesters = ['sem1', 'sem2', 'sem3', 'sem4'];
   availableSubjects: string[] = [];
   selectedSubjectsBySemester: { [key: string]: string[] } = {};
   isDropdownOpen: { [key: string]: boolean } = {};
@@ -57,10 +57,10 @@ export class CourseAddComponent implements AfterViewInit, OnDestroy, OnInit {
       courseCode: ['', Validators.required],
       courseCompTime: ['', Validators.required],
       semesters: this.fb.group({
-        Sem1: this.fb.array([]),
-        Sem2: this.fb.array([]),
-        Sem3: this.fb.array([]),
-        Sem4: this.fb.array([])
+        sem1: this.fb.array([]),
+        sem2: this.fb.array([]),
+        sem3: this.fb.array([]),
+        sem4: this.fb.array([])
       })
     });
   }
@@ -74,14 +74,10 @@ export class CourseAddComponent implements AfterViewInit, OnDestroy, OnInit {
         return throwError(error);
       })
     ).subscribe(subjects => {
-      // Lọc bỏ môn có tên chứa "Project" trước khi ánh xạ các subjectCode
-      this.availableSubjects = subjects
-        .filter(subject => !subject.subjectName.includes('Project')) // Bỏ qua tất cả các môn có tên chứa "Project"
-        .map(subject => subject.subjectCode);
+      this.availableSubjects = subjects.map(subject => subject.subjectName);
     });
   }
-  
-  
+
   toggleDropdown(semester: string): void {
     this.isDropdownOpen[semester] = !this.isDropdownOpen[semester];
   }
