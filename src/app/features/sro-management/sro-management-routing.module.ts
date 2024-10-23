@@ -59,6 +59,14 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'exam',
+    loadChildren: () =>
+      import('../admin-management/exam-mark/exam-mark-routing.module').then(
+        (m) => m.ExamMarkRoutingModule
+      ),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'attendance',
     loadChildren: () =>
       import('../admin-management/attendance/attendance-routing.module').then(
