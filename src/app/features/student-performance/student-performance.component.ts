@@ -49,7 +49,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     this.route.params.subscribe((params) => {
       this.classId = +params['classId'];
       this.studentId = +params['studentId'];
-      this.selectedSemester = 'SEM1'; 
+      this.selectedSemester = 'SEM1';
       this.getSubjectsBySemester(this.selectedSemester);
     });
   }
@@ -136,96 +136,102 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     const height = 300 - margin.top - margin.bottom;
 
     const svg = d3
-        .select('#performance-chart')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
-        .append('g')
-        .attr('transform', `translate(${margin.left},${margin.top})`);
+      .select('#performance-chart')
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
 
     // Define the x and y scales
     const x = d3
-        .scaleBand<string>()
-        .domain(this.performanceData.map((d) => d.subjectCode)) // X-axis labels
-        .range([0, width])
-        .padding(0.1);
+      .scaleBand<string>()
+      .domain(this.performanceData.map((d) => d.subjectCode)) // X-axis labels
+      .range([0, width])
+      .padding(0.1);
 
     const y = d3
-        .scaleLinear<number>()
-        .domain([0, 100]) // Set domain starting from 0
-        .range([height, 0]);
+      .scaleLinear<number>()
+      .domain([0, 100]) // Set domain starting from 0
+      .range([height, 0]);
 
     // Create the line generator function for each percentage type
     const lineGenerator = (valueKey: keyof StudentPerformanceResponse) =>
-        d3
-            .line<StudentPerformanceResponse>()
-            .x((d) => x(d.subjectCode)! + x.bandwidth() / 2) // Center the points in the bands
-            .y((d) => y(Number(d[valueKey]) || 0)) // Convert the value to a number and use 0 as a fallback
-            .curve(d3.curveMonotoneX); // Optional: smooth curve
+      d3
+        .line<StudentPerformanceResponse>()
+        .x((d) => x(d.subjectCode)! + x.bandwidth() / 2) // Center the points in the bands
+        .y((d) => y(Number(d[valueKey]) || 0)) // Convert the value to a number and use 0 as a fallback
+        .curve(d3.curveMonotoneX); // Optional: smooth curve
 
     // Draw lines for each percentage type
-    const percentageTypes = ['theoreticalPercentage', 'attendancePercentage', 'practicalPercentage'] as const;
+    const percentageTypes = [
+      'theoreticalPercentage',
+      'attendancePercentage',
+      'practicalPercentage',
+    ] as const;
     const colors = ['steelblue', 'orange', 'green'];
 
     percentageTypes.forEach((type, index) => {
-        svg
-            .append('path')
-            .datum(this.performanceData)
-            .attr('fill', 'none')
-            .attr('stroke', colors[index])
-            .attr('stroke-width', 2)
-            .attr('d', lineGenerator(type));
+      svg
+        .append('path')
+        .datum(this.performanceData)
+        .attr('fill', 'none')
+        .attr('stroke', colors[index])
+        .attr('stroke-width', 2)
+        .attr('d', lineGenerator(type));
     });
 
     // Add circles for each data point
     svg
-        .selectAll('.dot')
-        .data(
-            this.performanceData.flatMap((d) => [
-                { ...d, type: 'theoreticalPercentage', value: d.theoreticalPercentage },
-                { ...d, type: 'attendancePercentage', value: d.attendancePercentage },
-                { ...d, type: 'practicalPercentage', value: d.practicalPercentage },
-            ])
-        )
-        .enter()
-        .append('circle')
-        .attr('class', 'dot')
-        .attr('cx', (d) => x(d.subjectCode)! + x.bandwidth() / 2) // Center the circles
-        .attr('cy', (d) => y(d.value)) // Position based on the value
-        .attr('r', 4)
-        .attr('fill', (d) => {
-            switch (d.type) {
-                case 'theoreticalPercentage':
-                    return 'steelblue';
-                case 'attendancePercentage':
-                    return 'orange';
-                case 'practicalPercentage':
-                    return 'green';
-                default:
-                    return 'black';
-            }
-        });
+      .selectAll('.dot')
+      .data(
+        this.performanceData.flatMap((d) => [
+          {
+            ...d,
+            type: 'theoreticalPercentage',
+            value: d.theoreticalPercentage,
+          },
+          { ...d, type: 'attendancePercentage', value: d.attendancePercentage },
+          { ...d, type: 'practicalPercentage', value: d.practicalPercentage },
+        ])
+      )
+      .enter()
+      .append('circle')
+      .attr('class', 'dot')
+      .attr('cx', (d) => x(d.subjectCode)! + x.bandwidth() / 2) // Center the circles
+      .attr('cy', (d) => y(d.value)) // Position based on the value
+      .attr('r', 4)
+      .attr('fill', (d) => {
+        switch (d.type) {
+          case 'theoreticalPercentage':
+            return 'steelblue';
+          case 'attendancePercentage':
+            return 'orange';
+          case 'practicalPercentage':
+            return 'green';
+          default:
+            return 'black';
+        }
+      });
 
     // Add the x-axis
     svg
-        .append('g')
-        .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(x));
+      .append('g')
+      .attr('transform', `translate(0,${height})`)
+      .call(d3.axisBottom(x));
 
     // Add the y-axis
     svg.append('g').call(d3.axisLeft(y));
 
-   // Add percentage symbol at the intersection of the X and Y axes
-svg
-.append('text')
-.attr('x', -margin.left / 11) // Move the symbol slightly right
-.attr('y', height + margin.bottom / 5) // Move the symbol slightly up
-.attr('text-anchor', 'middle')
-.attr('fill', '#000')
-.attr('font-size', '10px')
-.text('%');
-
-}
-
+    // Add percentage symbol at the intersection of the X and Y axes
+    svg
+      .append('text')
+      .attr('x', -margin.left / 11) // Move the symbol slightly right
+      .attr('y', height + margin.bottom / 5) // Move the symbol slightly up
+      .attr('text-anchor', 'middle')
+      .attr('fill', '#000')
+      .attr('font-size', '10px')
+      .text('%');
+  }
 
   showTooltip(event: MouseEvent, content: string) {
     d3.select('body')
@@ -241,7 +247,6 @@ svg
       .style('top', `${event.pageY + 10}px`)
       .html(content);
   }
-  
 
   hideTooltip(): void {
     d3.select('.tooltip').remove();
@@ -298,7 +303,7 @@ svg
       .getAllSubjectsBySemester(this.classId, this.studentId, semester)
       .subscribe(
         (data: any) => {
-          console.log('Received data:', data); // Check the structure here
+          console.log('Received data:', data); // Kiểm tra cấu trúc dữ liệu
 
           const semesterData = data[semester];
           if (!Array.isArray(semesterData)) {
@@ -306,10 +311,10 @@ svg
             return;
           }
 
-          // Process the semester data
+          // Xử lý dữ liệu cho học kỳ
           this.performanceData = semesterData;
 
-          // Aggregate the data across all subjects for this semester
+          // Tính toán tổng hợp cho tất cả các môn trong học kỳ này
           this.totalPerformance = {
             presentCount: this.getSum(
               semesterData.map((d: any) => d.presentCount)
@@ -333,6 +338,9 @@ svg
                 semesterData.map((d: any) => d.theoreticalScore)
               ) || 0,
           };
+          const newPercentage = this.calculateNewPercentage();
+
+          // Tính toán cho các tỷ lệ phần trăm
           this.performanceMarks = [
             {
               label: 'Project Percentage',
@@ -362,17 +370,48 @@ svg
                   semesterData.map((d: any) => d.theoreticalScore)
                 ) || 0,
             },
+            {
+              label: 'Total Percentage Sem1',
+              value: newPercentage,
+            },
           ];
+
           this.cdr.detectChanges();
           setTimeout(() => {
             this.performanceMarks.forEach((mark, i) => {
               this.createCircularCharts(`chart${i}`, mark.value);
             });
-            this.createPerformanceLineChart(); // Pass performanceData correctly
+            this.createPerformanceLineChart();
           }, 0);
         },
         (error) => console.error('Error fetching student performance:', error)
       );
+  }
+  private calculateNewPercentage(): number {
+    // Lấy điểm thực hành của môn "Project1"
+    const projectScore =
+      this.performanceData.find((subject) => subject.subjectCode === 'Project1')
+        ?.practicalPercentage || 0;
+
+    // Mảng chứa tổng điểm lý thuyết và thực hành
+    const scores = this.performanceData.flatMap((subject) => {
+      const theoretical = subject.theoreticalPercentage || 0;
+      const practical = subject.practicalPercentage || 0;
+      // Chỉ lấy điểm thực hành của Project1
+      return [subject.subjectCode === 'Project1' ? 0 : theoretical, practical];
+    });
+
+    console.log('Scores:', scores);
+
+    const totalScore = scores.reduce((total, score) => total + score, 0);
+    console.log(totalScore);
+
+    const count = scores.filter((score) => score > 0).length;
+    console.log(count);
+
+    // Tính tỷ lệ
+    const percentage = totalScore / count;
+    return percentage;
   }
 
   private getSum(values: number[]): number {
