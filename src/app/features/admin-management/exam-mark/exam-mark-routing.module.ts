@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { ExamMarkComponent } from './exam-mark.component';
 import { AuthGuard } from 'src/app/core/auth/auth.guard';
@@ -9,16 +8,16 @@ import { ExamMarkAllSubjectComponent } from './exam-mark-all-subject/exam-mark-a
 const routes: Routes = [
       
       {
-        path: 'exam-mark-all-subject/:classID',
+        path: 'exam-mark-all-subject/:classId',
         component: ExamMarkAllSubjectComponent,
         canActivate: [AuthGuard],
-        data: { breadcrumb: 'Exam Marks ALL Subjects', role: 'ROLE_ADMIN' },
+        data: { breadcrumb: 'Exam Marks ALL Subjects'},
       },
       {
-        path: 'exam-mark-edit/:classID',
+        path: 'exam-mark-edit/:classId',
         component: ExamMarkComponent,
         canActivate: [AuthGuard],
-        data: { breadcrumb: 'Exam Marks', role: 'ROLE_ADMIN' },
+        data: { breadcrumb: 'Exam Marks'},
       },
     ];
 
