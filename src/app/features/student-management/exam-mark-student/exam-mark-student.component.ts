@@ -24,7 +24,9 @@ export class ExamMarkStudentComponent implements OnInit {
   students: Student[] = [];  
   selectedSubject: string | null = null; // Thêm biến này để lưu subject đã chọn
 
-  constructor(private classService: ClassService, private http: HttpClient, private route: ActivatedRoute) { }
+  constructor(private classService: ClassService, private http: HttpClient, private route: ActivatedRoute,
+    private router: Router,
+  ) { }
 
   ngOnInit(): void {
     this.terms = [
@@ -50,6 +52,9 @@ export class ExamMarkStudentComponent implements OnInit {
     });
   }
 
+isActive(route: string): boolean {
+    return this.router.url.includes(route);
+  }
   getExamScoresByClass(classId: number): void {
     this.http.get<Student[]>(`http://localhost:1010/api/exam-score/${classId}`).subscribe(
       (data: Student[]) => {

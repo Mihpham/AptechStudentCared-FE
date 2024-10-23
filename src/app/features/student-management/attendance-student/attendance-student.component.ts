@@ -3,7 +3,7 @@ import { SubjectTeacherResponse } from '../../admin-management/model/class/subje
 import { StudentResponse } from '../../admin-management/model/student-response.model.';
 import { Schedule } from '../../admin-management/model/schedules/schedules.model';
 import { AttendanceResponse } from '../../admin-management/model/attendance/attendance-response.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ClassService } from 'src/app/core/services/admin/class.service';
 import { AttendanceService } from 'src/app/core/services/admin/attendance.service';
 import { ScheduleService } from 'src/app/core/services/admin/schedules.service';
@@ -51,9 +51,12 @@ export class AttendanceStudentComponent implements OnInit {
     public dialog: MatDialog,
     private toastr: ToastrService,
     private el: ElementRef,
-    private renderer: Renderer2
-  ) {}
-
+    private renderer: Renderer2,
+    private router: Router,
+  ) { }
+  isActive(route: string): boolean {
+    return this.router.url.includes(route);
+  }
   ngOnInit(): void {
     // Example: Retrieve IDs from route parameters
     this.route.params.subscribe((params) => {
@@ -89,10 +92,10 @@ export class AttendanceStudentComponent implements OnInit {
           }
 
           this.attendanceStatuses[attendance.studentId][attendance.scheduleId] =
-            {
-              attendanceStatus1: attendance.attendanceStatus1 || '',
-              attendanceStatus2: attendance.attendanceStatus2 || '',
-            };
+          {
+            attendanceStatus1: attendance.attendanceStatus1 || '',
+            attendanceStatus2: attendance.attendanceStatus2 || '',
+          };
 
           if (!this.attendanceComments[attendance.studentId]) {
             this.attendanceComments[attendance.studentId] = {};
@@ -157,5 +160,5 @@ export class AttendanceStudentComponent implements OnInit {
 
 
 
-  
+
 }

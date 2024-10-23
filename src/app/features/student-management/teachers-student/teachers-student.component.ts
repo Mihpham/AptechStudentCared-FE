@@ -44,7 +44,9 @@ export class TeachersStudentComponent implements OnInit {
   }
 
 
-
+  isActive(route: string): boolean {
+    return this.router.url.includes(route);
+  }
   getClassDetails(id: number): void {
     this.classService.findClassById(id).subscribe(
       (data) => {

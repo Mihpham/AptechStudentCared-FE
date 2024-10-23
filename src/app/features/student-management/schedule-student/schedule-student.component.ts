@@ -56,7 +56,9 @@ export class ScheduleStudentComponent implements OnInit {
     });
     this.loadSubjects();
   }
-
+  isActive(route: string): boolean {
+    return this.router.url.includes(route);
+  }
   loadSubjects(): void {
     this.subjectService.getAllSubjects().subscribe(
       (data: SubjectResponse[]) => {

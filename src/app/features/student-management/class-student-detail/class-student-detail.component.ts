@@ -38,6 +38,9 @@ export class ClassStudentDetailComponent implements OnInit {
         }
       });
     }
+    isActive(route: string): boolean {
+      return this.router.url.includes(route);
+    }
   
     getAvatarUrl(avatarName: string | undefined): string {
       return `/assets/images/${avatarName}`;

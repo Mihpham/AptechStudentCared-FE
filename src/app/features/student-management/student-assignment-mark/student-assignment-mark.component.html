@@ -1,28 +1,39 @@
 <div class="p-4">
     <h2 class="">{{classDetails?.className}}_{{classDetails?.center}}</h2>
     <div class="flex space-x-4">
-        
-        <a href="student/student-classmates/{{classId}}" class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
+        <a href="student/student-classmates/{{classId}}" 
+           [ngClass]="{'bg-blue-300': isActive('student-classmates'), 'bg-white': !isActive('student-classmates')}" 
+           class="text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
             <i class="fas fa-users"></i>
             <span>Classmates</span>
         </a>
-        <a href="student/student-scheduler/{{classId}}" class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
+        <a href="student/student-scheduler/{{classId}}" 
+           [ngClass]="{'bg-blue-300': isActive('student-scheduler'), 'bg-white': !isActive('student-scheduler')}" 
+           class="text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
             <i class="fas fa-calendar-alt"></i>
             <span>Scheduler</span>
         </a>
-        <a href="student/student-teachers/{{classId}}" class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
+        <a href="student/student-teachers/{{classId}}" 
+           [ngClass]="{'bg-blue-300': isActive('student-teachers'), 'bg-white': !isActive('student-teachers')}" 
+           class="text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
             <i class="fas fa-chalkboard-teacher"></i>
             <span>Teachers</span>
         </a>
-        <a href="student/student-exam-mark/{{classId}}" class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
+        <a href="student/student-exam-mark/{{classId}}" 
+           [ngClass]="{'bg-blue-300': isActive('student-exam-mark'), 'bg-white': !isActive('student-exam-mark')}" 
+           class="text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
             <i class="fas fa-file-alt"></i>
             <span>Exam Mark</span>
         </a>
-        <a href="student/student-assignment-mark/{{classId}}" class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
+        <a href="student/student-assignment-mark/{{classId}}" 
+           [ngClass]="{'bg-blue-300': isActive('student-assignment-mark'), 'bg-white': !isActive('student-assignment-mark')}" 
+           class="text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
             <i class="fas fa-pencil-alt"></i>
             <span>Assignment Mark</span>
         </a>
-        <a href="student/student-attendance/{{classId}}" class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
+        <a href="student/student-attendance/{{classId}}" 
+           [ngClass]="{'bg-blue-300': isActive('student-attendance'), 'bg-white': !isActive('student-attendance')}" 
+           class="text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
             <i class="fas fa-check-circle"></i>
             <span>Attendance</span>
         </a>
