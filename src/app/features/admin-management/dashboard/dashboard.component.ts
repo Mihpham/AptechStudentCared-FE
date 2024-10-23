@@ -8,6 +8,7 @@ import { StudentResponse } from '../model/student-response.model.';
 import { TeacherResponse } from '../model/teacher/teacher-response.model';
 import { SroResponse } from '../model/sro/sro.model';
 import { SroService } from 'src/app/core/services/admin/sro.service';
+import { AuthService } from 'src/app/core/auth/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,13 +24,14 @@ export class DashboardComponent implements OnInit {
   totalClasses: number = 0;
   totalTeacher: number = 0;
   totalSros: number = 0;
+  currentUserRole!: string | null;
   constructor(
     private classService: ClassService,
     private studentService: StudentService,
     private teacherService: TeacherService,
     private sroService: SroService,
-    private toastr: ToastrService
-  ) {}
+    private toastr: ToastrService,
+    private authService: AuthService  ) {}
 
   
   ngOnInit(): void {
@@ -37,6 +39,8 @@ export class DashboardComponent implements OnInit {
     this.loadStudent();
     this.loadTeacher();
     this.loadSro();
+    this.currentUserRole = this.authService.getRole();
+
   }
 
   loadClasses(): void {
