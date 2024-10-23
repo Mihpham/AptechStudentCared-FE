@@ -8,6 +8,7 @@ import { CourseResponse } from '../../model/course/course-response.model';
 import { ClassResponse } from '../../model/class/class-response.model';
 import { DayOfWeek } from 'src/app/core/enum/DayOfWeek';
 import { SubjectTeacherResponse } from '../../model/class/subject-teacher-response.model';
+import { AuthService } from 'src/app/core/auth/auth.service';
 
 @Component({
   selector: 'app-update-class',
@@ -41,11 +42,14 @@ export class UpdateClassComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private classService: ClassService,
+    private authService: AuthService,
     private courseService: CourseService,
     private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
+    this.currentUserRole = this.authService.getRole();
+
     this.loadInitialData();
     const classId = +this.route.snapshot.paramMap.get('id')!;
     if (classId) {
@@ -117,8 +121,9 @@ export class UpdateClassComponent implements OnInit {
       next: () => {
         this.toastr.success('Class updated successfully!', 'Success');
         this.currentUserRole === 'ROLE_ADMIN'
-        ? this.router.navigate(['/admin/class'])
-        : this.router.navigate(['/sro/class']);      },
+          ? this.router.navigate(['/admin/class'])
+          : this.router.navigate(['/sro/class']);
+      },
       error: () => {
         this.toastr.error('Failed to update class!', 'Error');
       },

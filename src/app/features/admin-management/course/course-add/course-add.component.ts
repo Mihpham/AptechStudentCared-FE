@@ -75,8 +75,12 @@ export class CourseAddComponent implements AfterViewInit, OnDestroy, OnInit {
       })
     ).subscribe(subjects => {
       this.availableSubjects = subjects.map(subject => subject.subjectName);
+
+
+
     });
   }
+
 
   toggleDropdown(semester: string): void {
     this.isDropdownOpen[semester] = !this.isDropdownOpen[semester];
