@@ -36,8 +36,8 @@ export class ExamMarkAllSubjectComponent {
     // Đặt mặc định là kỳ 1
     this.selectedTerm = 1;
 
-     // Lấy classID từ route
-     this.route.params.subscribe(params => {
+    // Lấy classID từ route
+    this.route.params.subscribe(params => {
       this.classID = +params['classID'];
     
       console.log('classID:', this.classID); // Kiểm tra giá trị classID
@@ -48,6 +48,7 @@ export class ExamMarkAllSubjectComponent {
         console.error('No valid classID provided in the URL.');
       }
     });
+    
   }
 
   getExamScoresByClass(classId: number): void {

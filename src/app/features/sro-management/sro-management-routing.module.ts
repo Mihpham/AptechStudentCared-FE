@@ -23,6 +23,15 @@ const routes: Routes = [
     data: { role: 'ROLE_SRO', breadcrumb: 'Class' },
   },
   {
+    path: 'exam',
+    loadChildren: () =>
+      import('../admin-management/exam-mark/exam-mark-routing.module').then(
+        (m) => m.ExamMarkRoutingModule
+      ),
+    canActivate: [AuthGuard],
+    data: { role: 'ROLE_SRO', breadcrumb: 'Exam-Mark' },
+  },
+  {
     path: 'student',
     loadChildren: () =>
       import('../admin-management/student/student-routing.module').then(

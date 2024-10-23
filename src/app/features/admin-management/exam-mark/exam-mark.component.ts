@@ -151,8 +151,9 @@ export class ExamMarkComponent implements OnInit {
         }
       });
 
-      if (this.selectedSemester) {
-        this.subjects = this.allSubjectsBySemester[this.selectedSemester] || [];
+      if (this.selectedSemester === 'Sem1' && this.subjects.length > 0) {
+        this.selectedSubject = this.subjects[0]; // Chọn môn đầu tiên
+        this.onSubjectChange(this.selectedSubject); // Gọi hàm để cập nhật thông tin
       }
     });
   }
@@ -166,24 +167,31 @@ export class ExamMarkComponent implements OnInit {
 }
 
 
-onSubjectChange(event: Event) {
-  const subjectCode = (event.target as HTMLSelectElement).value;
+onSubjectChange(subjectCode: string | null) {
+  if (!subjectCode) {
+    // Nếu subjectCode là null, có thể xử lý theo cách bạn muốn, ví dụ:
+    this.showTable = false;
+    return;
+  }
+
   this.selectedSubject = subjectCode;
 
   if (this.classID && this.selectedSubject) {
-      this.showTable = true;
-      this.getExamScoresByClass(this.classID);
-      if (this.selectedSubject.toLowerCase()?.includes('project')) {
-          this.students.forEach(student => {
-              const rollNumber = student.listExamScore[0].rollNumber;
-              this.tempScores[rollNumber] = {
-                  theoretical: 0, 
-                  practical: this.tempScores[rollNumber]?.practical || 0  
-              };
-          });
-      }
+    this.showTable = true;
+    this.getExamScoresByClass(this.classID);
+    if (this.selectedSubject.toLowerCase()?.includes('project')) {
+      this.students.forEach(student => {
+        const rollNumber = student.listExamScore[0].rollNumber;
+        this.tempScores[rollNumber] = {
+          theoretical: 0,
+          practical: this.tempScores[rollNumber]?.practical || 0,
+        };
+      });
+    }
   }
 }
+
+
 
 
   getExamScoresByClass(classId: number): void {
