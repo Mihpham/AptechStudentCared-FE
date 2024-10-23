@@ -27,7 +27,6 @@ import { AuthService } from 'src/app/core/auth/auth.service';
   templateUrl: './student-all-statuses.component.html',
   styleUrls: ['./student-all-statuses.component.scss'],
 })
-
 export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   students: StudentResponse[] = [];
   selectedStudent: StudentRequest | undefined;
@@ -74,23 +73,20 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   }
 
   loadStudent(): void {
-    this.studentService.getAllStudents().subscribe(
-      (data) => {
-        console.log('Data received from API:', data);
-        if (this.className) {
-          this.students = data.filter(
-            (student) => student.className === this.className
-          ); // Lọc sinh viên dựa trên tên lớp nếu có
-        } else {
-          this.students = data; // Hiển thị tất cả sinh viên nếu không có lớp
-        }
-        this.dataSource.data = this.students;
-        this.totalStudents = this.students.length;
-        this.updateStatusCounts(); // Cập nhật số lượng khi tải sinh viên
-        this.dataSource.paginator = this.paginator;
-      },
-      
-    );
+    this.studentService.getAllStudents().subscribe((data) => {
+      console.log('Data received from API:', data);
+      if (this.className) {
+        this.students = data.filter(
+          (student) => student.className === this.className
+        ); // Lọc sinh viên dựa trên tên lớp nếu có
+      } else {
+        this.students = data; // Hiển thị tất cả sinh viên nếu không có lớp
+      }
+      this.dataSource.data = this.students;
+      this.totalStudents = this.students.length;
+      this.updateStatusCounts(); // Cập nhật số lượng khi tải sinh viên
+      this.dataSource.paginator = this.paginator;
+    });
   }
 
   applyFilter(filterValue: string): void {
@@ -111,7 +107,6 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-
   onImport(): void {
     const dialogRef = this.dialog.open(ImportStudentDialogComponent, {
       width: '500px',
@@ -123,7 +118,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
       }
     });
   }
-  
+
   updateStatusCounts(): void {
     const counts = { studying: 0, delay: 0, dropped: 0, graduated: 0 };
 
@@ -142,7 +137,9 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   }
 
   onRowClick(event: MouseEvent, student: StudentRequest): void {
-    this.router.navigate(['/admin/student/details', student.userId]);
+    this.currentUserRole === 'ROLE_ADMIN'
+      ? this.router.navigate(['/admin/student/details', student.userId])
+      : this.router.navigate(['/sro/student/details', student.userId]);
   }
 
   onStudentAdded() {
@@ -160,28 +157,31 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onUpdate(student: StudentResponse, event: Event): void { // Use StudentResponse here
+  onUpdate(student: StudentResponse, event: Event): void {
+    // Use StudentResponse here
     event.stopPropagation();
     const dialogRef = this.dialog.open(StudentUpdateDialogComponent, {
       width: '650px',
       data: student,
     });
-  
-    dialogRef.afterClosed().subscribe((updatedStudent: StudentResponse | undefined) => {
-      if (updatedStudent) {
-        const index = this.students.findIndex(
-          (s) => s.userId === updatedStudent.userId
-        );
-        if (index !== -1) {
-          this.students[index] = updatedStudent; // updatedStudent should have classId
-          this.dataSource.data = [...this.students];
-          this.updateStatusCounts();
-        } else {
-          this.loadStudent();
+
+    dialogRef
+      .afterClosed()
+      .subscribe((updatedStudent: StudentResponse | undefined) => {
+        if (updatedStudent) {
+          const index = this.students.findIndex(
+            (s) => s.userId === updatedStudent.userId
+          );
+          if (index !== -1) {
+            this.students[index] = updatedStudent; // updatedStudent should have classId
+            this.dataSource.data = [...this.students];
+            this.updateStatusCounts();
+          } else {
+            this.loadStudent();
+          }
         }
-      }
-    });
-  }  
+      });
+  }
 
   triggerFileInput(): void {
     const fileInput: HTMLInputElement | null = this.fileInput?.nativeElement;
@@ -190,7 +190,6 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     }
   }
 
-  
   onExport(): void {
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.dataSource.data);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();

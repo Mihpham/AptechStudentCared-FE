@@ -20,31 +20,31 @@
         </div>
     </div>
     <div class="flex flex-wrap justify-between items-center gap-2 mb-6 ">
-        <!-- Left-aligned heading -->
-        <div class="flex flex-col items-start">
+            <div class="flex flex-col items-start">
             <h2 class="text-lg font-medium dark:text-gray-100">{{classDetails.center}}_{{ classDetails.className }}</h2>
             <small class="text-gray-600 dark:text-gray-100">Total Students: {{ classDetails.students.length }}</small>
-            <!-- <small class="text-gray-600">Teacher: {{ classDetails.subjectTeacherMap }}</small> -->
             <small class="text-gray-600 dark:text-gray-100">Sem: {{ classDetails.sem }}</small>
 
         </div>
         <!-- Right-aligned buttons -->
         <div class="flex gap-2">
-            <button (click)="onAdd()" class="bg-white mt-6 text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow-md transition duration-300 ease-in-out">
+            <button (click)="onAdd()"
+                class="bg-white mt-6 text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow-md transition duration-300 ease-in-out">
                 <i class="fa-solid fa-plus mr-1"></i> Add
             </button>
 
-            <a [routerLink]="currentUserRole === 'ROLE_ADMIN' ? ['/admin/exam/exam-mark-all-subject', classDetails.id] : ['/sro/exam/exam-mark-all-subject', classDetails.id]" routerLinkActive="active-link">
+            <a [routerLink]="getExamMarkLink()" routerLinkActive="active-link">
                 <button class="bg-white mt-6 text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow-md transition duration-300 ease-in-out">
                     <i class="fa-solid fa-book-open mr-1"></i> Mark
                 </button>
             </a>
+            
         </div>
 
     </div>
 
 
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto rounded-lg shadow-md">
         <table class="min-w-full bg-white dark:bg-gray-700 rounded-lg shadow-md">
             <thead class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-200">
                 <tr>
@@ -59,9 +59,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let student of classDetails.students" class="border-t border-gray-200 dark:border-gray-600 cursor-pointer" [routerLink]="[currentUserRole === 'ROLE_ADMIN' ? '/admin/student-performance' : '/sro/student-performance', classDetails.id,student.userId]">
+                <tr *ngFor="let student of classDetails.students"
+                    class="border-t border-gray-200 dark:border-gray-600 cursor-pointer"
+                    [routerLink]="[currentUserRole === 'ROLE_ADMIN' ? '/admin/student-performance' : '/sro/student-performance', classDetails.id,student.userId]">
                     <td class="px-4 py-2">
-                        <img [src]="student.image ? student.image : 'assets/images/avatar-default.webp'" alt="Avatar" class="w-10 h-10 rounded-full object-cover" />
+                        <img [src]="student.image ? student.image : 'assets/images/avatar-default.webp'" alt="Avatar"
+                            class="w-10 h-10 rounded-full object-cover" />
                     </td>
                     <td class="px-4 py-2 dark:text-gray-100">{{ student.fullName }}</td>
                     <td class="px-4 py-2 dark:text-gray-100">{{ student.rollNumber }}</td>

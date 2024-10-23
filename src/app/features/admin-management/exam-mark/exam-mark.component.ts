@@ -46,7 +46,7 @@ export class ExamMarkComponent implements OnInit {
   ngOnInit(): void {
     // Get the classID from the URL
     this.route.params.subscribe((params) => {
-      this.classID = params['classID'];
+      this.classID = params['classId'];
       if (!this.classID) {
         console.error('No classID provided in the URL.');
       } else {
@@ -151,9 +151,8 @@ export class ExamMarkComponent implements OnInit {
         }
       });
 
-      if (this.selectedSemester === 'Sem1' && this.subjects.length > 0) {
-        this.selectedSubject = this.subjects[0]; // Chọn môn đầu tiên
-        this.onSubjectChange(this.selectedSubject); // Gọi hàm để cập nhật thông tin
+      if (this.selectedSemester) {
+        this.subjects = this.allSubjectsBySemester[this.selectedSemester] || [];
       }
     });
   }
@@ -167,25 +166,22 @@ export class ExamMarkComponent implements OnInit {
 }
 
 
-onSubjectChange(subjectCode: string | null) {
-  if (!subjectCode) {
-    // Nếu subjectCode là null, có thể xử lý theo cách bạn muốn, ví dụ:
-    this.showTable = false;
-    return;
-  }
-
-  this.selectedSubject = subjectCode;
+onSubjectChange(subject: string | null): void {
+  this.selectedSubject = subject;
 
   if (this.classID && this.selectedSubject) {
     this.showTable = true;
     this.getExamScoresByClass(this.classID);
-    if (this.selectedSubject.toLowerCase()?.includes('project')) {
+
+    if (this.selectedSubject.toLowerCase().includes('project')) {
       this.students.forEach(student => {
-        const rollNumber = student.listExamScore[0].rollNumber;
-        this.tempScores[rollNumber] = {
-          theoretical: 0,
-          practical: this.tempScores[rollNumber]?.practical || 0,
-        };
+        const rollNumber = student.listExamScore[0]?.rollNumber;
+        if (rollNumber) {
+          this.tempScores[rollNumber] = {
+            theoretical: 0,
+            practical: this.tempScores[rollNumber]?.practical || 0
+          };
+        }
       });
     }
   }
