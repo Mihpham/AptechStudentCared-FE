@@ -33,11 +33,18 @@
                 </span>
               </td>
               <td class="px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600 flex justify-center space-x-4">
-                <button (click)="openEditDialog(detail.subject, detail.teacher, detail.status)" class="px-4 py-2 text-gray-700 bg-white rounded-lg shadow-lg">
-                  <i class="fas fa-edit mr-2"></i>Edit
+                <button 
+                  (click)="openEditDialog(detail.subject, detail.teacher, detail.status)" 
+                  class="px-4 py-2 text-gray-700 bg-white rounded-lg shadow-lg border-none" 
+                  title="Assign Teacher">
+                  <i class="fas fa-edit "></i>
                 </button>
-                <button (click)="loadSchedule(detail)" [disabled]="detail.status !== 'ACTIVE'" class="px-4 py-2 bg-white text-gray-700 rounded-lg shadow disabled:opacity-50 disabled:cursor-not-allowed">
-                  <i class="fa-solid fa-plus"></i> Schedule
+                <button 
+                  (click)="loadSchedule(detail)" 
+                  [disabled]="detail.status !== 'ACTIVE'" 
+                  class="px-4 py-2 bg-white text-gray-700 rounded-lg shadow border-none disabled:opacity-50 disabled:cursor-not-allowed" 
+                  title="Manage Schedule">
+                  <i class="fas fa-calendar"></i>
                 </button>
               </td>
             </tr>

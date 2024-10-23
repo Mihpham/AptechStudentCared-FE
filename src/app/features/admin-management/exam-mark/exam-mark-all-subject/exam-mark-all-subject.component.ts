@@ -37,16 +37,18 @@ export class ExamMarkAllSubjectComponent {
     this.selectedTerm = 1;
 
     // Lấy classID từ route
-    this.route.paramMap.subscribe(params => {
-      const classIDParam = params.get('classID');
-      this.classID = classIDParam ? Number(classIDParam) : null;
-
-      if (this.classID) {
+    this.route.params.subscribe(params => {
+      this.classID = +params['classID'];
+    
+      console.log('classID:', this.classID); // Kiểm tra giá trị classID
+    
+      if (this.classID !== null && !isNaN(this.classID)) {
         this.getClassById(this.classID);
       } else {
-        console.error('No classID provided in the URL.');
+        console.error('No valid classID provided in the URL.');
       }
     });
+    
   }
 
   getExamScoresByClass(classId: number): void {

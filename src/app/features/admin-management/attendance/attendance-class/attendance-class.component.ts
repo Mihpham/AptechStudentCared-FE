@@ -87,34 +87,33 @@ export class AttendanceClassComponent implements OnInit {
 
   loadAllAttendances(): void {
     this.attendanceService.getAllAttendances().subscribe(
-      (data) => {
-        console.log("attendance",data);
-        
-        this.attendances = data;
+        (data) => {
+            this.attendances = data;
 
-        this.attendances.forEach((attendance) => {
-          if (!this.attendanceStatuses[attendance.studentId]) {
-            this.attendanceStatuses[attendance.studentId] = {};
-          }
+            this.attendances.forEach((attendance) => {
+                if (!this.attendanceStatuses[attendance.studentId]) {
+                    this.attendanceStatuses[attendance.studentId] = {};
+                }
 
-          this.attendanceStatuses[attendance.studentId][attendance.scheduleId] =
-            {
-              attendanceStatus1: attendance.attendanceStatus1 || '',
-              attendanceStatus2: attendance.attendanceStatus2 || '',
-            };
+                this.attendanceStatuses[attendance.studentId][attendance.scheduleId] =
+                    {
+                        attendanceStatus1: attendance.attendanceStatus1 || '',
+                        attendanceStatus2: attendance.attendanceStatus2 || '',
+                    };
 
-          if (!this.attendanceComments[attendance.studentId]) {
-            this.attendanceComments[attendance.studentId] = {};
-          }
-          this.attendanceComments[attendance.studentId][attendance.scheduleId] =
-            attendance.note || '';
-        });
-      },
-      (error) => {
-        console.error('Error fetching attendance records:', error);
-      }
+                if (!this.attendanceComments[attendance.studentId]) {
+                    this.attendanceComments[attendance.studentId] = {};
+                }
+                this.attendanceComments[attendance.studentId][attendance.scheduleId] =
+                    attendance.note || '';
+            });
+        },
+        (error) => {
+            console.error('Error fetching attendance records:', error);
+        }
     );
-  }
+}
+
 
   getClassDetails(classId: number): void {
     this.classService.findClassById(classId).subscribe(
@@ -201,15 +200,16 @@ export class AttendanceClassComponent implements OnInit {
 
   getAttendanceStatus1(studentId: number, scheduleId: number): string {
     return (
-      this.attendanceStatuses[studentId]?.[scheduleId]?.attendanceStatus1 || ''
+        this.attendanceStatuses[studentId]?.[scheduleId]?.attendanceStatus1 ?? ''
     );
-  }
+}
 
-  getAttendanceStatus2(studentId: number, scheduleId: number): string {
+getAttendanceStatus2(studentId: number, scheduleId: number): string {
     return (
-      this.attendanceStatuses[studentId]?.[scheduleId]?.attendanceStatus2 || ''
+        this.attendanceStatuses[studentId]?.[scheduleId]?.attendanceStatus2 ?? ''
     );
-  }
+}
+
 
   selectStatus(
     studentId: number,

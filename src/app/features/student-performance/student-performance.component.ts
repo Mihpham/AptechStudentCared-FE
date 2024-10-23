@@ -49,6 +49,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     this.route.params.subscribe((params) => {
       this.classId = +params['classId'];
       this.studentId = +params['studentId'];
+      this.selectedSemester = 'SEM1';
       this.getSubjectsBySemester(this.selectedSemester);
     });
   }
@@ -153,8 +154,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       .domain([0, 100]) // Set domain starting from 0
       .range([height, 0]);
 
-    // Create separate line generators for each percentage
-    // Create the line generator function with type guard for y values
+    // Create the line generator function for each percentage type
     const lineGenerator = (valueKey: keyof StudentPerformanceResponse) =>
       d3
         .line<StudentPerformanceResponse>()
@@ -211,31 +211,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
           default:
             return 'black';
         }
-      })
-      .on('mouseover', (event, d: any) => {
-        const averageScore =
-          (d.attendancePercentage + d.practicalPercentage + d.theoreticalPercentage) / 3;
-      
-        let tooltipContent = `<strong>${d.subjectCode}</strong><br>`;
-        switch (d.type) {
-          case 'attendancePercentage':
-            tooltipContent += `Attendance: ${d.attendancePercentage}%<br>`;
-            break;
-          case 'theoreticalPercentage':
-            tooltipContent += `Theoretical: ${d.theoreticalPercentage}%<br>`;
-            break;
-          case 'practicalPercentage':
-            tooltipContent += `Practical: ${d.practicalPercentage}%<br>`;
-            break;
-        }
-      
-        // tooltipContent += `Average Score: ${averageScore.toFixed(2)}%`;
-      
-        this.showTooltip(event, tooltipContent);
-      })
-      
-
-      .on('mouseout', () => this.hideTooltip());
+      });
 
     // Add the x-axis
     svg
@@ -245,6 +221,16 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
 
     // Add the y-axis
     svg.append('g').call(d3.axisLeft(y));
+
+    // Add percentage symbol at the intersection of the X and Y axes
+    svg
+      .append('text')
+      .attr('x', -margin.left / 11) // Move the symbol slightly right
+      .attr('y', height + margin.bottom / 5) // Move the symbol slightly up
+      .attr('text-anchor', 'middle')
+      .attr('fill', '#000')
+      .attr('font-size', '10px')
+      .text('%');
   }
 
   showTooltip(event: MouseEvent, content: string) {
@@ -261,7 +247,6 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       .style('top', `${event.pageY + 10}px`)
       .html(content);
   }
-  
 
   hideTooltip(): void {
     d3.select('.tooltip').remove();
@@ -318,7 +303,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       .getAllSubjectsBySemester(this.classId, this.studentId, semester)
       .subscribe(
         (data: any) => {
-          console.log('Received data:', data); // Check the structure here
+          console.log('Received data:', data); // Kiểm tra cấu trúc dữ liệu
 
           const semesterData = data[semester];
           if (!Array.isArray(semesterData)) {
@@ -326,10 +311,10 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
             return;
           }
 
-          // Process the semester data
+          // Xử lý dữ liệu cho học kỳ
           this.performanceData = semesterData;
 
-          // Aggregate the data across all subjects for this semester
+          // Tính toán tổng hợp cho tất cả các môn trong học kỳ này
           this.totalPerformance = {
             presentCount: this.getSum(
               semesterData.map((d: any) => d.presentCount)
@@ -353,6 +338,9 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
                 semesterData.map((d: any) => d.theoreticalScore)
               ) || 0,
           };
+          const newPercentage = this.calculateNewPercentage();
+
+          // Tính toán cho các tỷ lệ phần trăm
           this.performanceMarks = [
             {
               label: 'Project Percentage',
@@ -382,17 +370,48 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
                   semesterData.map((d: any) => d.theoreticalScore)
                 ) || 0,
             },
+            {
+              label: 'Total Percentage Sem1',
+              value: newPercentage,
+            },
           ];
+
           this.cdr.detectChanges();
           setTimeout(() => {
             this.performanceMarks.forEach((mark, i) => {
               this.createCircularCharts(`chart${i}`, mark.value);
             });
-            this.createPerformanceLineChart(); // Pass performanceData correctly
+            this.createPerformanceLineChart();
           }, 0);
         },
         (error) => console.error('Error fetching student performance:', error)
       );
+  }
+  private calculateNewPercentage(): number {
+    // Lấy điểm thực hành của môn "Project1"
+    const projectScore =
+      this.performanceData.find((subject) => subject.subjectCode === 'Project1')
+        ?.practicalPercentage || 0;
+
+    // Mảng chứa tổng điểm lý thuyết và thực hành
+    const scores = this.performanceData.flatMap((subject) => {
+      const theoretical = subject.theoreticalPercentage || 0;
+      const practical = subject.practicalPercentage || 0;
+      // Chỉ lấy điểm thực hành của Project1
+      return [subject.subjectCode === 'Project1' ? 0 : theoretical, practical];
+    });
+
+    console.log('Scores:', scores);
+
+    const totalScore = scores.reduce((total, score) => total + score, 0);
+    console.log(totalScore);
+
+    const count = scores.filter((score) => score > 0).length;
+    console.log(count);
+
+    // Tính tỷ lệ
+    const percentage = totalScore / count;
+    return percentage;
   }
 
   private getSum(values: number[]): number {
