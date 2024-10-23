@@ -1,4 +1,4 @@
-<div class="p-4">
+<div class="p-4 ">
     <h2 class="">{{classDetails?.className}}_{{classDetails?.center}}</h2>
     <div class="flex space-x-4">
         
@@ -6,7 +6,7 @@
             <i class="fas fa-users"></i>
             <span>Classmates</span>
         </a>
-        <a href="#" class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
+        <a href="student/student-scheduler/{{classId}}" class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
             <i class="fas fa-calendar-alt"></i>
             <span>Scheduler</span>
         </a>
@@ -27,4 +27,89 @@
             <span>Attendance</span>
         </a>
     </div>
+    <style>
+        
+       
+    </style> 
+
+
+  
+<div class="calendar mt-5 bg-white rounded">
+    <div class="calendar-header pt-3 bg-white rounded">
+        {{ currentWeekRange }}
+    </div>
+
+    <div class="day text-center">
+      <div class="day-header">Sun</div>
+      <div class="mt-3" style="background-color: #CEE5D0;">
+        <ng-container *ngIf="classDetails?.days?.includes('SUNDAY')">
+          <p class="pt-3">{{ classDetails?.sem }}</p>
+          <p>{{ classDetails?.startHour?.substring(0, 5) + 'h' + ' - ' + classDetails?.endHour?.substring(0, 5) + 'h' }}</p>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="day text-center">
+      <div class="day-header">Mon</div>
+      <div class="mt-3" class="mt-3" style="background-color: #F5EBD3;" >
+        <ng-container *ngIf="classDetails?.days?.includes('MONDAY')">
+          <p class="pt-3">{{ classDetails?.sem }}</p>
+          <p>{{ classDetails?.startHour?.substring(0, 5) + 'h' + ' - ' + classDetails?.endHour?.substring(0, 5) + 'h' }}</p>
+        </ng-container>
+        
+      </div>
+      
+    </div>
+
+    <div class="day text-center">
+      <div class="day-header">Tue</div>
+      <div class="mt-3" style="background-color: #FBD4B5;">
+        <ng-container *ngIf="classDetails?.days?.includes('TUESDAY')">
+          <p class="pt-3">{{ classDetails?.sem }}</p>
+          <p>{{ classDetails?.startHour?.substring(0, 5) + 'h' + ' - ' + classDetails?.endHour?.substring(0, 5) + 'h' }}</p>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="day text-center">
+      <div class="day-header">Wed</div>
+      <div class="mt-3" style="background-color: #F4B6B2;">
+        <ng-container *ngIf="classDetails?.days?.includes('WEDNESDAY')">
+          <p class="pt-3">{{ classDetails?.sem }}</p>
+          <p>{{ classDetails?.startHour?.substring(0, 5) + 'h' + ' - ' + classDetails?.endHour?.substring(0, 5) + 'h' }}</p>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="day text-center">
+      <div class="day-header">Thu</div>
+      <div class="mt-3" style="background-color: #CE9FC2;">
+        <ng-container *ngIf="classDetails?.days?.includes('THURSDAY')">
+          <p class="pt-3">{{ classDetails?.sem }}</p>
+          <p>{{ classDetails?.startHour?.substring(0, 5) + 'h' + ' - ' + classDetails?.endHour?.substring(0, 5) + 'h' }}</p>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="day text-center">
+      <div class="day-header">Fri</div>
+      <div class="mt-3" style="background-color: #CEE5D0;" >
+        <ng-container *ngIf="classDetails?.days?.includes('FRIDAY')">
+          <p class="pt-3">{{ classDetails?.sem }}</p>
+          <p>{{ classDetails?.startHour?.substring(0, 5) + 'h' + ' - ' + classDetails?.endHour?.substring(0, 5) + 'h' }}</p>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="day text-center">
+      <div class="day-header">Sat</div>
+      <div class="mt-3" style="background-color: #F5EBD3;">
+        <ng-container *ngIf="classDetails?.days?.includes('SATURDAY')">
+          <p class="pt-3">{{ classDetails?.sem }}</p>
+          <p>{{ classDetails?.startHour?.substring(0, 5) + 'h' + ' - ' + classDetails?.endHour?.substring(0, 5) + 'h' }}</p>
+        </ng-container>
+      </div>
+    </div>
+</div>
+
 </div>

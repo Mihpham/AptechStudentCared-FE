@@ -7,3 +7,36 @@
 .active {
     background-color: #cbd5e1; /* Màu cho mục đang hoạt động */
 }
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: auto;
+    gap: 1px;
+    background-color: #ffffff;
+}
+.day {
+    border-right: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    padding: 10px;
+    background-color: #fff;
+    position: relative;
+    min-height: 100px; /* Adjust height for visibility */
+    
+}
+.day-header {
+    text-align: center;
+    font-weight: bold;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+.calendar-header {
+    grid-column: span 7;
+    text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    background-color: #ffffff;
+}
+.class-info {
+    margin-top: 5px;
+    font-size: 0.9em;
+}

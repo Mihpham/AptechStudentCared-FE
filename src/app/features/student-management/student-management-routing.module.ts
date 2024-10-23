@@ -8,6 +8,7 @@ import { AttendanceStudentComponent } from './attendance-student/attendance-stud
 import { StudentAssignmentMarkComponent } from './student-assignment-mark/student-assignment-mark.component';
 import { TeachersStudentComponent } from './teachers-student/teachers-student.component';
 import { StudentComponent } from './student.component';
+import { ScheduleStudentComponent } from './schedule-student/schedule-student.component';
 
 const routes: Routes = [
   {
@@ -28,12 +29,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { breadcrumb: 'Classmates' },
   },
-  // {
-  //   path: 'student-scheduler',
-  //   component: SchedulerComponent,
-  //   canActivate: [AuthGuard],
-  //   data: { breadcrumb: 'Scheduler' },
-  // },
+  {
+    path: 'student-scheduler/:classId',
+    component: ScheduleStudentComponent,
+    canActivate: [AuthGuard],
+    data: { breadcrumb: 'Scheduler' },
+  },
   {
     path: 'student-teachers/:classId',
     component: TeachersStudentComponent,

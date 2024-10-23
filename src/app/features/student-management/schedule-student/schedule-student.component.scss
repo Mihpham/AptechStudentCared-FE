@@ -1,0 +1,21 @@
+/* Bố cục flex để các phần tử nằm cùng dòng */
+.select-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Khoảng cách giữa các phần tử */
+}
+
+label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+select {
+    width: 150px;
+    /* Đặt chiều rộng cho select */
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}

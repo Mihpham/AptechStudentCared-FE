@@ -26,6 +26,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { AttendanceStudentComponent } from './attendance-student/attendance-student.component';
 import { TeachersStudentComponent } from './teachers-student/teachers-student.component';
 import { StudentAssignmentMarkComponent } from './student-assignment-mark/student-assignment-mark.component';
+import { ScheduleStudentComponent } from './schedule-student/schedule-student.component';
 @NgModule({
   
   schemas: [NO_ERRORS_SCHEMA  ],
@@ -36,6 +37,7 @@ import { StudentAssignmentMarkComponent } from './student-assignment-mark/studen
     AttendanceStudentComponent,
     TeachersStudentComponent,
     StudentAssignmentMarkComponent,
+    ScheduleStudentComponent,
     // NavbarStudentComponent
   ],
   imports: [
