@@ -49,6 +49,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     this.route.params.subscribe((params) => {
       this.classId = +params['classId'];
       this.studentId = +params['studentId'];
+      this.selectedSemester = 'SEM1'; 
       this.getSubjectsBySemester(this.selectedSemester);
     });
   }
@@ -135,117 +136,96 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     const height = 300 - margin.top - margin.bottom;
 
     const svg = d3
-      .select('#performance-chart')
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
-      .append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
+        .select('#performance-chart')
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom)
+        .append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
 
     // Define the x and y scales
     const x = d3
-      .scaleBand<string>()
-      .domain(this.performanceData.map((d) => d.subjectCode)) // X-axis labels
-      .range([0, width])
-      .padding(0.1);
+        .scaleBand<string>()
+        .domain(this.performanceData.map((d) => d.subjectCode)) // X-axis labels
+        .range([0, width])
+        .padding(0.1);
 
     const y = d3
-      .scaleLinear<number>()
-      .domain([0, 100]) // Set domain starting from 0
-      .range([height, 0]);
+        .scaleLinear<number>()
+        .domain([0, 100]) // Set domain starting from 0
+        .range([height, 0]);
 
-    // Create separate line generators for each percentage
-    // Create the line generator function with type guard for y values
+    // Create the line generator function for each percentage type
     const lineGenerator = (valueKey: keyof StudentPerformanceResponse) =>
-      d3
-        .line<StudentPerformanceResponse>()
-        .x((d) => x(d.subjectCode)! + x.bandwidth() / 2) // Center the points in the bands
-        .y((d) => y(Number(d[valueKey]) || 0)) // Convert the value to a number and use 0 as a fallback
-        .curve(d3.curveMonotoneX); // Optional: smooth curve
+        d3
+            .line<StudentPerformanceResponse>()
+            .x((d) => x(d.subjectCode)! + x.bandwidth() / 2) // Center the points in the bands
+            .y((d) => y(Number(d[valueKey]) || 0)) // Convert the value to a number and use 0 as a fallback
+            .curve(d3.curveMonotoneX); // Optional: smooth curve
 
     // Draw lines for each percentage type
-    const percentageTypes = [
-      'theoreticalPercentage',
-      'attendancePercentage',
-      'practicalPercentage',
-    ] as const;
+    const percentageTypes = ['theoreticalPercentage', 'attendancePercentage', 'practicalPercentage'] as const;
     const colors = ['steelblue', 'orange', 'green'];
 
     percentageTypes.forEach((type, index) => {
-      svg
-        .append('path')
-        .datum(this.performanceData)
-        .attr('fill', 'none')
-        .attr('stroke', colors[index])
-        .attr('stroke-width', 2)
-        .attr('d', lineGenerator(type));
+        svg
+            .append('path')
+            .datum(this.performanceData)
+            .attr('fill', 'none')
+            .attr('stroke', colors[index])
+            .attr('stroke-width', 2)
+            .attr('d', lineGenerator(type));
     });
 
     // Add circles for each data point
     svg
-      .selectAll('.dot')
-      .data(
-        this.performanceData.flatMap((d) => [
-          {
-            ...d,
-            type: 'theoreticalPercentage',
-            value: d.theoreticalPercentage,
-          },
-          { ...d, type: 'attendancePercentage', value: d.attendancePercentage },
-          { ...d, type: 'practicalPercentage', value: d.practicalPercentage },
-        ])
-      )
-      .enter()
-      .append('circle')
-      .attr('class', 'dot')
-      .attr('cx', (d) => x(d.subjectCode)! + x.bandwidth() / 2) // Center the circles
-      .attr('cy', (d) => y(d.value)) // Position based on the value
-      .attr('r', 4)
-      .attr('fill', (d) => {
-        switch (d.type) {
-          case 'theoreticalPercentage':
-            return 'steelblue';
-          case 'attendancePercentage':
-            return 'orange';
-          case 'practicalPercentage':
-            return 'green';
-          default:
-            return 'black';
-        }
-      })
-      .on('mouseover', (event, d: any) => {
-        const averageScore =
-          (d.attendancePercentage + d.practicalPercentage + d.theoreticalPercentage) / 3;
-      
-        let tooltipContent = `<strong>${d.subjectCode}</strong><br>`;
-        switch (d.type) {
-          case 'attendancePercentage':
-            tooltipContent += `Attendance: ${d.attendancePercentage}%<br>`;
-            break;
-          case 'theoreticalPercentage':
-            tooltipContent += `Theoretical: ${d.theoreticalPercentage}%<br>`;
-            break;
-          case 'practicalPercentage':
-            tooltipContent += `Practical: ${d.practicalPercentage}%<br>`;
-            break;
-        }
-      
-        // tooltipContent += `Average Score: ${averageScore.toFixed(2)}%`;
-      
-        this.showTooltip(event, tooltipContent);
-      })
-      
-
-      .on('mouseout', () => this.hideTooltip());
+        .selectAll('.dot')
+        .data(
+            this.performanceData.flatMap((d) => [
+                { ...d, type: 'theoreticalPercentage', value: d.theoreticalPercentage },
+                { ...d, type: 'attendancePercentage', value: d.attendancePercentage },
+                { ...d, type: 'practicalPercentage', value: d.practicalPercentage },
+            ])
+        )
+        .enter()
+        .append('circle')
+        .attr('class', 'dot')
+        .attr('cx', (d) => x(d.subjectCode)! + x.bandwidth() / 2) // Center the circles
+        .attr('cy', (d) => y(d.value)) // Position based on the value
+        .attr('r', 4)
+        .attr('fill', (d) => {
+            switch (d.type) {
+                case 'theoreticalPercentage':
+                    return 'steelblue';
+                case 'attendancePercentage':
+                    return 'orange';
+                case 'practicalPercentage':
+                    return 'green';
+                default:
+                    return 'black';
+            }
+        });
 
     // Add the x-axis
     svg
-      .append('g')
-      .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(x));
+        .append('g')
+        .attr('transform', `translate(0,${height})`)
+        .call(d3.axisBottom(x));
 
     // Add the y-axis
     svg.append('g').call(d3.axisLeft(y));
-  }
+
+   // Add percentage symbol at the intersection of the X and Y axes
+svg
+.append('text')
+.attr('x', -margin.left / 11) // Move the symbol slightly right
+.attr('y', height + margin.bottom / 5) // Move the symbol slightly up
+.attr('text-anchor', 'middle')
+.attr('fill', '#000')
+.attr('font-size', '10px')
+.text('%');
+
+}
+
 
   showTooltip(event: MouseEvent, content: string) {
     d3.select('body')
