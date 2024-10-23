@@ -4,15 +4,15 @@
             <span class="text-3xl font-bold">{{totalStudents}}</span>
             <span class="text-gray-600">STUDENT</span>
         </div>
-        <div *ngIf="teachers" class="bg-yellow-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
+        <div *ngIf="classes" class="bg-blue-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center cursor-pointer" [routerLink]="currentUserRole === 'ROLE_ADMIN' ? ['/admin/teacher'] : ['/sro/teacher']">
             <span class="text-3xl font-bold">{{totalTeacher}}</span>
             <span class="text-gray-600">TEACHER</span>
         </div>
-        <div *ngIf="sros" class="bg-yellow-200 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
+        <div *ngIf="classes" class="bg-yellow-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center cursor-pointer" [routerLink]="currentUserRole === 'ROLE_ADMIN' ? ['/admin/sro'] : ['/sro']">
             <span class="text-3xl font-bold">{{totalSros}}</span>
             <span class="text-gray-600">SRO</span>
         </div>
-        <div *ngIf="classes" class="bg-cyan-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center cursor-pointer" [routerLink]="['/admin/class']">
+        <div *ngIf="classes" class="bg-cyan-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center cursor-pointer" [routerLink]="currentUserRole === 'ROLE_ADMIN' ? ['/admin/class'] : ['/sro/class']">
             <span class="text-3xl font-bold">{{totalClasses}}</span>
             <span class="text-gray-600">CLASS</span>
         </div>
