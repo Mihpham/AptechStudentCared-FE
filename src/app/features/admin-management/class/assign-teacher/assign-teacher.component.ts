@@ -140,6 +140,9 @@ export class AssignTeacherComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['admin/class']);
+    this.currentUserRole === "ROLE_ADMIN" ?
+    this.router.navigate(['admin/class']):
+    this.router.navigate(['sro/class']);
+    ;
   }
 }
