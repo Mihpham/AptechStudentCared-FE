@@ -9,6 +9,7 @@ import * as d3 from 'd3';
 import { ClassService } from 'src/app/core/services/admin/class.service';
 import { StudentPerformanceService } from 'src/app/core/services/admin/studentperformance.service';
 import { StudentPerformanceResponse } from '../admin-management/model/student-performance/student-performance-response.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-student-performance',
@@ -19,7 +20,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   classId: number | null = null;
   studentId: number | null = null;
   selectedSubjectId: number | null = null;
-  selectedSemester = 'All';
+  selectedSemester = '';
   subjects: { id: number; code: string }[] = [];
   performanceMarks: { label: string; value: number }[] = [];
   semesters = ['SEM1', 'SEM2', 'SEM3', 'SEM4'];
@@ -42,6 +43,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private classService: ClassService,
+    private toastr: ToastrService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -67,7 +69,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
 
   getSubjectsBySemester(semester: string): void {
     if (!this.classId || !this.studentId) return;
-
+  
     this.classService
       .getAllSubjectsBySemester(
         this.classId,
@@ -84,13 +86,21 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
             this.selectedSubjectId = this.subjects[0]?.id;
             this.getStudentPerformance(semester);
           } else {
-            console.error(`No subjects found for semester: ${semester}`);
+            this.toastr.error(`No subjects found for semester: ${semester}`);
             this.subjects = [];
           }
         },
-        (error) => console.error('Error fetching subjects:', error)
+        (error) => {
+          if (error.status === 404) {
+            this.toastr.error(`No subjects found for semester: ${semester}`);
+          } else {
+            console.error('Error fetching subjects:', error);
+          }
+          this.subjects = [];
+        }
       );
   }
+  
 
   createCircularCharts(chartId: string, value: number): void {
     const width = 100;
@@ -325,7 +335,6 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
           };
           const newPercentage = this.calculateNewPercentage();
           this.performanceMarks = [
-           
             {
               label: 'Attendance Percentage',
               value:
@@ -352,13 +361,13 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
               value: newPercentage,
             },
           ];
-          this.cdr.detectChanges();
-          setTimeout(() => {
-            this.performanceMarks.forEach((mark, i) => {
-              this.createCircularCharts(`chart${i}`, mark.value);
-            });
-            this.createPerformanceLineChart(); // Pass performanceData correctly
-          }, 0);
+          console.log(this.performanceMarks),
+            setTimeout(() => {
+              this.performanceMarks.forEach((mark, i) => {
+                this.createCircularCharts(`chart${i}`, mark.value);
+              });
+              this.createPerformanceLineChart(); // Pass performanceData correctly
+            }, 0);
         },
         (error) => console.error('Error fetching student performance:', error)
       );
