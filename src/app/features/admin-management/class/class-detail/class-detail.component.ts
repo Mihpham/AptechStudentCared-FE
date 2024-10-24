@@ -49,6 +49,12 @@ export class ClassDetailComponent implements OnInit {
     return `/assets/images/${avatarName}`;
   }
 
+  getExamMarkLink() {
+    return this.currentUserRole === 'ROLE_ADMIN'
+      ? ['/admin/exam/exam-mark-all-subject', this.classDetails.id]
+      : ['/sro/exam/exam-mark-all-subject', this.classDetails.id];
+  }
+  
   navigateToStudentPerformance(
     classId: number,
     userId: number,
