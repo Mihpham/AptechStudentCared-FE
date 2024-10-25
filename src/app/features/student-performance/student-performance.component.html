@@ -17,72 +17,31 @@
                         {{ semester }}
                     </option>
                 </select>
-
             </div>
         </div>
 
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div class="col-span-2 grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 bg-white">
-                <div *ngFor="let mark of performanceMarks; let i = index"
-                    class="text-center text-sm p-4 rounded-md shadow-sm">
-                    <div class="font-semibold mb-2 whitespace-nowrap">
-                        {{ mark.label }}
+        <!-- Check if there are performanceMarks for the selected semester -->
+        <div *ngIf="performanceMarks.length > 0; else noSubjectsFound">
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+                <div class="col-span-4 grid grid-cols-4 md:grid-cols-4 gap-6 mb-8 bg-white">
+                    <div *ngFor="let mark of performanceMarks; let i = index"
+                        class="text-center text-sm p-4 rounded-md shadow-sm">
+                        <div class="font-semibold mb-2 whitespace-nowrap">
+                            {{ mark.label }}
+                        </div>
+                        <svg [id]="'chart' + i" width="100" height="100" [attr.aria-label]="mark.label + ' Chart'"></svg>
+                        <div class="text-xl font-bold mt-2">{{ mark.value.toFixed(2) }}%</div>
                     </div>
-                    <!-- Ensure the SVG is properly defined and the chart is created dynamically -->
-                    <svg [id]="'chart' + i" width="100" height="100" [attr.aria-label]="mark.label + ' Chart'"></svg>
-                    <div class="text-xl font-bold mt-2">{{ mark.value.toFixed(2) }}%</div>
                 </div>
             </div>
-
-            <div *ngIf="!selectedSemester">
-
-            </div>
-            <div class="col-span-1 grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 rounded-md" *ngIf="selectedSemester">
-                <!-- Present -->
-                <div class="p-6 bg-green-100 rounded-lg text-center shadow-sm" >
-                    <div class="font-bold text-2xl text-green-700">
-                        {{ totalPerformance.presentCount }}
-                    </div>
-                    <div class="text-gray-700">Present</div>
-                </div>
-                <!-- Absent -->
-                <div class="p-6 bg-yellow-100 rounded-lg text-center shadow-sm">
-                    <div class="font-bold text-2xl text-yellow-700">
-                        {{ totalPerformance.absentCount }}
-                    </div>
-                    <div class="text-gray-700">Absent</div>
-                </div>
-                <!-- Present With Permission -->
-                <div class="p-6 bg-red-100 rounded-lg text-center shadow-sm">
-                    <div class="font-bold text-2xl text-red-700">
-                        {{ totalPerformance.presentWithPermissionCount }}
-                    </div>
-                    <div class="text-gray-700">Present With Permission</div>
-                </div>
-                <!-- Attendance Percentage -->
-                <div class="p-6 bg-blue-100 rounded-lg text-center shadow-sm">
-                    <div class="font-bold text-2xl text-blue-700">
-                        {{ totalPerformance.attendancePercentage.toFixed(2) }}%
-                    </div>
-                    <div class="text-gray-700">Attendance Percentage</div>
-                </div>
-                <!-- Practical Percentage -->
-                <div class="p-6 bg-blue-100 rounded-lg text-center shadow-sm">
-                    <div class="font-bold text-2xl text-blue-700">
-                        {{ totalPerformance.practicalPercentage.toFixed(2) }}%
-                    </div>
-                    <div class="text-gray-700">Practical Percentage</div>
-                </div>
-                <!-- Theoretical Score -->
-                <div class="p-6 bg-blue-100 rounded-lg text-center shadow-sm">
-                    <div class="font-bold text-2xl text-blue-700">
-                        {{ totalPerformance.theoreticalScore.toFixed(2) }}%
-                    </div>
-                    <div class="text-gray-700">Avg Mark of Theory</div>
-                </div>
-            </div>
-
         </div>
+
+        <!-- Show message if no subjects are found -->
+        <ng-template #noSubjectsFound>
+            <div class="text-red-500 text-center text-xl font-semibold">
+                No subjects found for the semester: {{ selectedSemester }}
+            </div>
+        </ng-template>
     </div>
 
     <!-- Performance Line Chart -->
@@ -90,10 +49,9 @@
         <svg id="performance-chart" viewBox="0 0 600 300" class="w-full h-full"
             aria-label="Performance Line Chart"></svg>
         <div class="flex justify-center space-x-6 mt-6">
-            <div><span class="text-blue-500">●</span> Theory</div>
             <div><span class="text-yellow-500">●</span> Attendance</div>
+            <div><span class="text-blue-500">●</span> Theory</div>
             <div><span class="text-green-700">●</span> Practical</div>
         </div>
     </div>
-
 </div>
