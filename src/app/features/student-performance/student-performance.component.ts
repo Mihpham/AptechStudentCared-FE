@@ -1,15 +1,11 @@
-import {
-  Component,
-  OnInit,
-  AfterViewInit,
-  ChangeDetectorRef,
-} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit,} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import * as d3 from 'd3';
-import { ClassService } from 'src/app/core/services/admin/class.service';
-import { StudentPerformanceService } from 'src/app/core/services/admin/studentperformance.service';
-import { StudentPerformanceResponse } from '../admin-management/model/student-performance/student-performance-response.model';
-import { ToastrService } from 'ngx-toastr';
+import {ClassService} from 'src/app/core/services/admin/class.service';
+import {
+  StudentPerformanceResponse
+} from '../admin-management/model/student-performance/student-performance-response.model';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-student-performance',
@@ -40,12 +36,14 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     practicalPercentage: 0,
     theoreticalScore: 0,
   };
+
   constructor(
     private route: ActivatedRoute,
     private classService: ClassService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -69,7 +67,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
 
   getSubjectsBySemester(semester: string): void {
     if (!this.classId || !this.studentId) return;
-  
+
     this.classService
       .getAllSubjectsBySemester(
         this.classId,
@@ -100,7 +98,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
         }
       );
   }
-  
+
 
   createCircularCharts(chartId: string, value: number): void {
     const width = 100;
@@ -141,7 +139,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     // Clear the previous chart
     d3.select('#performance-chart').selectAll('*').remove();
 
-    const margin = { top: 20, right: 30, bottom: 50, left: 60 };
+    const margin = {top: 20, right: 30, bottom: 50, left: 60};
     const width = 600 - margin.left - margin.right;
     const height = 300 - margin.top - margin.bottom;
 
@@ -201,8 +199,8 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
             type: 'theoreticalPercentage',
             value: d.theoreticalPercentage,
           },
-          { ...d, type: 'attendancePercentage', value: d.attendancePercentage },
-          { ...d, type: 'practicalPercentage', value: d.practicalPercentage },
+          {...d, type: 'attendancePercentage', value: d.attendancePercentage},
+          {...d, type: 'practicalPercentage', value: d.practicalPercentage},
         ])
       )
       .enter()
@@ -260,23 +258,37 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     svg.append('g').call(d3.axisLeft(y));
   }
 
-  showTooltip(event: MouseEvent, content: string) {
+  showTooltip(event: MouseEvent, content: string): void {
+    // Remove any existing tooltip before creating a new one
+    d3.select('.tooltip').remove();
+
+    // Create tooltip
     d3.select('body')
       .append('div')
       .attr('class', 'tooltip')
       .style('position', 'absolute')
       .style('background', '#f4f4f4')
+      .style('color', '#333')
       .style('padding', '5px')
       .style('border', '1px solid #d4d4d4')
       .style('border-radius', '4px')
       .style('pointer-events', 'none')
+      .style('opacity', 0)
       .style('left', `${event.pageX + 10}px`)
       .style('top', `${event.pageY + 10}px`)
-      .html(content);
+      .html(content)
+      .transition()
+      .duration(200)
+      .style('opacity', 1); // Fade in the tooltip
   }
 
   hideTooltip(): void {
-    d3.select('.tooltip').remove();
+    // Smoothly fade out and remove the tooltip
+    d3.select('.tooltip')
+      .transition()
+      .duration(200)
+      .style('opacity', 0)
+      .remove();
   }
 
   onSubjectChange(event: Event): void {
@@ -358,10 +370,9 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
             },
             {
               label: 'Total Percentage Sem1',
-              value: newPercentage,
+              value: newPercentage || 0,
             },
           ];
-          console.log(this.performanceMarks),
             setTimeout(() => {
               this.performanceMarks.forEach((mark, i) => {
                 this.createCircularCharts(`chart${i}`, mark.value);
@@ -403,6 +414,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   private getSum(values: number[]): number {
     return values.reduce((a, b) => a + b, 0);
   }
+
   private getAverage(values: number[]): number {
     if (values.length === 0) return 0;
     return values.reduce((a, b) => a + b, 0) / values.length;
