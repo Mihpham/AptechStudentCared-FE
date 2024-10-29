@@ -21,6 +21,8 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   performanceMarks: { label: string; value: number }[] = [];
   semesters = ['SEM1', 'SEM2', 'SEM3', 'SEM4'];
   performanceData: StudentPerformanceResponse[] = [];
+  firstSubjectSchedules: string = '';
+  lastSubjectSchedules: string = '';
   totalPerformance: {
     presentCount: number;
     absentCount: number;
@@ -57,7 +59,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     setTimeout(() => {
       if (this.performanceData.length > 0) {
-        this.createPerformanceLineChart();
+        this.createPerformanceLineChart(this.firstSubjectSchedules, this.lastSubjectSchedules);
       }
       this.performanceMarks.forEach((mark, i) => {
         this.createCircularCharts(`chart${i}`, mark.value);
@@ -76,8 +78,10 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       )
       .subscribe(
         (data: any) => {
-          if (data && data[semester]) {
-            this.subjects = data[semester].map((subject: any) => ({
+          const performances = data.subjectPerformances;
+
+          if (performances && performances.length > 0) {
+            this.subjects = performances.map((subject: any) => ({
               id: subject.id,
               code: subject.subjectCode,
             }));
@@ -85,22 +89,24 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
             this.getStudentPerformance(semester);
           } else {
             this.toastr.error(`No subjects found for semester: ${semester}`);
+            this.performanceMarks = [];
             this.subjects = [];
           }
         },
         (error) => {
           if (error.status === 404) {
             this.toastr.error(`No subjects found for semester: ${semester}`);
+            this.performanceMarks = [];
+            this.subjects = [];
           } else {
             console.error('Error fetching subjects:', error);
           }
-          this.subjects = [];
         }
       );
   }
 
-
   createCircularCharts(chartId: string, value: number): void {
+
     const width = 100;
     const height = 100;
     const radius = Math.min(width, height) / 2;
@@ -133,13 +139,13 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       .attr('stroke-width', 1);
   }
 
-  createPerformanceLineChart(): void {
+  createPerformanceLineChart(firstSubjectSchedules: string, lastSubjectSchedules: string): void {
     if (this.performanceData.length === 0) return;
 
     // Clear the previous chart
     d3.select('#performance-chart').selectAll('*').remove();
 
-    const margin = {top: 20, right: 30, bottom: 50, left: 60};
+    const margin = { top: 20, right: 30, bottom: 50, left: 60 };
     const width = 600 - margin.left - margin.right;
     const height = 300 - margin.top - margin.bottom;
 
@@ -150,26 +156,39 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
+    // Set default font style
+    const defaultFontFamily = 'Arial';
+    const defaultFontSize = '8px';
+
+    // Chart title with unified font style
+    svg
+      .append('text')
+      .attr('x', width / 2)
+      .attr('y', height + 44)
+      .attr('text-anchor', 'middle')
+      .style('font-family', 'Arial')
+      .style('font', 'bold')
+      .style('font-size', '6px')
+      .text(`First: ${firstSubjectSchedules} - Last: ${lastSubjectSchedules}`);
+
     // Define the x and y scales
     const x = d3
       .scaleBand<string>()
-      .domain(this.performanceData.map((d) => d.subjectCode)) // X-axis labels
+      .domain(this.performanceData.map((d) => d.subjectCode))
       .range([0, width])
       .padding(0.1);
 
     const y = d3
       .scaleLinear<number>()
-      .domain([0, 100]) // Set domain starting from 0
+      .domain([0, 100])
       .range([height, 0]);
 
-    // Create separate line generators for each percentage
-    // Create the line generator function with type guard for y values
     const lineGenerator = (valueKey: keyof StudentPerformanceResponse) =>
       d3
         .line<StudentPerformanceResponse>()
-        .x((d) => x(d.subjectCode)! + x.bandwidth() / 2) // Center the points in the bands
-        .y((d) => y(Number(d[valueKey]) || 0)) // Convert the value to a number and use 0 as a fallback
-        .curve(d3.curveMonotoneX); // Optional: smooth curve
+        .x((d) => x(d.subjectCode)! + x.bandwidth() / 2)
+        .y((d) => y(Number(d[valueKey]) || 0))
+        .curve(d3.curveMonotoneX);
 
     // Draw lines for each percentage type
     const percentageTypes = [
@@ -185,7 +204,8 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
         .datum(this.performanceData)
         .attr('fill', 'none')
         .attr('stroke', colors[index])
-        .attr('stroke-width', 2)
+        .attr('stroke-width', 1)
+        .style('font-size', '8px')
         .attr('d', lineGenerator(type));
     });
 
@@ -194,21 +214,17 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       .selectAll('.dot')
       .data(
         this.performanceData.flatMap((d) => [
-          {
-            ...d,
-            type: 'theoreticalPercentage',
-            value: d.theoreticalPercentage,
-          },
-          {...d, type: 'attendancePercentage', value: d.attendancePercentage},
-          {...d, type: 'practicalPercentage', value: d.practicalPercentage},
+          { ...d, type: 'theoreticalPercentage', value: d.theoreticalPercentage },
+          { ...d, type: 'attendancePercentage', value: d.attendancePercentage },
+          { ...d, type: 'practicalPercentage', value: d.practicalPercentage },
         ])
       )
       .enter()
       .append('circle')
       .attr('class', 'dot')
-      .attr('cx', (d) => x(d.subjectCode)! + x.bandwidth() / 2) // Center the circles
-      .attr('cy', (d) => y(d.value)) // Position based on the value
-      .attr('r', 4)
+      .attr('cx', (d) => x(d.subjectCode)! + x.bandwidth() / 2)
+      .attr('cy', (d) => y(d.value))
+      .attr('r', 2)
       .attr('fill', (d) => {
         switch (d.type) {
           case 'theoreticalPercentage':
@@ -222,12 +238,6 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
         }
       })
       .on('mouseover', (event, d: any) => {
-        const averageScore =
-          (d.attendancePercentage +
-            d.practicalPercentage +
-            d.theoreticalPercentage) /
-          3;
-
         let tooltipContent = `<strong>${d.subjectCode}</strong><br>`;
         switch (d.type) {
           case 'attendancePercentage':
@@ -240,23 +250,28 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
             tooltipContent += `Practical: ${d.practicalPercentage}%<br>`;
             break;
         }
-
-        // tooltipContent += `Average Score: ${averageScore.toFixed(2)}%`;
-
         this.showTooltip(event, tooltipContent);
       })
-
       .on('mouseout', () => this.hideTooltip());
 
-    // Add the x-axis
+    // Add the x-axis with unified font style
     svg
       .append('g')
       .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(x));
+      .call(d3.axisBottom(x))
+      .selectAll('text')
+      .style('font-family', defaultFontFamily)
+      .style('font-size', defaultFontSize);
 
-    // Add the y-axis
-    svg.append('g').call(d3.axisLeft(y));
+    // Add the y-axis with unified font style
+    svg
+      .append('g')
+      .call(d3.axisLeft(y))
+      .selectAll('text')
+      .style('font-family', defaultFontFamily)
+      .style('font-size', defaultFontSize);
   }
+
 
   showTooltip(event: MouseEvent, content: string): void {
     // Remove any existing tooltip before creating a new one
@@ -297,7 +312,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     this.getStudentPerformance(this.selectedSemester);
   }
 
-  onSemesterChange(event: Event): void {
+  onSemesterChange(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.selectedSemester = target.value;
     this.getSubjectsBySemester(this.selectedSemester);
@@ -310,18 +325,18 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       .getAllSubjectsBySemester(this.classId, this.studentId, semester)
       .subscribe(
         (data: any) => {
-          console.log('Received data:', data); // Check the structure here
+          this.firstSubjectSchedules = data.firstSubjectSchedules || '';
+          this.lastSubjectSchedules = data.lastSubjectSchedules || '';
 
-          const semesterData = data[semester];
+          const {subjectPerformances} = data;
+          const semesterData = subjectPerformances;
           if (!Array.isArray(semesterData)) {
             console.error(`No data found for semester: ${semester}`);
             return;
           }
 
-          // Process the semester data
           this.performanceData = semesterData;
 
-          // Aggregate the data across all subjects for this semester
           this.totalPerformance = {
             presentCount: this.getSum(
               semesterData.map((d: any) => d.presentCount)
@@ -345,6 +360,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
                 semesterData.map((d: any) => d.theoreticalScore)
               ) || 0,
           };
+
           const newPercentage = this.calculateNewPercentage();
           this.performanceMarks = [
             {
@@ -373,19 +389,20 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
               value: newPercentage || 0,
             },
           ];
-            setTimeout(() => {
-              this.performanceMarks.forEach((mark, i) => {
-                this.createCircularCharts(`chart${i}`, mark.value);
-              });
-              this.createPerformanceLineChart(); // Pass performanceData correctly
-            }, 0);
+
+          setTimeout(() => {
+            this.performanceMarks.forEach((mark, i) => {
+              this.createCircularCharts(`chart${i}`, mark.value);
+            });
+            this.createPerformanceLineChart(this.firstSubjectSchedules, this.lastSubjectSchedules);
+          }, 0);
         },
         (error) => console.error('Error fetching student performance:', error)
       );
   }
 
+
   private calculateNewPercentage(): number {
-    // Lấy điểm thực hành của môn "Project1"
     const projectScore =
       this.performanceData.find((subject) => subject.subjectCode === 'Project1')
         ?.practicalPercentage || 0;
