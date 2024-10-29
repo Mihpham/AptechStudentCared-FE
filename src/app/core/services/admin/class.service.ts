@@ -81,22 +81,16 @@ export class ClassService {
 
     return this.http.get<StudentPerformanceResponse[]>(url).pipe(
       catchError((error: HttpErrorResponse) => {
+        console.error('Error details:', error); // Log more details
         if (error.status === 404) {
-          this.toastr.error(
-            'No subjects found for semester',
-          ); // Log warning
-          return throwError(
-            () => new Error('Subjects not found for the given class or user.')
-          );
+          this.toastr.error('No subjects found for semester');
+        } else {
+          this.toastr.error('An error occurred while fetching subjects. Please try again.');
         }
-
-        // Handle other errors
-        console.error('Error fetching subjects:', error); // Log error for debugging
-        return throwError(
-          () => new Error('Error fetching subjects: ' + error.message)
-        );
+        return throwError(() => new Error('Error fetching subjects: ' + error.message));
       })
     );
+    
   }
   getClassesByUser(userId: number): Observable<ClassResponse[]> {
     const url = `${this.baseUrl}/user/${userId}`;

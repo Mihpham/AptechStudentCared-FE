@@ -1,11 +1,9 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnInit,} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import * as d3 from 'd3';
-import {ClassService} from 'src/app/core/services/admin/class.service';
-import {
-  StudentPerformanceResponse
-} from '../admin-management/model/student-performance/student-performance-response.model';
-import {ToastrService} from 'ngx-toastr';
+import { ClassService } from 'src/app/core/services/admin/class.service';
+import { StudentPerformanceResponse } from '../admin-management/model/student-performance/student-performance-response.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-student-performance',
@@ -16,19 +14,12 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   classId: number | null = null;
   studentId: number | null = null;
   selectedSubjectId: number | null = null;
-  selectedSemester = '';
+  selectedSemester = 'SEM1';
   subjects: { id: number; code: string }[] = [];
   performanceMarks: { label: string; value: number }[] = [];
   semesters = ['SEM1', 'SEM2', 'SEM3', 'SEM4'];
-  performanceData: StudentPerformanceResponse[] = [];
-  totalPerformance: {
-    presentCount: number;
-    absentCount: number;
-    presentWithPermissionCount: number;
-    attendancePercentage: number;
-    practicalPercentage: number;
-    theoreticalScore: number;
-  } = {
+  performanceData: StudentPerformanceResponse['subjectPerformances'] = [];
+  totalPerformance = {
     presentCount: 0,
     absentCount: 0,
     presentWithPermissionCount: 0,
@@ -42,14 +33,12 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
     private classService: ClassService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.classId = +params['classId'];
       this.studentId = +params['studentId'];
-      this.selectedSemester = 'SEM1';
       this.getSubjectsBySemester(this.selectedSemester);
     });
   }
@@ -67,38 +56,40 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
 
   getSubjectsBySemester(semester: string): void {
     if (!this.classId || !this.studentId) return;
-
-    this.classService
-      .getAllSubjectsBySemester(
-        this.classId,
-        this.studentId,
-        semester === 'All' ? '' : semester
-      )
-      .subscribe(
-        (data: any) => {
-          if (data && data[semester]) {
-            this.subjects = data[semester].map((subject: any) => ({
-              id: subject.id,
-              code: subject.subjectCode,
-            }));
-            this.selectedSubjectId = this.subjects[0]?.id;
-            this.getStudentPerformance(semester);
-          } else {
-            this.toastr.error(`No subjects found for semester: ${semester}`);
-            this.subjects = [];
-          }
-        },
-        (error) => {
-          if (error.status === 404) {
-            this.toastr.error(`No subjects found for semester: ${semester}`);
-          } else {
-            console.error('Error fetching subjects:', error);
-          }
+  
+    this.classService.getAllSubjectsBySemester(this.classId, this.studentId, semester).subscribe(
+      (data: any) => {
+        console.log('Fetched subjects data:', data); // Log the full response
+        
+        // Check if the semester data exists
+        if (data && data[semester]) {
+          this.subjects = data[semester].map((subject: any) => ({
+            id: subject.id,
+            code: subject.subjectCode,
+          }));
+          console.log('Subjects for the selected semester:', this.subjects); // Log the subjects
+  
+          this.selectedSubjectId = this.subjects[0]?.id;
+          this.getStudentPerformance(semester);
+        } else {
+          console.warn(`No subjects found for semester: ${semester}`);
+          this.toastr.error(`No subjects found for semester: ${semester}`);
           this.subjects = [];
         }
-      );
+      },
+      (error) => {
+        console.error('Error fetching subjects:', error);
+        if (error.status === 404) {
+          this.toastr.error(`No subjects found for semester: ${semester}`);
+        } else {
+          console.error('Unknown error occurred:', error);
+        }
+        this.subjects = [];
+      }
+    );
   }
-
+  
+  
 
   createCircularCharts(chartId: string, value: number): void {
     const width = 100;
@@ -107,8 +98,7 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
 
     d3.select(`#${chartId}`).selectAll('*').remove();
 
-    const svg = d3
-      .select(`#${chartId}`)
+    const svg = d3.select(`#${chartId}`)
       .attr('width', width)
       .attr('height', height)
       .append('g')
@@ -119,15 +109,13 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
 
     const data = [value, 100 - value];
 
-    const arcs = svg
-      .selectAll('.arc')
+    const arcs = svg.selectAll('.arc')
       .data(pie(data))
       .enter()
       .append('g')
       .attr('class', 'arc');
 
-    arcs
-      .append('path')
+    arcs.append('path')
       .attr('d', arc as any)
       .style('fill', (d, i) => (i === 0 ? '#4CAF50' : '#ddd'))
       .attr('stroke-width', 1);
@@ -136,52 +124,38 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   createPerformanceLineChart(): void {
     if (this.performanceData.length === 0) return;
 
-    // Clear the previous chart
     d3.select('#performance-chart').selectAll('*').remove();
 
-    const margin = {top: 20, right: 30, bottom: 50, left: 60};
+    const margin = { top: 20, right: 30, bottom: 50, left: 60 };
     const width = 600 - margin.left - margin.right;
     const height = 300 - margin.top - margin.bottom;
 
-    const svg = d3
-      .select('#performance-chart')
+    const svg = d3.select('#performance-chart')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Define the x and y scales
-    const x = d3
-      .scaleBand<string>()
-      .domain(this.performanceData.map((d) => d.subjectCode)) // X-axis labels
+    const x = d3.scaleBand<string>()
+      .domain(this.performanceData.map((d) => d.subjectCode))
       .range([0, width])
       .padding(0.1);
 
-    const y = d3
-      .scaleLinear<number>()
-      .domain([0, 100]) // Set domain starting from 0
+    const y = d3.scaleLinear<number>()
+      .domain([0, 100])
       .range([height, 0]);
 
-    // Create separate line generators for each percentage
-    // Create the line generator function with type guard for y values
-    const lineGenerator = (valueKey: keyof StudentPerformanceResponse) =>
-      d3
-        .line<StudentPerformanceResponse>()
-        .x((d) => x(d.subjectCode)! + x.bandwidth() / 2) // Center the points in the bands
-        .y((d) => y(Number(d[valueKey]) || 0)) // Convert the value to a number and use 0 as a fallback
-        .curve(d3.curveMonotoneX); // Optional: smooth curve
+    const lineGenerator = (valueKey: keyof StudentPerformanceResponse['subjectPerformances'][number]) =>
+      d3.line<StudentPerformanceResponse['subjectPerformances'][number]>()
+        .x((d) => x(d.subjectCode)! + x.bandwidth() / 2)
+        .y((d) => y(d[valueKey] as number || 0))  // Use 'as number' to ensure compatibility
+        .curve(d3.curveMonotoneX);
 
-    // Draw lines for each percentage type
-    const percentageTypes = [
-      'theoreticalPercentage',
-      'attendancePercentage',
-      'practicalPercentage',
-    ] as const;
+    const percentageTypes = ['theoreticalPercentage', 'attendancePercentage', 'practicalPercentage'] as const;
     const colors = ['steelblue', 'orange', 'green'];
 
     percentageTypes.forEach((type, index) => {
-      svg
-        .append('path')
+      svg.append('path')
         .datum(this.performanceData)
         .attr('fill', 'none')
         .attr('stroke', colors[index])
@@ -189,82 +163,39 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
         .attr('d', lineGenerator(type));
     });
 
-    // Add circles for each data point
-    svg
-      .selectAll('.dot')
-      .data(
-        this.performanceData.flatMap((d) => [
-          {
-            ...d,
-            type: 'theoreticalPercentage',
-            value: d.theoreticalPercentage,
-          },
-          {...d, type: 'attendancePercentage', value: d.attendancePercentage},
-          {...d, type: 'practicalPercentage', value: d.practicalPercentage},
-        ])
-      )
+    svg.selectAll('.dot')
+      .data(this.performanceData.flatMap((d) => [
+        { ...d, type: 'theoreticalPercentage', value: d.theoreticalPercentage },
+        { ...d, type: 'attendancePercentage', value: d.attendancePercentage },
+        { ...d, type: 'practicalPercentage', value: d.practicalPercentage },
+      ]))
       .enter()
       .append('circle')
       .attr('class', 'dot')
-      .attr('cx', (d) => x(d.subjectCode)! + x.bandwidth() / 2) // Center the circles
-      .attr('cy', (d) => y(d.value)) // Position based on the value
+      .attr('cx', (d) => x(d.subjectCode)! + x.bandwidth() / 2)
+      .attr('cy', (d) => y(d.value as number))  // Ensure value is treated as a number
       .attr('r', 4)
       .attr('fill', (d) => {
         switch (d.type) {
-          case 'theoreticalPercentage':
-            return 'steelblue';
-          case 'attendancePercentage':
-            return 'orange';
-          case 'practicalPercentage':
-            return 'green';
-          default:
-            return 'black';
+          case 'theoreticalPercentage': return 'steelblue';
+          case 'attendancePercentage': return 'orange';
+          case 'practicalPercentage': return 'green';
+          default: return 'black';
         }
       })
       .on('mouseover', (event, d: any) => {
-        const averageScore =
-          (d.attendancePercentage +
-            d.practicalPercentage +
-            d.theoreticalPercentage) /
-          3;
-
-        let tooltipContent = `<strong>${d.subjectCode}</strong><br>`;
-        switch (d.type) {
-          case 'attendancePercentage':
-            tooltipContent += `Attendance: ${d.attendancePercentage}%<br>`;
-            break;
-          case 'theoreticalPercentage':
-            tooltipContent += `Theoretical: ${d.theoreticalPercentage}%<br>`;
-            break;
-          case 'practicalPercentage':
-            tooltipContent += `Practical: ${d.practicalPercentage}%<br>`;
-            break;
-        }
-
-        // tooltipContent += `Average Score: ${averageScore.toFixed(2)}%`;
-
+        const tooltipContent = `<strong>${d.subjectCode}</strong><br>${d.type.charAt(0).toUpperCase() + d.type.slice(1)}: ${d.value}%`;
         this.showTooltip(event, tooltipContent);
       })
-
       .on('mouseout', () => this.hideTooltip());
 
-    // Add the x-axis
-    svg
-      .append('g')
-      .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(x));
-
-    // Add the y-axis
+    svg.append('g').attr('transform', `translate(0,${height})`).call(d3.axisBottom(x));
     svg.append('g').call(d3.axisLeft(y));
   }
 
   showTooltip(event: MouseEvent, content: string): void {
-    // Remove any existing tooltip before creating a new one
     d3.select('.tooltip').remove();
-
-    // Create tooltip
-    d3.select('body')
-      .append('div')
+    d3.select('body').append('div')
       .attr('class', 'tooltip')
       .style('position', 'absolute')
       .style('background', '#f4f4f4')
@@ -279,11 +210,10 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
       .html(content)
       .transition()
       .duration(200)
-      .style('opacity', 1); // Fade in the tooltip
+      .style('opacity', 1);
   }
 
   hideTooltip(): void {
-    // Smoothly fade out and remove the tooltip
     d3.select('.tooltip')
       .transition()
       .duration(200)
@@ -304,111 +234,65 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   }
 
   getStudentPerformance(semester: string): void {
-    if (!this.classId || !this.studentId || !this.semesters) return;
-
-    this.classService
-      .getAllSubjectsBySemester(this.classId, this.studentId, semester)
-      .subscribe(
-        (data: any) => {
-          console.log('Received data:', data); // Check the structure here
-
-          const semesterData = data[semester];
-          if (!Array.isArray(semesterData)) {
-            console.error(`No data found for semester: ${semester}`);
-            return;
-          }
-
-          // Process the semester data
-          this.performanceData = semesterData;
-
-          // Aggregate the data across all subjects for this semester
+    if (!this.classId || !this.studentId || !this.selectedSubjectId) return;
+  
+    // Call the correct method with the correct number of arguments
+    this.classService.getAllSubjectsBySemester(this.classId, this.studentId, semester).subscribe(
+      (data: StudentPerformanceResponse[]) => {
+        if (data && data.length > 0) {
+          // Assuming you want the first item for performance data
+          const studentPerformance = data[0]; // Adjust as necessary based on your data structure
+  
+          this.performanceData = studentPerformance.subjectPerformances;
+  
           this.totalPerformance = {
-            presentCount: this.getSum(
-              semesterData.map((d: any) => d.presentCount)
-            ),
-            absentCount: this.getSum(
-              semesterData.map((d: any) => d.absentCount)
-            ),
-            presentWithPermissionCount: this.getSum(
-              semesterData.map((d: any) => d.presentWithPermissionCount)
-            ),
-            attendancePercentage:
-              this.getAverage(
-                semesterData.map((d: any) => d.attendancePercentage)
-              ) || 0,
-            practicalPercentage:
-              this.getAverage(
-                semesterData.map((d: any) => d.practicalPercentage)
-              ) || 0,
-            theoreticalScore:
-              this.getAverage(
-                semesterData.map((d: any) => d.theoreticalScore)
-              ) || 0,
+            presentCount: this.getSum(this.performanceData.map((d) => d.presentCount)),
+            absentCount: this.getSum(this.performanceData.map((d) => d.absentCount)),
+            presentWithPermissionCount: this.getSum(this.performanceData.map((d) => d.presentWithPermissionCount)),
+            attendancePercentage: this.getAverage(this.performanceData.map((d) => d.attendancePercentage)) || 0,
+            practicalPercentage: this.getAverage(this.performanceData.map((d) => d.practicalPercentage)) || 0,
+            theoreticalScore: this.getAverage(this.performanceData.map((d) => d.theoreticalScore)) || 0,
           };
-          const newPercentage = this.calculateNewPercentage();
+  
           this.performanceMarks = [
-            {
-              label: 'Attendance Percentage',
-              value:
-                this.getAverage(
-                  semesterData.map((d: any) => d.attendancePercentage)
-                ) || 0,
-            },
-            {
-              label: 'Practical Percentage',
-              value:
-                this.getAverage(
-                  semesterData.map((d: any) => d.practicalPercentage)
-                ) || 0,
-            },
-            {
-              label: 'Theoretical Score',
-              value:
-                this.getAverage(
-                  semesterData.map((d: any) => d.theoreticalScore)
-                ) || 0,
-            },
-            {
-              label: 'Total Percentage Sem1',
-              value: newPercentage || 0,
-            },
+            { label: 'Attendance Percentage', value: this.totalPerformance.attendancePercentage },
+            { label: 'Practical Percentage', value: this.totalPerformance.practicalPercentage },
+            { label: 'Theoretical Score', value: this.totalPerformance.theoreticalScore },
+            { label: 'Total Percentage Sem1', value: this.calculateNewPercentage() || 0 },
           ];
-            setTimeout(() => {
-              this.performanceMarks.forEach((mark, i) => {
-                this.createCircularCharts(`chart${i}`, mark.value);
-              });
-              this.createPerformanceLineChart(); // Pass performanceData correctly
-            }, 0);
-        },
-        (error) => console.error('Error fetching student performance:', error)
-      );
+  
+          setTimeout(() => {
+            this.performanceMarks.forEach((mark, i) => {
+              this.createCircularCharts(`chart${i}`, mark.value);
+            });
+            this.createPerformanceLineChart();
+          }, 0);
+        } else {
+          this.toastr.error('No performance data found for the selected semester.');
+        }
+      },
+      (error) => {
+        console.error('Error fetching student performance:', error);
+        this.toastr.error('Error fetching student performance data.');
+      }
+    );
   }
+  
 
   private calculateNewPercentage(): number {
-    // Lấy điểm thực hành của môn "Project1"
-    const projectScore =
-      this.performanceData.find((subject) => subject.subjectCode === 'Project1')
-        ?.practicalPercentage || 0;
-
-    // Mảng chứa tổng điểm lý thuyết và thực hành
+    const projectScore = this.performanceData.find((subject) => subject.subjectCode === 'Project1')?.practicalPercentage || 0;
+    console.log(projectScore);
+    
     const scores = this.performanceData.flatMap((subject) => {
       const theoretical = subject.theoreticalPercentage || 0;
       const practical = subject.practicalPercentage || 0;
-      // Chỉ lấy điểm thực hành của Project1
       return [subject.subjectCode === 'Project1' ? 0 : theoretical, practical];
     });
 
-    console.log('Scores:', scores);
-
     const totalScore = scores.reduce((total, score) => total + score, 0);
-    console.log(totalScore);
-
     const count = scores.filter((score) => score > 0).length;
-    console.log(count);
 
-    // Tính tỷ lệ
-    const percentage = totalScore / count;
-    return percentage;
+    return count > 0 ? totalScore / count : 0;
   }
 
   private getSum(values: number[]): number {
@@ -416,7 +300,6 @@ export class StudentPerformanceComponent implements OnInit, AfterViewInit {
   }
 
   private getAverage(values: number[]): number {
-    if (values.length === 0) return 0;
-    return values.reduce((a, b) => a + b, 0) / values.length;
+    return values.length === 0 ? 0 : this.getSum(values) / values.length;
   }
 }

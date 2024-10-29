@@ -1,14 +1,7 @@
+import { SubjectPerformance } from "./subject-performance-response.model";
+
 export interface StudentPerformanceResponse {
-  id: number; // Thêm id
-  semester: string; 
-  studentName: string
-  subjectCode: string; 
-  theoreticalScore: number; 
-  presentCount: number; 
-  presentWithPermissionCount: number; 
-  absentCount: number; 
-  practicalScore: number; 
-  attendancePercentage: number; 
-  practicalPercentage: number; 
-  theoreticalPercentage: number; 
+  firstSubjectSchedules: string; // Ngày lịch của môn đầu
+  lastSubjectSchedules: string;  // Ngày lịch của môn cuối
+  subjectPerformances: SubjectPerformance[]; // Danh sách các môn học
 }
