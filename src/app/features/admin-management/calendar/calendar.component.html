@@ -1,35 +1,50 @@
-<div class="container mx-auto p-4">
-  <h2 class="text-2xl font-semibold mb-6">Task Scheduler</h2>
-
-  <!-- Form for adding tasks -->
-  <form (ngSubmit)="addTask()" #taskForm="ngForm" class="space-y-4 mb-6">
-    <div class="flex flex-col">
-      <label for="taskName" class="text-gray-700 mb-2">Task Name</label>
-      <input type="text" id="taskName" class="p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required [(ngModel)]="taskName" name="taskName" />
+<div class="demo-app">
+  <div class="demo-app-sidebar">
+    <div class="demo-app-sidebar-section">
+      <h2>Instructions</h2>
+      <ul>
+        <li>Select dates and you will be prompted to create a new event</li>
+        <li>Drag, drop, and resize events</li>
+        <li>Click an event to delete it</li>
+      </ul>
     </div>
-
-    <div class="flex flex-col">
-      <label for="taskDate" class="text-gray-700 mb-2">Task Date</label>
-      <input type="date" id="taskDate" class="p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required [(ngModel)]="taskDate" name="taskDate" />
+    <div class="demo-app-sidebar-section">
+      <label>
+        <input
+          type="checkbox"
+          [checked]="calendarVisible()"
+          (change)="handleCalendarToggle()"
+        />
+        toggle whole calendar
+      </label>
     </div>
-
-    <div class="flex flex-col">
-      <label for="taskTime" class="text-gray-700 mb-2">Task Time</label>
-      <input type="time" id="taskTime" class="p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required [(ngModel)]="taskTime" name="taskTime" />
+    <div class="demo-app-sidebar-section">
+      <label>
+        <input
+          type="checkbox"
+          [checked]="calendarOptions().weekends"
+          (change)="handleWeekendsToggle()"
+        />
+        toggle weekends
+      </label>
     </div>
+    <div class="demo-app-sidebar-section">
+      <h2>All Events ({{ currentEvents().length }})</h2>
+      <ul>
+        <li *ngFor="let event of currentEvents()">
+          <b>{{ event.startStr }}</b>
+          <i>{{ event.title }}</i>
+        </li>
+      </ul>
+    </div>
+  </div>
 
-    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Add Task</button>
-  </form>
-
-  <hr class="mb-6" />
-
-  <!-- Task list -->
-  <h3 class="text-xl font-medium mb-4">Scheduled Tasks</h3>
-  <ul class="space-y-2">
-    <li *ngFor="let task of tasks; let i = index" class="flex justify-between items-center p-4 bg-gray-100 rounded-md shadow-sm">
-      <span>{{ task.name }} - {{ task.date | date }} {{ task.time }}</span>
-      <button class="text-red-500 hover:text-red-700" (click)="removeTask(i)">Delete</button>
-    </li>
-  </ul>
+  <div class="demo-app-main">
+    <full-calendar *ngIf="calendarVisible()" [options]="calendarOptions()">
+      <ng-template #eventContent let-arg>
+        <b>{{ arg.timeText }}</b>
+        <i>{{ arg.event.title }}</i>
+      </ng-template>
+    </full-calendar>
+  </div>
 </div>
-
