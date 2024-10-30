@@ -22,6 +22,7 @@ interface SidebarItem {
   styleUrls: ['./sidebar.component.scss'], // If needed
 })
 export class SidebarComponent {
+  
   role: string = '';
   sidebarItems: SidebarItem[] = [];
   userProfile: UserProfile | undefined;
@@ -39,12 +40,15 @@ export class SidebarComponent {
     this.role = this.authService.getRole()!; // Assert not null
     this.setSidebarItems();
   }
+  
 
 
   ngOnInit(): void {
     this.loadUserProfile();
     // this.getClassesByUser(this.userId);
   }
+
+  
 
 
   loadUserProfile(): void {
@@ -252,6 +256,19 @@ export class SidebarComponent {
     this.toggle.emit();
   }
 
+  isChildActive(children: SidebarItem[] | undefined): boolean {
+    if (!children) return false;
+    return children.some(child => 
+      child.route && this.router.isActive(child.route, { 
+        paths: 'exact', 
+        queryParams: 'ignored', 
+        fragment: 'ignored', 
+        matrixParams: 'ignored'  // Add this line
+      })
+    );
+  }
+  
+  
   // Method to toggle dropdowns
   toggleDropdown(item: SidebarItem) {
     if (item.children) {
