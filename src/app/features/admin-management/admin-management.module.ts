@@ -70,6 +70,7 @@ import { UpdateScheduleComponent } from './schedule/update-schedule/update-sched
 import { RegenerateScheduleComponent } from './schedule/regenerate-schedule/regenerate-schedule.component';
 import { ImportExamMarkDialogComponent } from './exam-mark/import-exam-mark-dialog/import-exam-mark-dialog.component';
 import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/exam-mark-all-subject.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
 
 @NgModule({
 
@@ -80,10 +81,10 @@ import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/e
     StudentComponent,
     DashboardComponent,
     ClassComponent,
+    CalendarComponent,
     ExamMarkComponent,
     AccountsComponent,
     AttendanceComponent,
-    CalendarComponent,
     CourseComponent,
     SubjectComponent,
     StudyingComponent,
@@ -133,6 +134,7 @@ import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/e
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    FullCalendarModule,
     AdminManagementRoutingModule,
     HttpClientModule,
     MatFormFieldModule,
