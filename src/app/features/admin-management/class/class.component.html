@@ -21,6 +21,28 @@
       </div>
     </div>
   </div>
+  <!-- Semester Counts -->
+  <div class="container mx-auto">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+      <div class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
+        <span class="text-3xl font-bold">{{ semesterCounts().Sem1 }}</span>
+        <span class="text-gray-600">SEM1</span>
+      </div>
+      <div class="bg-yellow-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
+        <span class="text-3xl font-bold">{{ semesterCounts().Sem2 }}</span>
+        <span class="text-gray-600">SEM2</span>
+      </div>
+      <div class="bg-yellow-200 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
+        <span class="text-3xl font-bold">{{ semesterCounts().Sem3 }}</span>
+        <span class="text-gray-600">SEM3</span>
+      </div>
+      <div class="bg-cyan-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
+        <span class="text-3xl font-bold">{{ semesterCounts().Sem4 }}</span>
+        <span class="text-gray-600">SEM4</span>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Buttons -->
   <div class="flex flex-wrap justify-end space-x-2 mb-6 mt-6">
@@ -53,7 +75,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let classItem of paginatedClasses()" [routerLink]="[currentUserRole === 'ROLE_ADMIN' ? '/admin/class/class-detail' : '/sro/class/class-detail' , classItem.id]"
+          <tr *ngFor="let classItem of paginatedClasses()"
+            [routerLink]="[currentUserRole === 'ROLE_ADMIN' ? '/admin/class/class-detail' : '/sro/class/class-detail' , classItem.id]"
             class="cursor-pointer border-b hover:bg-gray-100 dark:hover:bg-gray-600">
             <td class="py-2 px-4 text-center">{{ classItem.className }}</td>
             <td class="py-2 px-4 text-center">{{ getDaysAsNumbers(classItem.days) }}</td>
@@ -77,9 +100,9 @@
             </td>
             <td class="py-2 px-4 text-center">
               <!-- Edit button with tooltip -->
-              <button   [routerLink]="[currentUserRole === 'ROLE_ADMIN' ? '/admin/class/update' : '/sro/class/update', classItem.id]"
-              class="text-blue-400 hover:text-blue-600"
-                title="Edit Class">
+              <button
+                [routerLink]="[currentUserRole === 'ROLE_ADMIN' ? '/admin/class/update' : '/sro/class/update', classItem.id]"
+                class="text-blue-400 hover:text-blue-600" title="Edit Class">
                 <i class="fa fa-edit"></i>
               </button>
 
@@ -90,7 +113,8 @@
               </button>
 
               <!-- Assign button with tooltip -->
-              <button [routerLink]="[ currentUserRole === 'ROLE_ADMIN' ? '/admin/class/assign' : '/sro/class/assign', classItem.id]"
+              <button
+                [routerLink]="[ currentUserRole === 'ROLE_ADMIN' ? '/admin/class/assign' : '/sro/class/assign', classItem.id]"
                 class="text-green-400 hover:text-green-600 p-2" title="Assign to Class">
                 <i class="fas fa-chalkboard-teacher"></i>
               </button>

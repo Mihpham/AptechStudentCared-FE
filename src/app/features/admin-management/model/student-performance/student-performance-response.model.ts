@@ -1,7 +1,19 @@
-import { SubjectPerformance } from "./subject-performance-response.model";
-
 export interface StudentPerformanceResponse {
-  firstSubjectSchedules: string; // Ngày lịch của môn đầu
-  lastSubjectSchedules: string;  // Ngày lịch của môn cuối
-  subjectPerformances: SubjectPerformance[]; // Danh sách các môn học
+  id: number;
+  studentName: string;
+  subjectCode: string;
+  theoreticalScore: number;
+  presentCount: number;
+  absentCount: number;
+  presentWithPermissionCount: number;
+  attendancePercentage: number;
+  practicalPercentage: number;
+  theoreticalPercentage: number;
+}
+
+// Interface cho phản hồi tổng thể từ API
+export interface StudentPerformanceApiResponse {
+  firstSubjectSchedules: string;  // Ngày tạo của môn đầu tiên
+  lastSubjectSchedules: string;   // Ngày tạo của môn cuối cùng
+  subjectPerformances: StudentPerformanceResponse[];
 }

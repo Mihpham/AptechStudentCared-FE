@@ -33,7 +33,6 @@ nav ul li a, nav ul li button {
 }
 
 nav ul li a:hover, nav ul li button:hover {
-  background-color: #f1f5f9; /* Lighter hover effect */
   color: #1f2937; /* Darker hover text */
 }
 
@@ -42,6 +41,14 @@ nav ul li.active a {
   color: #2563eb; /* Active text color */
 }
 
+nav ul li a.active-link {
+  background-color: #d1d5db; /* Slightly darker on hover */
+}
+
+/* If you want to add hover effects on active items */
+nav ul li a.active-link:hover {
+  background-color: #d1d5db; /* Slightly darker on hover */
+}
 nav.sidebar-collapsed ul li a {
   justify-content: center; /* Center icons when sidebar is collapsed */
   padding: 0.75rem; /* Adjusted padding */

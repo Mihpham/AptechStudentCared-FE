@@ -23,6 +23,7 @@ export class ClassComponent implements OnInit {
   currentUserRole!: string | null;
 
   statusCounts = signal({ studying: 0, finished: 0, cancel: 0, scheduled: 0 });
+  semesterCounts = signal({ Sem1: 0, Sem2: 0, Sem3: 0, Sem4: 0 });
 
   currentPage = signal(1);
   itemsPerPage = signal(5);
@@ -141,15 +142,21 @@ export class ClassComponent implements OnInit {
   updateStatusCounts(): void {
     const currentClasses = this.filteredClasses();
     const counts = { studying: 0, finished: 0, cancel: 0, scheduled: 0 };
-
+    const semesterCounts = { Sem1: 0, Sem2: 0, Sem3: 0, Sem4: 0 };
+  
     currentClasses.forEach((classItem) => {
       if (classItem.status === 'STUDYING') counts.studying++;
       if (classItem.status === 'FINISHED') counts.finished++;
       if (classItem.status === 'CANCEL') counts.cancel++;
       if (classItem.status === 'SCHEDULED') counts.scheduled++;
+  
+      // Use a type assertion
+      semesterCounts[classItem.sem as keyof typeof semesterCounts] = 
+        (semesterCounts[classItem.sem as keyof typeof semesterCounts] || 0) + 1;
     });
-
+  
     this.statusCounts.set(counts);
+    this.semesterCounts.set(semesterCounts);
   }
 
   goToStudentDetail(studentId: number): void {

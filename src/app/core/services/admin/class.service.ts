@@ -6,7 +6,9 @@ import { ClassRequest } from 'src/app/features/admin-management/model/class/clas
 import { ClassResponse } from 'src/app/features/admin-management/model/class/class-response.model';
 import { AssignTeacherRequest } from 'src/app/features/admin-management/model/class/assign-teacher.model';
 import { CourseResponse } from 'src/app/features/admin-management/model/course/course-response.model';
-import { StudentPerformanceResponse } from 'src/app/features/admin-management/model/student-performance/student-performance-response.model';
+import {
+  StudentPerformanceApiResponse,
+} from 'src/app/features/admin-management/model/student-performance/student-performance-response.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
@@ -73,13 +75,13 @@ export class ClassService {
     classId: number,
     userId: number,
     semesterName?: string
-  ): Observable<StudentPerformanceResponse[]> {
+  ): Observable<StudentPerformanceApiResponse[]> {
     let url = `${this.baseUrl}/${classId}/user/${userId}/subjects`;
     if (semesterName) {
       url += `?semesterName=${semesterName}`;
     }
 
-    return this.http.get<StudentPerformanceResponse[]>(url).pipe(
+    return this.http.get<StudentPerformanceApiResponse[]>(url).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error('Error details:', error); // Log more details
         if (error.status === 404) {
