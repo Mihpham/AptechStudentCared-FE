@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AdminComponent } from './admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -72,7 +72,7 @@ import { ImportExamMarkDialogComponent } from './exam-mark/import-exam-mark-dial
 import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/exam-mark-all-subject.component';
 
 @NgModule({
-  
+
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 
   declarations: [
@@ -147,10 +147,10 @@ import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/e
     MatSelectModule,
     MatOptionModule,
     MatTooltipModule,
-    CdkTableModule, 
+    CdkTableModule,
     NgxPaginationModule,
   ],
 
-  
+
 })
 export class AdminManagementModule { }

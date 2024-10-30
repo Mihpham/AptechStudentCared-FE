@@ -1,12 +1,12 @@
 // sidebar.component.ts
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from 'src/app/core/auth/auth.service';
-import { ClassService } from 'src/app/core/services/admin/class.service';
-import { UserProfileService } from 'src/app/core/services/profile.service';
-import { ClassResponse } from 'src/app/features/admin-management/model/class/class-response.model';
-import { UserProfile } from 'src/app/shared/models/user-profile.model';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Router} from '@angular/router';
+import {AuthService} from 'src/app/core/auth/auth.service';
+import {ClassService} from 'src/app/core/services/admin/class.service';
+import {UserProfileService} from 'src/app/core/services/profile.service';
+import {ClassResponse} from 'src/app/features/admin-management/model/class/class-response.model';
+import {UserProfile} from 'src/app/shared/models/user-profile.model';
 
 interface SidebarItem {
   route?: string;
@@ -29,6 +29,7 @@ export class SidebarComponent {
   classes: ClassResponse[] = [];
   @Input() collapsed: boolean = false;
   @Output() toggle = new EventEmitter<void>();
+
   constructor(
     public authService: AuthService,
     private classService: ClassService,
@@ -38,12 +39,12 @@ export class SidebarComponent {
     this.role = this.authService.getRole()!; // Assert not null
     this.setSidebarItems();
   }
-  
- 
+
+
   ngOnInit(): void {
-    this.loadUserProfile(); 
-    // this.getClassesByUser(this.userId); 
-  } 
+    this.loadUserProfile();
+    // this.getClassesByUser(this.userId);
+  }
 
 
   loadUserProfile(): void {
@@ -58,7 +59,7 @@ export class SidebarComponent {
       }
     );
   }
-  
+
   getClassesByUser(userId: number) {
     this.classService.getClassesByUser(userId).subscribe({
       next: (data) => {
@@ -70,6 +71,7 @@ export class SidebarComponent {
       }
     });
   }
+
   // Set sidebarItems based on role
   private setSidebarItems() {
     const adminItems: SidebarItem[] = [
@@ -116,16 +118,16 @@ export class SidebarComponent {
           },
         ],
       },
-      { route: '/admin/teacher', label: 'Teacher', icon: 'fas fa-chalkboard' },
-      { route: '/admin/sro', label: 'SRO', icon: 'fas fa-id-badge' },
-      { route: '/admin/accounts', label: 'Accounts', icon: 'fas fa-book' },
+      {route: '/admin/teacher', label: 'Teacher', icon: 'fas fa-chalkboard'},
+      {route: '/admin/sro', label: 'SRO', icon: 'fas fa-id-badge'},
+      {route: '/admin/accounts', label: 'Accounts', icon: 'fas fa-book'},
       {
         route: '/admin/calendar',
         label: 'Calendar',
         icon: 'fas fa-calendar-alt',
       },
-      { route: '/admin/course', label: 'Course', icon: 'fas fa-book-open' },
-      { route: '/admin/subject', label: 'Subject', icon: 'fas fa-book-reader' },
+      {route: '/admin/course', label: 'Course', icon: 'fas fa-book-open'},
+      {route: '/admin/subject', label: 'Subject', icon: 'fas fa-book-reader'},
     ];
 
     const sroItems: SidebarItem[] = [
@@ -172,13 +174,13 @@ export class SidebarComponent {
           },
         ],
       },
-      { route: '/sro/teacher', label: 'Teacher', icon: 'fas fa-chalkboard' },
+      {route: '/sro/teacher', label: 'Teacher', icon: 'fas fa-chalkboard'},
       {
         route: '/sro/calendar',
         label: 'Calendar',
         icon: 'fas fa-calendar-alt',
       },
-   
+
     ];
 
     const teacherItems: SidebarItem[] = [
@@ -211,23 +213,20 @@ export class SidebarComponent {
         isOpen: false,
         children: [
           ...this.classes.map(classItem => ({
-            route: `/student/class-student-detail/${classItem.id}`,  
-            label: classItem.className,  
-            icon: 'fas fa-school',  
+            route: `/student/class-student-detail/${classItem.id}`,
+            label: classItem.className,
+            icon: 'fas fa-school',
           })),
-        ],  
+        ],
       },
-     
+
       {
         route: '/student/assignments',
         label: 'Assignments',
         icon: 'fas fa-tasks',
       },
-      
-      
+
     ];
-    
-    console.log(studentItems);
 
     switch (this.role) {
       case 'ROLE_ADMIN':
