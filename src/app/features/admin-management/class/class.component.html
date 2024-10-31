@@ -22,40 +22,43 @@
     </div>
   </div>
   <!-- Semester Counts -->
-  <div class="container mx-auto">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-      <div class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
-        <span class="text-3xl font-bold">{{ semesterCounts().Sem1 }}</span>
-        <span class="text-gray-600">SEM1</span>
+  <div class="flex justify-between">
+    <!-- Buttons -->
+    <div class="flex flex-wrap justify-start space-x-2 mb-6 mt-6">
+      <div
+        class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
+        <span class=" font-bold">{{ semesterCounts().Sem1 }}</span>
+        <span class="text-gray-600">-SEM1</span>
       </div>
-      <div class="bg-yellow-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
-        <span class="text-3xl font-bold">{{ semesterCounts().Sem2 }}</span>
-        <span class="text-gray-600">SEM2</span>
+      <div
+        class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
+        <span class=" font-bold">{{ semesterCounts().Sem2 }}</span>
+        <span class="text-gray-600">-SEM2</span>
       </div>
-      <div class="bg-yellow-200 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
-        <span class="text-3xl font-bold">{{ semesterCounts().Sem3 }}</span>
-        <span class="text-gray-600">SEM3</span>
+      <div
+        class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
+        <span class=" font-bold">{{ semesterCounts().Sem3 }}</span>
+        <span class="text-gray-600">-SEM3</span>
       </div>
-      <div class="bg-cyan-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
-        <span class="text-3xl font-bold">{{ semesterCounts().Sem4 }}</span>
-        <span class="text-gray-600">SEM4</span>
+      <div
+        class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
+        <span class=" font-bold">{{ semesterCounts().Sem4 }}</span>
+        <span class="text-gray-600">-SEM4</span>
       </div>
     </div>
+
+    <!-- Buttons -->
+    <div class="flex flex-wrap justify-end space-x-2 mb-6 mt-6">
+      <button [routerLink]=" currentUserRole === 'ROLE_ADMIN' ? '/admin/class/create' : '/sro/class/create'"
+        class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
+        <i class="fa-solid fa-plus"></i> Add
+      </button>
+      <button (click)="openFilterDialog()"
+        class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
+        <i class="fa-solid fa-filter"></i> Filter
+      </button>
+    </div>
   </div>
-
-
-  <!-- Buttons -->
-  <div class="flex flex-wrap justify-end space-x-2 mb-6 mt-6">
-    <button [routerLink]=" currentUserRole === 'ROLE_ADMIN' ? '/admin/class/create' : '/sro/class/create'"
-      class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
-      <i class="fa-solid fa-plus"></i> Add
-    </button>
-    <button (click)="openFilterDialog()"
-      class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
-      <i class="fa-solid fa-filter"></i> Filter
-    </button>
-  </div>
-
   <!-- Table -->
   <div class="overflow-x-auto rounded-lg">
     <div class="overflow-x-auto">
