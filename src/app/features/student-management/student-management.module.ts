@@ -1,4 +1,8 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  NgModule,
+  NO_ERRORS_SCHEMA,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { StudentManagementRoutingModule } from './student-management-routing.module';
@@ -26,9 +30,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { AttendanceStudentComponent } from './attendance-student/attendance-student.component';
 import { TeachersStudentComponent } from './teachers-student/teachers-student.component';
 import { StudentAssignmentMarkComponent } from './student-assignment-mark/student-assignment-mark.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
 @NgModule({
-  
-  schemas: [NO_ERRORS_SCHEMA  ],
+  schemas: [NO_ERRORS_SCHEMA],
   declarations: [
     ClassStudentDetailComponent,
     ClassmatesComponent,
@@ -36,15 +40,14 @@ import { StudentAssignmentMarkComponent } from './student-assignment-mark/studen
     AttendanceStudentComponent,
     TeachersStudentComponent,
     StudentAssignmentMarkComponent,
-    // NavbarStudentComponent
   ],
   imports: [
-    CommonModule, 
-    StudentManagementRoutingModule,  
-    RouterModule ,CommonModule,
+    CommonModule,
+    StudentManagementRoutingModule,
+    RouterModule,
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    // AdminManagementRoutingModule,
     HttpClientModule,
     MatFormFieldModule,
     MatInputModule,
@@ -57,13 +60,9 @@ import { StudentAssignmentMarkComponent } from './student-assignment-mark/studen
     MatSelectModule,
     MatOptionModule,
     MatTooltipModule,
-    CdkTableModule, 
+    CdkTableModule,
     NgxPaginationModule,
-    
   ],
-  providers: [
-    ClassService,
-    UserProfileService
-  ],
+  providers: [ClassService, UserProfileService],
 })
-export class StudentManagementModule { }
+export class StudentManagementModule {}

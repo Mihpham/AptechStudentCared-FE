@@ -1,42 +1,86 @@
-import { Component } from '@angular/core';
-interface Task {
-  name: string;
-  date: string;
-  time: string;
-}
+import { Component, signal, ChangeDetectorRef } from '@angular/core';
+import interactionPlugin from '@fullcalendar/interaction';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
+
+import { INITIAL_EVENTS, createEventId } from './event-utils';
+import { CalendarOptions, DateSelectArg, EventApi, EventClickArg } from '@fullcalendar/core';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
 })
 export class CalendarComponent {
-  taskName = '';
-  taskDate = '';
-  taskTime = '';
-  tasks: Task[] = [];
+  calendarVisible = signal(true);
+  calendarOptions = signal<CalendarOptions>({
+    plugins: [
+      interactionPlugin,
+      dayGridPlugin,
+      timeGridPlugin,
+      listPlugin,
+    ],
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+    },
+    initialView: 'dayGridMonth',
+    initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
+    weekends: true,
+    editable: true,
+    selectable: true,
+    selectMirror: true,
+    dayMaxEvents: true,
+    select: this.handleDateSelect.bind(this),
+    eventClick: this.handleEventClick.bind(this),
+    eventsSet: this.handleEvents.bind(this)
+    /* you can update a remote database when these fire:
+    eventAdd:
+    eventChange:
+    eventRemove:
+    */
+  });
+  currentEvents = signal<EventApi[]>([]);
 
-  // Add a new task
-  addTask() {
-    if (this.taskName && this.taskDate && this.taskTime) {
-      const newTask: Task = {
-        name: this.taskName,
-        date: this.taskDate,
-        time: this.taskTime,
-      };
-      this.tasks.push(newTask);
-      this.clearForm();
+  constructor(private changeDetector: ChangeDetectorRef) {
+  }
+
+  handleCalendarToggle() {
+    this.calendarVisible.update((bool) => !bool);
+  }
+
+  handleWeekendsToggle() {
+    this.calendarOptions.mutate((options) => {
+      options.weekends = !options.weekends;
+    });
+  }
+
+  handleDateSelect(selectInfo: DateSelectArg) {
+    const title = prompt('Please enter a new title for your event');
+    const calendarApi = selectInfo.view.calendar;
+
+    calendarApi.unselect(); // clear date selection
+
+    if (title) {
+      calendarApi.addEvent({
+        id: createEventId(),
+        title,
+        start: selectInfo.startStr,
+        end: selectInfo.endStr,
+        allDay: selectInfo.allDay
+      });
     }
   }
 
-  // Clear the form after adding a task
-  clearForm() {
-    this.taskName = '';
-    this.taskDate = '';
-    this.taskTime = '';
+  handleEventClick(clickInfo: EventClickArg) {
+    if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
+      clickInfo.event.remove();
+    }
   }
 
-  // Remove a task by index
-  removeTask(index: number) {
-    this.tasks.splice(index, 1);
+  handleEvents(events: EventApi[]) {
+    this.currentEvents.set(events);
+    this.changeDetector.detectChanges();
   }
 }
