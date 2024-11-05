@@ -5,42 +5,32 @@
     <!-- Full Name -->
     <div class="mb-5">
       <label for="fullName" class="block text-sm font-semibold text-gray-700">Full Name</label>
-      <input id="fullName" type="text" formControlName="fullName"class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm placeholder-gray-400" />
-      <div *ngIf="sroForm.get('fullName')?.invalid && sroForm.get('fullName')?.touched" class="text-red-500 text-sm">
-        <small *ngIf="sroForm.get('fullName')?.errors?.['required']">Full Name is required.</small>
-      </div>
+      <input id="fullName" type="text" formControlName="fullName"
+        class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm placeholder-gray-400"
+         />
     </div>
 
     <!-- Email -->
     <div class="mb-5">
       <label for="email" class="block text-sm font-semibold text-gray-700">Email</label>
-      <input id="email" type="email" formControlName="email"class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm placeholder-gray-400" />
-      <div *ngIf="sroForm.get('email')?.invalid && sroForm.get('email')?.touched" class="text-red-500 text-sm">
-        <small *ngIf="sroForm.get('email')?.errors?.['required']">Email is required.</small>
-        <small *ngIf="sroForm.get('email')?.errors?.['email']">Please enter a valid email.</small>
-      </div>
+      <input id="email" type="email" formControlName="email"
+        class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm placeholder-gray-400"
+         />
     </div>
 
     <!-- Phone Number -->
     <div class="mb-5">
       <label for="phoneNumber" class="block text-sm font-semibold text-gray-700">Phone Number</label>
-      <input id="phoneNumber" type="text" formControlName="phoneNumber"class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm placeholder-gray-400" />
-      <div *ngIf="sroForm.get('phoneNumber')?.invalid && sroForm.get('phoneNumber')?.touched"
-        class="text-red-500 text-sm">
-        <small *ngIf="sroForm.get('phoneNumber')?.errors?.['required']">Phone Number is required.</small>
-      </div>
+      <input id="phoneNumber" type="text" formControlName="phoneNumber"
+        class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm placeholder-gray-400"
+        />
     </div>
-
 
     <!-- Date of Birth -->
     <div class="mb-5">
       <label for="dob" class="block text-sm font-semibold text-gray-700">Date of Birth</label>
       <input id="dob" type="date" formControlName="dob"
         class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-        <div *ngIf="sroForm.get('dob')?.invalid && sroForm.get('dob')?.touched"
-        class="text-red-500 text-sm">
-        <small *ngIf="sroForm.get('dob')?.errors?.['required']">Date of Birth is required.</small>
-      </div>
     </div>
 
     <!-- Address -->
@@ -50,7 +40,7 @@
       </app-location-selector>
     </div>
 
-
+    
 
     <!-- Status (only shown in edit mode) -->
     <div *ngIf="isEditMode" class="mb-5">
@@ -65,13 +55,11 @@
 
     <!-- Action Buttons -->
     <div class="flex justify-end space-x-4 pt-6">
-      <button type="button"
-        class="py-2 px-6 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300 transition-all duration-150"
+      <button type="button" class="py-2 px-6 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300 transition-all duration-150"
         (click)="onCancel()">
         Cancel
       </button>
-      <button type="submit"
-        class="py-2 px-6 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-all duration-150"
+      <button type="submit" class="py-2 px-6 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-all duration-150"
         [disabled]="!sroForm.valid">
         Save
       </button>

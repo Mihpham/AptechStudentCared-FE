@@ -33,14 +33,14 @@ export class SroDialogComponent {
       province: [''],
       district: [''],
       commune: [''],
-      status: [data?.status || (this.isEditMode ? '' : 'ACTIVE')], // Default to 'ACTIVE' if creating
+      status: [data?.status || '', Validators.required], // Always include the status in the form
     });
-    
+
+    // Remove 'status' validation if it's create mode
     if (!this.isEditMode) {
       this.sroForm.get('status')?.clearValidators();
       this.sroForm.get('status')?.updateValueAndValidity();
     }
-    
   }
 
   onSave() {
