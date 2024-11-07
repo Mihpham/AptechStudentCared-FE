@@ -76,7 +76,7 @@ export class ClassService {
     userId: number,
     semesterName?: string
   ): Observable<StudentPerformanceApiResponse[]> {
-    let url = `${this.baseUrl}/${classId}/user/${userId}/subjects`;
+    let url = `${UserEnviroment.apiUrl}/student-performance/class/${classId}/user/${userId}/subjects`;
     if (semesterName) {
       url += `?semesterName=${semesterName}`;
     }

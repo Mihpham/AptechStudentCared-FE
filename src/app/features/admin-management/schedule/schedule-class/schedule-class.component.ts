@@ -102,6 +102,22 @@ export class ScheduleClassComponent implements OnInit {
     this.currentPage = event.pageIndex;
     this.itemsPerPage = event.pageSize;
   }
+  getSubjectCode(): string {
+    const subject = this.classDetails?.subjectTeachers.find(st => st.subjectId === this.subjectId);
+    return subject ? subject.subjectCode : 'N/A';
+}
+
+
+getTeacherName(): string {
+    const subject = this.classDetails?.subjectTeachers.find(st => st.subjectId === this.subjectId);
+    return subject ? subject.teacherName : 'N/A';
+}
+
+getNumberOfSessions(): number {
+    const subject = this.classDetails?.subjectTeachers.find(st => st.subjectId === this.subjectId);
+    return subject ? subject.numberOfSessions : 0;
+}
+
 
   getDaysAsNumbers(days: DayOfWeek[]): string {
     const dayMap: { [key in DayOfWeek]: number } = {
