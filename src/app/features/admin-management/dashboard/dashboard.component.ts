@@ -56,16 +56,22 @@ export class DashboardComponent implements OnInit {
   }
 
   loadStudent(): void {
-    this.studentService.getAllStudents().subscribe(
+    // Lấy giá trị trang hiện tại và kích thước trang từ paginator (nếu có)
+    const pageIndex = 0;  // Thay đổi giá trị này nếu có paginator
+    const pageSize = 10;  // Thay đổi giá trị này nếu có paginator
+    
+    // Gọi API với các tham số phân trang
+    this.studentService.getAllStudents(pageIndex, pageSize).subscribe(
       (data) => {
-        this.students = data; // Assign the received data to the students array
-        this.totalStudents = this.students.length; // Get the total count from the populated array
+        this.students = data;  // Gán dữ liệu nhận được vào mảng students
+        this.totalStudents = this.students.length; // Lấy tổng số sinh viên từ mảng
       },
       (error) => {
         this.toastr.error('Failed to load students', 'Error');
       }
     );
   }
+  
 
   loadTeacher(): void {
     this.teacherService.getAllTeachers().subscribe(

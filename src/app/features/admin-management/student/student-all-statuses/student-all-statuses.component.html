@@ -69,7 +69,7 @@
     </div>
 
     <!-- No Results Message -->
-    <div *ngIf="dataSource.filteredData.length === 0 && dataSource.data.length == 0" class="no-results text-gray-600">
+    <div *ngIf="dataSource.filteredData.length === 0 && dataSource.data.length === 0" class="no-results text-gray-600">
         No results found.
     </div>
     <div class="overflow-x-auto rounded-lg border border-gray-300">
@@ -192,6 +192,12 @@
 
 
     <!-- Paginator -->
-    <mat-paginator pageSize="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
-        class="mt-4 dark:bg-gray-700 dark:text-gray-100"></mat-paginator>
+    <mat-paginator 
+  [length]="totalStudents" 
+  [pageSize]="10" 
+  [pageSizeOptions]="[5, 10, 20]" 
+  showFirstLastButtons
+  class="mt-4 dark:bg-gray-700 dark:text-gray-100">
+</mat-paginator>
+
 </div>

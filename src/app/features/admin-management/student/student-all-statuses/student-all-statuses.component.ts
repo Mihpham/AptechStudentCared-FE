@@ -68,26 +68,71 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
 
     this.route.queryParams.subscribe((params) => {
       this.className = params['className'] || null; // Nhận tên lớp từ query params
-      this.loadStudent(); // Tải sinh viên khi component khởi tạo
     });
   }
 
   loadStudent(): void {
-    this.studentService.getAllStudents().subscribe((data) => {
-      console.log('Data received from API:', data);
-      if (this.className) {
-        this.students = data.filter(
-          (student) => student.className === this.className
-        ); // Lọc sinh viên dựa trên tên lớp nếu có
-      } else {
-        this.students = data; // Hiển thị tất cả sinh viên nếu không có lớp
-      }
-      this.dataSource.data = this.students;
-      this.totalStudents = this.students.length;
-      this.updateStatusCounts(); // Cập nhật số lượng khi tải sinh viên
-      this.dataSource.paginator = this.paginator;
-    });
+    if (this.paginator) {
+      const pageIndex = this.paginator.pageIndex;
+      const pageSize = this.paginator.pageSize;
+  
+      this.studentService.getAllStudents(pageIndex, pageSize).subscribe((data) => {
+        console.log('Data received from API:', data);
+  
+        // Nếu data là mảng, gán trực tiếp vào dataSource.data
+        if (Array.isArray(data)) {
+          this.dataSource.data = data; // Cập nhật dữ liệu cho MatTableDataSource
+          this.totalStudents = data.length; // Cập nhật tổng số sinh viên (sử dụng length của mảng)
+          
+          // Cập nhật paginator (nếu cần)
+          if (this.paginator) {
+            this.paginator.length = this.totalStudents;
+          }
+        } else {
+          this.dataSource.data = [];
+          this.totalStudents = 0;
+        }
+  
+        this.updateStatusCounts(); // Cập nhật số lượng trạng thái sinh viên
+      });
+    }
+}
+
+
+  
+  
+  updateStatusCounts(): void {
+    // Đảm bảo this.students là mảng trước khi gọi forEach
+    if (Array.isArray(this.students)) {
+      const counts = { studying: 0, delay: 0, dropped: 0, graduated: 0 };
+  
+      this.students.forEach((student) => {
+        if (student.status === 'STUDYING') counts.studying++;
+        if (student.status === 'DELAY') counts.delay++;
+        if (student.status === 'DROPPED') counts.dropped++;
+        if (student.status === 'GRADUATED') counts.graduated++;
+      });
+  
+      this.statusCounts.set(counts); // Cập nhật trạng thái
+    } else {
+      console.error('students is not an array:', this.students);
+    }
   }
+  
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator; // Gán paginator sau khi view đã được khởi tạo
+  
+    // Lắng nghe sự thay đổi của paginator (chuyển trang hoặc thay đổi kích thước trang)
+    this.paginator.page.subscribe(() => {
+      this.loadStudent(); // Gọi lại hàm loadStudent với các tham số phân trang mới
+    });
+  
+    this.loadStudent(); // Tải dữ liệu ban đầu khi component được khởi tạo
+  }
+  
+  
+  
+  
 
   applyFilter(filterValue: string): void {
     this.dataSource.filterPredicate = (
@@ -118,23 +163,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
       }
     });
   }
-
-  updateStatusCounts(): void {
-    const counts = { studying: 0, delay: 0, dropped: 0, graduated: 0 };
-
-    this.students.forEach((student) => {
-      if (student.status === 'STUDYING') counts.studying++;
-      if (student.status === 'DELAY') counts.delay++;
-      if (student.status === 'DROPPED') counts.dropped++;
-      if (student.status === 'GRADUATED') counts.graduated++;
-    });
-
-    this.statusCounts.set(counts);
-  }
-
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-  }
+  
 
   onRowClick(event: MouseEvent, student: StudentRequest): void {
     this.currentUserRole === 'ROLE_ADMIN'

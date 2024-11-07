@@ -21,11 +21,12 @@ export class StudentService {
     'Content-Type': 'application/json',
   });
 
-  getAllStudents(): Observable<StudentResponse[]> {
-    return this.http.get<StudentResponse[]>(this.baseUrl, {
-      headers: this.headers,
-    });
+  getAllStudents(page: number, size: number): Observable<StudentResponse[]> {
+    const url = `${this.baseUrl}?page=${page}&size=${size}`;
+    return this.http.get<StudentResponse[]>(url);
   }
+  
+  
 
   getStudentsByStatus(status: string): Observable<StudentResponse[]> {
     return this.http.get<StudentResponse[]>(`${this.baseUrl}/status/${status}`);
