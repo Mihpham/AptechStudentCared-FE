@@ -9,6 +9,7 @@ import { TeacherResponse } from '../model/teacher/teacher-response.model';
 import { SroResponse } from '../model/sro/sro.model';
 import { SroService } from 'src/app/core/services/admin/sro.service';
 import { AuthService } from 'src/app/core/auth/auth.service';
+import { PaginatedStudentResponse } from '../model/pagination-response';
 
 @Component({
   selector: 'app-dashboard',
@@ -44,29 +45,30 @@ export class DashboardComponent implements OnInit {
   }
 
   loadClasses(): void {
-    const pageIndex = 0;  // Thay đổi giá trị này nếu có paginator
-    const pageSize = 10;  // Thay đổi giá trị này nếu có paginator
-    this.classService.findAllClasses(pageIndex,pageSize).subscribe(
+    const pageIndex = 0;  
+    const pageSize = 10; 
+    this.classService.findAllClasses(pageIndex, pageSize).subscribe(
       (data) => {
-        this.classes = data; // Assign the received data to the classes array
-        this.totalClasses = this.classes.length; // Get the total count from the populated array
+        console.log('API Response for Classes:', data);  
+        this.classes = data.content || [];  
+        this.totalClasses = data.totalElements || 0;
+        console.log('Total Classes:', this.totalClasses);
       },
-       (error) => {
+      (error) => {
         this.toastr.error('Failed to load classes!', 'Error');
+        console.error('Load classes failed', error); 
       },
     );
   }
 
   loadStudent(): void {
-    // Lấy giá trị trang hiện tại và kích thước trang từ paginator (nếu có)
-    const pageIndex = 0;  // Thay đổi giá trị này nếu có paginator
-    const pageSize = 10;  // Thay đổi giá trị này nếu có paginator
+    const pageIndex = 0; 
+    const pageSize = 10; 
     
-    // Gọi API với các tham số phân trang
     this.studentService.getAllStudents(pageIndex, pageSize).subscribe(
-      (data) => {
-        this.students = data;  // Gán dữ liệu nhận được vào mảng students
-        this.totalStudents = this.students.length; // Lấy tổng số sinh viên từ mảng
+      (data: PaginatedStudentResponse) => {
+        this.students = data.content;  
+        this.totalStudents = data.totalElements;  
       },
       (error) => {
         this.toastr.error('Failed to load students', 'Error');
@@ -74,7 +76,6 @@ export class DashboardComponent implements OnInit {
     );
   }
   
-
   loadTeacher(): void {
     this.teacherService.getAllTeachers().subscribe(
       (data) => {
