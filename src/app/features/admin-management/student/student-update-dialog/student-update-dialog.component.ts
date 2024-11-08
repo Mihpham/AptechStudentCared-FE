@@ -126,17 +126,23 @@ export class StudentUpdateDialogComponent implements OnInit {
     this.onCourseToggle(course);
   }
 
-  loadAvailableClasses() {
-    this.classService.findAllClasses().pipe(
+  loadAvailableClasses() {  
+    // Define pagination parameters (e.g., page = 0, size = 10)
+    const page = 0;  // Set the page you want to load (0 for the first page)
+    const size = 10; // Set the number of items per page (e.g., 10)
+  
+    this.classService.findAllClasses(page, size).pipe(
       catchError((err) => {
         this.toastr.error('Failed to load classes');
         return throwError(() => err);
       })
     ).subscribe({
-      next: (classes: ClassResponse[]) => (this.availableClasses = classes),
+      next: (classes: ClassResponse[]) => {
+        this.availableClasses = classes; // Assign the response to the availableClasses array
+      },
     });
   }
-
+  
   loadAvailableCourses() {
     this.coursesService.getAllCourse().subscribe({
       next: (courses: CourseResponse[]) => {

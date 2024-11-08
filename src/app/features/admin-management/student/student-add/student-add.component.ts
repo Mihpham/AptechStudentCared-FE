@@ -99,8 +99,13 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
 
   loadAvailableClasses() {
     this.loadingClasses = true;
+  
+    // Define pagination parameters (example: current page 0, size 10)
+    const page = 0;  // This should be dynamic based on the page you want to load
+    const size = 10; // This is the number of classes per page
+  
     this.classService
-      .findAllClasses()
+      .findAllClasses(page, size)  // Pass page and size to the service
       .pipe(
         catchError((err) => {
           this.toastr.error('Failed to load classes');
@@ -112,7 +117,7 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
         next: (classes) => (this.availableClasses = classes),
       });
   }
-
+  
   loadAvailableCourses() {
     this.coursesService
       .getAllCourse()

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { UserEnviroment } from 'src/app/environments/environment';
 import { ClassRequest } from 'src/app/features/admin-management/model/class/class-request.model';
 import { ClassResponse } from 'src/app/features/admin-management/model/class/class-response.model';
@@ -19,9 +19,12 @@ export class ClassService {
 
   constructor(private http: HttpClient, private toastr: ToastrService) {}
 
-  findAllClasses(): Observable<ClassResponse[]> {
-    return this.http.get<ClassResponse[]>(this.baseUrl);
+  findAllClasses(page: number, size: number): Observable<any> {
+    const url = `${this.baseUrl}?page=${page}&size=${size}`;
+    return this.http.get<any>(url);
   }
+  
+  
 
   findClassById(classId: number): Observable<ClassResponse> {
     return this.http.get<ClassResponse>(`${this.baseUrl}/${classId}`);

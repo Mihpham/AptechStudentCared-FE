@@ -44,15 +44,17 @@ export class DashboardComponent implements OnInit {
   }
 
   loadClasses(): void {
-    this.classService.findAllClasses().subscribe({
-      next: (data) => {
+    const pageIndex = 0;  // Thay đổi giá trị này nếu có paginator
+    const pageSize = 10;  // Thay đổi giá trị này nếu có paginator
+    this.classService.findAllClasses(pageIndex,pageSize).subscribe(
+      (data) => {
         this.classes = data; // Assign the received data to the classes array
         this.totalClasses = this.classes.length; // Get the total count from the populated array
       },
-      error: (error) => {
+       (error) => {
         this.toastr.error('Failed to load classes!', 'Error');
       },
-    });
+    );
   }
 
   loadStudent(): void {
