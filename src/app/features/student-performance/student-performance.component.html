@@ -21,7 +21,7 @@
     </div>
 
     <!-- Check if there are performanceMarks for the selected semester -->
-    <div *ngIf="performanceMarks.length > 0; else noSubjectsFound">
+    <div *ngIf="performanceMarks.length > 0">
       <div id="performance-chart1" class="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div class="col-span-4 grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 bg-white">
           <div *ngFor="let mark of performanceMarks; let i = index"
@@ -37,12 +37,12 @@
     </div>
 
 
-    <ng-template #noSubjectsFound>
+    <!-- <ng-template #noSubjectsFound>
       <div class="text-red-500 text-center text-xl font-semibold mt-4">
         <p>No subjects found for the semester: <strong>{{ selectedSemester }}</strong></p>
         <p>Please select a different semester or check with your administrator.</p>
       </div>
-    </ng-template>
+    </ng-template> -->
 
   </div>
 

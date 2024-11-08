@@ -142,7 +142,7 @@ export class StudentUpdateDialogComponent implements OnInit {
   loadAvailableClasses() {
     const page = 0;
     const size = 10;
-
+  
     this.classService
       .findAllClasses(page, size)
       .pipe(
@@ -153,8 +153,10 @@ export class StudentUpdateDialogComponent implements OnInit {
       )
       .subscribe({
         next: (response: any) => {
+          console.log('Full API response:', response); // Log the full response to check its structure
           if (Array.isArray(response.content)) {
             this.availableClasses = response.content;
+          } else {
             console.error(
               'Expected an array of classes in response.content, but received:',
               response.content
@@ -162,7 +164,7 @@ export class StudentUpdateDialogComponent implements OnInit {
           }
         },
       });
-  }
+  }  
 
   loadAvailableCourses() {
     this.coursesService.getAllCourse().subscribe({
