@@ -8,6 +8,7 @@ import {
 import { UserEnviroment } from 'src/app/environments/environment';
 import { StudentRequest } from 'src/app/features/admin-management/model/studentRequest.model';
 import { StudentResponse } from 'src/app/features/admin-management/model/student-response.model.';
+import { PaginatedStudentResponse } from 'src/app/features/admin-management/model/pagination-response';
 
 @Injectable({
   providedIn: 'root',
@@ -21,10 +22,10 @@ export class StudentService {
     'Content-Type': 'application/json',
   });
 
-  getAllStudents(page: number, size: number): Observable<StudentResponse[]> {
-    const url = `${this.baseUrl}?page=${page}&size=${size}`;
-    return this.http.get<StudentResponse[]>(url);
+  getAllStudents(pageIndex: number, pageSize: number): Observable<PaginatedStudentResponse> {
+    return this.http.get<PaginatedStudentResponse>(`${this.baseUrl}?page=${pageIndex}&size=${pageSize}`);
   }
+  
   
   
 
