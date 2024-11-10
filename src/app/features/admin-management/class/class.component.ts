@@ -8,6 +8,7 @@ import { ClassService } from 'src/app/core/services/admin/class.service';
 import { ClassRequest } from '../model/class/class-request.model';
 import { ClassResponse } from '../model/class/class-response.model';
 import { DayOfWeek } from 'src/app/core/enum/DayOfWeek';
+import { AuthService } from 'src/app/core/auth/auth.service';
 
 @Component({
   selector: 'app-class',
@@ -19,21 +20,25 @@ export class ClassComponent implements OnInit {
   paginatedClasses: WritableSignal<ClassResponse[]> = signal([]);
   filteredClasses: WritableSignal<ClassResponse[]> = signal([]);
   isActive: WritableSignal<boolean> = signal(false);
+  currentUserRole!: string | null;
 
   statusCounts = signal({ studying: 0, finished: 0, cancel: 0, scheduled: 0 });
+  semesterCounts = signal({ Sem1: 0, Sem2: 0, Sem3: 0, Sem4: 0 });
 
   currentPage = signal(1);
-  itemsPerPage = signal(5);
+  itemsPerPage = signal(10); 
   totalPages = signal(0);
 
   constructor(
     private classService: ClassService,
+    private authService: AuthService,
     private toastr: ToastrService,
     private router: Router,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    this.currentUserRole = this.authService.getRole();
     this.loadClasses();
   }
 
@@ -45,19 +50,26 @@ export class ClassComponent implements OnInit {
       [DayOfWeek.THURSDAY]: 5,
       [DayOfWeek.FRIDAY]: 6,
       [DayOfWeek.SATURDAY]: 7,
-      [DayOfWeek.SUNDAY]: 8
+      [DayOfWeek.SUNDAY]: 8,
     };
-    
-    return days.map(day => dayMap[day]).join(', ');
+    return days.map((day) => dayMap[day]).join(', ');
   }
-  
-  
 
   loadClasses(): void {
-    this.classService.findAllClasses().subscribe({
+    const page = this.currentPage() - 1;
+    const size = this.itemsPerPage();
+  
+    console.log('Requesting page:', page + 1, 'with size:', size);
+  
+    this.classService.findAllClasses(page, size).subscribe({
       next: (data) => {
-        this.classes.set(data);
-        this.applyFilters();
+        console.log('API response:', data);
+  
+        this.classes.set(data.content);
+        this.paginatedClasses.set(data.content);
+  
+        this.totalPages.set(data.totalPages);
+  
         this.updateStatusCounts();
       },
       error: (error) => {
@@ -67,48 +79,6 @@ export class ClassComponent implements OnInit {
     });
   }
   
-  
-  onRowClick(event: Event, classItem: any): void {
-    event.stopPropagation(); // Ngăn chặn sự kiện click không bị lan ra ngoài
-    this.router.navigate(['/admin/student/all'], {
-      queryParams: { className: classItem.className },
-    });
-  }
-  
-  getSubjectId(subjectTeachers: any[]): number | null {
-    return subjectTeachers.length > 0 ? +subjectTeachers[0].subjectId : null;
-  }
-  
-
-  navigateToAssign(classId: number): void {
-    this.router.navigate(['/admin/class/assign', classId]).then(() => {
-      // Gọi phương thức để kiểm tra trạng thái lớp khi quay lại
-      this.checkClassStatus(classId);
-    });
-  }
-
-
-  checkClassStatus(classId: number): void {
-    this.classService.findClassById(classId).subscribe((classDetails) => {
-      this.isActive.set(classDetails.status === 'ACTIVE');
-    });
-  }
-  
-  getAvatarUrl(avatarName: string | undefined): string {
-    return avatarName ? `${avatarName}` : '/assets/images/avatar-default.webp';
-  }
-
-  openFilterDialog(): void {
-    const dialogRef = this.dialog.open(FilterDialogComponent);
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        console.log(result);
-        this.applyFilters(result);
-      }
-    });
-  }
-
   applyFilters(filters?: {
     className: string;
     admissionDate: string;
@@ -124,80 +94,84 @@ export class ClassComponent implements OnInit {
             .toLowerCase()
             .includes(classNameFilter.toLowerCase())
         : true;
-      console.log('Matches class name:', matchesClassName);
 
       const matchesStatus =
         statusFilter !== 'ALL' ? classItem.status === statusFilter : true;
-      console.log('Matches status:', matchesStatus);
 
       return matchesClassName && matchesStatus;
     });
 
-    console.log('Filtered classes:', filtered); // Kiểm tra danh sách lớp đã lọc
+    console.log('Filtered classes:', filtered);
     this.filteredClasses.set(filtered);
-    this.updatePagination(); // Cập nhật phân trang sau khi lọc
   }
 
   updateStatusCounts(): void {
-    const currentClasses = this.filteredClasses();
+    const currentClasses = this.classes();
     const counts = { studying: 0, finished: 0, cancel: 0, scheduled: 0 };
+    const semesterCounts = { Sem1: 0, Sem2: 0, Sem3: 0, Sem4: 0 };
 
     currentClasses.forEach((classItem) => {
       if (classItem.status === 'STUDYING') counts.studying++;
       if (classItem.status === 'FINISHED') counts.finished++;
       if (classItem.status === 'CANCEL') counts.cancel++;
       if (classItem.status === 'SCHEDULED') counts.scheduled++;
+
+      // Cập nhật số lớp học cho từng học kỳ
+      semesterCounts[classItem.sem as keyof typeof semesterCounts] =
+        (semesterCounts[classItem.sem as keyof typeof semesterCounts] || 0) + 1;
     });
 
+    // Cập nhật số liệu trạng thái và học kỳ
     this.statusCounts.set(counts);
+    this.semesterCounts.set(semesterCounts);
   }
 
-  goToStudentDetail(studentId: number): void {
-    if (!studentId) {
-      console.error('Invalid student ID');
-      return;
-    }
-    this.router.navigate(['/student-detail', studentId]);
+  onItemsPerPageChange(newItemsPerPage: number): void {
+    this.itemsPerPage.set(newItemsPerPage); 
+    this.currentPage.set(1); 
+    this.loadClasses(); 
   }
 
-  updatePagination(): void {
-    const classes = this.filteredClasses();
-
-    const startIndex = (this.currentPage() - 1) * this.itemsPerPage();
-    const endIndex = startIndex + this.itemsPerPage();
-
-    this.paginatedClasses.set(classes.slice(startIndex, endIndex));
-
-    this.totalPages.set(Math.ceil(classes.length / this.itemsPerPage()));
-  }
-
-  onItemsPerPageChange(value: number): void {
-    this.itemsPerPage.set(value);
-    this.updatePagination();
-  }
-
-  goToFirstPage(): void {
-    this.currentPage.set(1);
-    this.updatePagination();
-  }
-
-  goToPreviousPage(): void {
-    if (this.currentPage() > 1) {
-      this.currentPage.set(this.currentPage() - 1);
-      this.updatePagination();
+  goToPage(pageNumber: number): void {
+    if (pageNumber >= 1 && pageNumber <= this.totalPages()) {
+      this.currentPage.set(pageNumber);
+      this.loadClasses(); 
     }
   }
 
   goToNextPage(): void {
     if (this.currentPage() < this.totalPages()) {
       this.currentPage.set(this.currentPage() + 1);
-      this.updatePagination();
+      this.loadClasses(); 
     }
+  }
+
+  goToPreviousPage(): void {
+    if (this.currentPage() > 1) {
+      this.currentPage.set(this.currentPage() - 1);
+      this.loadClasses(); 
+    }
+  }
+
+  goToFirstPage(): void {
+    this.currentPage.set(1);
+    this.loadClasses(); 
   }
 
   goToLastPage(): void {
     this.currentPage.set(this.totalPages());
-    this.updatePagination();
+    this.loadClasses(); 
+  }
+
+  openFilterDialog(): void {
+    const dialogRef = this.dialog.open(FilterDialogComponent);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log(result);
+        this.applyFilters(result); 
+      }
+    });
   }
 
   deleteClass(id: number): void {
@@ -217,11 +191,8 @@ export class ClassComponent implements OnInit {
               (classItem) => classItem.id !== id
             );
             this.classes.set(updatedClasses);
-
-            this.applyFilters();
-
+            this.applyFilters(); 
             this.updateStatusCounts();
-
             Swal.fire('Deleted!', 'Class has been deleted.', 'success');
           },
           error: (error) => {

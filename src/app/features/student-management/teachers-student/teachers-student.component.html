@@ -1,0 +1,56 @@
+<div class="p-4">
+    <h2 class="">{{classDetails?.className}}_{{classDetails?.center}}</h2>
+    <div class="flex space-x-4">
+        
+        <a href="student/student-classmates/{{classId}}" class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
+            <i class="fas fa-users"></i>
+            <span>Classmates</span>
+        </a>
+        <a href="#" class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Scheduler</span>
+        </a>
+        <a href="student/student-teachers/{{classId}}" class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <span>Teachers</span>
+        </a>
+        <a href="student/student-exam-mark/{{classId}}" class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
+            <i class="fas fa-file-alt"></i>
+            <span>Exam Mark</span>
+        </a>
+        <a href="student/student-assignment-mark/{{classId}}" class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
+            <i class="fas fa-pencil-alt"></i>
+            <span>Assignment Mark</span>
+        </a>
+        <a href="student/student-attendance/{{classId}}" class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow space-x-2">
+            <i class="fas fa-check-circle"></i>
+            <span>Attendance</span>
+        </a>
+    </div>
+    <div class="overflow-x-auto bg-white shadow-md rounded-lg mt-5">
+        <table class="min-w-full divide-y divide-gray-200 dark:bg-gray-900">
+          <thead class="bg-gray-100 text-gray-600 dark:text-gray-50 dark:bg-gray-600">
+            <tr>
+              <th class="py-3 px-4 text-left text-sm font-medium">Avatar</th>
+              <th class="py-3 px-4 text-left text-sm font-medium">Full Name</th>
+              <th class="py-3 px-4 text-left text-sm font-medium">Email</th>
+              <th class="py-3 px-4 text-left text-sm font-medium">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 dark:text-gray-200 dark:bg-gray-600">
+            <tr *ngFor="let teacher of teachers" class="hover:bg-gray-50 transition-colors duration-150 ease-in-out">
+              <td class="py-4 px-4 text-sm">
+                <i class="fa-solid fa-user-large border rounded-full p-3"></i>
+              </td>
+              <td class="py-4 px-4 text-sm">{{ teacher.fullName }}</td>
+              <td class="py-4 px-4 text-sm">{{ teacher.email }}</td>
+              <td class="py-4 px-4 text-sm">
+                <a [href]="'mailto:' + teacher.email" class="text-blue-500 hover:text-blue-700">
+                  <i class="fa-solid fa-envelope"></i>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+</div>

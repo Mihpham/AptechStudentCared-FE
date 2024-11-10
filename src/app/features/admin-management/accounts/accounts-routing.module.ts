@@ -7,11 +7,13 @@ const routes: Routes = [
   {
     path: '',
     component: AccountsComponent,
+    data: { breadcrumb: 'All Account' },
+
     children: [
       {
         path: 'all',
         component: AllAccountComponent,
-        data: { breadcrumb: 'All Account' },
+        data: { breadcrumb: 'All' },
       },
     ],
   },

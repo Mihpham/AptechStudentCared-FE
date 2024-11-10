@@ -11,6 +11,7 @@ const routes: Routes = [
       {
         path: ':userId/:subjectId/:classId',
         component: StudentPerformanceComponent, 
+        
       }
     ]
   }

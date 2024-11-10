@@ -75,14 +75,23 @@ export class AuthService {
     localStorage.setItem('role', role);
   }
 
+  hasRole(expectedRole: string): boolean {
+    const role = this.getRole();
+    return role === expectedRole;
+  }
+  
+
   getToken(): string | null {
     return localStorage.getItem('token');
   }
 
   isAuthenticated(): boolean {
     const token = this.getToken();
-    return token != null && !this.jwtHelper.isTokenExpired(token);
+    const role = this.getRole();
+    return token != null && !this.jwtHelper.isTokenExpired(token) && role != null;
+    
   }
+  
 
   getRole(): string | null {
     return localStorage.getItem('role');

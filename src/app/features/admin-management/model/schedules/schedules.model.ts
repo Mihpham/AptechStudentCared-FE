@@ -6,4 +6,5 @@ export interface Schedule {
   className: string;
   status: string;
   note: string;
+  isHoliday?: boolean; 
 }

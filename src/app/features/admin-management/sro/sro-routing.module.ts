@@ -10,6 +10,8 @@ const routes: Routes = [
   {
     path: '',
     component: SroComponent,
+    data: { breadcrumb: 'All SRO' },
+
     children: [
       {
         path: 'dialog',

@@ -16,8 +16,9 @@ import { ProfileModule } from './features/profile/profile.module';
 import { BreadcrumbsComponent } from './layout/components/breadcrumbs/breadcrumbs.component';
 
 import {  LocationStrategy, PathLocationStrategy } from '@angular/common';
-import { StudentPerformanceRoutingModule } from './features/student-performance/student-performance-routing.module';
 import { StudentPerformanceModule } from './features/student-performance/student-performance.module';
+import { AuthModule } from './auth/auth.module';
+import { StudentComponent } from './features/student-management/student.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -29,9 +30,11 @@ export function tokenGetter() {
     NavbarComponent,
     SidebarComponent,
     BreadcrumbsComponent,
+    StudentComponent
   ],
   imports: [
     BrowserModule,
+    AuthModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,

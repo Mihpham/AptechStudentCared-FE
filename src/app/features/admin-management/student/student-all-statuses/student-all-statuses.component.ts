@@ -20,14 +20,15 @@ import Swal from 'sweetalert2';
 import { StudentService } from 'src/app/core/services/admin/student.service';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { ImportStudentDialogComponent } from '../import-student-dialog/import-student-dialog.component';
+import { AuthService } from 'src/app/core/auth/auth.service';
+import { PaginatedStudentResponse } from '../../model/pagination-response';
 
 @Component({
   selector: 'app-student-all-statuses',
   templateUrl: './student-all-statuses.component.html',
   styleUrls: ['./student-all-statuses.component.scss'],
 })
-
-export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
+export class StudentAllStatusesComponent implements OnInit {
   students: StudentResponse[] = [];
   selectedStudent: StudentRequest | undefined;
   totalStudents: number = 0;
@@ -36,7 +37,10 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   statusCounts = signal({ studying: 0, delay: 0, dropped: 0, graduated: 0 });
   selectedFile: File | null = null;
   isImportVisible: boolean = false;
-
+  currentUserRole!: string | null;
+  currentPage = signal(1);
+  itemsPerPage = signal(10); // Giá trị mặc định là 10
+  totalPages = signal(0);
   displayedColumns: string[] = [
     'avatar',
     'rollNumber',
@@ -55,6 +59,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
+    private authService: AuthService,
     private studentService: StudentService,
     private toastr: ToastrService,
     private router: Router,
@@ -62,33 +67,51 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
+    this.currentUserRole = this.authService.getRole();
+
     this.route.queryParams.subscribe((params) => {
-      this.className = params['className'] || null; // Nhận tên lớp từ query params
-      this.loadStudent(); // Tải sinh viên khi component khởi tạo
+      this.className = params['className'] || null; 
     });
+    this.loadStudent();
   }
 
   loadStudent(): void {
-    this.studentService.getAllStudents().subscribe(
-      (data) => {
-        console.log('Data received from API:', data);
-        if (this.className) {
-          this.students = data.filter(
-            (student) => student.className === this.className
-          ); // Lọc sinh viên dựa trên tên lớp nếu có
-        } else {
-          this.students = data; // Hiển thị tất cả sinh viên nếu không có lớp
-        }
-        this.dataSource.data = this.students;
-        this.totalStudents = this.students.length;
-        this.updateStatusCounts(); // Cập nhật số lượng khi tải sinh viên
-        this.dataSource.paginator = this.paginator;
-      },
-      (error) => {
-        this.toastr.error('Failed to load students', 'Error');
-        console.error('Error fetching students', error);
-      }
-    );
+    const page = this.currentPage() - 1; // API yêu cầu chỉ số trang bắt đầu từ 0
+    const size = this.itemsPerPage();
+  
+    this.studentService.getAllStudents(page, size).subscribe((data: PaginatedStudentResponse) => {
+      console.log('Data received from API:', data);
+  
+      this.totalStudents = data.totalElements;
+      this.totalPages.set(data.totalPages); // Cập nhật số trang
+  
+      this.dataSource.data = data.content;
+      this.updateStatusCounts();
+    });
+  }
+  
+
+  updateStatusCounts(): void {
+    if (Array.isArray(this.students)) {
+      const counts = { studying: 0, delay: 0, dropped: 0, graduated: 0 };
+
+      this.students.forEach((student) => {
+        if (student.status === 'STUDYING') counts.studying++;
+        if (student.status === 'DELAY') counts.delay++;
+        if (student.status === 'DROPPED') counts.dropped++;
+        if (student.status === 'GRADUATED') counts.graduated++;
+      });
+
+      this.statusCounts.set(counts); // Cập nhật trạng thái
+    } else {
+      console.error('students is not an array:', this.students);
+    }
+  }
+
+  onItemsPerPageChange(newItemsPerPage: number): void {
+    this.itemsPerPage.set(newItemsPerPage);
+    this.currentPage.set(1);
+    this.loadStudent();
   }
 
   applyFilter(filterValue: string): void {
@@ -108,7 +131,36 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     };
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
+  goToPage(pageNumber: number): void {
+    if (pageNumber >= 1 && pageNumber <= this.totalPages()) {
+      this.currentPage.set(pageNumber);
+      this.loadStudent(); 
+    }
+  }
 
+  goToNextPage(): void {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.set(this.currentPage() + 1);
+      this.loadStudent(); 
+    }
+  }
+
+  goToPreviousPage(): void {
+    if (this.currentPage() > 1) {
+      this.currentPage.set(this.currentPage() - 1);
+      this.loadStudent(); 
+    }
+  }
+
+  goToFirstPage(): void {
+    this.currentPage.set(1);
+    this.loadStudent(); 
+  }
+
+  goToLastPage(): void {
+    this.currentPage.set(this.totalPages());
+    this.loadStudent(); 
+  }
 
   onImport(): void {
     const dialogRef = this.dialog.open(ImportStudentDialogComponent, {
@@ -117,34 +169,19 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result && result.reload) {
-        this.loadStudent(); // Reload student data after import
+        this.loadStudent(); 
       }
     });
   }
-  
-  updateStatusCounts(): void {
-    const counts = { studying: 0, delay: 0, dropped: 0, graduated: 0 };
-
-    this.students.forEach((student) => {
-      if (student.status === 'STUDYING') counts.studying++;
-      if (student.status === 'DELAY') counts.delay++;
-      if (student.status === 'DROPPED') counts.dropped++;
-      if (student.status === 'GRADUATED') counts.graduated++;
-    });
-
-    this.statusCounts.set(counts);
-  }
-
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-  }
 
   onRowClick(event: MouseEvent, student: StudentRequest): void {
-    this.router.navigate(['/admin/student/details', student.userId]);
+    this.currentUserRole === 'ROLE_ADMIN'
+      ? this.router.navigate(['/admin/student/details', student.userId])
+      : this.router.navigate(['/sro/student/details', student.userId]);
   }
 
   onStudentAdded() {
-    this.loadStudent(); // Tải lại danh sách sinh viên khi nhận được sự kiện
+    this.loadStudent(); 
   }
 
   onAdd(): void {
@@ -158,8 +195,9 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onUpdate(student: StudentRequest, event: Event): void {
-    event.stopPropagation(); // To prevent the row click event from triggering
+  onUpdate(student: StudentResponse, event: Event): void {
+    // Use StudentResponse here
+    event.stopPropagation();
     const dialogRef = this.dialog.open(StudentUpdateDialogComponent, {
       width: '650px',
       data: student,
@@ -167,15 +205,15 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
 
     dialogRef
       .afterClosed()
-      .subscribe((updatedStudent: StudentRequest | undefined) => {
+      .subscribe((updatedStudent: StudentResponse | undefined) => {
         if (updatedStudent) {
           const index = this.students.findIndex(
             (s) => s.userId === updatedStudent.userId
           );
           if (index !== -1) {
-            this.students[index] = updatedStudent;
+            this.students[index] = updatedStudent; // updatedStudent should have classId
             this.dataSource.data = [...this.students];
-            this.updateStatusCounts(); // Cập nhật số lượng sau khi chỉnh sửa
+            this.updateStatusCounts();
           } else {
             this.loadStudent();
           }
@@ -190,7 +228,6 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     }
   }
 
-  
   onExport(): void {
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.dataSource.data);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
@@ -220,7 +257,6 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
         this.studentService.deleteStudent(userId).subscribe({
           next: () => {
             console.log(`Student with ID ${userId} deleted`);
-
             this.students = this.students.filter(
               (student) => student.userId !== userId
             );

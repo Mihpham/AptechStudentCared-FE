@@ -1,20 +1,110 @@
-<div class="flex-1 bg-gray-50 p-6 dark:bg-slate-900">
+<div class="flex-1 p-6 dark:bg-slate-900">
     <div class="grid grid-cols-4 gap-4 mb-4">
-        <div class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">48</span>
-            <span class="text-gray-600">Student</span>
+        <div *ngIf="students" class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center cursor-pointer"  [routerLink]="(currentUserRole === 'ROLE_ADMIN') ? ['/admin/student/all'] : ['/sro/student/all']">
+            <span class="text-3xl font-bold">{{totalStudents}}</span>
+            <span class="text-gray-600">STUDENT</span>
         </div>
-        <div class="bg-yellow-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">4</span>
-            <span class="text-gray-600">Teacher</span>
+        <div *ngIf="classes" class="bg-blue-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center cursor-pointer" [routerLink]="currentUserRole === 'ROLE_ADMIN' ? ['/admin/teacher'] : ['/sro/teacher']">
+            <span class="text-3xl font-bold">{{totalTeacher}}</span>
+            <span class="text-gray-600">TEACHER</span>
         </div>
-        <div class="bg-yellow-200 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">16</span>
-            <span class="text-gray-600">Sro</span>
+        <div *ngIf="classes" class="bg-yellow-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center cursor-pointer" [routerLink]="currentUserRole === 'ROLE_ADMIN' ? ['/admin/sro'] : ['/sro']">
+            <span class="text-3xl font-bold">{{totalSros}}</span>
+            <span class="text-gray-600">SRO</span>
         </div>
-        <div class="bg-cyan-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">2</span>
-            <span class="text-gray-600">Class</span>
+        <div *ngIf="classes" class="bg-cyan-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center cursor-pointer" [routerLink]="currentUserRole === 'ROLE_ADMIN' ? ['/admin/class'] : ['/sro/class']">
+            <span class="text-3xl font-bold">{{totalClasses}}</span>
+            <span class="text-gray-600">CLASS</span>
         </div>
     </div>
+
+
+    <div class="container">
+        <div class="file-upload">
+            <input type="file" (change)="onFileChange($event)" />
+        </div>
+        
+        <div *ngIf="sheetNames.length > 0" class="sheet-selection">
+            <h3>Select a sheet to display its data</h3>
+            <select (change)="onSheetSelect($event)">
+                <option *ngFor="let sheetName of sheetNames" [value]="sheetName">{{ sheetName }}</option>
+            </select>
+        </div>
+        <h3 *ngIf="Sro">Sro :{{Sro}}</h3>
+        <h3 *ngIf="Class">Class :{{Class}}</h3>
+        <h3 *ngIf="FCSubject">FC , Subject : {{FCSubject}}</h3>
+
+        <div *ngIf="selectedSheetData.length > 0" class="data-table">
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th *ngFor="let header of selectedSheetData[0]">{{ header }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let row of selectedSheetData.slice(1)">
+                        <td *ngFor="let cell of row">{{ cell }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div *ngIf="columnSums.length > 0" class="sum-table">
+            <h3>Column Sums</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th *ngFor="let name of columnNames">{{ name }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td *ngFor="let sum of columnSums.slice(4)">{{ sum }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h3 {
+            color: #333;
+        }
+        .file-upload {
+            margin-bottom: 20px;
+        }
+        .sheet-selection {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+      
+      
+
+
 </div>

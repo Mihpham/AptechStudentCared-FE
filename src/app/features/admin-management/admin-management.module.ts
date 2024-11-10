@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AdminComponent } from './admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -68,9 +68,12 @@ import { ScheduleComponent } from './schedule/schedule.component';
 import { AddScheduleComponent } from './schedule/add-schedule/add-schedule.component';
 import { UpdateScheduleComponent } from './schedule/update-schedule/update-schedule.component';
 import { RegenerateScheduleComponent } from './schedule/regenerate-schedule/regenerate-schedule.component';
+import { ImportExamMarkDialogComponent } from './exam-mark/import-exam-mark-dialog/import-exam-mark-dialog.component';
+import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/exam-mark-all-subject.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
 
 @NgModule({
-  
+
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 
   declarations: [
@@ -78,10 +81,10 @@ import { RegenerateScheduleComponent } from './schedule/regenerate-schedule/rege
     StudentComponent,
     DashboardComponent,
     ClassComponent,
+    CalendarComponent,
     ExamMarkComponent,
     AccountsComponent,
     AttendanceComponent,
-    CalendarComponent,
     CourseComponent,
     SubjectComponent,
     StudyingComponent,
@@ -123,12 +126,15 @@ import { RegenerateScheduleComponent } from './schedule/regenerate-schedule/rege
     ScheduleComponent,
     AddScheduleComponent,
     UpdateScheduleComponent,
-    RegenerateScheduleComponent
+    RegenerateScheduleComponent,
+    ImportExamMarkDialogComponent,
+    ExamMarkAllSubjectComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    FullCalendarModule,
     AdminManagementRoutingModule,
     HttpClientModule,
     MatFormFieldModule,
@@ -143,8 +149,10 @@ import { RegenerateScheduleComponent } from './schedule/regenerate-schedule/rege
     MatSelectModule,
     MatOptionModule,
     MatTooltipModule,
-    CdkTableModule, 
+    CdkTableModule,
     NgxPaginationModule,
-  ]
+  ],
+
+
 })
 export class AdminManagementModule { }

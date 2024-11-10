@@ -16,19 +16,6 @@
     margin-bottom: 10px;
 }
 
-input:focus~label,
-input:not(:placeholder-shown)~label {
-    top: 0rem;
-    left: 1rem;
-    font-size: 1rem;
-    color: #000000;
-    background-color: #E0EDF0;
-    padding: 0 0.25rem;
-    border-top-left-radius: 0.25rem;
-    z-index: 1;
-    border-top: white;
-    transition: all 0.3s ease;
-}
 
 
 .header-actions {
@@ -46,12 +33,14 @@ input:not(:placeholder-shown)~label {
 
 .search-bar mat-form-field {
     width: 100%;
+    
 }
 
 .mat-table {
     table-layout: fixed;
     width: 100%;
     border: 1px solid white;
+    border-radius: 10%;
 }
 
 .mat-row {

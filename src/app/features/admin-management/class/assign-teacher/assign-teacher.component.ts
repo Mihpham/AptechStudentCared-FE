@@ -6,6 +6,7 @@ import { AssignTeacherRequest } from '../../model/class/assign-teacher.model';
 import { ClassResponse } from '../../model/class/class-response.model';
 import { AssignEditComponent } from '../assign-edit/assign-edit.component';
 import { ClassService } from './../../../../core/services/admin/class.service';
+import { AuthService } from 'src/app/core/auth/auth.service';
 
 @Component({
   selector: 'app-assign-teacher',
@@ -16,16 +17,20 @@ export class AssignTeacherComponent implements OnInit {
   classDetails: ClassResponse | null = null;
   semesters = ['Sem1', 'Sem2', 'Sem3', 'Sem4'];
   subjectId: string | undefined;
+  currentUserRole!: string | null;
 
   constructor(
     private classService: ClassService,
     private route: ActivatedRoute,
+    private authService: AuthService,
     private dialog: MatDialog,
     private toastr: ToastrService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
+    this.currentUserRole = this.authService.getRole();
+
     this.route.params.subscribe((params) => {
       const classId = +params['id'];
       this.getClassDetails(classId);
@@ -72,14 +77,23 @@ export class AssignTeacherComponent implements OnInit {
     const subjectId = subjectInfo ? subjectInfo.subjectId : null;
 
     console.log('Class ID:', classId, 'Subject Id:', subjectId);
-
+    console.log(this.currentUserRole)
     if (classId && subjectId) {
-      this.router
-        .navigate([`/admin/schedule/${classId}/${subjectId}`])
-        .then(() => {});
+      console.log('Navigating to schedule...');
+
+      if (this.currentUserRole === 'ROLE_ADMIN') {
+        this.router.navigate([`/admin/schedule/${classId}/${subjectId}`])
+          .then(() => console.log('Navigation successful to admin schedule.'))
+          .catch(err => console.error('Navigation failed:', err));
+      } else {
+        this.router.navigate([`/sro/schedule/${classId}/${subjectId}`])
+          .then(() => console.log('Navigation successful to sro schedule.'))
+          .catch(err => console.error('Navigation failed:', err));
+      }
     } else {
       this.toastr.error('Class ID or Subject ID is missing.');
     }
+
   }
 
   openEditDialog(subject: string, teacherName: string, status: string): void {
@@ -126,6 +140,9 @@ export class AssignTeacherComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['admin/class']);
+    this.currentUserRole === "ROLE_ADMIN" ?
+    this.router.navigate(['admin/class']):
+    this.router.navigate(['sro/class']);
+    ;
   }
 }

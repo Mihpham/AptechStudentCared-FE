@@ -25,7 +25,6 @@ import { CommentDialogComponent } from '../comment-dialog/comment-dialog.compone
 })
 export class AttendanceClassComponent implements OnInit {
   showTooltip = false;
-  selectedStatus: string = '';
   classId: number | null = null;
   subjectId?: number;
   subjectTeachers: SubjectTeacherResponse[] = [];
@@ -48,6 +47,14 @@ export class AttendanceClassComponent implements OnInit {
   } | null = null; // Track which dropdown is open
   tooltip: string = '';
   hoverInfo = '';
+  dropdownTimeout: any;
+  selectedStatus: { [key: number]: string } = {};
+  
+  dropdownOpenIndex: number | null = null;
+  dropdownOpenIndex1: number | null = null;
+  dropdownOpenIndex2: number | null = null;
+  openTimeout: any;
+  closeTimeout: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -134,22 +141,27 @@ export class AttendanceClassComponent implements OnInit {
 
   loadSchedules(): void {
     if (this.classId && this.subjectId) {
-      // Ensure subjectId is defined
-      this.scheduleService
-        .getSchedulesByClassId(this.classId, this.subjectId)
-        .subscribe(
-          (data) => {
-            this.schedules = data;
-            console.log(this.schedules);
-          },
-          (error) => {
-            console.error('Error fetching schedules:', error);
-          }
-        );
+        // Ensure subjectId is defined
+        this.scheduleService
+            .getSchedulesByClassId(this.classId, this.subjectId)
+            .subscribe(
+                (data) => {
+                    // Gán giá trị cho isHoliday
+                    this.schedules = data.map(schedule => ({
+                        ...schedule,
+                        isHoliday: false // Khởi tạo isHoliday là false
+                    }));
+                    console.log(this.schedules);
+                },
+                (error) => {
+                    console.error('Error fetching schedules:', error);
+                }
+            );
     } else {
-      console.error('Class ID or Subject ID is undefined.');
+        console.error('Class ID or Subject ID is undefined.');
     }
-  }
+}
+
 
   // Check if the dropdown is open for a specific studentId, scheduleId, and attendance status
   isDropdownOpenCheck(
@@ -169,20 +181,78 @@ export class AttendanceClassComponent implements OnInit {
     return student.userId;
   }
 
-  // Toggle the dropdown for a specific studentId, scheduleId, and attendance status
+  toggleHoliday(index: number): void {
+    if (this.schedules[index]) {
+        this.schedules[index].isHoliday = !this.schedules[index].isHoliday;
+    }
+}
+
+
+
   toggleDropdown(
+    isOpen: boolean,
     studentId: number,
     scheduleId: number,
     attendanceStatus: string
   ): void {
-    if (this.isDropdownOpenCheck(studentId, scheduleId, attendanceStatus)) {
-      // Close dropdown if it's already open
-      this.isDropdownOpen = false;
-      this.openDropdownInfo = null;
-    } else {
-      // Open the new dropdown and track its info
+    if (isOpen) {
+      clearTimeout(this.dropdownTimeout); // Dừng đếm thời gian nếu dropdown cần được mở
       this.isDropdownOpen = true;
       this.openDropdownInfo = { studentId, scheduleId, attendanceStatus };
+    } else {
+      // Đặt thời gian chờ để đóng dropdown khi rời khỏi cả nút và dropdown
+      this.dropdownTimeout = setTimeout(() => {
+        this.isDropdownOpen = false;
+        this.openDropdownInfo = null;
+      }, 200); // Thời gian chờ 200ms có thể điều chỉnh
+    }
+  }
+
+  openDropdown(index: number, shift: 'shift1' | 'shift2') {
+    clearTimeout(this.closeTimeout);
+    this.openTimeout = setTimeout(() => {
+      if (shift === 'shift1') {
+        this.dropdownOpenIndex1 = index;
+      } else if (shift === 'shift2') {
+        this.dropdownOpenIndex2 = index;
+      }
+    }, 200);
+  }
+
+  closeDropdown(shift: 'shift1' | 'shift2') {
+    clearTimeout(this.openTimeout);
+    this.closeTimeout = setTimeout(() => {
+      if (shift === 'shift1') {
+        this.dropdownOpenIndex1 = null;
+      } else if (shift === 'shift2') {
+        this.dropdownOpenIndex2 = null;
+      }
+    }, 200);
+  }
+
+  toggleDropdownStar(index: number): void {
+    this.dropdownOpenIndex = this.dropdownOpenIndex === index ? null : index;
+  }
+  applyStatusToAll(
+    status: string,
+    sessionIndex: number,
+    shift: 'shift1' | 'shift2'
+  ): void {
+    this.selectedStatus[sessionIndex] = status;
+    this.students.forEach((student) => {
+      this.selectStatus(
+        student.userId,
+        this.schedules[sessionIndex].scheduleId,
+        status,
+        shift === 'shift1' // Pass true if shift1, false if shift2
+      );
+    });
+
+    // Close the specific dropdown after selection
+    if (shift === 'shift1') {
+      this.dropdownOpenIndex1 = null;
+    } else if (shift === 'shift2') {
+      this.dropdownOpenIndex2 = null;
     }
   }
 
@@ -199,13 +269,13 @@ export class AttendanceClassComponent implements OnInit {
 
   getAttendanceStatus1(studentId: number, scheduleId: number): string {
     return (
-      this.attendanceStatuses[studentId]?.[scheduleId]?.attendanceStatus1 || ''
+      this.attendanceStatuses[studentId]?.[scheduleId]?.attendanceStatus1 ?? ''
     );
   }
 
   getAttendanceStatus2(studentId: number, scheduleId: number): string {
     return (
-      this.attendanceStatuses[studentId]?.[scheduleId]?.attendanceStatus2 || ''
+      this.attendanceStatuses[studentId]?.[scheduleId]?.attendanceStatus2 ?? ''
     );
   }
 
@@ -215,13 +285,6 @@ export class AttendanceClassComponent implements OnInit {
     status: string,
     isStatus1: boolean
   ): void {
-    console.log('selectStatus called with:', {
-      studentId,
-      scheduleId,
-      status,
-      isStatus1,
-    });
-
     if (!this.attendanceStatuses[studentId]) {
       this.attendanceStatuses[studentId] = {};
     }
@@ -264,9 +327,6 @@ export class AttendanceClassComponent implements OnInit {
         }
       );
   }
-
-
-
 
   openCommentDialog(studentId: number, scheduleId: number): void {
     const existingComment =

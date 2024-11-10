@@ -58,7 +58,7 @@ label {
 }
 
 select {
-    width: 110px;
+    width: 150px;
     /* Đặt chiều rộng cho select */
     padding: 8px;
     border-radius: 5px;
@@ -189,3 +189,14 @@ th {
 .text-white {
     color: white;
 }
+
+  .header-container {
+    display: flex;  
+    align-items: center;  
+}
+
+.class-code {
+    margin-left: 10px;  
+    font-size: 0.9em;  
+    color: gray;  
+} 

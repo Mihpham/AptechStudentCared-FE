@@ -1,0 +1,93 @@
+<div class="p-4 space-y-5 w-full ">
+    <!-- Header -->
+    <div class="header-container">
+        <h1 class="text-2xl font-semibold">Student Exam Marks</h1>
+        <p class="text-sm text-gray-500">{{ classDetails?.className }}</p>
+    </div>
+
+    <!-- Semester Select and Buttons -->
+    <div class="flex items-center space-x-4">
+        <!-- Select Semester -->
+        <div *ngIf="terms.length > 0" class="flex flex-col">
+            <label for="termSelect" class="text-gray-700 font-medium">Semester:</label>
+            <select id="termSelect" [(ngModel)]="selectedTerm" (change)="filterMarks()"
+                class="mt-1 p-2 border border-gray-300 rounded focus:ring focus:ring-blue-400">
+                <option value="" disabled>Choose a semester</option>
+                <option *ngFor="let term of terms" [value]="term.id">{{ term.name }}</option>
+            </select>
+        </div>
+
+        <!-- Buttons: Edit and Export -->
+        <div class="ml-auto flex space-x-4 pt-6 ">
+            <a [routerLink]="currentUserRole === 'ROLE_ADMIN' 
+            ? ['/admin/exam/exam-mark-edit', classId] 
+            : ['/sro/exam/exam-mark-edit', classId]" routerLinkActive="active-link" class="inline-block">
+                <button
+                    class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow flex items-center space-x-2">
+                    <i class="fa-solid fa-file-edit text-gray-700"></i>
+                    <span>Edit</span>
+                </button>
+            </a>
+            <button
+                class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow flex items-center space-x-2"
+                (click)="onExport()">
+                <i class="fa-solid fa-file-export"></i>
+                <span>Export</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Marks Table -->
+    <div class="overflow-x-auto rounded-lg">
+        <table class="min-w-full bg-white border border-gray-300">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="border border-gray-300 px-4 py-2 w-32 name">Name</th>
+                    <th class="border border-gray-300 px-4 py-2 w-32">Class</th>
+
+                    <ng-container *ngFor="let subject of subjects">
+                        <ng-container *ngIf="!subject.toLowerCase()?.includes('project')">
+                            <th class="border border-gray-300 px-4 py-2">{{ subject }} - LT</th>
+                            <!-- Cột điểm lý thuyết -->
+                            <th class="border border-gray-300 px-4 py-2">{{ subject }} - TH</th>
+                            <!-- Cột điểm thực hành -->
+                        </ng-container>
+                        <th *ngIf="subject.toLowerCase()?.includes('project')"
+                            class="border border-gray-300 px-4 py-2 w-32">Project Score</th>
+                    </ng-container>
+
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let student of students">
+                    <td class="border border-gray-300 px-4 py-2 text-left-custom">{{
+                        student.listExamScore[0].studentName }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ student.className }}</td>
+
+                    <ng-container *ngFor="let subject of subjects">
+                        <ng-container *ngIf="student.listExamScore.length > 0">
+                            <ng-container *ngFor="let score of student.listExamScore">
+                                <ng-container *ngIf="score.subjectCode === subject">
+                                    <!-- Kiểm tra nếu môn học không phải là "PROJECT" -->
+                                    <ng-container
+                                        *ngIf="!subject.toLowerCase()?.includes('project'); else projectScore">
+                                        <td class="border border-gray-300 px-4 py-2">{{ score.theoreticalScore }}</td>
+                                        <td class="border border-gray-300 px-4 py-2">{{ score.practicalScore }}</td>
+                                    </ng-container>
+                                    <ng-template #projectScore>
+                                        <td class="border border-gray-300 px-4 py-2">{{ score.practicalScore }}</td>
+                                        <!-- Hiển thị điểm đồ án -->
+                                    </ng-template>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                </tr>
+            </tbody>
+
+
+
+        </table>
+    </div>
+</div>

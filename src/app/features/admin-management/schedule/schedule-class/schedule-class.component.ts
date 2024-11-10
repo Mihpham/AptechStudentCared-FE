@@ -12,6 +12,7 @@ import { UpdateClassComponent } from '../../class/update-class/update-class.comp
 import { UpdateScheduleComponent } from '../update-schedule/update-schedule.component';
 import { ToastrService } from 'ngx-toastr';
 import { RegenerateScheduleComponent } from '../regenerate-schedule/regenerate-schedule.component';
+import { AuthService } from 'src/app/core/auth/auth.service';
 
 @Component({
   selector: 'app-schedule-class',
@@ -27,6 +28,7 @@ export class ScheduleClassComponent implements OnInit {
   schedules: Schedule[] = [];
   currentPage: number = 0;
   itemsPerPage: number = 10;
+  currentUserRole!: string | null;
 
   get paginatedSchedules() {
     const start = this.currentPage * this.itemsPerPage;
@@ -37,12 +39,15 @@ export class ScheduleClassComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private classService: ClassService,
+    private authService: AuthService,
     private dialog: MatDialog,
     private scheduleService: ScheduleService,
     private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
+    this.currentUserRole = this.authService.getRole();
+
     this.route.params.subscribe((params) => {
       this.classId = +params['classId'];
       this.subjectId = +params['subjectId'];
@@ -71,13 +76,17 @@ export class ScheduleClassComponent implements OnInit {
 
   navigateToAttendance(): void {
     if (this.classId && this.subjectId) {
-      this.router.navigate([
-        `admin/attendance/${this.classId}/${this.subjectId}`,
-      ]);
+      const path = `/${this.currentUserRole === 'ROLE_ADMIN' ? 'admin' : 'sro'}/attendance/${this.classId}/${this.subjectId}`;
+      this.router.navigate([path]).then(() => {
+        console.log('Navigation successful to attendance.');
+      }).catch(err => {
+        console.error('Navigation failed:', err);
+      });
     } else {
       console.error('Class ID or Subject ID is undefined.');
     }
   }
+  
 
   getSubjectCodeById(subjectId: number | null): string | undefined {
     if (!this.classDetails || !this.classDetails.subjectTeachers) {
@@ -93,6 +102,22 @@ export class ScheduleClassComponent implements OnInit {
     this.currentPage = event.pageIndex;
     this.itemsPerPage = event.pageSize;
   }
+  getSubjectCode(): string {
+    const subject = this.classDetails?.subjectTeachers.find(st => st.subjectId === this.subjectId);
+    return subject ? subject.subjectCode : 'N/A';
+}
+
+
+getTeacherName(): string {
+    const subject = this.classDetails?.subjectTeachers.find(st => st.subjectId === this.subjectId);
+    return subject ? subject.teacherName : 'N/A';
+}
+
+getNumberOfSessions(): number {
+    const subject = this.classDetails?.subjectTeachers.find(st => st.subjectId === this.subjectId);
+    return subject ? subject.numberOfSessions : 0;
+}
+
 
   getDaysAsNumbers(days: DayOfWeek[]): string {
     const dayMap: { [key in DayOfWeek]: number } = {

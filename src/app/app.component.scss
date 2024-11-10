@@ -1,23 +1,9 @@
-/* Custom CSS for the layout */
-html, body {
-    height: 100%;
-    margin: 0;
-    font-family: Arial, sans-serif;
-  }
-  
-  #app-root {
-    height: 100%;
-  }
-/* app.component.scss */
-
-.flex {
-  display: flex;
-}
-
+/* Sidebar Styles */
 .sidebar {
   transition: width 0.3s ease;
-  width: 12rem; /* Kích thước mặc định */
-  background-color: #f0f0f0; /* Điều chỉnh theo thiết kế */
+  width: 12rem; /* Default expanded width */
+  background-color: #f0f0f0; /* Adjust based on your design */
+  height: 100vh; /* Ensure full height */
   position: fixed;
   top: 0;
   left: 0;
@@ -25,32 +11,23 @@ html, body {
 }
 
 .sidebar-collapsed {
-  width: 3rem; /* Kích thước khi thu hẹp */
+  width: 3rem; /* Width when collapsed */
 }
 
 .sidebar-expanded {
-  width: 12rem; /* Kích thước khi mở rộng */
+  width: 12rem; /* Width when expanded */
 }
 
+/* Main Content Styles */
 .main-content {
-  margin-left: 12rem; /* Khoảng cách mặc định để phù hợp với sidebar đầy đủ */
+  margin-left: 12rem; /* Default margin for expanded sidebar */
   transition: margin-left 0.3s ease;
+  padding: 1rem;
+  flex: 1; /* Fill remaining space */
+  height: 100vh;
+  overflow-y: auto;
 }
-
 
 .sidebar-collapsed ~ .main-content {
-  margin-left: 3rem; /* Điều chỉnh khoảng cách khi sidebar thu hẹp */
+  margin-left: 3rem; /* Adjust margin when sidebar is collapsed */
 }
-
-.toggle-button {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  /* Thêm các kiểu cho nút nếu cần */
-}
-
-app-navbar{
-  margin: 0;
-}
-
-  

@@ -1,0 +1,9 @@
+.nav-item {
+    transition: background-color 0.3s;
+}
+.nav-item:hover {
+    background-color: #e2e8f0; /* Màu khi hover */
+}
+.active {
+    background-color: #cbd5e1; /* Màu cho mục đang hoạt động */
+}

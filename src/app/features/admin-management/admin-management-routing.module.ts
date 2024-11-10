@@ -3,9 +3,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../core/auth/auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { ExamMarkComponent } from './exam-mark/exam-mark.component';
 import { TeacherComponent } from './teacher/teacher.component';
 import { CalendarComponent } from './calendar/calendar.component';
+import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/exam-mark-all-subject.component';
+import { StudentPerformanceComponent } from '../student-performance/student-performance.component';
 
 const routes: Routes = [
   {
@@ -19,7 +20,7 @@ const routes: Routes = [
     loadChildren: () =>
       import('./class/class-routing.module').then((m) => m.ClassRoutingModule),
     canActivate: [AuthGuard],
-    data: { breadcrumb: 'Class Management' },
+    data: { breadcrumb: 'Class ' },
   },
   {
     path: 'student',
@@ -30,11 +31,14 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'exam-mark',
-    component: ExamMarkComponent,
+    path: 'exam',
+    loadChildren: () =>
+      import('./exam-mark/exam-mark-routing.module').then(
+        (m) => m.ExamMarkRoutingModule
+      ),
     canActivate: [AuthGuard],
-    data: { breadcrumb: 'Exam Marks' },
   },
+  
 
   {
     path: 'teacher',
@@ -45,7 +49,7 @@ const routes: Routes = [
   {
     path: 'sro',
     loadChildren: () =>
-      import('./sro/sro-routing.model').then((m) => m.SroRoutingModule), // Lazy load SroModule
+      import('./sro/sro-routing.module').then((m) => m.SroRoutingModule), // Lazy load SroModule
     canActivate: [AuthGuard],
     data: { breadcrumb: 'SRO Management' },
   },
@@ -103,4 +107,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AdminManagementRoutingModule {}
+export class AdminManagementRoutingModule { }

@@ -36,7 +36,7 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
   selectedClass: string | undefined;
   selectedCourse: any;
   provinces: any[] = [];
-  districts: any[] = []; // Add this line
+  districts: any[] = []; 
   communes: any[] = [];
   loadingClasses = false;
 
@@ -99,8 +99,11 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
 
   loadAvailableClasses() {
     this.loadingClasses = true;
-    this.classService
-      .findAllClasses()
+  
+    const page = 0;  
+    const size = 10; 
+  
+    this.classService.findAllClasses(page, size)
       .pipe(
         catchError((err) => {
           this.toastr.error('Failed to load classes');
@@ -109,10 +112,16 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
         finalize(() => (this.loadingClasses = false))
       )
       .subscribe({
-        next: (classes) => (this.availableClasses = classes),
+        next: (response) => {  
+          if (Array.isArray(response.content)) {
+            this.availableClasses = response.content; 
+          } else {
+            console.error('Expected an array of classes but received:', response);
+          }
+        },
       });
   }
-
+  
   loadAvailableCourses() {
     this.coursesService
       .getAllCourse()
@@ -252,6 +261,7 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
       this.toastr.error('Please fill out the form correctly!');
     }
   }
+
   scrollToNewlyAddedStudent() {
     setTimeout(() => {
       const newStudentElement = document.getElementById('student-0'); // Giả định sinh viên mới có ID 'student-0'

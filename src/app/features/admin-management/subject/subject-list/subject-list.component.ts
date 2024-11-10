@@ -41,15 +41,16 @@ export class SubjectListComponent implements OnInit {
     this.subjectService.getAllSubjects().subscribe(
       (data: SubjectResponse[]) => {
         console.log('Loaded subjects:', data);
-
+  
         data.forEach(subject => {
           if (typeof subject.createdAt === 'string') {
             subject.createdAt = new Date(subject.createdAt);
           }
         });
-
-        data.sort((a, b) => (b.createdAt.getTime() - a.createdAt.getTime()));
-
+  
+        // Xóa hoặc comment dòng sắp xếp
+        // data.sort((a, b) => (b.createdAt.getTime() - a.createdAt.getTime()));
+  
         this.dataSource.data = [...data]; // Thay thế dữ liệu cũ
         this.totalSubjects = data.length;
         this.dataSource.paginator = this.paginator;
@@ -60,7 +61,7 @@ export class SubjectListComponent implements OnInit {
       }
     );
   }
-
+  
 
   applyFilter(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
