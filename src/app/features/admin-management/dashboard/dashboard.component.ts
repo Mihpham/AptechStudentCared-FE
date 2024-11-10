@@ -71,8 +71,7 @@ export class DashboardComponent implements OnInit {
 
   
   ngOnInit(): void {
-    this.loadClasses();
-    this.loadStudent();
+ 
     this.loadTeacher();
     this.loadSro();
     this.currentUserRole = this.authService.getRole();
