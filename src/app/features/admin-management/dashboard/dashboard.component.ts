@@ -110,6 +110,7 @@ export class DashboardComponent implements OnInit {
   }
   toggleImportMode() {
     this.isImportMode = true;
+    
   }
 
   onSheetSelect(event: Event | string) {

@@ -123,7 +123,7 @@
         </table>
       </div>
       <!-- File Upload and Sheet Selection -->
-      <div class="container bg-white p-6 rounded-lg shadow-md hidden">
+      <div class="container bg-white p-6 rounded-lg shadow-md hidden ">
         <div class="file-upload mb-6">
           <input type="file" (change)="onFileChange($event)" class="hidden" #fileInput />
           <button (click)="fileInput.click()"
@@ -137,7 +137,7 @@
           </select>
         </div>
 
-        <div *ngIf="Sro" class="bg-white p-6 ">
+        <div *ngIf="Sro" class=" p-6 bg-gray-200 ">
           <div class="flex items-center justify-between">
             <small class="pb-3 text-gray-500 text-sm">{{ Class }} - {{ FCSubject }} - {{ Sro }} - {{SS}}</small>
           </div>
@@ -160,7 +160,7 @@
       </div>
 
 
-      <div *ngIf="Sro" class="bg-white p-6 ">
+      <div *ngIf="Sro" class= "bg-gray-200 p-4 rounded-lg ">
         <div class="flex items-center justify-between mb-6">
           <small class="pb-3 text-gray-500 text-sm">{{ Class }} - {{ FCSubject }} - {{ Sro }} - {{SS}}</small>
         </div>
