@@ -12,9 +12,10 @@ export interface ReportData {
   latePercentage: number;
   awarenessPercentage: number;
 
+
   // Breakdown data
   breakdown?: {
-    attendance: { done: number, needed: number },
+    // attendance: { done: number, needed: number },
     late: { done: number, needed: number },
     absence: { done: number, needed: number },
     awareness: { done: number, needed: number },

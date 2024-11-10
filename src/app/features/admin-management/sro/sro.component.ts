@@ -39,7 +39,7 @@ export class SroComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadSros();
+    // this.loadSros();
   }
 
   loadSros(): void {

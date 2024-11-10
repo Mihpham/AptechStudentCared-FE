@@ -12,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/core/auth/auth.service';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { StudentResponse } from '../model/student-response.model.';
-
+import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -72,68 +72,47 @@ export class DashboardComponent implements OnInit {
   
   ngOnInit(): void {
  
-    this.loadTeacher();
-    this.loadSro();
+    // this.loadTeacher();
+    // this.loadSro();
     this.currentUserRole = this.authService.getRole();
     const reports = this.reportService.getAllReports();
+
+
+    console.log('Danh sách báo cáo:', reports);
     this.populateClassAndSubjectLists(reports);
     if (reports && reports.length > 0) {
       const lastReport = reports[reports.length - 1];
-      this.selectedClass = [lastReport.className]; // Wrap `className` in an array
+      this.selectedClass = [lastReport.className];
       this.selectedSubject = lastReport.subject;
-      this.filterReports(); // Load report data for the selected class and subject
+      this.filterReports();
     }
   }
+ 
 
-  loadClasses(): void {
-    this.classService.findAllClasses().subscribe({
-      next: (data) => {
-        this.classess = data;
-        this.totalClasses = this.classess.length;
-      },
-      error: (error) => {
-        this.toastr.error('Failed to load classes!', 'Error');
-      },
-    });
-  }
-
-  loadStudent(): void {
-    const pageIndex = 0;
-    const pageSize = 10;
-
-    this.studentService.getAllStudents(pageIndex, pageSize).subscribe(
-      (data) => {
-        this.students = data;
-        this.totalStudents = this.students.length;
-      },
-      (error) => {
-        this.toastr.error('Failed to load students', 'Error');
-      }
-    );
-  }
-
-  loadTeacher(): void {
-    this.teacherService.getAllTeachers().subscribe(
-      (data) => {
-        this.teachers = data;
-        this.totalTeacher = this.teachers.length;
-      },
-      (error) => {
-        this.toastr.error('Failed to load teachers', 'Error');
-      }
-    );
-  }
-
-  loadSro(): void {
-    this.sroService.getAllSros().subscribe(
-      (data) => {
-        this.sros = data;
-        this.totalSros = this.sros.length;
-      },
-      (error) => {
-        this.toastr.error('Failed to load SROs', 'Error');
-      }
-    );
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input && input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const data = e.target.result;
+        const workbook = XLSX.read(data, { type: 'binary' });
+        
+        // Gọi phương thức để xử lý workbook
+        this.reportService.processWorkbook(workbook);
+        
+        // Cập nhật danh sách báo cáo và lọc báo cáo sau khi xử lý
+        const reports = this.reportService.getAllReports();
+        this.populateClassAndSubjectLists(reports);
+        if (reports.length > 0) {
+          const lastReport = reports[reports.length - 1];
+          this.selectedClass = [lastReport.className];
+          this.selectedSubject = lastReport.subject;
+          this.filterReports();
+        }
+      };
+      reader.readAsBinaryString(file);
+    }
   }
 
   populateClassAndSubjectLists(reports: ReportData[]): void {
@@ -150,6 +129,75 @@ export class DashboardComponent implements OnInit {
     this.classes = Array.from(classSet);
   }
 
+  filterReports(): void {
+    if (this.selectedClass.length > 0 && this.selectedSubject) {
+      this.filteredReport =
+        this.reportService.getReportByClassAndSubject(
+          this.selectedClass[0],
+          this.selectedSubject
+        ) || null;
+    }
+  }
+
+  clearFilter(): void {
+    this.selectedClass = [];
+    this.selectedSubject = '';
+    this.filteredReport = null;
+  }
+
+  // loadClasses(): void {
+  //   this.classService.findAllClasses().subscribe({
+  //     next: (data) => {
+  //       this.classess = data;
+  //       this.totalClasses = this.classess.length;
+  //     },
+  //     error: (error) => {
+  //       this.toastr.error('Failed to load classes!', 'Error');
+  //     },
+  //   });
+  // }
+
+  // loadStudent(): void {
+  //   const pageIndex = 0;
+  //   const pageSize = 10;
+
+  //   this.studentService.getAllStudents(pageIndex, pageSize).subscribe(
+  //     (data) => {
+  //       this.students = data;
+  //       this.totalStudents = this.students.length;
+  //     },
+  //     (error) => {
+  //       this.toastr.error('Failed to load students', 'Error');
+  //     }
+  //   );
+  // }
+
+  // loadTeacher(): void {
+  //   this.teacherService.getAllTeachers().subscribe(
+  //     (data) => {
+  //       this.teachers = data;
+  //       this.totalTeacher = this.teachers.length;
+  //     },
+  //     (error) => {
+  //       this.toastr.error('Failed to load teachers', 'Error');
+  //     }
+  //   );
+  // }
+
+  // loadSro(): void {
+  //   this.sroService.getAllSros().subscribe(
+  //     (data) => {
+  //       this.sros = data;
+  //       this.totalSros = this.sros.length;
+  //     },
+  //     (error) => {
+  //       this.toastr.error('Failed to load SROs', 'Error');
+  //     }
+  //   );
+  // }
+
+  
+
   onClassChange(): void {
     this.selectedSubject = '';
     this.filteredReport = null;
@@ -158,15 +206,7 @@ export class DashboardComponent implements OnInit {
     this.showViewDiscussionsNeededDone = false;
   }
 
-  filterReports(): void {
-    if (this.selectedClass && this.selectedSubject) {
-      this.filteredReport =
-        this.reportService.getReportByClassAndSubject(
-          this.selectedClass[0], // First item if selectedClass is an array
-          this.selectedSubject
-        ) || null;
-    }
-  }
+   
 
   toggleDetailedView(): void {
     this.showDetailedView = !this.showDetailedView;
@@ -180,12 +220,5 @@ export class DashboardComponent implements OnInit {
     this.showViewDiscussionsNeededDone = !this.showViewDiscussionsNeededDone;
   }
 
-  clearFilter(): void {
-    this.selectedClass = [];
-    this.selectedSubject = '';
-    this.filteredReport = null;
-    this.showDetailedView = false;
-    this.showViewDiscussionsNeeded = false;
-    this.showViewDiscussionsNeededDone = false;
-  }
+   
 }

@@ -1,80 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ReportData } from 'src/app/features/admin-management/model/report/report.model';
-
+import * as XLSX from 'xlsx';
 @Injectable({
   providedIn: 'root'
 })
 export class ReportService {
 
-  private reports: ReportData[] = [
-    {
-      className: 'A2409G',
-      subject: 'Kỹ năng mềm',
-      sro: 'Phạm Thị Kim Dung',
-      teacher: 'Tô Hoàng Anh',
-      totalStudents: 26,
-      totalDiscussionsNeeded: 13,
-      totalDiscussionsDone: 7,
-      totalClassesHeld: 15,
-      totalLate: 20,
-      totalAwarenessIssues: 5,
-      latePercentage: (20 / 26) * 100,
-      awarenessPercentage: (5 / 26) * 100,
-      breakdown: {
-        attendance: { done: 6, needed: 10 },
-        late: { done: 3, needed: 5 },
-        absence: { done: 2, needed: 3 },
-        awareness: { done: 3, needed: 4 },
-        competency: { done: 4, needed: 5 },
-        homework: {
-          lateSubmission: { done: 1, needed: 3 },
-          noSubmission: { done: 2, needed: 4 }
-        },
-        retake: {
-          retest: { done: 1, needed: 2 },
-          reclass: { done: 1, needed: 2 }
-        },
-        communication: {
-          parentCommunication: { done: 2, needed: 3 },
-          ahCommunication: { done: 1, needed: 2 }
-        }
-      }
-    },
-    {
-      className: 'A2409G',
-      subject: 'EPC',
-      sro: 'Phạm Thị Kim Dung',
-      teacher: 'Tô Hoàng Anh',
-      totalStudents: 26,
-      totalDiscussionsNeeded: 12,
-      totalDiscussionsDone: 4,
-      totalClassesHeld: 12,
-      totalLate: 8,
-      totalAwarenessIssues: 5,
-      latePercentage: (8 / 26) * 100,
-      awarenessPercentage: (5 / 26) * 100,
-      breakdown: {
-        attendance: { done: 4, needed: 8 },
-        late: { done: 2, needed: 4 },
-        absence: { done: 1, needed: 2 },
-        awareness: { done: 2, needed: 3 },
-        competency: { done: 2, needed: 3 },
-        homework: {
-          lateSubmission: { done: 1, needed: 2 },
-          noSubmission: { done: 1, needed: 3 }
-        },
-        retake: {
-          retest: { done: 0, needed: 1 },
-          reclass: { done: 1, needed: 1 }
-        },
-        communication: {
-          parentCommunication: { done: 1, needed: 2 },
-          ahCommunication: { done: 1, needed: 1 }
-        }
-      }
-    },
-    // Add more mock data entries as needed
-  ];
+  private reports: ReportData[] = [];
 
   getAllReports(): ReportData[] {
     return this.reports;
@@ -83,4 +15,134 @@ export class ReportService {
   getReportByClassAndSubject(className: string, subject: string): ReportData | undefined {
     return this.reports.find(report => report.className === className && report.subject === subject);
   }
+
+  sheetNames: string[] = [];
+  selectedSheetData: any[] = [];
+  workbook: XLSX.WorkBook | undefined;
+  columnSums: number[] = [];
+  acc: string | null = null;
+  startRow: number = 0;
+  endRow: number = 0;
+  startCol: number = 0;
+
+  FCSubject: string | null = null;
+  Sro: string | null = null;
+  Class: string | null = null;
+  SS: number = 0;
+
+
+processWorkbook(workbook: XLSX.WorkBook) {
+    // Duyệt qua tất cả các sheet trong workbook
+    Object.keys(workbook.Sheets).forEach((sheetName) => {
+        const sheet = workbook.Sheets[sheetName];
+        const sheetData: any[][] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+        // Kiểm tra nếu sheetData có dữ liệu và lấy Class và Sro từ mỗi sheet
+        if (sheetData.length > 1) {
+            this.Class = sheetData[0][1];  // Lấy tên lớp từ cột thứ 2 (index 1)
+            this.Sro = sheetData[1][1];  // Lấy SRO từ cột thứ 2 (index 1)
+        } else {
+            console.error(`Không có dữ liệu trong sheet: ${sheetName}`);
+            return;
+        }
+
+        const merges = sheet['!merges'];
+        const maxCol = 24;
+        this.columnSums = new Array(maxCol).fill(0);
+
+        if (merges && merges.length > 0) {
+            merges.forEach((merge) => {
+                this.startRow = merge.s.r;
+                this.endRow = merge.e.r;
+                this.startCol = merge.s.c;
+
+                // Xử lý ô gộp trong cột đầu tiên (cột 0)
+                if (this.startCol === 0) {
+                    const mergedValue = sheetData[this.startRow][this.startCol]; 
+                    let totalDiscussionsNeeded = 0;
+                    let totalDiscussionsDone = 0;
+                    // console.log(`Giá trị ô gộp từ dòng ${this.startRow} đến dòng ${this.endRow}:`, mergedValue);
+
+                    if (this.startRow !== -1 && this.endRow !== -1) {
+                        // console.log('Tính tổng cho các cột trong phạm vi ô gộp');
+
+                        for (let row = this.startRow; row <= this.endRow; row++) {
+                            const rowData = sheetData[row].slice(0, maxCol);
+
+                            rowData.forEach((cell, colIndex) => {
+                                if (typeof cell === 'number') {
+                                    this.columnSums[colIndex] += cell;
+                                    if (colIndex % 2 === 0) {
+                                        totalDiscussionsNeeded += cell;
+                                    }
+
+                                    // Tính tổng cho các cột lẻ bắt đầu từ index 3 (3, 5, 7, ...)
+                                    if (colIndex % 2 !== 0 && colIndex >= 3) {
+                                        totalDiscussionsDone += cell;
+                                    }
+                                }
+                            });
+                        }
+
+                        let totalClassesHeld = 0;
+                        for (let row = this.startRow; row <= this.endRow; row++) {
+                            const rowData = sheetData[row];
+                            rowData.forEach((cell) => {
+                                if (typeof cell === 'number') {
+                                    totalClassesHeld += cell;
+                                }
+                            });
+                        }
+
+                        // console.log(`Tổng các giá trị từ dòng ${this.startRow} đến dòng ${this.endRow}:`, totalClassesHeld);
+
+                        // Tạo các đối tượng ReportData cho mỗi ô gộp
+                        for (let row = this.startRow; row <= this.endRow; row++) {
+                            const reportData: ReportData = {
+                                className: this.Class ?? "không có class",
+                                sro: this.Sro ?? 'Chưa có',
+                                subject: mergedValue ?? 'Chưa có môn học',
+                                teacher: mergedValue ?? 'Chưa có môn học',
+                                totalStudents: this.columnSums[2],
+                                totalDiscussionsNeeded: totalDiscussionsNeeded,
+                                totalDiscussionsDone: totalDiscussionsDone,
+                                totalClassesHeld: totalClassesHeld,
+                                totalLate: this.columnSums[4],
+                                totalAwarenessIssues: this.columnSums[7],
+                                latePercentage: (this.columnSums[4] / this.columnSums[1]) * 100,
+                                awarenessPercentage: (this.columnSums[8] / this.columnSums[1]) * 100,
+                                breakdown: { 
+                                    late: { done: this.columnSums[4], needed: this.columnSums[5] },
+                                    absence: { done: this.columnSums[6], needed: this.columnSums[7] },
+                                    awareness: { done: this.columnSums[8], needed: this.columnSums[9] },
+                                    competency: { done: this.columnSums[10], needed: this.columnSums[11] },
+                                    homework: {
+                                        lateSubmission: { done: this.columnSums[12], needed: this.columnSums[13] },
+                                        noSubmission: { done: this.columnSums[14], needed: this.columnSums[15] }
+                                    },
+                                    retake: {
+                                        retest: { done: this.columnSums[16], needed: this.columnSums[17] },
+                                        reclass: { done: this.columnSums[18], needed: this.columnSums[19] }
+                                    },
+                                    communication: {
+                                        parentCommunication: { done: this.columnSums[20], needed: this.columnSums[21] },
+                                        ahCommunication: { done: this.columnSums[22], needed: this.columnSums[23] }
+                                    }
+                                }
+                            };
+
+                            this.reports.push(reportData);
+                        }
+                    }
+                }
+            });
+        }
+    });
+    this.getAllReports();
+}
+
+
+
+
+
 }
