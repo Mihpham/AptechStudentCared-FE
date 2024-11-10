@@ -1,20 +1,486 @@
-<div class="flex-1 p-6 dark:bg-slate-900">
-    <div class="grid grid-cols-4 gap-4 mb-4">
-        <div *ngIf="students" class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center cursor-pointer"  [routerLink]="(currentUserRole === 'ROLE_ADMIN') ? ['/admin/student/all'] : ['/sro/student/all']">
-            <span class="text-3xl font-bold">{{totalStudents}}</span>
-            <span class="text-gray-600">STUDENT</span>
-        </div>
-        <div *ngIf="classes" class="bg-blue-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center cursor-pointer" [routerLink]="currentUserRole === 'ROLE_ADMIN' ? ['/admin/teacher'] : ['/sro/teacher']">
-            <span class="text-3xl font-bold">{{totalTeacher}}</span>
-            <span class="text-gray-600">TEACHER</span>
-        </div>
-        <div *ngIf="classes" class="bg-yellow-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center cursor-pointer" [routerLink]="currentUserRole === 'ROLE_ADMIN' ? ['/admin/sro'] : ['/sro']">
-            <span class="text-3xl font-bold">{{totalSros}}</span>
-            <span class="text-gray-600">SRO</span>
-        </div>
-        <div *ngIf="classes" class="bg-cyan-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center cursor-pointer" [routerLink]="currentUserRole === 'ROLE_ADMIN' ? ['/admin/class'] : ['/sro/class']">
-            <span class="text-3xl font-bold">{{totalClasses}}</span>
-            <span class="text-gray-600">CLASS</span>
-        </div>
+<div class="p-6 bg-gray-100 min-h-screen">
+  <div class="grid grid-cols-4 gap-4 mb-4">
+    <div *ngIf="students"
+      class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center cursor-pointer"
+      [routerLink]="(currentUserRole === 'ROLE_ADMIN') ? ['/admin/student/all'] : ['/sro/student/all']">
+      <span class="text-3xl font-bold">50</span>
+      <span class="text-gray-600">STUDENT</span>
     </div>
+    <div *ngIf="classes"
+      class="bg-blue-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center cursor-pointer"
+      [routerLink]="currentUserRole === 'ROLE_ADMIN' ? ['/admin/teacher'] : ['/sro/teacher']">
+      <span class="text-3xl font-bold">{{totalTeacher}}</span>
+      <span class="text-gray-600">TEACHER</span>
+    </div>
+    <div *ngIf="classes"
+      class="bg-yellow-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center cursor-pointer"
+      [routerLink]="currentUserRole === 'ROLE_ADMIN' ? ['/admin/sro'] : ['/sro']">
+      <span class="text-3xl font-bold">{{totalSros}}</span>
+      <span class="text-gray-600">SRO</span>
+    </div>
+    <div *ngIf="classes"
+      class="bg-cyan-100 p-4 rounded-md shadow-md flex flex-col items-center justify-center cursor-pointer"
+      [routerLink]="currentUserRole === 'ROLE_ADMIN' ? ['/admin/class'] : ['/sro/class']">
+      <span class="text-3xl font-bold">{{totalClasses}}</span>
+      <span class="text-gray-600">CLASS</span>
+    </div>
+  </div>
+  <div class="rounded-md shadow-md p-5 bg-gray-50">
+    <h1 class="font-bold">Report</h1>
+    <!-- Class and Subject Selection -->
+    <div class="flex gap-4 mb-6">
+      <!-- Class Selector -->
+      <div>
+        <label class="block text-gray-600 mb-2">Select Class</label>
+        <select [(ngModel)]="selectedClass" (change)="onClassChange()"
+          class="w-full p-2 border border-gray-300 rounded-lg">
+          <input type="search">
+          <option value="" disabled selected>Select a class</option>
+          <option *ngFor="let className of classes" [value]="className">
+            {{ className }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Subject Selector -->
+      <div>
+        <label class="block text-gray-600 mb-2">Select Subject</label>
+        <select [(ngModel)]="selectedSubject" (change)="filterReports()" [disabled]="!selectedClass"
+          class="w-full p-2 border border-gray-300 rounded-lg">
+          <option value="" disabled selected>Select a subject</option>
+          <option *ngFor="let subject of subjectsByClass[selectedClass[0]]" [value]="subject">
+            {{ subject }}
+          </option>
+        </select>
+      </div>
+
+    </div>
+
+    <!-- Report Details -->
+    <div *ngIf="filteredReport" class="bg-white p-6 ">
+      <div class="flex items-center justify-between mb-6">
+        <!-- Thông tin filteredReport bên trái -->
+        <small class="pb-3 text-gray-500 text-sm">
+          {{ filteredReport.className }} - {{ filteredReport.subject }} -
+          {{ filteredReport.teacher }} - {{ filteredReport.sro }} -
+          {{ filteredReport.totalStudents }}
+        </small>
+
+        <!-- Các nút căn bên phải -->
+        <div class="flex items-center ml-auto">
+          <!-- Toggle Detailed View -->
+          <button (click)="toggleDetailedView()"
+            class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow mr-2">
+            {{ showDetailedView ? "Hide Details" : "Show Details" }}
+          </button>
+          <!-- Nút Import -->
+          <button
+            class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
+            <i class="fa-solid fa-file-import"></i> Import
+          </button>
+        </div>
+      </div>
+
+      <div class="container mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-2 mb-4">
+          <div (click)="toggleshowViewDiscussionsNeeded()"
+            class="bg-red-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
+            <span class="text-3xl font-bold">{{
+              filteredReport.totalDiscussionsNeeded
+              }}</span>
+            <span class="text-gray-600">Discussion Needed</span>
+          </div>
+          <div (click)="toggleshowViewDiscussionsNeededDone()"
+            class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
+            <span class="text-3xl font-bold">{{
+              filteredReport.totalDiscussionsDone
+              }}</span>
+            <span class="text-gray-600">Discussion Needed Done</span>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Detailed Breakdown -->
+      <div *ngIf="filteredReport && showDetailedView" class="bg-white p-6 rounded-lg shadow-lg mt-6">
+        <h3 class="text-lg font-semibold mb-3 text-gray-700">
+          Detailed Breakdown of Exchanges
+        </h3>
+
+        <table class="w-full border-collapse border border-gray-300">
+          <thead>
+            <tr class="bg-gray-100">
+              <th rowspan="2" class="border border-gray-300 px-4 py-2 text-left">
+                Category
+              </th>
+              <th colspan="2" class="border border-gray-300 px-4 py-2 text-center">
+                Chuyên cần
+              </th>
+              <th colspan="2" class="border border-gray-300 px-4 py-2 text-center">
+                DSE
+              </th>
+              <th colspan="2" class="border border-gray-300 px-4 py-2 text-center">
+                BTVN
+              </th>
+              <th colspan="2" class="border border-gray-300 px-4 py-2 text-center">
+                Thi lại học lại
+              </th>
+              <th colspan="2" class="border border-gray-300 px-4 py-2 text-center">
+                Giao tiếp và trao đổi
+              </th>
+            </tr>
+            <tr class="bg-gray-100">
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Đi muộn
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">Nghỉ</th>
+              <th class="border border-gray-300 px-4 py-2 text-center">Ý thức</th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Năng lực
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Nộp muộn
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Không nộp
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Thi lại
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Học lại
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Phụ huynh
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">AH</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2">Discussed</td>
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.late?.done || 0 }}
+              </td>
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.absence?.done || 0 }}
+              </td>
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.awareness?.done || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.competency?.done || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{
+                filteredReport.breakdown?.homework?.lateSubmission?.done || 0
+                }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.homework?.noSubmission?.done }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.retake?.retest?.done || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.retake?.reclass?.done || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{
+                filteredReport.breakdown?.communication?.parentCommunication
+                ?.done || 0
+                }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{
+                filteredReport.breakdown?.communication?.ahCommunication
+                ?.done || 0
+                }}
+              </td>
+            </tr>
+
+            <tr>
+              <td class="border border-gray-300 px-4 py-2">
+                Needs Further Discussion
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.late?.needed || 0 }}
+              </td>
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.absence?.needed || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.awareness?.needed || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.competency?.needed || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{
+                filteredReport.breakdown?.homework?.lateSubmission?.needed || 0
+                }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.homework?.noSubmission?.needed }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.retake?.retest?.needed || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.retake?.reclass?.needed || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{
+                filteredReport.breakdown?.communication?.parentCommunication
+                ?.needed || 0
+                }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{
+                filteredReport.breakdown?.communication?.ahCommunication
+                ?.needed || 0
+                }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="filteredReport && showViewDiscussionsNeeded" class="bg-white p-6 rounded-lg shadow-lg mt-6">
+        <h3 class="text-lg font-semibold mb-3 text-gray-700">
+          Detailed Breakdown of Exchanges
+        </h3>
+
+        <table class="w-full border-collapse border border-gray-300">
+          <thead>
+            <tr class="bg-gray-100">
+              <th rowspan="2" class="border border-gray-300 px-4 py-2 text-left">
+                Category
+              </th>
+              <th colspan="2" class="border border-gray-300 px-4 py-2 text-center">
+                Chuyên cần
+              </th>
+              <th colspan="2" class="border border-gray-300 px-4 py-2 text-center">
+                DSE
+              </th>
+              <th colspan="2" class="border border-gray-300 px-4 py-2 text-center">
+                BTVN
+              </th>
+              <th colspan="2" class="border border-gray-300 px-4 py-2 text-center">
+                Thi lại học lại
+              </th>
+              <th colspan="2" class="border border-gray-300 px-4 py-2 text-center">
+                Giao tiếp và trao đổi
+              </th>
+            </tr>
+            <tr class="bg-gray-100">
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Đi muộn
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">Nghỉ</th>
+              <th class="border border-gray-300 px-4 py-2 text-center">Ý thức</th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Năng lực
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Nộp muộn
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Không nộp
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Thi lại
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Học lại
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Phụ huynh
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">AH</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2">Discussed</td>
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.late?.done || 0 }}
+              </td>
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.absence?.done || 0 }}
+              </td>
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.awareness?.done || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.competency?.done || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{
+                filteredReport.breakdown?.homework?.lateSubmission?.done || 0
+                }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.homework?.noSubmission?.done }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.retake?.retest?.done || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.retake?.reclass?.done || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{
+                filteredReport.breakdown?.communication?.parentCommunication
+                ?.done || 0
+                }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{
+                filteredReport.breakdown?.communication?.ahCommunication
+                ?.needed || 0
+                }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="filteredReport && showViewDiscussionsNeededDone" class="bg-white p-6 rounded-lg shadow-lg mt-6">
+        <h3 class="text-lg font-semibold mb-3 text-gray-700">
+          Detailed Breakdown of Exchanges
+        </h3>
+
+        <table class="w-full border-collapse border border-gray-300">
+          <thead>
+            <tr class="bg-gray-100">
+              <th rowspan="2" class="border border-gray-300 px-4 py-2 text-left">
+                Category
+              </th>
+              <th colspan="2" class="border border-gray-300 px-4 py-2 text-center">
+                Chuyên cần
+              </th>
+              <th colspan="2" class="border border-gray-300 px-4 py-2 text-center">
+                DSE
+              </th>
+              <th colspan="2" class="border border-gray-300 px-4 py-2 text-center">
+                BTVN
+              </th>
+              <th colspan="2" class="border border-gray-300 px-4 py-2 text-center">
+                Thi lại học lại
+              </th>
+              <th colspan="2" class="border border-gray-300 px-4 py-2 text-center">
+                Giao tiếp và trao đổi
+              </th>
+            </tr>
+            <tr class="bg-gray-100">
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Đi muộn
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">Nghỉ</th>
+              <th class="border border-gray-300 px-4 py-2 text-center">Ý thức</th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Năng lực
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Nộp muộn
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Không nộp
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Thi lại
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Học lại
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">
+                Phụ huynh
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-center">AH</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2">
+                Needs Further Discussion
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.late?.needed || 0 }}
+              </td>
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.absence?.needed || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.awareness?.needed || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.competency?.needed || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{
+                filteredReport.breakdown?.homework?.lateSubmission?.needed || 0
+                }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.homework?.noSubmission?.needed }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.retake?.retest?.needed || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.retake?.reclass?.needed || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{
+                filteredReport.breakdown?.communication?.parentCommunication
+                ?.needed || 0
+                }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{
+                filteredReport.breakdown?.communication?.ahCommunication
+                ?.needed || 0
+                }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>

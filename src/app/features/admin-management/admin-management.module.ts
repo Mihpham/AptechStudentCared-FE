@@ -71,6 +71,8 @@ import { RegenerateScheduleComponent } from './schedule/regenerate-schedule/rege
 import { ImportExamMarkDialogComponent } from './exam-mark/import-exam-mark-dialog/import-exam-mark-dialog.component';
 import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/exam-mark-all-subject.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { DropdownModule } from 'primeng/dropdown'; // Import here
 
 @NgModule({
 
@@ -134,6 +136,7 @@ import { FullCalendarModule } from '@fullcalendar/angular';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    DropdownModule,  
     FullCalendarModule,
     AdminManagementRoutingModule,
     HttpClientModule,
@@ -151,6 +154,8 @@ import { FullCalendarModule } from '@fullcalendar/angular';
     MatTooltipModule,
     CdkTableModule,
     NgxPaginationModule,
+    MultiSelectModule, 
+
   ],
 
 
