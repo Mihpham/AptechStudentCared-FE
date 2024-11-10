@@ -36,9 +36,9 @@
     <div class="flex gap-4 mb-6">
       <!-- Class Selector -->
       <div *ngIf="fileInput">
-        <label class="block text-gray-600 mb-2">Select Class</label>
         <select [(ngModel)]="selectedClass" (change)="onClassChange()"
-          class="w-full p-2 border border-gray-300 rounded-lg">
+          class="w-full p-2 border border-gray-300 rounded-lg" matTooltip="Select Class" matTooltipPosition="below"
+          matTooltipClass="custom-tooltip">
           <option value="" disabled selected>Select a class</option>
           <option *ngFor="let className of classes" [value]="className">
             {{ className }}
@@ -48,9 +48,9 @@
 
       <!-- Subject Selector -->
       <div *ngIf="fileInput">
-        <label class="block text-gray-600 mb-2">Select Subject</label>
         <select [(ngModel)]="selectedSubject" (change)="filterReports()" [disabled]="!selectedClass"
-          class="w-full p-2 border border-gray-300 rounded-lg">
+          class="w-full p-2 border border-gray-300 rounded-lg" matTooltip="Select Subject" matTooltipPosition="below"
+          matTooltipClass="custom-tooltip">>
           <option value="" disabled selected>Select a subject</option>
           <option *ngFor="let subject of (subjectsByClass[selectedClass] || [])" [value]="subject">
             {{ subject }}
@@ -59,14 +59,14 @@
       </div>
 
     </div>
-
     <!-- Report Details -->
-    <div *ngIf="filteredReport" class="bg-white p-6 ">
+    <div *ngIf="filteredReport" class="bg-white p-4 ">
+
       <div class="flex items-center justify-between mb-6">
         <!-- Thông tin filteredReport bên trái -->
         <small class="pb-3 text-gray-500 text-sm">
-          {{ filteredReport.className }} - {{ filteredReport.subject }} -
-          {{ filteredReport.teacher }} - {{ filteredReport.sro }} -
+          {{ filteredReport.className }} - {{ filteredReport.subject }}
+          - {{ filteredReport.sro }} -
           {{ filteredReport.totalStudents }}
         </small>
 
@@ -74,24 +74,29 @@
         <div class="flex items-center ml-auto">
           <!-- Toggle Detailed View -->
           <button (click)="toggleDetailedView()"
-            class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow mr-2">
+            class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow mr-2"
+            matTooltip="Click to view discussions all" matTooltipPosition="below" matTooltipClass="custom-tooltip">
             {{ showDetailedView ? "Hide Details" : "Show Details" }}
-          </button> 
-         
+          </button>
+
         </div>
       </div>
 
       <div class="container mx-auto">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-2 mb-4">
           <div (click)="toggleshowViewDiscussionsNeeded()"
-            class="bg-red-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
+            class="bg-red-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center"
+            matTooltip="Click to view discussions that still need to be done" matTooltipPosition="below"
+            matTooltipClass="custom-tooltip">
             <span class="text-3xl font-bold">{{
               filteredReport.totalDiscussionsNeeded
               }}</span>
-            <span class="text-gray-600">Discussion Needed</span>
+            <span class="text-gray-600" too>Discussion Needed</span>
           </div>
           <div (click)="toggleshowViewDiscussionsNeededDone()"
-            class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
+            class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center"
+            matTooltip="Click to view completed discussions" matTooltipPosition="below"
+            matTooltipClass="custom-tooltip">
             <span class="text-3xl font-bold">{{
               filteredReport.totalDiscussionsDone
               }}</span>
@@ -322,41 +327,41 @@
             <tr>
               <td class="border border-gray-300 px-4 py-2">Discussed</td>
               <td class="border border-gray-300 px-4 py-2 text-center">
-                {{ filteredReport.breakdown?.late?.done || 0 }}
+                {{ filteredReport.breakdown?.late?.needed || 0 }}
               </td>
               <td class="border border-gray-300 px-4 py-2 text-center">
-                {{ filteredReport.breakdown?.absence?.done || 0 }}
+                {{ filteredReport.breakdown?.absence?.needed || 0 }}
               </td>
               <td class="border border-gray-300 px-4 py-2 text-center">
-                {{ filteredReport.breakdown?.awareness?.done || 0 }}
+                {{ filteredReport.breakdown?.awareness?.needed || 0 }}
               </td>
 
               <td class="border border-gray-300 px-4 py-2 text-center">
-                {{ filteredReport.breakdown?.competency?.done || 0 }}
+                {{ filteredReport.breakdown?.competency?.needed || 0 }}
               </td>
 
               <td class="border border-gray-300 px-4 py-2 text-center">
                 {{
-                filteredReport.breakdown?.homework?.lateSubmission?.done || 0
+                filteredReport.breakdown?.homework?.lateSubmission?.needed || 0
                 }}
               </td>
 
               <td class="border border-gray-300 px-4 py-2 text-center">
-                {{ filteredReport.breakdown?.homework?.noSubmission?.done }}
+                {{ filteredReport.breakdown?.homework?.noSubmission?.needed }}
               </td>
 
               <td class="border border-gray-300 px-4 py-2 text-center">
-                {{ filteredReport.breakdown?.retake?.retest?.done || 0 }}
+                {{ filteredReport.breakdown?.retake?.retest?.needed || 0 }}
               </td>
 
               <td class="border border-gray-300 px-4 py-2 text-center">
-                {{ filteredReport.breakdown?.retake?.reclass?.done || 0 }}
+                {{ filteredReport.breakdown?.retake?.reclass?.needed || 0 }}
               </td>
 
               <td class="border border-gray-300 px-4 py-2 text-center">
                 {{
                 filteredReport.breakdown?.communication?.parentCommunication
-                ?.done || 0
+                ?.needed || 0
                 }}
               </td>
 
@@ -428,53 +433,53 @@
           <tbody>
             <tr>
               <td class="border border-gray-300 px-4 py-2">
-                Needs Further Discussion
+                Discussion Done
               </td>
 
               <td class="border border-gray-300 px-4 py-2 text-center">
-                {{ filteredReport.breakdown?.late?.needed || 0 }}
+                {{ filteredReport.breakdown?.late?.done || 0 }}
               </td>
               <td class="border border-gray-300 px-4 py-2 text-center">
-                {{ filteredReport.breakdown?.absence?.needed || 0 }}
-              </td>
-
-              <td class="border border-gray-300 px-4 py-2 text-center">
-                {{ filteredReport.breakdown?.awareness?.needed || 0 }}
+                {{ filteredReport.breakdown?.absence?.done || 0 }}
               </td>
 
               <td class="border border-gray-300 px-4 py-2 text-center">
-                {{ filteredReport.breakdown?.competency?.needed || 0 }}
+                {{ filteredReport.breakdown?.awareness?.done || 0 }}
+              </td>
+
+              <td class="border border-gray-300 px-4 py-2 text-center">
+                {{ filteredReport.breakdown?.competency?.done || 0 }}
               </td>
 
               <td class="border border-gray-300 px-4 py-2 text-center">
                 {{
-                filteredReport.breakdown?.homework?.lateSubmission?.needed || 0
+                filteredReport.breakdown?.homework?.lateSubmission?.done || 0
                 }}
               </td>
 
               <td class="border border-gray-300 px-4 py-2 text-center">
-                {{ filteredReport.breakdown?.homework?.noSubmission?.needed }}
+                {{ filteredReport.breakdown?.homework?.noSubmission?.done }}
               </td>
 
               <td class="border border-gray-300 px-4 py-2 text-center">
-                {{ filteredReport.breakdown?.retake?.retest?.needed || 0 }}
+                {{ filteredReport.breakdown?.retake?.retest?.done || 0 }}
               </td>
 
               <td class="border border-gray-300 px-4 py-2 text-center">
-                {{ filteredReport.breakdown?.retake?.reclass?.needed || 0 }}
+                {{ filteredReport.breakdown?.retake?.reclass?.done || 0 }}
               </td>
 
               <td class="border border-gray-300 px-4 py-2 text-center">
                 {{
                 filteredReport.breakdown?.communication?.parentCommunication
-                ?.needed || 0
+                ?.done || 0
                 }}
               </td>
 
               <td class="border border-gray-300 px-4 py-2 text-center">
                 {{
                 filteredReport.breakdown?.communication?.ahCommunication
-                ?.needed || 0
+                ?.done || 0
                 }}
               </td>
             </tr>

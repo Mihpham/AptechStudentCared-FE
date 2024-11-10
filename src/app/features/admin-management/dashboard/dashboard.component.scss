@@ -1,0 +1,20 @@
+/* Custom tooltip styling */
+.custom-tooltip .mat-tooltip {
+    position: relative;
+    background-color: #333;
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+  }
+  
+  /* Arrow for the tooltip */
+  .custom-tooltip .mat-tooltip::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -6px; /* Adjusts the arrow position to the left side */
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent #333 transparent transparent;
+  }
+  
