@@ -28,38 +28,41 @@
   <div class="rounded-md shadow-md p-5 bg-gray-50">
     <h1 class="font-bold">Report</h1>
     <!-- Class and Subject Selection -->
-    <input type="file" (change)="onFileChange($event)" />
-
-    <div class="flex gap-4 mb-6">
-      <!-- Class Selector -->
-      <div>
-        <label class="block text-gray-600 mb-2">Select Class</label>
-        <select [(ngModel)]="selectedClass" (change)="onClassChange()"
-          class="w-full p-2 border border-gray-300 rounded-lg">
-          <input type="search">
-          <option value="" disabled selected>Select a class</option>
-          <option *ngFor="let className of classes" [value]="className">
-            {{ className }}
-          </option>
-        </select>
-      </div>
-
-      <!-- Subject Selector -->
-      <div>
-        <label class="block text-gray-600 mb-2">Select Subject</label>
-        <select [(ngModel)]="selectedSubject" (change)="filterReports()" [disabled]="!selectedClass"
-          class="w-full p-2 border border-gray-300 rounded-lg">
-          <option value="" disabled selected>Select a subject</option>
-          <option *ngFor="let subject of subjectsByClass[selectedClass[0]]" [value]="subject">
-            {{ subject }}
-          </option>
-        </select>
-      </div>
-
+    <div class="file-upload mb-6">
+      <input type="file" (change)="onFileChange($event)" class="hidden" #fileInput />
+      <button (click)="fileInput.click()"
+        class="bg-gray-400 text-white hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-cyan-200 py-2 px-4 rounded shadow">Import</button>
     </div>
 
     <!-- Report Details -->
     <div *ngIf="filteredReport" class="bg-white p-6 ">
+      <div class="flex gap-4 mb-6">
+        <!-- Class Selector -->
+        <div>
+          <label class="block text-gray-600 mb-2">Select Class</label>
+          <select [(ngModel)]="selectedClass" (change)="onClassChange()"
+            class="w-full p-2 border border-gray-300 rounded-lg">
+            <input type="search">
+            <option value="" disabled selected>Select a class</option>
+            <option *ngFor="let className of classes" [value]="className">
+              {{ className }}
+            </option>
+          </select>
+        </div>
+  
+        <!-- Subject Selector -->
+        <div>
+          <label class="block text-gray-600 mb-2">Select Subject</label>
+          <select [(ngModel)]="selectedSubject" (change)="filterReports()" [disabled]="!selectedClass"
+            class="w-full p-2 border border-gray-300 rounded-lg">
+            <option value="" disabled selected>Select a subject</option>
+            <option *ngFor="let subject of subjectsByClass[selectedClass[0]]" [value]="subject">
+              {{ subject }}
+            </option>
+          </select>
+        </div>
+  
+      </div>
       <div class="flex items-center justify-between mb-6">
         <!-- Thông tin filteredReport bên trái -->
         <small class="pb-3 text-gray-500 text-sm">
