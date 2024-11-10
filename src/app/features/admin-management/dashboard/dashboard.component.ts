@@ -28,31 +28,55 @@ export class DashboardComponent implements OnInit {
   currentUserRole!: string | null;
 
   sheetNames: string[] = [];
-  selectedSheetData: any[] = [];   
+  selectedSheetData: any[] = [];
   workbook: XLSX.WorkBook | undefined;
-  columnSums: number[] = [];  
+  columnSums: number[] = [];
   acc: string | null = null;
   startRow: number = 0;
   endRow: number = 0;
   startCol: number = 0;
   columnNames = [
-    "Chuyên cần Muộn Cần trao đổi", "Chuyên cần Muộn Đã trao đổi", 
-    "Chuyên cần Nghỉ không phép Cần trao đổi ", 
-    "Chuyên cần Nghỉ không phép Đã trao đổi", 
-    "DSE Ý thức Cần trao đổi", "DSE Ý thức Đã trao đổi", 
-    "DSE Năng lực Cần trao đổi", "DSE Năng lực Đã trao đổi", 
-    "BTVN Nộp muộn Cần trao đổi", "BTVN Nộp muộn Đã trao đổi", 
-    "BTVN Không nộp Cần trao đổi", "BTVN Không nộp Đã trao đổi", 
-    "Thi lại Cần trao đổi", "Thi lại Đã trao đổi", 
-    "Học lại Cần trao đổi", "Học lại Đã trao đổi", 
-    "Trao đổi với phụ huynh Cần trao đổi", "Trao đổi với phụ huynh Đã trao đổi", 
-    "Trao đổi với AH Cần trao đổi", "Trao đổi với AH Đã trao đổi"
+    'Cần trao đổi',
+    'Đã trao đổi',
+    'Cần trao đổi ',
+    ' Đã trao đổi',
+    'Cần trao đổi',
+    'Đã trao đổi',
+    'Cần trao đổi',
+    'Đã trao đổi',
+    'Cần trao đổi',
+    'Đã trao đổi',
+    'Cần trao đổi',
+    'Đã trao đổi',
+    'Cần trao đổi',
+    'Đã trao đổi',
+    'Cần trao đổi',
+    'Đã trao đổi',
+    'Cần trao đổi',
+    'Đã trao đổi',
+    'Cần trao đổi',
+    'Đã trao đổi',
   ];
-  FCSubject : string | null = null;
-  Sro : string | null = null;
-  Class : string | null = null;
-  SS : number = 0;
+  FCSubject: string | null = null;
+  Sro: string | null = null;
+  Class: string | null = null;
+  SS: number = 0;
+  isImportMode: boolean = false;
 
+  constructor(
+    private classService: ClassService,
+    private studentService: StudentService,
+    private teacherService: TeacherService,
+    private sroService: SroService,
+    private toastr: ToastrService,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadTeacher();
+    this.loadSro();
+    this.currentUserRole = this.authService.getRole();
+  }
 
   onFileChange(event: any) {
     const file = event.target.files[0];
@@ -63,6 +87,11 @@ export class DashboardComponent implements OnInit {
         const data = new Uint8Array(e.target.result);
         this.workbook = XLSX.read(data, { type: 'array' });
         this.sheetNames = this.workbook.SheetNames;
+
+        // Automatically select the first sheet and load its data
+        if (this.sheetNames.length > 0) {
+          this.onSheetSelect(this.sheetNames[0]);
+        }
       };
 
       reader.onerror = (error) => {
@@ -71,6 +100,16 @@ export class DashboardComponent implements OnInit {
 
       reader.readAsArrayBuffer(file);
     }
+  }
+  activateImportMode() {
+    this.isImportMode = true;
+  }
+
+  deactivateImportMode() {
+    this.isImportMode = false;
+  }
+  toggleImportMode() {
+    this.isImportMode = true;
   }
 
   onSheetSelect(event: Event | string) {
@@ -89,11 +128,14 @@ export class DashboardComponent implements OnInit {
 
       const merges = sheet['!merges'];
       const maxCol = 24;
-      this.columnSums = new Array(maxCol).fill(0); 
+      this.columnSums = new Array(maxCol).fill(0);
 
       let lastMergedValue: any = null;
-      let lastStartRow: number = -1;  
-      let lastEndRow: number = -1;   
+      let lastStartRow: number = -1;
+      let lastEndRow: number = -1;
+
+      // Store subjects for each class
+      const subjectsPerClass: { [key: string]: string[] } = {};
 
       if (merges && merges.length > 0) {
         merges.forEach((merge) => {
@@ -101,16 +143,28 @@ export class DashboardComponent implements OnInit {
           this.endRow = merge.e.r;
           this.startCol = merge.s.c;
 
-          if (this.startCol === 0) { 
+          if (this.startCol === 0) {
             const mergedValue = sheetData[this.startRow][this.startCol];
-            
+
             lastMergedValue = mergedValue;
             lastStartRow = this.startRow;
             lastEndRow = this.endRow;
             this.FCSubject = mergedValue;
-            console.log(`Giá trị của ô gộp từ dòng ${this.startRow} đến dòng ${this.endRow}:`, mergedValue);
+
+            // Here, we assume the class name is in the second column (index 1)
+            const className = sheetData[this.startRow][1]; // Adjust this index as needed
+            if (!subjectsPerClass[className]) {
+              subjectsPerClass[className] = [];
+            }
+            subjectsPerClass[className].push(mergedValue);
+
+            console.log(
+              `Giá trị của ô gộp từ dòng ${this.startRow} đến dòng ${this.endRow}:`,
+              mergedValue
+            );
           }
         });
+
         if (lastStartRow !== -1 && lastEndRow !== -1) {
           console.log('Tính tổng cho các cột trong phạm vi ô gộp cuối cùng:');
 
@@ -119,86 +173,44 @@ export class DashboardComponent implements OnInit {
 
             rowData.forEach((cell, colIndex) => {
               if (typeof cell === 'number') {
-                this.columnSums[colIndex] += cell; 
+                this.columnSums[colIndex] += cell;
               }
             });
-            
           }
-          console.log('Tổng các cột trong phạm vi ô gộp cuối cùng:', this.columnSums);
-        console.log('Tổng các cột trong phạm vi ô gộp cuối cùng:');
-        this.columnSums.forEach((sum, index) => {
-          console.log(`${this.columnNames[index]}: ${sum}`);
-        });
+
+          console.log(
+            'Tổng các cột trong phạm vi ô gộp cuối cùng:',
+            this.columnSums
+          );
+          console.log('Tổng các cột trong phạm vi ô gộp cuối cùng:');
+          this.columnSums.forEach((sum, index) => {
+            console.log(`${this.columnNames[index]}: ${sum}`);
+          });
         }
       }
+
+      // Now handle subjects per class
+      console.log('Subjects per class:', subjectsPerClass);
       this.readColumnData(sheetData, 1);
     }
-
-    
   }
 
   readColumnData(sheetData: any[], columnIndex: number): void {
+    const totalStudents = sheetData
+      .slice(1) // Skip header
+      .map((row) => row[columnIndex])
+      .filter((value) => typeof value === 'number')
+      .reduce((acc, num) => acc + num, 0);
+
+    this.SS = totalStudents; // Store the sum in the component's SS property
+
     if (sheetData.length > 1) {
       this.Class = sheetData[0][columnIndex];
-      this.Sro = sheetData[1][columnIndex]; 
-  
-      
+      this.Sro = sheetData[1][columnIndex];
     } else {
       console.error('hehe');
     }
   }
-
-
-
-
-
-  constructor(
-    private classService: ClassService,
-    private studentService: StudentService,
-    private teacherService: TeacherService,
-    private sroService: SroService,
-    private toastr: ToastrService,
-    private authService: AuthService) { }
-
-
-  ngOnInit(): void {
-    this.loadClasses();
-    this.loadStudent();
-    this.loadTeacher();
-    this.loadSro();
-    this.currentUserRole = this.authService.getRole();
-
-  }
-
-  loadClasses(): void {
-    this.classService.findAllClasses().subscribe({
-      next: (data) => {
-        this.classes = data; // Assign the received data to the classes array
-        this.totalClasses = this.classes.length; // Get the total count from the populated array
-      },
-      error: (error) => {
-        this.toastr.error('Failed to load classes!', 'Error');
-      },
-    });
-  }
-
-  loadStudent(): void {
-    // Lấy giá trị trang hiện tại và kích thước trang từ paginator (nếu có)
-    const pageIndex = 0;  // Thay đổi giá trị này nếu có paginator
-    const pageSize = 10;  // Thay đổi giá trị này nếu có paginator
-
-    // Gọi API với các tham số phân trang
-    this.studentService.getAllStudents(pageIndex, pageSize).subscribe(
-      (data) => {
-        this.students = data;  // Gán dữ liệu nhận được vào mảng students
-        this.totalStudents = this.students.length; // Lấy tổng số sinh viên từ mảng
-      },
-      (error) => {
-        this.toastr.error('Failed to load students', 'Error');
-      }
-    );
-  }
-
 
   loadTeacher(): void {
     this.teacherService.getAllTeachers().subscribe(
@@ -223,8 +235,4 @@ export class DashboardComponent implements OnInit {
       }
     );
   }
-
-
-
-
 }
