@@ -67,21 +67,26 @@ processWorkbook(workbook: XLSX.WorkBook) {
                         // console.log('Tính tổng cho các cột trong phạm vi ô gộp');
 
                         for (let row = this.startRow; row <= this.endRow; row++) {
-                            const rowData = sheetData[row].slice(0, maxCol);
+                            const rowData = sheetData[row].slice(4, maxCol);
 
                             rowData.forEach((cell, colIndex) => {
-                                if (typeof cell === 'number') {
-                                    this.columnSums[colIndex] += cell;
+                                const numericValue = parseFloat(cell);
+                                if (!isNaN(numericValue)) {
+                                    this.columnSums[colIndex] += numericValue;
+                            
                                     if (colIndex % 2 === 0) {
-                                        totalDiscussionsNeeded += cell;
+                                        totalDiscussionsNeeded += numericValue;
                                     }
-
-                                    // Tính tổng cho các cột lẻ bắt đầu từ index 3 (3, 5, 7, ...)
-                                    if (colIndex % 2 !== 0 && colIndex >= 3) {
-                                        totalDiscussionsDone += cell;
+                            
+                                    if (colIndex % 2 !== 0 ) {
+                                        totalDiscussionsDone += numericValue;
                                     }
+                                } else {
+                                    console.warn(`Skipping non-numeric value at row ${row}, col ${colIndex}:`, cell);
                                 }
                             });
+                            
+                            
                         }
 
                         let totalClassesHeld = 0;

@@ -28,15 +28,17 @@
   <div class="rounded-md shadow-md p-5 bg-gray-50">
     <h1 class="font-bold">Report</h1>
     <!-- Class and Subject Selection -->
-    <input type="file" (change)="onFileChange($event)" />
-
+    <div class="file-upload mb-6">
+      <input type="file" (change)="onFileChange($event)" class="hidden" #fileInput (click)="toggleImportMode()" />
+      <button (click)="fileInput.click()"
+        class="bg-gray-400 text-white hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-cyan-200 py-2 px-4 rounded shadow">Import</button>
+    </div>
     <div class="flex gap-4 mb-6">
       <!-- Class Selector -->
-      <div>
+      <div *ngIf="fileInput">
         <label class="block text-gray-600 mb-2">Select Class</label>
         <select [(ngModel)]="selectedClass" (change)="onClassChange()"
           class="w-full p-2 border border-gray-300 rounded-lg">
-          <input type="search">
           <option value="" disabled selected>Select a class</option>
           <option *ngFor="let className of classes" [value]="className">
             {{ className }}
@@ -45,12 +47,12 @@
       </div>
 
       <!-- Subject Selector -->
-      <div>
+      <div *ngIf="fileInput">
         <label class="block text-gray-600 mb-2">Select Subject</label>
         <select [(ngModel)]="selectedSubject" (change)="filterReports()" [disabled]="!selectedClass"
           class="w-full p-2 border border-gray-300 rounded-lg">
           <option value="" disabled selected>Select a subject</option>
-          <option *ngFor="let subject of subjectsByClass[selectedClass[0]]" [value]="subject">
+          <option *ngFor="let subject of (subjectsByClass[selectedClass] || [])" [value]="subject">
             {{ subject }}
           </option>
         </select>
@@ -74,12 +76,8 @@
           <button (click)="toggleDetailedView()"
             class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow mr-2">
             {{ showDetailedView ? "Hide Details" : "Show Details" }}
-          </button>
-          <!-- Nút Import -->
-          <button
-            class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
-            <i class="fa-solid fa-file-import"></i> Import
-          </button>
+          </button> 
+         
         </div>
       </div>
 

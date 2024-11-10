@@ -21,8 +21,8 @@ import * as XLSX from 'xlsx';
 export class DashboardComponent implements OnInit {
   classes: string[] = [];
   subjectsByClass: { [key: string]: string[] } = {};
-  selectedClass: string[] = []; // Adjusted to be a single selection or an array as per need
-  selectedSubject: string = '';
+  selectedClass: string = '';// Single selection for class
+  selectedSubject: string | null = null; // Single selection for subject
   filteredReport: ReportData | null = null;
   showDetailedView: boolean = false;
   showViewDiscussionsNeeded: boolean = false;
@@ -36,7 +36,7 @@ export class DashboardComponent implements OnInit {
   totalTeacher: number = 0;
   totalSros: number = 0;
   currentUserRole!: string | null;
-
+  isImportMode: boolean = false;
   exchangeTotals: any = {
     'Chuyên cần': {
       'Đi muộn': { 'Đã trao đổi': 0, 'Cần trao đổi': 0 },
@@ -74,18 +74,18 @@ export class DashboardComponent implements OnInit {
  
     // this.loadTeacher();
     // this.loadSro();
+
     this.currentUserRole = this.authService.getRole();
     const reports = this.reportService.getAllReports();
-
-
-    console.log('Danh sách báo cáo:', reports);
+    console.log("reports" ,reports)
     this.populateClassAndSubjectLists(reports);
     if (reports && reports.length > 0) {
       const lastReport = reports[reports.length - 1];
-      this.selectedClass = [lastReport.className];
+      this.selectedClass = lastReport.className;
       this.selectedSubject = lastReport.subject;
       this.filterReports();
     }
+    
   }
  
 
@@ -106,7 +106,7 @@ export class DashboardComponent implements OnInit {
         this.populateClassAndSubjectLists(reports);
         if (reports.length > 0) {
           const lastReport = reports[reports.length - 1];
-          this.selectedClass = [lastReport.className];
+          this.selectedClass = lastReport.className;
           this.selectedSubject = lastReport.subject;
           this.filterReports();
         }
@@ -117,6 +117,8 @@ export class DashboardComponent implements OnInit {
 
   populateClassAndSubjectLists(reports: ReportData[]): void {
     const classSet = new Set<string>();
+    this.subjectsByClass = {}; // Reset subjectsByClass
+
     reports.forEach((report) => {
       classSet.add(report.className);
       if (!this.subjectsByClass[report.className]) {
@@ -128,19 +130,27 @@ export class DashboardComponent implements OnInit {
     });
     this.classes = Array.from(classSet);
   }
+  activateImportMode() {
+    this.isImportMode = true;
+  }
 
+  deactivateImportMode() {
+    this.isImportMode = false;
+  }
+  toggleImportMode() {
+    this.isImportMode = true;
+  }
   filterReports(): void {
-    if (this.selectedClass.length > 0 && this.selectedSubject) {
-      this.filteredReport =
-        this.reportService.getReportByClassAndSubject(
-          this.selectedClass[0],
-          this.selectedSubject
-        ) || null;
+    if (this.selectedClass && this.selectedSubject) {
+      this.filteredReport = this.reportService.getReportByClassAndSubject(
+        this.selectedClass,
+        this.selectedSubject
+      ) || null;
     }
   }
 
   clearFilter(): void {
-    this.selectedClass = [];
+    this.selectedClass = '';
     this.selectedSubject = '';
     this.filteredReport = null;
   }
@@ -199,11 +209,12 @@ export class DashboardComponent implements OnInit {
   
 
   onClassChange(): void {
-    this.selectedSubject = '';
-    this.filteredReport = null;
-    this.showDetailedView = false;
+    this.selectedSubject = null; // Reset subject when class changes
+    this.filteredReport = null; // Clear filtered report
+    this.showDetailedView = false; // Reset view flags
     this.showViewDiscussionsNeeded = false;
     this.showViewDiscussionsNeededDone = false;
+    this.filterReports(); // Filter reports based on the new class
   }
 
    
