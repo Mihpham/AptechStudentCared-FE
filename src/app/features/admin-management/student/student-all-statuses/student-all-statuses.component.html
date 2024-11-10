@@ -41,25 +41,62 @@
       class="header-actions flex flex-wrap items-center justify-between gap-4"
     >
       <!-- Search Input -->
-      <div class="relative w-full sm:w-1/2 lg:w-1/3">
-        <!-- Input Field -->
-        <input
-          id="searchInput"
-          type="text"
-          placeholder=" "
-          [(ngModel)]="searchTerm"
-          (ngModelChange)="applyFilter($event)"
-          class="peer w-full h-12 px-4 py-2 dark:bg-gray-800 bg-white placeholder-transparent text-gray-700 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300 ease-in-out"
-        />
-
-        <!-- Label -->
-        <label
-          for="searchInput"
-          class="absolute left-4 top-2 text-gray-500 dark:text-gray-400 text-sm transition-all duration-300 transform peer-placeholder-shown:top-1/4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-gray-500 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-blue-500 peer-focus:text-xs"
-        >
-          Search
-        </label>
+      <div class="flex flex-wrap gap-4">
+        <!-- Roll Number Search -->
+        <div class="relative w-full sm:w-1/4">
+          <input
+            id="searchRollNumber"
+            type="text"
+            placeholder=" "
+            [(ngModel)]="searchTerm.rollNumber"
+            (ngModelChange)="applyFilter()"
+            class="peer w-full h-12 px-4 py-2 dark:bg-gray-800 bg-white placeholder-transparent text-gray-700 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300 ease-in-out"
+          />
+          <label
+            for="searchRollNumber"
+            class="absolute left-4 top-2 text-gray-500 dark:text-gray-400 text-sm transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-blue-500 peer-focus:text-xs"
+          >
+            Roll Number
+          </label>
+        </div>
+      
+        <!-- Full Name Search -->
+        <div class="relative w-full sm:w-1/4">
+          <input
+            id="searchFullName"
+            type="text"
+            placeholder=" "
+            [(ngModel)]="searchTerm.fullName"
+            (ngModelChange)="applyFilter()"
+            class="peer w-full h-12 px-4 py-2 dark:bg-gray-800 bg-white placeholder-transparent text-gray-700 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300 ease-in-out"
+          />
+          <label
+            for="searchFullName"
+            class="absolute left-4 top-2 text-gray-500 dark:text-gray-400 text-sm transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-blue-500 peer-focus:text-xs"
+          >
+            Full Name
+          </label>
+        </div>
+      
+        <!-- Email Search -->
+        <div class="relative w-full sm:w-1/4">
+          <input
+            id="searchEmail"
+            type="text"
+            placeholder=" "
+            [(ngModel)]="searchTerm.email"
+            (ngModelChange)="applyFilter()"
+            class="peer w-full h-12 px-4 py-2 dark:bg-gray-800 bg-white placeholder-transparent text-gray-700 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300 ease-in-out"
+          />
+          <label
+            for="searchEmail"
+            class="absolute left-4 top-2 text-gray-500 dark:text-gray-400 text-sm transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-blue-500 peer-focus:text-xs"
+          >
+            Email
+          </label>
+        </div>
       </div>
+      
 
       <!-- Action Buttons -->
       <div class="actions flex flex-wrap space-x-2 ml-auto">

@@ -45,7 +45,7 @@ export class DashboardComponent implements OnInit {
   }
 
   loadClasses(): void {
-    const pageIndex = 0;  
+    const pageIndex = 1;  
     const pageSize = 10; 
     this.classService.findAllClasses(pageIndex, pageSize).subscribe(
       (data) => {
@@ -62,7 +62,7 @@ export class DashboardComponent implements OnInit {
   }
 
   loadStudent(): void {
-    const pageIndex = 0; 
+    const pageIndex = 1; 
     const pageSize = 10; 
     
     this.studentService.getAllStudents(pageIndex, pageSize).subscribe(

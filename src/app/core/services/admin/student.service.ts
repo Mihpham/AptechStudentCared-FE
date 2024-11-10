@@ -4,6 +4,7 @@ import {
   HttpClient,
   HttpErrorResponse,
   HttpHeaders,
+  HttpParams,
 } from '@angular/common/http';
 import { UserEnviroment } from 'src/app/environments/environment';
 import { StudentRequest } from 'src/app/features/admin-management/model/studentRequest.model';
@@ -24,6 +25,11 @@ export class StudentService {
 
   getAllStudents(pageIndex: number, pageSize: number): Observable<PaginatedStudentResponse> {
     return this.http.get<PaginatedStudentResponse>(`${this.baseUrl}?page=${pageIndex}&size=${pageSize}`);
+  }
+  
+  searchStudents(queryParams: any): Observable<PaginatedStudentResponse> {
+    const params = new HttpParams({ fromObject: queryParams });
+    return this.http.get<PaginatedStudentResponse>('http://localhost:1010/api/students/search', { params });
   }
   
   

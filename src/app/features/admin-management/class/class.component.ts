@@ -56,7 +56,7 @@ export class ClassComponent implements OnInit {
   }
 
   loadClasses(): void {
-    const page = this.currentPage() - 1;
+    const page = this.currentPage() ;
     const size = this.itemsPerPage();
   
     console.log('Requesting page:', page + 1, 'with size:', size);
