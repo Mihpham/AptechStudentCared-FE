@@ -5,8 +5,7 @@ export interface ReportData {
   teacher: string;
   totalStudents: number;
   totalDiscussionsNeeded: number;
-  totalDiscussionsDone: number;
-  totalClassesHeld: number;
+  totalDiscussionsDone: number; 
   totalLate: number;
   totalAwarenessIssues: number;
   latePercentage: number;

@@ -76,15 +76,15 @@ export class DashboardComponent implements OnInit {
     // this.loadSro();
 
     this.currentUserRole = this.authService.getRole();
-    const reports = this.reportService.getAllReports();
-    console.log("reports" ,reports)
-    this.populateClassAndSubjectLists(reports);
-    if (reports && reports.length > 0) {
-      const lastReport = reports[reports.length - 1];
-      this.selectedClass = lastReport.className;
-      this.selectedSubject = lastReport.subject;
-      this.filterReports();
-    }
+    // const reports = this.reportService.getAllReports();
+    // console.log("reports" ,reports)
+    // this.populateClassAndSubjectLists(reports);
+    // if (reports && reports.length > 0) {
+    //   const lastReport = reports[reports.length - 1];
+    //   this.selectedClass = lastReport.className;
+    //   this.selectedSubject = lastReport.subject;
+    //   this.filterReports();
+    // }
     
   }
   
