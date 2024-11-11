@@ -100,7 +100,7 @@ export class StudentAddComponent implements AfterViewInit, OnInit {
   loadAvailableClasses() {
     this.loadingClasses = true;
   
-    const page = 0;  
+    const page = 1;  
     const size = 10; 
   
     this.classService.findAllClasses(page, size)

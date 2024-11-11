@@ -1,14 +1,13 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { ClassService } from 'src/app/core/services/admin/class.service';
 import { StudentAddComponent } from '../../student/student-add/student-add.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { StudentService } from 'src/app/core/services/admin/student.service';
-import { StudentRequest } from '../../model/studentRequest.model';
 import { StudentUpdateDialogComponent } from '../../student/student-update-dialog/student-update-dialog.component';
-import { StudentResponse } from '../../model/student-response.model.';
 import { AuthService } from 'src/app/core/auth/auth.service';
+import { StudentResponse } from '../../model/student-response.model.';
 
 @Component({
   selector: 'app-class-detail',
@@ -16,9 +15,12 @@ import { AuthService } from 'src/app/core/auth/auth.service';
 })
 export class ClassDetailComponent implements OnInit {
   classId: number | null = null;
-  subjectId: number | null = null;
   currentUserRole!: string | null;
-
+  currentPage = signal(1); // Track the current page
+  itemsPerPage = signal(10); // Track items per page
+  totalPages = signal(0); // Track the total number of pages
+  totalItems = signal(0); // Track the total number of items
+  totalStudent: number = 0;
   classDetails: any;
   students: StudentResponse[] = [];
 
@@ -38,59 +40,29 @@ export class ClassDetailComponent implements OnInit {
       const id = params.get('id');
       this.classId = id ? +id : null;
       if (this.classId) {
-        this.getClassDetails(this.classId);
+        this.loadClassDetails(this.classId); // Load class details on component initialization
       } else {
         console.error('Class ID is undefined or invalid.');
       }
     });
   }
 
-  getAvatarUrl(avatarName: string | undefined): string {
-    return `/assets/images/${avatarName}`;
-  }
-
-  getExamMarkLink() {
-    return this.currentUserRole === 'ROLE_ADMIN'
-      ? ['/admin/exam/exam-mark-all-subject', this.classDetails.id]
-      : ['/sro/exam/exam-mark-all-subject', this.classDetails.id];
-  }
-  
-  navigateToStudentPerformance(
-    classId: number,
-    userId: number,
-    subjectId: number
-  ) {
-    this.router.navigate([`/student-performance`, classId, userId, subjectId]);
+  // Fetch class details with pagination
+  loadClassDetails(classId: number): void {
+    const page = this.currentPage(); // Get current page
+    const size = this.itemsPerPage(); // Get items per page
     
-  }
-
-  getClassDetails(id: number): void {
-    this.classService.findClassById(id).subscribe(
+    this.classService.findClassById(classId, page, size).subscribe(
       (data) => {
         this.classDetails = data;
-        this.students =
-          data.students?.map((student: any) => ({
-            userId: student.userId,
-            classId:student.classId,
-            image: student.image
-              ? student.image
-              : 'assets/images/avatar-default.webp',
-            rollNumber: student.rollNumber,
-            fullName: student.fullName,
-            password: student.password,
-            email: student.email,
-            dob: student.dob,
-            address: student.address,
-            className: student.className,
-            gender: student.gender,
-            phoneNumber: student.phoneNumber,
-            courses: student.courses,
-            status: student.status,
-            parentFullName: student.parentFullName,
-            studentRelation: student.studentRelation,
-            parentPhone: student.parentPhone,
-            parentGender: student.parentGender,
-          })) ?? [];
+        console.log(this.classDetails);
+        
+        console.log(this.classDetails.content[0]?.center);
+        
+        this.students = data.students;
+        this.totalStudent = data.totalElements; // total number of students
+        this.totalItems.set(data.totalElements); // total number of items
+        this.totalPages.set(Math.ceil(data.totalElements / size)); // total number of pages
       },
       (error) => {
         console.error('Error fetching class details:', error);
@@ -98,56 +70,75 @@ export class ClassDetailComponent implements OnInit {
     );
   }
 
-  loadStudent(): void {
+  // Change the number of items per page and reset to page 1
+  onItemsPerPageChange(newItemsPerPage: number): void {
+    this.itemsPerPage.set(newItemsPerPage); // Update items per page
+    this.currentPage.set(1); // Reset to page 1
     if (this.classId) {
-      this.getClassDetails(this.classId);
+      this.loadClassDetails(this.classId); // Reload class details with new page size
     }
   }
 
+  // Pagination methods
+  goToPage(pageNumber: number): void {
+    if (pageNumber >= 1 && pageNumber <= this.totalPages()) {
+      this.currentPage.set(pageNumber); // Set current page
+      if (this.classId) {
+        this.loadClassDetails(this.classId); // Reload the class details for the new page
+      }
+    }
+  }
+
+  goToNextPage(): void {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.set(this.currentPage() + 1); // Go to next page
+      if (this.classId) {
+        this.loadClassDetails(this.classId);
+      }
+    }
+  }
+
+  goToPreviousPage(): void {
+    if (this.currentPage() > 1) {
+      this.currentPage.set(this.currentPage() - 1); // Go to previous page
+      if (this.classId) {
+        this.loadClassDetails(this.classId);
+      }
+    }
+  }
+
+  goToFirstPage(): void {
+    this.currentPage.set(1); // Go to the first page
+    if (this.classId) {
+      this.loadClassDetails(this.classId);
+    }
+  }
+
+  goToLastPage(): void {
+    this.currentPage.set(this.totalPages()); // Go to the last page
+    if (this.classId) {
+      this.loadClassDetails(this.classId);
+    }
+  }
+
+  // Add student button
   onAdd(): void {
     const dialogRef = this.dialog.open(StudentAddComponent, {
       width: '650px',
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result && result.reload) {
-        this.loadStudent(); // Reload data if student added
+        this.loadClassDetails(this.classId!); // Reload data if student added
       }
     });
   }
 
+  // Navigating to student details
   goToStudentDetail(studentId: number): void {
     this.router.navigate(['/student-detail', studentId]);
   }
 
-  statusCounts() {
-    const statusCount = {
-      studying: 0,
-      delay: 0,
-      dropped: 0,
-      graduated: 0,
-    };
-
-    if (this.classDetails?.students) {
-      this.classDetails.students.forEach((student: { status: any }) => {
-        switch (student.status) {
-          case 'STUDYING':
-            statusCount.studying++;
-            break;
-          case 'DELAY':
-            statusCount.delay++;
-            break;
-          case 'DROPPED':
-            statusCount.dropped++;
-            break;
-          case 'GRADUATED':
-            statusCount.graduated++;
-            break;
-        }
-      });
-    }
-    return statusCount;
-  }
-
+  // Update student information
   onUpdate(student: StudentResponse, event: Event): void {
     event.stopPropagation(); // Prevent row click event
 
@@ -163,27 +154,34 @@ export class ClassDetailComponent implements OnInit {
           const index = this.students.findIndex(
             (s) => s.userId === updatedStudent.userId
           );
-          this.loadStudent();
+          this.loadClassDetails(this.classId!); // Reload student data after update
         }
       });
   }
 
+  getAvatarUrl(avatarName: string | undefined): string {
+    return `/assets/images/${avatarName}`;
+  }
+
+  getExamMarkLink() {
+    return this.currentUserRole === 'ROLE_ADMIN'
+      ? ['/admin/exam/exam-mark-all-subject', this.classDetails.id]
+      : ['/sro/exam/exam-mark-all-subject', this.classDetails.id];
+  }
+
+  // Delete student logic
   deleteStudent(studentId?: number): void {
     if (studentId && confirm('Are you sure you want to delete this student?')) {
       this.studentService.deleteStudent(studentId).subscribe({
         next: () => {
           this.toastr.success('Student deleted successfully');
-          this.classDetails.students = this.classDetails.students.filter(
-            (student: any) => student.id !== studentId
-          );
-          this.loadStudent();
+          this.loadClassDetails(this.classId!); // Reload student data after deletion
         },
         error: (err) => {
           this.toastr.error('Failed to delete student');
           console.error(err);
         },
       });
-    } else {
     }
   }
 }

@@ -140,7 +140,7 @@ export class StudentUpdateDialogComponent implements OnInit {
   }
 
   loadAvailableClasses() {
-    const page = 0;
+    const page = 1;
     const size = 10;
   
     this.classService

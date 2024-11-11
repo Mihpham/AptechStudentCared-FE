@@ -77,6 +77,7 @@ export class StudentAllStatusesComponent implements OnInit {
       this.className = params['className'] || null;
     });
     this.loadStudent();
+    this.loadStatusCounts();
   }
 
   loadStudent(): void {
@@ -87,26 +88,53 @@ export class StudentAllStatusesComponent implements OnInit {
       this.totalStudents = data.totalElements;
       this.totalPages.set(data.totalPages);
       this.dataSource.data = data.content;
-      this.updateStatusCounts();
     });
   }
-
-  updateStatusCounts(): void {
-    if (Array.isArray(this.students)) {
-      const counts = { studying: 0, delay: 0, dropped: 0, graduated: 0 };
-
-      this.students.forEach((student) => {
-        if (student.status === 'STUDYING') counts.studying++;
-        if (student.status === 'DELAY') counts.delay++;
-        if (student.status === 'DROPPED') counts.dropped++;
-        if (student.status === 'GRADUATED') counts.graduated++;
-      });
-
-      this.statusCounts.set(counts);
-    } else {
-      console.error('students is not an array:', this.students);
-    }
+  loadStatusCounts(): void {
+    const page = this.currentPage();
+    const size = this.itemsPerPage();
+  
+    this.studentService.getStudentsByStatus('STUDYING', page, size).subscribe(
+      (data: PaginatedStudentResponse) => {
+        this.statusCounts.set({ ...this.statusCounts(), studying: data.totalElements });
+      },
+      (error) => {
+        console.error('Error fetching STUDYING count:', error);
+        this.toastr.error('Failed to load STUDYING students');
+      }
+    );
+  
+    this.studentService.getStudentsByStatus('DELAY', page, size).subscribe(
+      (data: PaginatedStudentResponse) => {
+        this.statusCounts.set({ ...this.statusCounts(), delay: data.totalElements });
+      },
+      (error) => {
+        console.error('Error fetching DELAY count:', error);
+        this.toastr.error('Failed to load DELAY students');
+      }
+    );
+  
+    this.studentService.getStudentsByStatus('DROPPED', page, size).subscribe(
+      (data: PaginatedStudentResponse) => {
+        this.statusCounts.set({ ...this.statusCounts(), dropped: data.totalElements });
+      },
+      (error) => {
+        console.error('Error fetching DROPPED count:', error);
+        this.toastr.error('Failed to load DROPPED students');
+      }
+    );
+  
+    this.studentService.getStudentsByStatus('GRADUATED', page, size).subscribe(
+      (data: PaginatedStudentResponse) => {
+        this.statusCounts.set({ ...this.statusCounts(), graduated: data.totalElements });
+      },
+      (error) => {
+        console.error('Error fetching GRADUATED count:', error);
+        this.toastr.error('Failed to load GRADUATED students');
+      }
+    );
   }
+  
 
   applyFilter(): void {
     const page = this.currentPage();
@@ -136,7 +164,6 @@ export class StudentAllStatusesComponent implements OnInit {
         this.totalStudents = data.totalElements;
         this.totalPages.set(data.totalPages);
         this.dataSource.data = data.content;
-        this.updateStatusCounts();
       },
       error => {
         console.error('Error during search:', error);
@@ -232,9 +259,9 @@ export class StudentAllStatusesComponent implements OnInit {
           if (index !== -1) {
             this.students[index] = updatedStudent;
             this.dataSource.data = [...this.students];
-            this.updateStatusCounts();
           } else {
             this.loadStudent();
+            this.loadStatusCounts();
           }
         }
       });
@@ -280,7 +307,6 @@ export class StudentAllStatusesComponent implements OnInit {
             );
             this.dataSource.data = this.students;
             this.totalStudents = this.students.length;
-            this.updateStatusCounts();
             Swal.fire('Deleted!', 'Student has been deleted.', 'success');
             this.toastr.success('Student has been deleted.');
           },

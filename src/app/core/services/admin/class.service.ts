@@ -23,12 +23,12 @@ export class ClassService {
     const url = `${this.baseUrl}?page=${page}&size=${size}`;
     return this.http.get<any>(url);
   }
-  
-  
 
-  findClassById(classId: number): Observable<ClassResponse> {
-    return this.http.get<ClassResponse>(`${this.baseUrl}/${classId}`);
+  findClassById(classId: number, page: number = 1, size: number = 10): Observable<any> {
+    const url = `${this.baseUrl}/${classId}?page=${page}&size=${size}`;
+    return this.http.get<any>(url);
   }
+  
   findAllSubjectByClassId(classId: number): Observable<CourseResponse> {
     const url = `${this.baseUrl}/class/${classId}`;
     return this.http.get<CourseResponse>(url);

@@ -59,8 +59,6 @@ export class ClassComponent implements OnInit {
     const page = this.currentPage() ;
     const size = this.itemsPerPage();
   
-    console.log('Requesting page:', page + 1, 'with size:', size);
-  
     this.classService.findAllClasses(page, size).subscribe({
       next: (data) => {
         console.log('API response:', data);
