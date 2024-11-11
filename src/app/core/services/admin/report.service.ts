@@ -92,9 +92,11 @@ export class ReportService {
                                     if (colIndex % 2 === 0) {
                                         totalDiscussionsNeeded += numericValue;
                                     }
-                                    if (colIndex % 2 !== 0) { 
+                                    if (colIndex % 2 !== 0 && colIndex != 3 && colIndex != 1) {
+                                        console.log(`Cột ${colIndex}: ${numericValue} được cộng vào totalDiscussionsDone`);
                                         totalDiscussionsDone += numericValue;
                                     }
+                                    
                                 }
     
                                 
