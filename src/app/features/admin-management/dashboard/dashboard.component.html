@@ -33,7 +33,7 @@
       <button (click)="fileInput.click()"
         class="bg-gray-400 text-white hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-cyan-200 py-2 px-4 rounded shadow">Import</button>
     </div>
-    <div class="flex gap-4 mb-6">
+    <div class="flex gap-4 mb-8" >
       <!-- Class Selector -->
       <div *ngIf="fileInput">
         <select [(ngModel)]="selectedClass" (change)="onClassChange()"
@@ -62,7 +62,7 @@
     <!-- Report Details -->
     <div *ngIf="filteredReport" class="bg-white p-4 ">
 
-      <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center justify-between mb-8">
         <!-- Thông tin filteredReport bên trái -->
         <small class="pb-3 text-gray-500 text-sm">
           {{ filteredReport.className }} - {{ filteredReport.subject }}
@@ -75,7 +75,7 @@
           <!-- Toggle Detailed View -->
           <button (click)="toggleDetailedView()"
             class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow mr-2"
-            matTooltip="Click to view discussions all" matTooltipPosition="below" matTooltipClass="custom-tooltip">
+            matTooltip="Click to view discussions all" matTooltipPosition="below" matTooltipClass="custom-tooltip" >
             {{ showDetailedView ? "Hide Details" : "Show Details" }}
           </button>
 
@@ -105,6 +105,7 @@
         </div>
       </div>
 
+      <app-line-chart></app-line-chart>
 
       <!-- Detailed Breakdown -->
       <div *ngIf="filteredReport && showDetailedView" class="bg-white p-6 rounded-lg shadow-lg mt-6">

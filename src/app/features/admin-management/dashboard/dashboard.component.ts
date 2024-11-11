@@ -87,8 +87,7 @@ export class DashboardComponent implements OnInit {
     }
     
   }
- 
-
+  
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input && input.files && input.files[0]) {

@@ -72,7 +72,8 @@ import { ImportExamMarkDialogComponent } from './exam-mark/import-exam-mark-dial
 import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/exam-mark-all-subject.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { DropdownModule } from 'primeng/dropdown'; // Import here
+import { DropdownModule } from 'primeng/dropdown';
+import { LineChartComponent } from './dashboard/line-chart/line-chart.component'; // Import here
 
 @NgModule({
 
@@ -130,7 +131,8 @@ import { DropdownModule } from 'primeng/dropdown'; // Import here
     UpdateScheduleComponent,
     RegenerateScheduleComponent,
     ImportExamMarkDialogComponent,
-    ExamMarkAllSubjectComponent
+    ExamMarkAllSubjectComponent,
+    LineChartComponent
   ],
   imports: [
     CommonModule,
