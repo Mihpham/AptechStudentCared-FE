@@ -1,19 +1,11 @@
-/* Container holding each chart and title */
-#attendance, #awareness, #retake, #homework, #communication {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center-aligns chart and text */
-  justify-content: center;
-  text-align: center;
-}
-
-/* Ensures the chart container fills the available space */
-.chart-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin-top: 10px;
-}
-
-
+.tooltip {
+    position: absolute;
+    text-align: center;
+    padding: 8px;
+    background: #333;
+    color: #fff;
+    border-radius: 4px;
+    pointer-events: none;
+    font-size: 12px;
+  }
+  

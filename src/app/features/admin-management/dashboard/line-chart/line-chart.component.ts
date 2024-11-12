@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
@@ -7,96 +7,141 @@ import * as d3 from 'd3';
   styleUrls: ['./line-chart.component.scss']
 })
 export class LineChartComponent implements OnInit {
-  public data = {
-    attendance: { done: 10, needed: 12 },
-    awareness: { done: 1, needed: 1 },
-    retake: { retest: 5, reclass: 6, totalNeeded: 7 },
-    homework: { lateSubmission: { done: 5, needed: 5 }, noSubmission: { done: 5, needed: 6 } },
-    communication: { parentCommunication: { done: 9, needed: 11 }, ahCommunication: { done: 7, needed: 7 } }
-  };
-  public totalStudents = 20; // Add total number of students
+  public categories = [
+    { name: 'Chuyên cần', data: { DiscussionsNeeded: 12, DiscussionsDone: 10 } },
+    { name: 'DSE', data: { DiscussionsNeeded: 15, DiscussionsDone: 10 } },
+    { name: 'BTVN', data: { DiscussionsNeeded: 5, DiscussionsDone: 5 } },
+    { name: 'Thi lại học lại', data: { DiscussionsNeeded: 7, DiscussionsDone: 5 } },
+    { name: 'Giao tiếp và trao đổi', data: { DiscussionsNeeded: 11, DiscussionsDone: 9 } }
+  ];
 
-  constructor(private elementRef: ElementRef) {}
+  private margin = { top: 20, right: 30, bottom: 50, left: 50 };
+  private width = 1150 - this.margin.left - this.margin.right;
+  private height = 400 - this.margin.top - this.margin.bottom;
+  private svg: any;
+  private tooltip: any;
+
+  constructor(private el: ElementRef) {}
 
   ngOnInit(): void {
-    this.drawAllPieCharts();
+    this.createSvg();
+    this.createTooltip();
+    this.drawLineChart();
   }
 
-  @HostListener('window:resize')
-  onResize() {
-    this.clearCharts();
-    this.drawAllPieCharts();
-  }
-
-  private drawAllPieCharts() {
-    this.createPieChart('attendance', [this.data.attendance.done, this.data.attendance.needed]);
-    this.createPieChart('awareness', [this.data.awareness.done, this.data.awareness.needed]);
-    this.createPieChart('retake', [this.data.retake.retest, this.data.retake.reclass]);
-    this.createPieChart('homework', [
-      this.data.homework.lateSubmission.done,
-      this.data.homework.noSubmission.done
-    ]);
-    this.createPieChart('communication', [
-      this.data.communication.parentCommunication.done,
-      this.data.communication.ahCommunication.done
-    ]);
-  }
-
-  private clearCharts() {
-    d3.select(this.elementRef.nativeElement).selectAll('svg').remove();
-  }
-
-  private createPieChart(id: string, data: number[]): void {
-    const container = d3.select(this.elementRef.nativeElement).select(`#${id} .chart-container`);
-    const width = 100;
-    const height = 100;
-    const radius = Math.min(width, height) / 2;
-
-    const color = d3.scaleOrdinal()
-      .domain(data.map(String))
-      .range(['#4CAF50', '#FF9800', '#F44336']);
-
-    const svg = container
+  private createSvg(): void {
+    const element = this.el.nativeElement.querySelector('#line-chart-container');
+    this.svg = d3.select(element)
       .append('svg')
-      .attr('width', width)
-      .attr('height', height)
+      .attr('width', this.width + this.margin.left + this.margin.right)
+      .attr('height', this.height + this.margin.top + this.margin.bottom)
       .append('g')
-      .attr('transform', `translate(${width / 2}, ${height / 2})`);
+      .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
+  }
 
-    const tooltip = d3.select(this.elementRef.nativeElement).append('div')
+  private createTooltip(): void {
+    const element = this.el.nativeElement.querySelector('#line-chart-container');
+    this.tooltip = d3.select(element).append('div')
       .attr('class', 'tooltip')
+      .style('opacity', 0)
       .style('position', 'absolute')
-      .style('visibility', 'hidden')
-      .style('background', '#f4f4f4')
-      .style('padding', '5px')
-      .style('border-radius', '5px')
-      .style('box-shadow', '0 0 5px rgba(0,0,0,0.3)');
+      .style('background-color', 'white')
+      .style('border', '1px solid #d3d3d3')
+      .style('padding', '8px')
+      .style('border-radius', '4px')
+      .style('pointer-events', 'none'); // To prevent flickering
+  }
 
-    const pie = d3.pie<number>().value(d => d);
-    const data_ready = pie(data);
+  private drawLineChart(): void {
+    const totalData = this.categories.map((category) => ({
+      name: category.name,
+      TotalNeeded: category.data.DiscussionsNeeded,
+      TotalDone: category.data.DiscussionsDone
+    }));
 
-    const arc = d3.arc<d3.PieArcDatum<number>>()
-      .innerRadius(0)
-      .outerRadius(radius);
+    const x = d3.scalePoint()
+      .domain(totalData.map(d => d.name))
+      .range([0, this.width]);
 
-    svg
-      .selectAll('path')
-      .data(data_ready)
-      .join('path')
-      .attr('d', arc)
-      .attr('fill', d => color(d.data.toString()) as string)
-      .style('stroke', '#fff')
-      .style('stroke-width', '2px')
-      .on('mouseover', (event, d) => {
-        tooltip.style('visibility', 'visible').text(`Value: ${d.data}`);
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(totalData, d => Math.max(d.TotalNeeded, d.TotalDone))!])
+      .nice()
+      .range([this.height, 0]);
+
+    this.svg.append('g')
+      .attr('transform', `translate(0, ${this.height})`)
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+      .attr("text-anchor", "middle")
+      .attr("transform", "translate(0, 10)");
+
+    this.svg.append('g')
+      .call(d3.axisLeft(y));
+
+    const lineNeeded = d3.line<any>()
+      .x(d => x(d.name)!)
+      .y(d => y(d.TotalNeeded));
+
+    this.svg.append('path')
+      .datum(totalData)
+      .attr('fill', 'none')
+      .attr('stroke', '#fecaca')
+      .attr('stroke-width', 2)
+      .attr('d', lineNeeded);
+
+    const lineDone = d3.line<any>()
+      .x(d => x(d.name)!)
+      .y(d => y(d.TotalDone));
+
+    this.svg.append('path')
+      .datum(totalData)
+      .attr('fill', 'none')
+      .attr('stroke', '#bbf7d0')
+      .attr('stroke-width', 2)
+      .attr('d', lineDone);
+
+    this.svg.selectAll("dotNeeded")
+      .data(totalData)
+      .enter()
+      .append("circle")
+      .attr("cx", (d: { name: string; }) => x(d.name)!)
+      .attr("cy", (d: { TotalNeeded: d3.NumberValue; }) => y(d.TotalNeeded))
+      .attr("r", 5)
+      .attr("fill", "#fecaca")
+      .on("mouseover", (event: MouseEvent, d: any) => {
+        const isSamePoint = d.TotalNeeded === d.TotalDone;
+        const tooltipContent = isSamePoint
+          ? `<strong>${d.name}</strong><br>Total Needed: ${d.TotalNeeded}<br>Total Done: ${d.TotalDone}`
+          : `<strong>${d.name}</strong><br>Total Needed: ${d.TotalNeeded}`;
+
+        this.tooltip
+          .style('opacity', 1)
+          .html(tooltipContent)
+          .style('left', `${event.pageX + 10}px`)
+          .style('top', `${event.pageY - 20}px`);
       })
-      .on('mousemove', (event) => {
-        tooltip
-          .style('top', `${event.pageY - 10}px`)
-          .style('left', `${event.pageX + 10}px`);
+      .on("mouseout", () => this.tooltip.style('opacity', 0));
+
+    this.svg.selectAll("dotDone")
+      .data(totalData)
+      .enter()
+      .append("circle")
+      .attr("cx", (d: { name: string; }) => x(d.name)!)
+      .attr("cy", (d: { TotalDone: d3.NumberValue; }) => y(d.TotalDone))
+      .attr("r", 5)
+      .attr("fill", "#bbf7d0")
+      .on("mouseover", (event: MouseEvent, d: any) => {
+        const isSamePoint = d.TotalNeeded === d.TotalDone;
+        const tooltipContent = isSamePoint
+          ? `<strong>${d.name}</strong><br>Total Needed: ${d.TotalNeeded}<br>Total Done: ${d.TotalDone}`
+          : `<strong>${d.name}</strong><br>Total Done: ${d.TotalDone}`;
+
+        this.tooltip
+          .style('opacity', 1)
+          .html(tooltipContent)
+          .style('left', `${event.pageX + 10}px`)
+          .style('top', `${event.pageY - 20}px`);
       })
-      .on('mouseout', () => {
-        tooltip.style('visibility', 'hidden');
-      });
+      .on("mouseout", () => this.tooltip.style('opacity', 0));
   }
 }
