@@ -7,6 +7,7 @@ import { ClassResponse } from '../../model/class/class-response.model';
 import { AssignEditComponent } from '../assign-edit/assign-edit.component';
 import { ClassService } from './../../../../core/services/admin/class.service';
 import { AuthService } from 'src/app/core/auth/auth.service';
+import { ClassDetailResponse } from '../../model/class/class-detail-respone.model';
 
 @Component({
   selector: 'app-assign-teacher',
@@ -14,7 +15,7 @@ import { AuthService } from 'src/app/core/auth/auth.service';
   styleUrls: ['./assign-teacher.component.scss'],
 })
 export class AssignTeacherComponent implements OnInit {
-  classDetails: ClassResponse | null = null;
+  classDetails: ClassDetailResponse | null = null;
   semesters = ['Sem1', 'Sem2', 'Sem3', 'Sem4'];
   subjectId: string | undefined;
   currentUserRole!: string | null;
@@ -39,7 +40,7 @@ export class AssignTeacherComponent implements OnInit {
 
   getClassDetails(classId: number): void {
     this.classService.findClassById(classId).subscribe(
-      (data: ClassResponse) => {
+      (data: ClassDetailResponse) => {
         this.classDetails = data;
         console.log('Class Details:', this.classDetails); // In thông tin lớp ra console
       },
@@ -49,25 +50,24 @@ export class AssignTeacherComponent implements OnInit {
     );
   }
 
-  getCourseDetails(
-    semester: string
-  ): { subject: string; teacher: string; status: string }[] {
-    const subjects = this.classDetails?.course.semesters[semester] || [];
-    return subjects.map((subject) => {
-      const teacherInfo = this.classDetails?.subjectTeachers.find(
-        (teacher) => teacher.subjectCode === subject
-      );
+  getCourseDetails(semester: string) {
+    const courseSubjects = this.classDetails?.course.semesters[semester] || [];
+    return courseSubjects.map(subject => {
+      // Find the teacher and status for the given subject
+      const teacher = this.classDetails?.subjectTeachers.find(teacher => teacher.subjectCode === subject);
       return {
         subject: subject,
-        teacher: teacherInfo ? teacherInfo.teacherName : 'Not available',
-        status: teacherInfo ? teacherInfo.status : 'Inactive',
+        teacherName: teacher ? teacher.teacherName : 'Not available',  // Fetch the actual teacher name
+        status: teacher ? teacher.status : 'Inactive'  // Fetch the actual status
       };
     });
   }
+  
+  
 
   loadSchedule(detail: {
     subject: string;
-    teacher: string;
+    teacherName: string;
     status: string;
   }): void {
     const classId = this.classDetails?.id;

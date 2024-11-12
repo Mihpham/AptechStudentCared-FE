@@ -126,7 +126,7 @@ export class ExamMarkComponent implements OnInit {
   }
 
   loadClassNames(): void {
-    const page = 0;  // Set the page number (0 for the first page)
+    const page = 1;  // Set the page number (0 for the first page)
     const size = 10; // Set the number of items per page (e.g., 10 items per page)
   
     this.classService.findAllClasses(page, size).subscribe(

@@ -8,6 +8,7 @@ import { StudentService } from 'src/app/core/services/admin/student.service';
 import { StudentUpdateDialogComponent } from '../../student/student-update-dialog/student-update-dialog.component';
 import { AuthService } from 'src/app/core/auth/auth.service';
 import { StudentResponse } from '../../model/student-response.model.';
+import { ClassDetailResponse } from '../../model/class/class-detail-respone.model';
 
 @Component({
   selector: 'app-class-detail',
@@ -51,43 +52,41 @@ export class ClassDetailComponent implements OnInit {
   loadClassDetails(classId: number): void {
     const page = this.currentPage(); // Get current page
     const size = this.itemsPerPage(); // Get items per page
-    
+
     this.classService.findClassById(classId, page, size).subscribe(
-      (data) => {
+      (data: ClassDetailResponse) => {
         this.classDetails = data;
         console.log(this.classDetails);
-        
-        console.log(this.classDetails.content[0]?.center);
-        
+
         this.students = data.students;
-        this.totalStudent = data.totalElements; // total number of students
-        this.totalItems.set(data.totalElements); // total number of items
-        this.totalPages.set(Math.ceil(data.totalElements / size)); // total number of pages
+        this.totalStudent = data.totalElements;  // total number of students from the API
+        this.totalItems.set(this.totalStudent); // Set total items to the total elements (students)
+        this.totalPages.set(Math.ceil(this.totalStudent / size));  // Calculate total pages
       },
       (error) => {
         console.error('Error fetching class details:', error);
       }
     );
-  }
+}
 
   // Change the number of items per page and reset to page 1
   onItemsPerPageChange(newItemsPerPage: number): void {
     this.itemsPerPage.set(newItemsPerPage); // Update items per page
     this.currentPage.set(1); // Reset to page 1
     if (this.classId) {
-      this.loadClassDetails(this.classId); // Reload class details with new page size
+      this.loadClassDetails(this.classId); // Reload class details with the new page size
     }
-  }
+}
 
-  // Pagination methods
-  goToPage(pageNumber: number): void {
+goToPage(pageNumber: number): void {
     if (pageNumber >= 1 && pageNumber <= this.totalPages()) {
       this.currentPage.set(pageNumber); // Set current page
       if (this.classId) {
         this.loadClassDetails(this.classId); // Reload the class details for the new page
       }
     }
-  }
+}
+
 
   goToNextPage(): void {
     if (this.currentPage() < this.totalPages()) {
