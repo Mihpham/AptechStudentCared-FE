@@ -73,7 +73,8 @@ import { ExamMarkAllSubjectComponent } from './exam-mark/exam-mark-all-subject/e
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DropdownModule } from 'primeng/dropdown';
-import { LineChartComponent } from './dashboard/line-chart/line-chart.component'; // Import here
+import { LineChartComponent } from './dashboard/line-chart/line-chart.component';
+import { BarChartComponent } from './dashboard/bar-chart/bar-chart.component'; // Import here
 
 @NgModule({
 
@@ -132,7 +133,8 @@ import { LineChartComponent } from './dashboard/line-chart/line-chart.component'
     RegenerateScheduleComponent,
     ImportExamMarkDialogComponent,
     ExamMarkAllSubjectComponent,
-    LineChartComponent
+    LineChartComponent,
+    BarChartComponent
   ],
   imports: [
     CommonModule,
