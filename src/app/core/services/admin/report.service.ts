@@ -112,29 +112,30 @@ export class ReportService {
                             teacher: mergedValue ?? 'Chưa có môn học',
                             totalStudents: this.columnSums[1],
                             totalDiscussionsNeeded: totalDiscussionsNeeded,
-                            totalDiscussionsDone: totalDiscussionsDone, 
+                            totalDiscussionsDone: totalDiscussionsDone,
                             totalLate: this.columnSums[4],
                             totalAwarenessIssues: this.columnSums[7],
                             latePercentage: (this.columnSums[4] / this.columnSums[1]) * 100,
                             awarenessPercentage: (this.columnSums[8] / this.columnSums[1]) * 100,
                             breakdown: {
-                                late: { done: this.columnSums[4], needed: this.columnSums[5] },
-                                absence: { done: this.columnSums[6], needed: this.columnSums[7] },
-                                awareness: { done: this.columnSums[8], needed: this.columnSums[9] },
-                                competency: { done: this.columnSums[10], needed: this.columnSums[11] },
+                                late: { needed: this.columnSums[4], done: this.columnSums[5] },
+                                absence: { needed: this.columnSums[6], done: this.columnSums[7] },
+                                awareness: { needed: this.columnSums[8], done: this.columnSums[9] },
+                                competency: { needed: this.columnSums[10], done: this.columnSums[11] },
                                 homework: {
-                                    lateSubmission: { done: this.columnSums[12], needed: this.columnSums[13] },
-                                    noSubmission: { done: this.columnSums[14], needed: this.columnSums[15] }
+                                    lateSubmission: { needed: this.columnSums[12], done: this.columnSums[13] },
+                                    noSubmission: { needed: this.columnSums[14], done: this.columnSums[15] }
                                 },
                                 retake: {
-                                    retest: { done: this.columnSums[16], needed: this.columnSums[17] },
-                                    reclass: { done: this.columnSums[18], needed: this.columnSums[19] }
+                                    retest: { needed: this.columnSums[16], done: this.columnSums[17] },
+                                    reclass: { needed: this.columnSums[18], done: this.columnSums[19] }
                                 },
                                 communication: {
-                                    parentCommunication: { done: this.columnSums[20], needed: this.columnSums[21] },
-                                    ahCommunication: { done: this.columnSums[22], needed: this.columnSums[23] }
+                                    parentCommunication: { needed: this.columnSums[20], done: this.columnSums[21] },
+                                    ahCommunication: { needed: this.columnSums[22], done: this.columnSums[23] }
                                 }
-                            }
+                            },
+                         
                         };
     
                         // Thêm dữ liệu báo cáo vào danh sách `reports`
