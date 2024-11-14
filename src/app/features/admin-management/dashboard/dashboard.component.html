@@ -26,7 +26,7 @@
     </div>
   </div>
   <div class="rounded-md shadow-md p-5 bg-gray-50">
-    <h1 class="font-bold">Report</h1>
+    <h1 class="font-bold">Student Progress Dashboard    </h1>
     <!-- Class and Subject Selection -->
     <div class="file-upload mb-6">
       <input type="file" (change)="onFileChange($event)" class="hidden" #fileInput (click)="toggleImportMode()" />
@@ -104,10 +104,6 @@
           </div>
         </div>
       </div>
-      <app-round-chart></app-round-chart>
-      <app-bar-chart></app-bar-chart>
-      <app-line-chart ></app-line-chart>
-
       <!-- Detailed Breakdown -->
       <div *ngIf="filteredReport && showDetailedView" class="bg-white p-6 rounded-lg shadow-lg mt-6">
         <h3 class="text-lg font-semibold mb-3 text-gray-700">
@@ -488,6 +484,9 @@
           </tbody>
         </table>
       </div>
+      <app-round-chart></app-round-chart>
+      <app-bar-chart></app-bar-chart>
+      <app-line-chart ></app-line-chart>
     </div>
   </div>
 </div>

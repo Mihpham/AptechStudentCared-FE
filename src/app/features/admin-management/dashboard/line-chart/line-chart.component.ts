@@ -8,11 +8,11 @@ import * as d3 from 'd3';
 })
 export class LineChartComponent implements OnInit {
   public categories = [
-    { name: 'Chuyên cần', data: { DiscussionsNeeded: 12, DiscussionsDone: 10 } },
-    { name: 'DSE', data: { DiscussionsNeeded: 15, DiscussionsDone: 10 } },
-    { name: 'BTVN', data: { DiscussionsNeeded: 5, DiscussionsDone: 5 } },
-    { name: 'Thi lại học lại', data: { DiscussionsNeeded: 7, DiscussionsDone: 5 } },
-    { name: 'Giao tiếp và trao đổi', data: { DiscussionsNeeded: 11, DiscussionsDone: 9 } }
+    { name: 'ADFD', data: { DiscussionsNeeded: 12 }},
+    { name: 'Project4', data: { DiscussionsNeeded: 15}},
+    { name: 'Skill4', data: { DiscussionsNeeded: 5} },
+    { name: 'HTML', data: { DiscussionsNeeded: 7} },
+    { name: 'JS, Ts', data: { DiscussionsNeeded: 11 } }
   ];
 
   private margin = { top: 20, right: 30, bottom: 50, left: 50 };
@@ -56,7 +56,6 @@ export class LineChartComponent implements OnInit {
     const totalData = this.categories.map((category) => ({
       name: category.name,
       TotalNeeded: category.data.DiscussionsNeeded,
-      TotalDone: category.data.DiscussionsDone
     }));
 
     const x = d3.scalePoint()
@@ -64,7 +63,7 @@ export class LineChartComponent implements OnInit {
       .range([0, this.width]);
 
     const y = d3.scaleLinear()
-      .domain([0, d3.max(totalData, d => Math.max(d.TotalNeeded, d.TotalDone))!])
+      .domain([0, d3.max(totalData, d => Math.max(d.TotalNeeded))!])
       .nice()
       .range([this.height, 0]);
 
@@ -122,26 +121,5 @@ export class LineChartComponent implements OnInit {
       })
       .on("mouseout", () => this.tooltip.style('opacity', 0));
 
-    this.svg.selectAll("dotDone")
-      .data(totalData)
-      .enter()
-      .append("circle")
-      .attr("cx", (d: { name: string; }) => x(d.name)!)
-      .attr("cy", (d: { TotalDone: d3.NumberValue; }) => y(d.TotalDone))
-      .attr("r", 5)
-      .attr("fill", "#bbf7d0")
-      .on("mouseover", (event: MouseEvent, d: any) => {
-        const isSamePoint = d.TotalNeeded === d.TotalDone;
-        const tooltipContent = isSamePoint
-          ? `<strong>${d.name}</strong><br>Total Needed: ${d.TotalNeeded}<br>Total Done: ${d.TotalDone}`
-          : `<strong>${d.name}</strong><br>Total Done: ${d.TotalDone}`;
-
-        this.tooltip
-          .style('opacity', 1)
-          .html(tooltipContent)
-          .style('left', `${event.pageX + 10}px`)
-          .style('top', `${event.pageY - 20}px`);
-      })
-      .on("mouseout", () => this.tooltip.style('opacity', 0));
   }
 }
