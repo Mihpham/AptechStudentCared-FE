@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ReportService } from 'src/app/core/services/admin/report.service';
 import { ReportData } from '../model/report/report.model';
 import { ClassResponse } from '../model/class/class-response.model';
@@ -13,16 +13,18 @@ import { AuthService } from 'src/app/core/auth/auth.service';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { StudentResponse } from '../model/student-response.model.';
 import * as XLSX from 'xlsx';
+import * as d3 from 'd3';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
+  @ViewChild('chart', { static: true }) private chartContainer: ElementRef | undefined;
   classes: string[] = [];
   subjectsByClass: { [key: string]: string[] } = {};
   selectedClass: string = '';// Single selection for class
-  selectedSubject: string | null = null; // Single selection for subject
+  selectedSubject: string = '';
   filteredReport: ReportData | null = null;
   showDetailedView: boolean = false;
   showViewDiscussionsNeeded: boolean = false;
@@ -31,6 +33,8 @@ export class DashboardComponent implements OnInit {
   teachers: TeacherResponse[] = [];
   students: StudentResponse[] = [];
   sros: SroResponse[] = [];
+  averageRates: { [className: string]: { [subject: string]: any } } = {};
+  averageRatesDay: { [className: string]: { [subject: string]: any } } = {};
   totalStudents: number = 0;
   totalClasses: number = 0;
   totalTeacher: number = 0;
@@ -59,6 +63,7 @@ export class DashboardComponent implements OnInit {
       'Trao đổi với AH': { 'Đã trao đổi': 0, 'Cần trao đổi': 0 },
     },
   };
+  
   constructor(
     private reportService: ReportService,
     private classService: ClassService,
@@ -76,16 +81,6 @@ export class DashboardComponent implements OnInit {
     // this.loadSro();
 
     this.currentUserRole = this.authService.getRole();
-    // const reports = this.reportService.getAllReports();
-    // console.log("reports" ,reports)
-    // this.populateClassAndSubjectLists(reports);
-    // if (reports && reports.length > 0) {
-    //   const lastReport = reports[reports.length - 1];
-    //   this.selectedClass = lastReport.className;
-    //   this.selectedSubject = lastReport.subject;
-    //   this.filterReports();
-    // }
-    
   }
   
   onFileChange(event: Event) {
@@ -103,7 +98,12 @@ export class DashboardComponent implements OnInit {
         // Cập nhật danh sách báo cáo và lọc báo cáo sau khi xử lý
         const reports = this.reportService.getAllReports();
         this.populateClassAndSubjectLists(reports);
+
         if (reports.length > 0) {
+          this.averageRates = this.reportService.calculateAverageRates();
+          this.averageRatesDay = this.reportService.groupByClassAndSubject();
+          
+          console.log(this.averageRatesDay);
           const lastReport = reports[reports.length - 1];
           this.selectedClass = lastReport.className;
           this.selectedSubject = lastReport.subject;
@@ -208,7 +208,7 @@ export class DashboardComponent implements OnInit {
   
 
   onClassChange(): void {
-    this.selectedSubject = null; // Reset subject when class changes
+    this.selectedSubject = ''; // Reset subject when class changes
     this.filteredReport = null; // Clear filtered report
     this.showDetailedView = false; // Reset view flags
     this.showViewDiscussionsNeeded = false;
@@ -230,5 +230,5 @@ export class DashboardComponent implements OnInit {
     this.showViewDiscussionsNeededDone = !this.showViewDiscussionsNeededDone;
   }
 
-   
+  
 }

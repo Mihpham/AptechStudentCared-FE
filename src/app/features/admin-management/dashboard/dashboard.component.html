@@ -105,8 +105,11 @@
         </div>
       </div>
       <app-round-chart></app-round-chart>
-      <app-bar-chart></app-bar-chart>
-      <app-line-chart ></app-line-chart>
+      <!-- <app-bar-chart></app-bar-chart>  -->
+        <app-bar-chart [selectedClass]="selectedClass" [averageRates]="averageRates"></app-bar-chart>
+      <app-line-chart [selectedClass]="selectedClass" [selectedSubject]="selectedSubject" [averageRatesDay]="averageRatesDay"></app-line-chart>
+
+
 
       <!-- Detailed Breakdown -->
       <div *ngIf="filteredReport && showDetailedView" class="bg-white p-6 rounded-lg shadow-lg mt-6">
