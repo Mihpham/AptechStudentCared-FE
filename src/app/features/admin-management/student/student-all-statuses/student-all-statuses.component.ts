@@ -90,6 +90,7 @@ export class StudentAllStatusesComponent implements OnInit {
       this.dataSource.data = data.content;
     });
   }
+  
   loadStatusCounts(): void {
     const page = this.currentPage();
     const size = this.itemsPerPage();

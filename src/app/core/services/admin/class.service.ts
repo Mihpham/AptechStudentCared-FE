@@ -10,6 +10,7 @@ import {
   StudentPerformanceApiResponse,
 } from 'src/app/features/admin-management/model/student-performance/student-performance-response.model';
 import { ToastrService } from 'ngx-toastr';
+import { PaginatedClassResponse } from 'src/app/features/admin-management/model/class/pagination-class-response';
 
 @Injectable({
   providedIn: 'root',
@@ -23,11 +24,27 @@ export class ClassService {
     const url = `${this.baseUrl}?page=${page}&size=${size}`;
     return this.http.get<any>(url);
   }
+  
+  getClassCountBySemester(): Observable<any> {
+    const url = `${this.baseUrl}/semester`;
+    return this.http.get<any>(url);
+  }
+
+   // Search classes by class name (with pagination)
+  
+   searchClass(queryParams: any): Observable<PaginatedClassResponse> {
+    const params = new HttpParams({ fromObject: queryParams });
+    return this.http.get<PaginatedClassResponse>(`${this.baseUrl}/search`, { params });
+  }
 
   findClassById(classId: number, page: number = 1, size: number = 10): Observable<any> {
     const url = `${this.baseUrl}/${classId}?page=${page}&size=${size}`;
     return this.http.get<any>(url);
   }
+  getClassByStatus(status: string, pageIndex: number, pageSize: number): Observable<ClassResponse> {
+    const params = new HttpParams().set('page', (pageIndex).toString()).set('size', pageSize.toString());
+    return this.http.get<ClassResponse>(`${this.baseUrl}/status/${status}`, { params });
+  }  
   
   findAllSubjectByClassId(classId: number): Observable<CourseResponse> {
     const url = `${this.baseUrl}/class/${classId}`;

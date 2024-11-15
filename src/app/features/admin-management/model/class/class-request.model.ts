@@ -1,4 +1,4 @@
-import { DayOfWeek } from "src/app/core/enum/DayOfWeek";
+import { DayOfWeek } from 'src/app/core/enum/DayOfWeek';
 
 export interface ClassRequest {
   id: number;
@@ -11,6 +11,5 @@ export interface ClassRequest {
   sem: string;
   teacherName: string;
   courseCode: string;
-
   createdAt?: Date;
 }

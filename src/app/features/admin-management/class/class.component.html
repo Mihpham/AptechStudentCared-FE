@@ -34,38 +34,43 @@
         <span class="text-gray-600">Scheduled</span>
       </div>
     </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+      <div
+        *ngFor="let semester of classCounts"
+        [ngClass]="
+          getBgColor(semester.semester) +
+          ' p-6 rounded-md shadow-md flex flex-col items-center justify-center'
+        "
+      >
+        <!-- Display the count for the semester -->
+        <span class="text-3xl font-bold">{{ semester.count }}</span>
+        <span class="text-gray-600">{{ semester.semester }}</span>
+      </div>
+    </div>
   </div>
 
   <!-- Semester Counts -->
   <div class="flex justify-between">
-    <!-- Buttons -->
-    <div class="flex flex-wrap justify-start space-x-2 mb-6 mt-6">
-      <div
-        class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow"
-      >
-        <span class="font-bold">{{ semesterCounts().Sem1 }}</span>
-        <span class="text-gray-600">-SEM1</span>
-      </div>
-      <div
-        class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow"
-      >
-        <span class="font-bold">{{ semesterCounts().Sem2 }}</span>
-        <span class="text-gray-600">-SEM2</span>
-      </div>
-      <div
-        class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow"
-      >
-        <span class="font-bold">{{ semesterCounts().Sem3 }}</span>
-        <span class="text-gray-600">-SEM3</span>
-      </div>
-      <div
-        class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow"
-      >
-        <span class="font-bold">{{ semesterCounts().Sem4 }}</span>
-        <span class="text-gray-600">-SEM4</span>
+    <div class="flex flex-wrap gap-4">
+      <!-- Roll Number Search -->
+      <div class="relative w-full">
+        <input
+          id="className"
+          type="text"
+          placeholder=""
+          [(ngModel)]="searchTerm.className"
+          (ngModelChange)="applyFilter()"
+          class="peer w-full h-12 px-4 py-2 dark:bg-gray-800 bg-white placeholder-transparent text-gray-700 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300 ease-in-out"
+        />
+        <label
+          for="searchClassName"
+          class="absolute left-4 top-2 text-gray-500 dark:text-gray-400 text-sm transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-blue-500 peer-focus:text-xs"
+        >
+          Class Name
+        </label>
       </div>
     </div>
-
+    <!-- Buttons -->
     <!-- Buttons -->
     <div class="flex flex-wrap justify-end space-x-2 mb-6 mt-6">
       <button

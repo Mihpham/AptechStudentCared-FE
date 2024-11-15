@@ -15,4 +15,5 @@ export interface ClassResponse {
     sem: string;
     subjectTeachers: SubjectTeacherResponse[]; 
     course: CourseResponse;
+    totalElements:number;
 }
