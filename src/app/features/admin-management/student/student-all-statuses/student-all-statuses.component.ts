@@ -1,42 +1,49 @@
 import {
   Component,
   OnInit,
-  ViewChild,
-  AfterViewInit,
   signal,
+  ViewChild
 } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
-import { StudentAddComponent } from '../student-add/student-add.component';
-import { StudentUpdateDialogComponent } from '../student-update-dialog/student-update-dialog.component';
-import { StudentRequest } from '../../model/studentRequest.model';
-import * as XLSX from 'xlsx';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute, Router } from '@angular/router';
 import { saveAs } from 'file-saver';
 import { ToastrService } from 'ngx-toastr';
-import { Router, ActivatedRoute } from '@angular/router';
-import { StudentResponse } from '../../model/student-response.model.';
-import Swal from 'sweetalert2';
-import { StudentService } from 'src/app/core/services/admin/student.service';
-import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { ImportStudentDialogComponent } from '../import-student-dialog/import-student-dialog.component';
 import { AuthService } from 'src/app/core/auth/auth.service';
+import { StudentService } from 'src/app/core/services/admin/student.service';
+import Swal from 'sweetalert2';
+import * as XLSX from 'xlsx';
+import { PaginatedStudentResponse } from '../../model/pagination-response';
+import { StudentResponse } from '../../model/student-response.model.';
+import { StudentRequest } from '../../model/studentRequest.model';
+import { ImportStudentDialogComponent } from '../import-student-dialog/import-student-dialog.component';
+import { StudentAddComponent } from '../student-add/student-add.component';
+import { StudentUpdateDialogComponent } from '../student-update-dialog/student-update-dialog.component';
 
 @Component({
   selector: 'app-student-all-statuses',
   templateUrl: './student-all-statuses.component.html',
   styleUrls: ['./student-all-statuses.component.scss'],
 })
-export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
+export class StudentAllStatusesComponent implements OnInit {
   students: StudentResponse[] = [];
   selectedStudent: StudentRequest | undefined;
   totalStudents: number = 0;
-  searchTerm: string = '';
-  className: string | null = null; // Thay đổi kiểu thành string | null
+  className: string | null = null;
   statusCounts = signal({ studying: 0, delay: 0, dropped: 0, graduated: 0 });
   selectedFile: File | null = null;
   isImportVisible: boolean = false;
   currentUserRole!: string | null;
+  currentPage = signal(1);
+  itemsPerPage = signal(10);
+  totalPages = signal(0);
+  searchTerm: { rollNumber: string; fullName: string; email: string; status: string } = {
+    rollNumber: '',
+    fullName: '',
+    email: '',
+    status: ''
+  };
 
   displayedColumns: string[] = [
     'avatar',
@@ -48,6 +55,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
     'status',
     'actions',
   ];
+
   dataSource: MatTableDataSource<StudentResponse> =
     new MatTableDataSource<StudentResponse>();
 
@@ -65,91 +73,141 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.currentUserRole = this.authService.getRole();
-
     this.route.queryParams.subscribe((params) => {
-      this.className = params['className'] || null; // Nhận tên lớp từ query params
+      this.className = params['className'] || null;
     });
+    this.loadStudent();
+    this.loadStatusCounts();
   }
 
   loadStudent(): void {
-    if (this.paginator) {
-      const pageIndex = this.paginator.pageIndex;
-      const pageSize = this.paginator.pageSize;
-  
-      this.studentService.getAllStudents(pageIndex, pageSize).subscribe((data) => {
-        console.log('Data received from API:', data);
-  
-        // Nếu data là mảng, gán trực tiếp vào dataSource.data
-        if (Array.isArray(data)) {
-          this.dataSource.data = data; // Cập nhật dữ liệu cho MatTableDataSource
-          this.totalStudents = data.length; // Cập nhật tổng số sinh viên (sử dụng length của mảng)
-          
-          // Cập nhật paginator (nếu cần)
-          if (this.paginator) {
-            this.paginator.length = this.totalStudents;
-          }
-        } else {
-          this.dataSource.data = [];
-          this.totalStudents = 0;
-        }
-  
-        this.updateStatusCounts(); // Cập nhật số lượng trạng thái sinh viên
-      });
-    }
-}
-
-
-  
-  
-  updateStatusCounts(): void {
-    // Đảm bảo this.students là mảng trước khi gọi forEach
-    if (Array.isArray(this.students)) {
-      const counts = { studying: 0, delay: 0, dropped: 0, graduated: 0 };
-  
-      this.students.forEach((student) => {
-        if (student.status === 'STUDYING') counts.studying++;
-        if (student.status === 'DELAY') counts.delay++;
-        if (student.status === 'DROPPED') counts.dropped++;
-        if (student.status === 'GRADUATED') counts.graduated++;
-      });
-  
-      this.statusCounts.set(counts); // Cập nhật trạng thái
-    } else {
-      console.error('students is not an array:', this.students);
-    }
-  }
-  
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator; // Gán paginator sau khi view đã được khởi tạo
-  
-    // Lắng nghe sự thay đổi của paginator (chuyển trang hoặc thay đổi kích thước trang)
-    this.paginator.page.subscribe(() => {
-      this.loadStudent(); // Gọi lại hàm loadStudent với các tham số phân trang mới
+    const page = this.currentPage();
+    const size = this.itemsPerPage();
+    this.studentService.getAllStudents(page, size).subscribe((data: PaginatedStudentResponse) => {
+      console.log('Data received from API:', data);
+      this.totalStudents = data.totalElements;
+      this.totalPages.set(data.totalPages);
+      this.dataSource.data = data.content;
     });
-  
-    this.loadStudent(); // Tải dữ liệu ban đầu khi component được khởi tạo
   }
   
+  loadStatusCounts(): void {
+    const page = this.currentPage();
+    const size = this.itemsPerPage();
   
+    this.studentService.getStudentsByStatus('STUDYING', page, size).subscribe(
+      (data: PaginatedStudentResponse) => {
+        this.statusCounts.set({ ...this.statusCounts(), studying: data.totalElements });
+      },
+      (error) => {
+        console.error('Error fetching STUDYING count:', error);
+        this.toastr.error('Failed to load STUDYING students');
+      }
+    );
   
+    this.studentService.getStudentsByStatus('DELAY', page, size).subscribe(
+      (data: PaginatedStudentResponse) => {
+        this.statusCounts.set({ ...this.statusCounts(), delay: data.totalElements });
+      },
+      (error) => {
+        console.error('Error fetching DELAY count:', error);
+        this.toastr.error('Failed to load DELAY students');
+      }
+    );
+  
+    this.studentService.getStudentsByStatus('DROPPED', page, size).subscribe(
+      (data: PaginatedStudentResponse) => {
+        this.statusCounts.set({ ...this.statusCounts(), dropped: data.totalElements });
+      },
+      (error) => {
+        console.error('Error fetching DROPPED count:', error);
+        this.toastr.error('Failed to load DROPPED students');
+      }
+    );
+  
+    this.studentService.getStudentsByStatus('GRADUATED', page, size).subscribe(
+      (data: PaginatedStudentResponse) => {
+        this.statusCounts.set({ ...this.statusCounts(), graduated: data.totalElements });
+      },
+      (error) => {
+        console.error('Error fetching GRADUATED count:', error);
+        this.toastr.error('Failed to load GRADUATED students');
+      }
+    );
+  }
   
 
-  applyFilter(filterValue: string): void {
-    this.dataSource.filterPredicate = (
-      data: StudentResponse,
-      filter: string
-    ) => {
-      const filterLowerCase = filter.toLowerCase();
-      return (
-        data.fullName.toLowerCase().includes(filterLowerCase) ||
-        data.className?.toLowerCase().includes(filterLowerCase) ||
-        data.email.toLowerCase().includes(filterLowerCase) ||
-        data.status.toLowerCase().includes(filterLowerCase) ||
-        data.phoneNumber.toLowerCase().includes(filterLowerCase) ||
-        data.rollNumber.toLowerCase().includes(filterLowerCase)
-      );
-    };
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  applyFilter(): void {
+    const page = this.currentPage();
+    const size = this.itemsPerPage();
+    
+    const queryParams: any = {};
+  
+    if (this.searchTerm.rollNumber.trim()) {
+      queryParams.rollNumber = this.searchTerm.rollNumber.trim();
+    }
+  
+    if (this.searchTerm.fullName.trim()) {
+      queryParams.fullName = this.searchTerm.fullName.trim();
+    }
+  
+    if (this.searchTerm.email.trim()) {
+      queryParams.email = this.searchTerm.email.trim();
+      
+    }
+    
+    queryParams.page = page;
+    queryParams.size = size;
+  
+    this.studentService.searchStudents(queryParams).subscribe(
+      (data: PaginatedStudentResponse) => {
+        console.log('Data received from search API:', data);
+        this.totalStudents = data.totalElements;
+        this.totalPages.set(data.totalPages);
+        this.dataSource.data = data.content;
+      },
+      error => {
+        console.error('Error during search:', error);
+        this.toastr.error('Error occurred while searching students');
+      }
+    );
+  }
+
+  onItemsPerPageChange(newItemsPerPage: number): void {
+    this.itemsPerPage.set(newItemsPerPage);
+    this.currentPage.set(1);
+    this.loadStudent();
+  }
+
+  goToPage(pageNumber: number): void {
+    if (pageNumber >= 1 && pageNumber <= this.totalPages()) {
+      this.currentPage.set(pageNumber);
+      this.loadStudent();
+    }
+  }
+
+  goToNextPage(): void {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.set(this.currentPage() + 1);
+      this.loadStudent();
+    }
+  }
+
+  goToPreviousPage(): void {
+    if (this.currentPage() > 1) {
+      this.currentPage.set(this.currentPage() - 1);
+      this.loadStudent();
+    }
+  }
+
+  goToFirstPage(): void {
+    this.currentPage.set(1);
+    this.loadStudent();
+  }
+
+  goToLastPage(): void {
+    this.currentPage.set(this.totalPages());
+    this.loadStudent();
   }
 
   onImport(): void {
@@ -159,11 +217,10 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result && result.reload) {
-        this.loadStudent(); // Reload student data after import
+        this.loadStudent();
       }
     });
   }
-  
 
   onRowClick(event: MouseEvent, student: StudentRequest): void {
     this.currentUserRole === 'ROLE_ADMIN'
@@ -172,7 +229,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   }
 
   onStudentAdded() {
-    this.loadStudent(); // Tải lại danh sách sinh viên khi nhận được sự kiện
+    this.loadStudent();
   }
 
   onAdd(): void {
@@ -187,7 +244,6 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   }
 
   onUpdate(student: StudentResponse, event: Event): void {
-    // Use StudentResponse here
     event.stopPropagation();
     const dialogRef = this.dialog.open(StudentUpdateDialogComponent, {
       width: '650px',
@@ -202,11 +258,11 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
             (s) => s.userId === updatedStudent.userId
           );
           if (index !== -1) {
-            this.students[index] = updatedStudent; // updatedStudent should have classId
+            this.students[index] = updatedStudent;
             this.dataSource.data = [...this.students];
-            this.updateStatusCounts();
           } else {
             this.loadStudent();
+            this.loadStatusCounts();
           }
         }
       });
@@ -232,8 +288,7 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
   }
 
   onDelete(userId: number, event: Event): void {
-    event.stopPropagation(); // Prevent the row click event from firing
-
+    event.stopPropagation();
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -248,14 +303,11 @@ export class StudentAllStatusesComponent implements OnInit, AfterViewInit {
         this.studentService.deleteStudent(userId).subscribe({
           next: () => {
             console.log(`Student with ID ${userId} deleted`);
-
             this.students = this.students.filter(
               (student) => student.userId !== userId
             );
             this.dataSource.data = this.students;
             this.totalStudents = this.students.length;
-            this.updateStatusCounts(); // Cập nhật số lượng sau khi xóa
-
             Swal.fire('Deleted!', 'Student has been deleted.', 'success');
             this.toastr.success('Student has been deleted.');
           },

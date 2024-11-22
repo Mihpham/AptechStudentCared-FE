@@ -4,10 +4,12 @@ import {
   HttpClient,
   HttpErrorResponse,
   HttpHeaders,
+  HttpParams,
 } from '@angular/common/http';
 import { UserEnviroment } from 'src/app/environments/environment';
 import { StudentRequest } from 'src/app/features/admin-management/model/studentRequest.model';
 import { StudentResponse } from 'src/app/features/admin-management/model/student-response.model.';
+import { PaginatedStudentResponse } from 'src/app/features/admin-management/model/pagination-response';
 
 @Injectable({
   providedIn: 'root',
@@ -21,16 +23,20 @@ export class StudentService {
     'Content-Type': 'application/json',
   });
 
-  getAllStudents(page: number, size: number): Observable<StudentResponse[]> {
-    const url = `${this.baseUrl}?page=${page}&size=${size}`;
-    return this.http.get<StudentResponse[]>(url);
+  getAllStudents(pageIndex: number, pageSize: number): Observable<PaginatedStudentResponse> {
+    return this.http.get<PaginatedStudentResponse>(`${this.baseUrl}?page=${pageIndex}&size=${pageSize}`);
   }
   
+  searchStudents(queryParams: any): Observable<PaginatedStudentResponse> {
+    const params = new HttpParams({ fromObject: queryParams });
+    return this.http.get<PaginatedStudentResponse>(`${this.baseUrl}/search`, { params });
+  }
   
 
-  getStudentsByStatus(status: string): Observable<StudentResponse[]> {
-    return this.http.get<StudentResponse[]>(`${this.baseUrl}/status/${status}`);
-  }
+  getStudentsByStatus(status: string, pageIndex: number, pageSize: number): Observable<PaginatedStudentResponse> {
+    const params = new HttpParams().set('page', (pageIndex).toString()).set('size', pageSize.toString());
+    return this.http.get<PaginatedStudentResponse>(`${this.baseUrl}/status/${status}`, { params });
+  }  
 
   importStudents(file: File): Observable<any> {
     const formData: FormData = new FormData();

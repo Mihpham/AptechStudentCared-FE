@@ -38,7 +38,7 @@
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-200 dark:text-gray-200 dark:bg-gray-600">
-        <tr *ngFor="let student of filteredStudents | paginate: { itemsPerPage: pageSize, currentPage: page }"
+        <tr *ngFor="let student of filteredStudents"
           class="hover:bg-gray-50 transition-colors duration-150 ease-in-out">
           <td class="py-4 px-4 text-sm">{{ student.rollNumber }}</td>
           <td class="py-4 px-4 text-sm">{{ student.fullName }}</td>
@@ -52,32 +52,57 @@
   </div>
 
   <!-- Pagination -->
-  <div class="flex items-center justify-between p-4 mt-4 rounded-lg bg-white dark:bg-gray-700 border-t border-gray-200 dark:border-gray-700">
-    <div class="flex items-center space-x-6 ml-auto">
-      <div class="flex items-center space-x-4 mr-3">
-        <span class="text-gray-700 dark:text-gray-300">Items per page:</span>
-        <select class="block w-20 p-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-white"
-          [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange($event)">
-          <option *ngFor="let option of [5, 10, 20]" [value]="option">{{ option }}</option>
-        </select>
-      </div>
-      <div class="text-gray-700 dark:text-gray-300 mr-10 ml-10">
-        Page {{ currentPage() }} of {{ totalPages() }}
-      </div>
-      <div class="flex items-center space-x-4 ">
-        <button (click)="goToFirstPage()" [disabled]="currentPage() === 1" class="btn btn-primary dark:text-gray-200">
-          <i class="fas fa-angle-double-left mr-3 ml-3"></i>
-        </button>
-        <button (click)="goToPreviousPage()" [disabled]="currentPage() === 1" class="btn btn-primary dark:text-gray-200">
-          <i class="fa-solid fa-chevron-left mr-3 ml-3"></i>
-        </button>
-        <button (click)="goToNextPage()" [disabled]="currentPage() === totalPages()" class="btn btn-primary dark:text-gray-200">
-          <i class="fa-solid fa-chevron-right mr-3 ml-3"></i>
-        </button>
-        <button (click)="goToLastPage()" [disabled]="currentPage() === totalPages()" class="btn btn-primary dark:text-gray-200">
-          <i class="fas fa-angle-double-right mr-3 ml-3"></i>
-        </button>
-      </div>
+  <div
+  class="flex items-center justify-between p-4 mt-4 rounded-lg bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700"
+>
+  <div class="flex items-center space-x-6 ml-auto">
+    <div class="flex items-center space-x-4 mr-3">
+      <span class="text-gray-700 dark:text-gray-300">Items per page:</span>
+      <select
+        class="block w-20 p-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-white"
+        [ngModel]="itemsPerPage()"
+        (ngModelChange)="onItemsPerPageChange($event)"
+      >
+        <option *ngFor="let option of [5, 10, 20]" [value]="option">
+          {{ option }}
+        </option>
+      </select>
+    </div>
+    <div class="text-gray-700 dark:text-gray-300 mr-10 ml-10">
+      Page {{ currentPage() }} of {{ totalPages() }}
+    </div>
+
+    <div class="flex items-center space-x-4">
+      <button
+        (click)="goToFirstPage()"
+        [disabled]="currentPage() === 1"
+        class="btn btn-primary dark:text-gray-200 disabled:opacity-20 disabled:cursor-not-allowed"
+      >
+        <i class="fas fa-angle-double-left mr-3 ml-3"></i>
+      </button>
+      <button
+        (click)="goToPreviousPage()"
+        [disabled]="currentPage() === 1"
+        class="btn btn-primary dark:text-gray-200 disabled:opacity-20 disabled:cursor-not-allowed"
+      >
+        <i class="fa-solid fa-chevron-left mr-3 ml-3"></i>
+      </button>
+      <button
+        (click)="goToNextPage()"
+        [disabled]="currentPage() === totalPages()"
+        class="btn btn-primary dark:text-gray-200 disabled:opacity-20 disabled:cursor-not-allowed"
+      >
+        <i class="fa-solid fa-chevron-right mr-3 ml-3"></i>
+      </button>
+
+      <button
+        (click)="goToLastPage()"
+        [disabled]="currentPage() === totalPages()"
+        class="btn btn-primary dark:text-gray-200 disabled:opacity-20 disabled:cursor-not-allowed"
+      >
+        <i class="fas fa-angle-double-right mr-3 ml-3"></i>
+      </button>
     </div>
   </div>
+</div>
 </div>

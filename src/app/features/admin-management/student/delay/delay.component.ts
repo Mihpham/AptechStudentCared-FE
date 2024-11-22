@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { StudentResponse } from '../../model/student-response.model.';
 import { StudentService } from 'src/app/core/services/admin/student.service';
+import { PaginatedStudentResponse } from '../../model/pagination-response';
 
 @Component({
   selector: 'app-delay',
@@ -11,25 +12,27 @@ export class DelayComponent {
   students: StudentResponse[] = [];
   filteredStudents: StudentResponse[] = [];
   selectedStatus: string = 'DELAY'; // Default status
-  page: number = 1; // Current page number
-  pageSize: number = 5; // Default page size (number of items per page)
-  totalItems: number = 0; // Total number of items for pagination
   totalStudents: number = 0;
+  currentPage = signal(1);
+  itemsPerPage = signal(10);
+  totalPages = signal(0);
+  totalItems = signal(0);
+
 
   constructor(private studentService: StudentService) { }
 
   ngOnInit(): void {
-    this.getStudentsByStatus(this.selectedStatus);
+    this.getStudentsByStatus(this.selectedStatus, this.currentPage(), this.itemsPerPage());
   }
 
-  // Fetch students by their status
-  getStudentsByStatus(status: string): void {
-    this.studentService.getStudentsByStatus(status).subscribe(
-      (data: StudentResponse[]) => {
-        this.students = data;
-        this.totalStudents = this.students.length;
-        this.filteredStudents = data;
-        this.totalItems = this.filteredStudents.length; // Update total number of items
+  getStudentsByStatus(status: string, pageIndex: number, pageSize: number): void {
+    this.studentService.getStudentsByStatus(status, pageIndex, pageSize).subscribe(
+      (data: PaginatedStudentResponse) => {
+        this.students = data.content; 
+        this.filteredStudents = this.students; 
+        this.totalStudents=data.totalElements;
+        this.totalItems.set(data.totalElements); 
+        this.totalPages.set(data.totalPages); 
       },
       (error) => {
         console.error('Error fetching students by status', error);
@@ -37,60 +40,59 @@ export class DelayComponent {
     );
   }
 
-  // Change the page size (items per page)
-  onPageSizeChange(newPageSize: number): void {
-    this.pageSize = newPageSize;
-    this.page = 1; // Reset to the first page when page size changes
+   onItemsPerPageChange(newItemsPerPage: number): void {
+    this.itemsPerPage.set(newItemsPerPage);
+    this.currentPage.set(1); // Reset to first page on page size change
+    this.getStudentsByStatus(this.selectedStatus, this.currentPage(), this.itemsPerPage());
   }
 
-  // Handle filtering by keyword
   onFilterChange(event: any): void {
     const keyword = event.target.value.toLowerCase();
     this.filteredStudents = this.students.filter(student =>
       student.fullName.toLowerCase().includes(keyword) ||
-      student.email.toLowerCase().includes(keyword)||
-      student.rollNumber.toLowerCase().includes(keyword)||
+      student.email.toLowerCase().includes(keyword) ||
+      student.rollNumber.toLowerCase().includes(keyword) ||
       student.className.toLowerCase().includes(keyword)
-
     );
-    this.totalItems = this.filteredStudents.length; // Update the total number of items after filtering
+    this.totalItems.set(this.filteredStudents.length); // Update total items after filtering
   }
 
-  
-  // Navigate to the first page
-  goToFirstPage(): void {
-    this.page = 1;
-  }
-
-  // Navigate to the previous page
-  goToPreviousPage(): void {
-    if (this.page > 1) {
-      this.page--;
+  // Navigate to the selected page
+  goToPage(pageNumber: number): void {
+    if (pageNumber >= 1 && pageNumber <= this.totalPages()) {
+      this.currentPage.set(pageNumber);
+      this.getStudentsByStatus(this.selectedStatus, this.currentPage(), this.itemsPerPage());
     }
   }
 
   // Navigate to the next page
   goToNextPage(): void {
-    if (this.page < this.totalPages()) {
-      this.page++;
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.set(this.currentPage() + 1);
+      this.getStudentsByStatus(this.selectedStatus, this.currentPage(), this.itemsPerPage());
     }
+  }
+
+  // Navigate to the previous page
+  goToPreviousPage(): void {
+    if (this.currentPage() > 1) {
+      this.currentPage.set(this.currentPage() - 1);
+      this.getStudentsByStatus(this.selectedStatus, this.currentPage(), this.itemsPerPage());
+    }
+  }
+
+  // Navigate to the first page
+  goToFirstPage(): void {
+    this.currentPage.set(1);
+    this.getStudentsByStatus(this.selectedStatus, this.currentPage(), this.itemsPerPage());
   }
 
   // Navigate to the last page
   goToLastPage(): void {
-    this.page = this.totalPages();
+    this.currentPage.set(this.totalPages());
+    this.getStudentsByStatus(this.selectedStatus, this.currentPage(), this.itemsPerPage());
   }
-
-  // Calculate the total number of pages
-  totalPages(): number {
-    return Math.ceil(this.totalItems / this.pageSize);
-  }
-
-  // Get the current page
-  currentPage(): number {
-    return this.page;
-  }
-
+  
   // Export the filtered student data to CSV
   exportToCSV(): void {
     const csvData = this.filteredStudents.map(student => ({

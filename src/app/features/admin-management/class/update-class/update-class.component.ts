@@ -9,6 +9,7 @@ import { ClassResponse } from '../../model/class/class-response.model';
 import { DayOfWeek } from 'src/app/core/enum/DayOfWeek';
 import { SubjectTeacherResponse } from '../../model/class/subject-teacher-response.model';
 import { AuthService } from 'src/app/core/auth/auth.service';
+import { ClassDetailResponse } from '../../model/class/class-detail-respone.model';
 
 @Component({
   selector: 'app-update-class',
@@ -37,6 +38,7 @@ export class UpdateClassComponent implements OnInit {
   selectedDays: DayOfWeek[] = [];
   isLoading = false;
   courses: CourseResponse[] = [];
+  currentUserRole!: string | null;
 
   constructor(
     private route: ActivatedRoute,
@@ -49,12 +51,14 @@ export class UpdateClassComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUserRole = this.authService.getRole();
-
     this.loadInitialData();
+
     const classId = +this.route.snapshot.paramMap.get('id')!;
     if (classId) {
       this.classService.findClassById(classId).subscribe({
-        next: (data: ClassResponse) => {
+        next: (data: ClassDetailResponse) => {
+          console.log(data);
+          
           this.class = {
             id: data.id,
             className: data.className,
@@ -64,14 +68,13 @@ export class UpdateClassComponent implements OnInit {
             days: data.days,
             createdAt: data.createdAt,
             status: data.status,
-            sem: data.sem,
+            sem: data.semesterName,
             teacherName: this.getTeacherNames(data.subjectTeachers),
             courseCode: data.course?.courseCode || '',
           };
 
           this.startHour = this.class.startHour;
           this.finishHour = this.class.endHour;
-
           this.selectedDays = this.class.days as DayOfWeek[];
         },
         error: () => {
@@ -81,11 +84,8 @@ export class UpdateClassComponent implements OnInit {
     }
   }
 
-  private getTeacherNames(subjectTeachers: SubjectTeacherResponse[]): string {
-    return (
-      subjectTeachers.map((teacher) => teacher.teacherName).join(', ') ||
-      'No teachers assigned'
-    );
+  private getTeacherNames(subjectTeachers: SubjectTeacherResponse[] | undefined): string {
+    return subjectTeachers?.map((teacher) => teacher.teacherName).join(', ') || 'No teachers assigned';
   }
 
   loadInitialData(): void {
@@ -132,7 +132,6 @@ export class UpdateClassComponent implements OnInit {
       },
     });
   }
-  currentUserRole!: string | null;
 
   onClosed(): void {
     this.currentUserRole === 'ROLE_ADMIN'

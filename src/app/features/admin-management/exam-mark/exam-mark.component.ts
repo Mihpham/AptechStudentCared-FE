@@ -126,15 +126,19 @@ export class ExamMarkComponent implements OnInit {
   }
 
   loadClassNames(): void {
-    this.classService.findAllClasses().subscribe(
+    const page = 1;  // Set the page number (0 for the first page)
+    const size = 10; // Set the number of items per page (e.g., 10 items per page)
+  
+    this.classService.findAllClasses(page, size).subscribe(
       (classes: ClassResponse[]) => {
-        this.classes = classes;
+        this.classes = classes; // Assign the fetched classes to the `classes` array
       },
       (error) => {
         console.error('Lỗi khi lấy danh sách lớp:', error);
       }
     );
   }
+  
  
   getCourseByClass(classId: number) {
     this.classService.findAllSubjectByClassId(classId).subscribe(classResponse => {

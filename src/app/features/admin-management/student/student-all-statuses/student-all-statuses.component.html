@@ -1,203 +1,391 @@
-<div class="student-list p-4 space-y-6 bg-slate-200 dark:bg-gray-900 dark:border-white ">
-
-    <div class="container mx-auto">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            <div class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
-                <span class="text-3xl font-bold">{{ statusCounts().studying
-                    }}</span>
-                <span class="text-gray-600">STUDYING</span>
-            </div>
-            <div class="bg-yellow-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
-                <span class="text-3xl font-bold">{{ statusCounts().delay
-                    }}</span>
-                <span class="text-gray-600">DELAY</span>
-            </div>
-            <div class="bg-yellow-200 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
-                <span class="text-3xl font-bold">{{ statusCounts().dropped
-                    }}</span>
-                <span class="text-gray-600">DROPPED</span>
-            </div>
-            <div class="bg-cyan-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center">
-                <span class="text-3xl font-bold">{{ statusCounts().graduated
-                    }}</span>
-                <span class="text-gray-600">GRADUATED</span>
-            </div>
-        </div>
+<div
+  class="student-list p-4 space-y-6 bg-slate-200 dark:bg-gray-900 dark:border-white"
+>
+  <div class="container mx-auto">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+      <div
+        class="bg-green-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center"
+      >
+        <span class="text-3xl font-bold">{{ statusCounts().studying }}</span>
+        <span class="text-gray-600">STUDYING</span>
+      </div>
+      <div
+        class="bg-yellow-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center"
+      >
+        <span class="text-3xl font-bold">{{ statusCounts().delay }}</span>
+        <span class="text-gray-600">DELAY</span>
+      </div>
+      <div
+        class="bg-yellow-200 p-6 rounded-md shadow-md flex flex-col items-center justify-center"
+      >
+        <span class="text-3xl font-bold">{{ statusCounts().dropped }}</span>
+        <span class="text-gray-600">DROPPED</span>
+      </div>
+      <div
+        class="bg-cyan-100 p-6 rounded-md shadow-md flex flex-col items-center justify-center"
+      >
+        <span class="text-3xl font-bold">{{ statusCounts().graduated }}</span>
+        <span class="text-gray-600">GRADUATED</span>
+      </div>
     </div>
-    <!-- Total Students Display -->
-    <small class="total-students text-sm font-bold text-gray-800 dark:text-gray-300 ">
-        Total Students: <span>{{ totalStudents }}</span>
-    </small>
-    <!-- Header with Search and Action Buttons -->
-    <div class="header">
-        <div class="header-actions flex flex-wrap items-center justify-between gap-4">
-            <!-- Search Input -->
-            <div class="relative w-full sm:w-1/2 lg:w-1/3">
-                <!-- Input Field -->
-                <input id="searchInput" type="text" placeholder=" " [(ngModel)]="searchTerm"
-                    (ngModelChange)="applyFilter($event)"
-                    class="peer w-full h-12 px-4 py-2 dark:bg-gray-800 bg-white placeholder-transparent text-gray-700 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300 ease-in-out" />
-
-                <!-- Label -->
-                <label for="searchInput"
-                    class="absolute left-4 top-2 text-gray-500 dark:text-gray-400 text-sm transition-all duration-300 transform peer-placeholder-shown:top-1/4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-gray-500 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-blue-500 peer-focus:text-xs">
-                    Search
-                </label>
-            </div>
-
-
-            <!-- Action Buttons -->
-            <div class="actions flex flex-wrap space-x-2 ml-auto">
-                <button
-                    class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow"
-                    (click)="onAdd()">
-                    <i class="fa-solid fa-plus"></i> Add
-                </button>
-                <button
-                    class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow"
-                    (click)="onImport()">
-                    <i class="fa-solid fa-file-import"></i> Import
-
-                </button>
-                <button
-                    class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow"
-                    (click)="onExport()">
-                    <i class="fa-solid fa-file-export"></i> Export
-                </button>
-            </div>
+  </div>
+  <!-- Total Students Display -->
+  <small
+    class="total-students text-sm font-bold text-gray-800 dark:text-gray-300"
+  >
+    Total Students: <span>{{ totalStudents }}</span>
+  </small>
+  <!-- Header with Search and Action Buttons -->
+  <div class="header">
+    <div
+      class="header-actions flex flex-wrap items-center justify-between gap-4"
+    >
+      <!-- Search Input -->
+      <div class="flex flex-wrap gap-4">
+        <!-- Roll Number Search -->
+        <div class="relative w-full sm:w-1/4">
+          <input
+            id="searchRollNumber"
+            type="text"
+            placeholder=" "
+            [(ngModel)]="searchTerm.rollNumber"
+            (ngModelChange)="applyFilter()"
+            class="peer w-full h-12 px-4 py-2 dark:bg-gray-800 bg-white placeholder-transparent text-gray-700 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300 ease-in-out"
+          />
+          <label
+            for="searchRollNumber"
+            class="absolute left-4 top-2 text-gray-500 dark:text-gray-400 text-sm transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-blue-500 peer-focus:text-xs"
+          >
+            Roll Number
+          </label>
         </div>
-    </div>
+      
+        <!-- Full Name Search -->
+        <div class="relative w-full sm:w-1/4">
+          <input
+            id="searchFullName"
+            type="text"
+            placeholder=" "
+            [(ngModel)]="searchTerm.fullName"
+            (ngModelChange)="applyFilter()"
+            class="peer w-full h-12 px-4 py-2 dark:bg-gray-800 bg-white placeholder-transparent text-gray-700 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300 ease-in-out"
+          />
+          <label
+            for="searchFullName"
+            class="absolute left-4 top-2 text-gray-500 dark:text-gray-400 text-sm transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-blue-500 peer-focus:text-xs"
+          >
+            Full Name
+          </label>
+        </div>
+      
+        <!-- Email Search -->
+        <div class="relative w-full sm:w-1/4">
+          <input
+            id="searchEmail"
+            type="text"
+            placeholder=" "
+            [(ngModel)]="searchTerm.email"
+            (ngModelChange)="applyFilter()"
+            class="peer w-full h-12 px-4 py-2 dark:bg-gray-800 bg-white placeholder-transparent text-gray-700 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300 ease-in-out"
+          />
+          <label
+            for="searchEmail"
+            class="absolute left-4 top-2 text-gray-500 dark:text-gray-400 text-sm transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-blue-500 peer-focus:text-xs"
+          >
+            Email
+          </label>
+        </div>
+      </div>
+      
 
-    <!-- No Results Message -->
-    <div *ngIf="dataSource.filteredData.length === 0 && dataSource.data.length === 0" class="no-results text-gray-600">
+      <!-- Action Buttons -->
+      <div class="actions flex flex-wrap space-x-2 ml-auto">
+        <button
+          class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow"
+          (click)="onAdd()"
+        >
+          <i class="fa-solid fa-plus"></i> Add
+        </button>
+        <button
+          class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow"
+          (click)="onImport()"
+        >
+          <i class="fa-solid fa-file-import"></i> Import
+        </button>
+        <button
+          class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow"
+          (click)="onExport()"
+        >
+          <i class="fa-solid fa-file-export"></i> Export
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Results Message -->
+  <div
+    *ngIf="dataSource.filteredData.length === 0 && dataSource.data.length === 0"
+    class="no-results text-gray-600"
+  >
+    No results found.
+  </div>
+  <div class="overflow-x-auto rounded-lg border border-gray-300">
+    <!-- Table for Displaying Students -->
+    <mat-table
+      *ngIf="dataSource.data.length > 0"
+      [dataSource]="dataSource"
+      class="mat-elevation-z8 table-auto w-full dark:bg-gray-900 rounded-lg shadow-md border border-gray-300 dark:border-gray-600"
+    >
+      <!-- Avatar Column -->
+      <ng-container matColumnDef="avatar">
+        <mat-header-cell
+          *matHeaderCellDef
+          class="p-2 dark:text-gray-200 dark:bg-gray-600 rounded-tl-lg"
+        >
+          Avatar
+        </mat-header-cell>
+        <mat-cell
+          *matCellDef="let student"
+          class="p-2 dark:text-gray-50 dark:bg-gray-600"
+        >
+          <td class="px-4 py-2">
+            <img
+              [src]="
+                student.image
+                  ? student.image
+                  : 'assets/images/avatar-default.webp'
+              "
+              alt="Avatar"
+              class="w-10 h-10 rounded-full object-cover"
+            />
+          </td>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Roll Number Column -->
+      <ng-container matColumnDef="rollNumber">
+        <mat-header-cell
+          *matHeaderCellDef
+          class="p-2 dark:text-gray-50 dark:bg-gray-800"
+        >
+          Roll Number
+        </mat-header-cell>
+        <mat-cell
+          *matCellDef="let student"
+          class="p-2 dark:text-gray-200 dark:bg-gray-600"
+        >
+          {{ student.rollNumber }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Full Name Column -->
+      <ng-container matColumnDef="fullName">
+        <mat-header-cell
+          *matHeaderCellDef
+          class="p-2 dark:text-gray-50 dark:bg-gray-800"
+        >
+          Full Name
+        </mat-header-cell>
+        <mat-cell
+          *matCellDef="let student"
+          class="p-2 dark:text-gray-200 dark:bg-gray-600"
+        >
+          {{ student.fullName }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Class Column -->
+      <ng-container matColumnDef="className">
+        <mat-header-cell
+          *matHeaderCellDef
+          class="p-2 dark:text-gray-50 dark:bg-gray-800"
+        >
+          Class
+        </mat-header-cell>
+        <mat-cell
+          *matCellDef="let student"
+          class="p-2 dark:text-gray-200 dark:bg-gray-600"
+        >
+          {{ student.className }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Email Column -->
+      <ng-container matColumnDef="email" class="email-label">
+        <mat-header-cell
+          *matHeaderCellDef
+          class="p-2 dark:text-gray-50 dark:bg-gray-800"
+        >
+          Email
+        </mat-header-cell>
+        <mat-cell
+          *matCellDef="let student"
+          class="p-2 dark:text-gray-200 dark:bg-gray-600"
+        >
+          <span class="email" matTooltip="{{ student.email }}">
+            {{ student.email }}
+          </span>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Phone Number Column -->
+      <ng-container matColumnDef="phone">
+        <mat-header-cell
+          *matHeaderCellDef
+          class="p-2 dark:text-gray-50 dark:bg-gray-800"
+        >
+          Phone Number
+        </mat-header-cell>
+        <mat-cell
+          *matCellDef="let student"
+          class="p-2 dark:text-gray-200 dark:bg-gray-600"
+        >
+          {{ student.phoneNumber }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Status Column with Dynamic Classes -->
+      <ng-container matColumnDef="status">
+        <mat-header-cell
+          *matHeaderCellDef
+          class="p-2 dark:text-gray-50 dark:bg-gray-800"
+        >
+          Status
+        </mat-header-cell>
+        <mat-cell
+          *matCellDef="let student"
+          [ngClass]="{
+            'bg-green-100 text-green-500': student.status === 'STUDYING',
+            'bg-red-100 text-red-500': student.status === 'DROPPED',
+            'bg-yellow-100 text-orange-500': student.status === 'DELAY',
+            'bg-blue-100 text-blue-500': student.status === 'GRADUATED'
+          }"
+          class="p-2 dark:text-gray-200 dark:bg-gray-600"
+        >
+          {{ student.status || "Unknown" }}
+        </mat-cell>
+      </ng-container>
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell
+          *matHeaderCellDef
+          class="p-2 dark:text-gray-50 dark:bg-gray-800"
+        >
+          Actions
+        </mat-header-cell>
+        <mat-cell
+          *matCellDef="let student"
+          class="p-2 dark:text-gray-200 dark:bg-gray-600"
+        >
+          <div class="actions flex space-x-4">
+            <!-- Edit Button -->
+            <button
+              class="flex items-center text-blue-400 hover:text-blue-700 transition-colors duration-300"
+              matTooltip="Edit Student"
+              (click)="onUpdate(student, $event)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+
+            <!-- Student Performance Button -->
+            <button
+              [routerLink]="[
+                currentUserRole === 'ROLE_ADMIN'
+                  ? '/admin/student-performance'
+                  : '/sro/student-performance',
+                student.classId,
+                student.userId
+              ]"
+              class="flex items-center text-blue-400 hover:text-blue-700 transition-colors duration-300"
+              matTooltip="Student Performance"
+            >
+              <i class="fa-solid fa-clipboard-user"></i>
+            </button>
+          </div>
+        </mat-cell>
+      </ng-container>
+
+      <!-- No Students Available Message -->
+      <div
+        *ngIf="dataSource.data.length === 0"
+        class="no-students text-center text-gray-500"
+      >
+        No students available.
+      </div>
+
+      <!-- No Results Found Message -->
+      <div
+        *ngIf="
+          dataSource.filteredData.length === 0 && dataSource.data.length > 0
+        "
+        class="no-results text-gray-600"
+      >
         No results found.
+      </div>
+
+      <!-- Table Header and Rows -->
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        class="hover:bg-gray-50 cursor-pointer"
+        (click)="onRowClick($event, row)"
+      ></mat-row>
+    </mat-table>
+  </div>
+
+  <!-- Paginator -->
+
+  <div
+    class="flex items-center justify-between p-4 mt-4 rounded-lg bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700"
+  >
+    <div class="flex items-center space-x-6 ml-auto">
+      <div class="flex items-center space-x-4 mr-3">
+        <span class="text-gray-700 dark:text-gray-300">Items per page:</span>
+        <select
+          class="block w-20 p-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-white"
+          [ngModel]="itemsPerPage()"
+          (ngModelChange)="onItemsPerPageChange($event)"
+        >
+          <option *ngFor="let option of [5, 10, 20]" [value]="option">
+            {{ option }}
+          </option>
+        </select>
+      </div>
+      <div class="text-gray-700 dark:text-gray-300 mr-10 ml-10">
+        Page {{ currentPage() }} of {{ totalPages() }}
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <button
+          (click)="goToFirstPage()"
+          [disabled]="currentPage() === 1"
+          class="btn btn-primary dark:text-gray-200 disabled:opacity-20 disabled:cursor-not-allowed"
+        >
+          <i class="fas fa-angle-double-left mr-3 ml-3"></i>
+        </button>
+        <button
+          (click)="goToPreviousPage()"
+          [disabled]="currentPage() === 1"
+          class="btn btn-primary dark:text-gray-200 disabled:opacity-20 disabled:cursor-not-allowed"
+        >
+          <i class="fa-solid fa-chevron-left mr-3 ml-3"></i>
+        </button>
+        <button
+          (click)="goToNextPage()"
+          [disabled]="currentPage() === totalPages()"
+          class="btn btn-primary dark:text-gray-200 disabled:opacity-20 disabled:cursor-not-allowed"
+        >
+          <i class="fa-solid fa-chevron-right mr-3 ml-3"></i>
+        </button>
+
+        <button
+          (click)="goToLastPage()"
+          [disabled]="currentPage() === totalPages()"
+          class="btn btn-primary dark:text-gray-200 disabled:opacity-20 disabled:cursor-not-allowed"
+        >
+          <i class="fas fa-angle-double-right mr-3 ml-3"></i>
+        </button>
+      </div>
     </div>
-    <div class="overflow-x-auto rounded-lg border border-gray-300">
-
-        <!-- Table for Displaying Students -->
-        <mat-table *ngIf="dataSource.data.length > 0" [dataSource]="dataSource"
-            class="mat-elevation-z8 table-auto w-full dark:bg-gray-900 rounded-lg shadow-md border border-gray-300 dark:border-gray-600">
-            <!-- Avatar Column -->
-            <ng-container matColumnDef="avatar">
-                <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-200 dark:bg-gray-600 rounded-tl-lg"> Avatar
-                </mat-header-cell>
-                <mat-cell *matCellDef="let student" class="p-2 dark:text-gray-50 dark:bg-gray-600">
-                    <td class="px-4 py-2">
-                        <img [src]="student.image ? student.image : 'assets/images/avatar-default.webp'" alt="Avatar"
-                            class="w-10 h-10 rounded-full object-cover" />
-                    </td>
-                </mat-cell>
-            </ng-container>
-
-            <!-- Roll Number Column -->
-            <ng-container matColumnDef="rollNumber">
-                <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-50 dark:bg-gray-800"> Roll Number
-                </mat-header-cell>
-                <mat-cell *matCellDef="let student" class="p-2 dark:text-gray-200 dark:bg-gray-600">
-                    {{student.rollNumber}}
-                </mat-cell>
-            </ng-container>
-
-            <!-- Full Name Column -->
-            <ng-container matColumnDef="fullName">
-                <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-50 dark:bg-gray-800"> Full Name
-                </mat-header-cell>
-                <mat-cell *matCellDef="let student" class="p-2 dark:text-gray-200 dark:bg-gray-600">
-                    {{student.fullName}}
-                </mat-cell>
-            </ng-container>
-
-            <!-- Class Column -->
-            <ng-container matColumnDef="className">
-                <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-50 dark:bg-gray-800"> Class
-                </mat-header-cell>
-                <mat-cell *matCellDef="let student" class="p-2 dark:text-gray-200 dark:bg-gray-600">
-                    {{student.className}}
-                </mat-cell>
-            </ng-container>
-
-            <!-- Email Column -->
-            <ng-container matColumnDef="email" class="email-label">
-                <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-50 dark:bg-gray-800"> Email
-                </mat-header-cell>
-                <mat-cell *matCellDef="let student" class="p-2 dark:text-gray-200 dark:bg-gray-600">
-                    <span class="email" matTooltip="{{student.email}}">
-                        {{student.email}}
-                    </span>
-                </mat-cell>
-            </ng-container>
-
-            <!-- Phone Number Column -->
-            <ng-container matColumnDef="phone">
-                <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-50 dark:bg-gray-800"> Phone Number
-                </mat-header-cell>
-                <mat-cell *matCellDef="let student" class="p-2 dark:text-gray-200 dark:bg-gray-600">
-                    {{student.phoneNumber}}
-                </mat-cell>
-            </ng-container>
-
-            <!-- Status Column with Dynamic Classes -->
-            <ng-container matColumnDef="status">
-                <mat-header-cell *matHeaderCellDef class="p-2 dark:text-gray-50 dark:bg-gray-800"> Status
-                </mat-header-cell>
-                <mat-cell *matCellDef="let student"
-                    [ngClass]="{'bg-green-100 text-green-500': student.status === 'STUDYING', 'bg-red-100 text-red-500': student.status === 'DROPPED', 'bg-yellow-100 text-orange-500': student.status === 'DELAY', 'bg-blue-100 text-blue-500': student.status === 'GRADUATED'}"
-                    class="p-2 dark:text-gray-200 dark:bg-gray-600">
-                    {{student.status || 'Unknown'}}
-                </mat-cell>
-            </ng-container>
-            <!-- Actions Column -->
-            <ng-container matColumnDef="actions">
-                <mat-header-cell *matHeaderCellDef class="p-2  dark:text-gray-50 dark:bg-gray-800">
-                    Actions
-                </mat-header-cell>
-                <mat-cell *matCellDef="let student" class="p-2 dark:text-gray-200 dark:bg-gray-600">
-                    <div class="actions flex space-x-4">
-                        <!-- Edit Button -->
-                        <button
-                            class="flex items-center text-blue-400 hover:text-blue-700 transition-colors duration-300"
-                            matTooltip="Edit Student" (click)="onUpdate(student, $event)">
-                            <mat-icon>edit</mat-icon>
-                        </button>
-
-                        <!-- Student Performance Button -->
-                        <button
-                            [routerLink]="[currentUserRole === 'ROLE_ADMIN' ? '/admin/student-performance' : '/sro/student-performance', student.classId, student.userId]"
-                            class="flex items-center text-blue-400 hover:text-blue-700 transition-colors duration-300 "
-                            matTooltip="Student Performance">
-                            <i class="fa-solid fa-clipboard-user"></i>
-                        </button>
-                    </div>
-                </mat-cell>
-            </ng-container>
-
-
-            <!-- No Students Available Message -->
-            <div *ngIf="dataSource.data.length===0 " class="no-students text-center text-gray-500 ">
-                No students available.
-            </div>
-
-            <!-- No Results Found Message -->
-            <div *ngIf="dataSource.filteredData.length===0 && dataSource.data.length> 0"
-                class="no-results text-gray-600">
-                No results found.
-            </div>
-
-            <!-- Table Header and Rows -->
-            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 cursor-pointer"
-                (click)="onRowClick($event, row)"></mat-row>
-        </mat-table>
-    </div>
-
-
-    <!-- Paginator -->
-    <mat-paginator 
-  [length]="totalStudents" 
-  [pageSize]="10" 
-  [pageSizeOptions]="[5, 10, 20]" 
-  showFirstLastButtons
-  class="mt-4 dark:bg-gray-700 dark:text-gray-100">
-</mat-paginator>
-
+  </div>
 </div>

@@ -26,7 +26,7 @@
               <td class="px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">{{ semester }}</td>
               <td class="px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">{{ detail.subject }}</td>
               <td class="px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">{{ classDetails?.className }}</td>
-              <td class="px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">{{ detail.teacher }}</td>
+              <td class="px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">{{ detail?.teacherName }}</td>
               <td class="px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">
                 <span [ngClass]="{ 'text-green-600 font-bold': detail.status === 'ACTIVE', 'text-red-600 font-bold': detail.status === 'Inactive' }">
                   {{ detail.status }}
@@ -34,7 +34,7 @@
               </td>
               <td class="px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600 flex justify-center space-x-4">
                 <button 
-                  (click)="openEditDialog(detail.subject, detail.teacher, detail.status)" 
+                  (click)="openEditDialog(detail.subject, detail.teacherName, detail.status)" 
                   class="px-4 py-2 text-gray-700 bg-white rounded-lg shadow-lg border-none" 
                   title="Assign Teacher">
                   <i class="fas fa-edit "></i>
