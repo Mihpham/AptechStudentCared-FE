@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/1f38ffa8-ff9e-4f20-8d4e-956d741e6d27)# SchoolManagement
+### SchoolManagement
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.14.
 
