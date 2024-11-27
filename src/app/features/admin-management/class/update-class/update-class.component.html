@@ -1,0 +1,126 @@
+<div class="container mx-auto max-w-lg bg-slate-200">
+  <form (ngSubmit)="saveClass()" class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8">
+    <h2 class="text-3xl font-semibold text-center text-gray-800">Update Class</h2>
+
+    <!-- Class Name -->
+    <div class="relative z-0 w-full mb-5 group">
+      <input type="text" id="className" [(ngModel)]="class.className" name="className" required
+        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+        placeholder=" " />
+      <label for="className" class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Class Name</label>
+    </div>
+
+    <!-- Center -->
+    <div class="relative z-0 w-full mb-5 group">
+      <input type="text" id="center" [(ngModel)]="class.center" name="center" required
+        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+        placeholder=" " />
+      <label for="center" class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Center</label>
+    </div>
+
+    <!-- Hour -->
+    <div class="grid md:grid-cols-2 md:gap-6 mb-5">
+      <div class="relative z-0 w-full">
+        <input type="time" id="startHour" [(ngModel)]="startHour" name="startHour" required
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+          placeholder=" " />
+        <label for="startHour" class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Start Hour</label>
+      </div>
+
+      <div class="relative z-0 w-full">
+        <input type="time" id="finishHour" [(ngModel)]="finishHour" name="finishHour" required
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+          placeholder=" " />
+        <label for="finishHour" class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Finish Hour</label>
+      </div>
+    </div>
+
+    <!-- Days -->
+    <div class="relative z-0 w-full mb-5 group">
+      <label class="block text-gray-700">Days</label>
+      <input type="text" id="days" [value]="class.days.join(', ')" readonly
+        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+      
+      <div class="flex flex-wrap mt-2">
+        <label class="inline-flex items-center mr-1">
+          <input type="checkbox" [value]="DayOfWeek.MONDAY" (change)="toggleDay($event)" class="form-checkbox h-4 w-4 text-blue-600"
+            [checked]="selectedDays.includes(DayOfWeek.MONDAY)" />
+          <small class="ml-2">Monday</small>
+        </label>
+        <label class="inline-flex items-center mr-1">
+          <input type="checkbox" [value]="DayOfWeek.TUESDAY" (change)="toggleDay($event)" class="form-checkbox h-4 w-4 text-blue-600"
+            [checked]="selectedDays.includes(DayOfWeek.TUESDAY)" />
+          <small class="ml-2">Tuesday</small>
+        </label>
+        <label class="inline-flex items-center mr-1">
+          <input type="checkbox" [value]="DayOfWeek.WEDNESDAY" (change)="toggleDay($event)" class="form-checkbox h-4 w-4 text-blue-600"
+            [checked]="selectedDays.includes(DayOfWeek.WEDNESDAY)" />
+          <small class="ml-2">Wednesday</small>
+        </label>
+        <label class="inline-flex items-center mr-1">
+          <input type="checkbox" [value]="DayOfWeek.THURSDAY" (change)="toggleDay($event)" class="form-checkbox h-4 w-4 text-blue-600"
+            [checked]="selectedDays.includes(DayOfWeek.THURSDAY)" />
+          <small class="ml-2">Thursday</small>
+        </label>
+        <label class="inline-flex items-center mr-1">
+          <input type="checkbox" [value]="DayOfWeek.FRIDAY" (change)="toggleDay($event)" class="form-checkbox h-4 w-4 text-blue-600"
+            [checked]="selectedDays.includes(DayOfWeek.FRIDAY)" />
+          <small class="ml-2">Friday</small>
+        </label>
+        <label class="inline-flex items-center mr-1">
+          <input type="checkbox" [value]="DayOfWeek.SATURDAY" (change)="toggleDay($event)" class="form-checkbox h-4 w-4 text-blue-600"
+            [checked]="selectedDays.includes(DayOfWeek.SATURDAY)" />
+          <small class="ml-2">Saturday</small>
+        </label>
+      </div>
+    </div>
+
+    <!-- Course -->
+    <div class="relative z-0 w-full mb-5 group">
+      <select id="courseCode" [(ngModel)]="class.courseCode" name="courseCode"
+        class="block py-2.5 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+        <option *ngFor="let course of courses" [value]="course.courseCode">
+          {{ course.courseName }}
+        </option>
+      </select>
+      <label for="courseCode"
+        class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Course</label>
+    </div>
+
+    <!-- Semester -->
+    <div class="relative z-0 w-full mb-5 group">
+      <select id="sem" [(ngModel)]="class.sem" name="sem"
+        class="block py-2.5 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+        <option value="Sem1">Sem 1</option>
+        <option value="Sem2">Sem 2</option>
+        <option value="Sem3">Sem 3</option>
+        <option value="Sem4">Sem 4</option>
+      </select>
+      <label for="sem"
+        class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Semester</label>
+    </div>
+
+    <!-- Status -->
+    <div class="relative z-0 w-full mb-5 group">
+      <select id="status" [(ngModel)]="class.status" name="status"
+        class="block py-2.5 w-full text-sm text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+        <option value="STUDYING">Studying</option>
+        <option value="FINISHED">Finished</option>
+        <option value="CANCEL">Cancel</option>
+        <option value="SCHEDULED">Scheduled</option>
+      </select>
+      <label for="status"
+        class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Status</label>
+    </div>
+
+    <!-- Submit Buttons -->
+    <div class="mt-6 flex justify-end space-x-4">
+      <button type="button" class="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600" (click)="onClosed()">
+        Cancel
+      </button>
+      <button type="submit" class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700" [disabled]="isLoading">
+        {{ isLoading ? "Saving..." : "Save" }}
+      </button>
+    </div>
+  </form>
+</div>

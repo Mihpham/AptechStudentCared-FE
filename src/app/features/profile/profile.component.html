@@ -1,32 +1,67 @@
-<!-- src/app/features/profile/components/profile.component.html -->
-<div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">User Profile</h2>
-  
-    <div class="space-y-4">
-      <div class="flex items-center">
-        <span class="font-semibold text-gray-700 dark:text-gray-300 w-32">Full Name:</span>
-        <span class="text-gray-900 dark:text-white">{{ userProfile?.fullName }}</span>
-      </div>
-  
-      <div class="flex items-center">
-        <span class="font-semibold text-gray-700 dark:text-gray-300 w-32">Email:</span>
-        <span class="text-gray-900 dark:text-white">{{ userProfile?.email }}</span>
-      </div>
-  
-      <div class="flex items-center">
-        <span class="font-semibold text-gray-700 dark:text-gray-300 w-32">Phone:</span>
-        <span class="text-gray-900 dark:text-white">{{ userProfile?.phone }}</span>
-      </div>
-  
-      <div class="flex items-center">
-        <span class="font-semibold text-gray-700 dark:text-gray-300 w-32">Address:</span>
-        <span class="text-gray-900 dark:text-white">{{ userProfile?.address }}</span>
-      </div>
-  
-      <div class="flex items-center">
-        <span class="font-semibold text-gray-700 dark:text-gray-300 w-32">Role:</span>
-        <span class="text-gray-900 dark:text-white">{{ userProfile?.roleName }}</span>
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="bg-white shadow-md rounded-lg max-w-full w-full lg:max-w-screen-lg mx-auto dark:bg-gray-700 ">
+      <div class="p-4 ">
+        <div class="flex items-center mb-4 pt-4 ">
+          <img *ngIf="userProfile?.image" [src]="userProfile?.image" alt="Profile Image"
+            class="w-32 h-32 rounded-full object-cover">
+          <p *ngIf="!userProfile?.image" class="text-gray-500">No profile image available</p>
+          <div class="ml-4">
+            <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100">{{ userProfile?.fullName }}</h3>
+            <p class="text-gray-500 dark:text-gray-100">Join to {{userProfile?.createdAt | date:'dd-MM-yyyy'}}</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center justify-start bordƯer-b">
+          <button class="text-black font-bold py-2 px-4 rounded btn-underline dark:text-gray-100 "
+            [ngClass]="{ 'btn-underline': isActive('/profile') }" (click)="navigateTo('/profile')">
+            Profile
+          </button>
+          <button class="text-black font-bold py-2 px-4 rounded ml-4 btn-underline dark:text-gray-100"
+            [ngClass]="{ 'btn-underline': isActive('/update/change-password') }"
+            (click)="navigateTo('/update/change-password')">
+            Change Password
+          </button>
+          <button class="text-black font-bold py-2 px-4 rounded ml-4 btn:underline dark:text-gray-100"
+            [ngClass]="{ 'btn-underline': isActive('/update/change-avatar') }"
+            (click)="navigateTo('/update/change-avatar')">
+            Change Avatar
+          </button>
+        </div>
+
+        <!-- Profile Details Section -->
+        <div class="mt-8" *ngIf="!showChangePassword && !showChangeAvatar">
+          <h3 class="text-xl font-bold text-gray-800 mb-4 dark:text-gray-100">Profile Details</h3>
+          <div class="space-y-4 text-gray-700">
+            <div class="flex items-center">
+              <span class="font-semibold w-32 dark:text-gray-100">Full Name:</span>
+              <span class="text-gray-900 dark:text-gray-100">{{ userProfile?.fullName }}</span>
+            </div>
+            <div class="flex items-center">
+              <span class="font-semibold w-32 dark:text-gray-100">Email:</span>
+              <span class="text-gray-900 dark:text-gray-100">{{ userProfile?.email }}</span>
+            </div>
+            <div class="flex items-center">
+              <span class="font-semibold w-32 dark:text-gray-100">Phone:</span>
+              <span class="text-gray-900 dark:text-gray-100">{{ userProfile?.phone }}</span>
+            </div>
+            <div class="flex items-center">
+              <span class="font-semibold w-32 dark:text-gray-100">Address:</span>
+              <span class="text-gray-900 dark:text-gray-100">{{ userProfile?.address }}</span>
+            </div>
+            <div class="flex items-center">
+              <span class="font-semibold w-32 dark:text-gray-100">Role:</span>
+              <span class="text-gray-900 dark:text-gray-100">{{ userProfile?.roleName }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Change Password Component -->
+        <app-change-password *ngIf="showChangePassword"></app-change-password>
+
+        <!-- Change Avatar Component -->
+        <app-change-avatar *ngIf="showChangeAvatar"></app-change-avatar>
+
       </div>
     </div>
   </div>
-  
+</div>

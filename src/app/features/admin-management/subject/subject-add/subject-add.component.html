@@ -1,0 +1,55 @@
+<form [formGroup]="subjectForm" (ngSubmit)="onSubmit()"
+  class="p-4 max-w-lg mx-auto bg-white shadow-md rounded">
+  <h2 class="text-xl font-bold mb-4">Add Subject</h2>
+  <hr class="mb-4">
+  <div class="grid grid-cols-1 gap-4">
+    <!-- Subject Name -->
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Subject Name</label>
+      <input formControlName="subjectName"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="text" />
+      <div *ngIf="subjectForm.get('subjectName')?.invalid && subjectForm.get('subjectName')?.touched"
+        class="text-red-500 text-xs mt-1">
+        Subject Name is required.
+      </div>
+    </div>
+
+    <!-- Subject Code -->
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Subject Code</label>
+      <input formControlName="subjectCode"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="text" />
+      <div *ngIf="subjectForm.get('subjectCode')?.invalid && subjectForm.get('subjectCode')?.touched"
+        class="text-red-500 text-xs mt-1">
+        Subject Code is required.
+      </div>
+    </div>
+
+    <!-- Subject Hour -->
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Subject Hour</label>
+      <input formControlName="totalHours"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="number" />
+      <div *ngIf="subjectForm.get('totalHours')?.invalid && subjectForm.get('totalHours')?.touched"
+        class="text-red-500 text-xs mt-1">
+        Subject Hour is required and must be a valid number.
+      </div>
+    </div>
+
+    <!-- Form Buttons -->
+    <div class="flex items-center justify-between mt-4">
+      <div class="form-actions">
+        <button type="button" (click)="onCancel()"
+          class="mr-2 bg-gray-300 hover:bg-gray-400 text-white py-2 px-4 rounded">
+          Cancel
+        </button>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

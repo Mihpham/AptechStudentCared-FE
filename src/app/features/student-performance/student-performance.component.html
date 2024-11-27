@@ -1,0 +1,59 @@
+<div class="container bg-slate-200 mx-auto p-6 w-full">
+  <!-- Header: Student Name -->
+  <div class="text-center text-2xl font-bold mb-6">
+    {{ performanceData.length > 0 ? performanceData[0].studentName : 'Please Select Sem!' }}
+  </div>
+
+  <!-- Subject and Semester Selection -->
+  <div class="bg-white rounded-lg shadow-md p-6 mb-5">
+    <div class="flex flex-col md:flex-row justify-start items-center mb-8 space-y-4 md:space-y-0">
+      <div class="flex items-center">
+        <!-- Semester Selection -->
+        <label for="semester" class="font-semibold mr-2">Semester:</label>
+        <select id="semester" [(ngModel)]="selectedSemester" (change)="onSemesterChange($event)"
+                class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                aria-label="Select Semester">
+          <option *ngFor="let semester of semesters" [value]="semester">
+            {{ semester }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Check if there are performanceMarks for the selected semester -->
+    <div *ngIf="performanceMarks.length > 0">
+      <div id="performance-chart1" class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div class="col-span-4 grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 bg-white">
+          <div *ngFor="let mark of performanceMarks; let i = index"
+               class="text-center text-sm p-4 rounded-md shadow-sm">
+            <div class="font-semibold mb-2 whitespace-nowrap">
+              {{ mark.label }}
+            </div>
+            <svg [id]="'chart' + i" width="100" height="100" [attr.aria-label]="mark.label + ' Chart'"></svg>
+            <div class="text-xl font-bold mt-2">{{ mark.value.toFixed(2) }}%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- <ng-template #noSubjectsFound>
+      <div class="text-red-500 text-center text-xl font-semibold mt-4">
+        <p>No subjects found for the semester: <strong>{{ selectedSemester }}</strong></p>
+        <p>Please select a different semester or check with your administrator.</p>
+      </div>
+    </ng-template> -->
+
+  </div>
+
+  <!-- Performance Line Chart -->
+  <div id="performance-chart2" class="bg-white rounded-lg shadow-md p-6">
+    <svg id="performance-chart" viewBox="0 0 600 300" class="w-full h-full"
+         aria-label="Performance Line Chart"></svg>
+    <div class="flex justify-center space-x-6 mt-6">
+      <div><span class="text-yellow-500">●</span> Attendance</div>
+      <div><span class="text-blue-500">●</span> Theory</div>
+      <div><span class="text-green-700">●</span> Practical</div>
+    </div>
+  </div>
+</div>

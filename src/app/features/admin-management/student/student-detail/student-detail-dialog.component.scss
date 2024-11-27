@@ -1,0 +1,77 @@
+.student-detail .detail-container {
+  @apply p-4 bg-white shadow-md rounded-md max-w-lg mx-auto;
+}
+
+.avatar-container {
+  @apply flex items-center justify-center mb-4;
+}
+
+.avatar {
+  @apply rounded-full w-16 h-16 object-cover;
+}
+
+.initials {
+  @apply bg-blue-500 text-white rounded-full w-16 h-16 flex items-center justify-center;
+}
+
+.student-info,
+.guardian-info {
+  @apply mb-4;
+}
+
+/* src/app/features/admin-management/student/student-detail/student-detail.component.scss */
+
+.student-detail {
+  .detail-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+    /* Cho phép hiển thị tốt hơn khi kích thước nhỏ */
+  }
+  .avatar-container {
+    margin-top: 50px;
+    width: 200px; /* Hoặc kích thước bạn muốn */
+    height: 200px; /* Hoặc kích thước bạn muốn */
+  }
+  
+  .avatar-image {
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid #ddd;
+  }
+
+  .student-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .student-name {
+      text-align: center;
+      /* Căn giữa tên học sinh */
+      margin: 0 0 16px 0;
+      /* Khoảng cách dưới cùng của tên học sinh */
+      font-weight: bold;
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin: 4px 0;
+    }
+
+    .guardian-info {
+      margin-top: 16px;
+    }
+  }
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+  margin-right: 10px;
+}

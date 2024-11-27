@@ -1,0 +1,68 @@
+<div class="p-8 max-w-xl mx-auto bg-white ">
+  <h2 class="text-3xl font-semibold text-center mb-6 text-gray-800">SRO Form</h2>
+
+  <form [formGroup]="sroForm" (ngSubmit)="onSave()">
+    <!-- Full Name -->
+    <div class="mb-5">
+      <label for="fullName" class="block text-sm font-semibold text-gray-700">Full Name</label>
+      <input id="fullName" type="text" formControlName="fullName"
+        class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm placeholder-gray-400"
+         />
+    </div>
+
+    <!-- Email -->
+    <div class="mb-5">
+      <label for="email" class="block text-sm font-semibold text-gray-700">Email</label>
+      <input id="email" type="email" formControlName="email"
+        class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm placeholder-gray-400"
+         />
+    </div>
+
+    <!-- Phone Number -->
+    <div class="mb-5">
+      <label for="phoneNumber" class="block text-sm font-semibold text-gray-700">Phone Number</label>
+      <input id="phoneNumber" type="text" formControlName="phoneNumber"
+        class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm placeholder-gray-400"
+        />
+    </div>
+
+    <!-- Date of Birth -->
+    <div class="mb-5">
+      <label for="dob" class="block text-sm font-semibold text-gray-700">Date of Birth</label>
+      <input id="dob" type="date" formControlName="dob"
+        class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+    </div>
+
+    <!-- Address -->
+    <div class="mb-5">
+      <app-location-selector [provinces]="provinces" [districts]="districts" [communes]="communes"
+        (locationChanged)="onLocationChange($event)">
+      </app-location-selector>
+    </div>
+
+    
+
+    <!-- Status (only shown in edit mode) -->
+    <div *ngIf="isEditMode" class="mb-5">
+      <label for="status" class="block text-sm font-semibold text-gray-700">Status</label>
+      <select id="status" formControlName="status"
+        class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        <option value="">Select status</option>
+        <option value="ACTIVE">ACTIVE</option>
+        <option value="INACTIVE">INACTIVE</option>
+      </select>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end space-x-4 pt-6">
+      <button type="button" class="py-2 px-6 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300 transition-all duration-150"
+        (click)="onCancel()">
+        Cancel
+      </button>
+      <button type="submit" class="py-2 px-6 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-all duration-150"
+        [disabled]="!sroForm.valid">
+        Save
+      </button>
+    </div>
+  </form>
+</div>

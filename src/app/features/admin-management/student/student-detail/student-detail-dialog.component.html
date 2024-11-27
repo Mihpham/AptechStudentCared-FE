@@ -1,0 +1,88 @@
+<div class=" mx-2 h-full">
+  <div *ngIf="student" class="bg-white pb-3 shadow-lg rounded-lg relative">
+    <div class="flex items-center space-x-2 font-semibold text-gray-900 leading-8 p-4 border-b">
+      <img [src]="student.image ? student.image : 'assets/images/avatar-default.webp'" alt="Avatar"
+      class="w-10 h-10 rounded-full object-cover" />
+      <div class="text-xl font-bold">{{student.fullName}}</div>
+      <div class="absolute top-4 right-4">
+        <button mat-button (click)="onClose()"
+          class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-200 transition duration-300 flex items-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+    <div class="text-gray-700 p-4">
+      <div class="grid md:grid-cols-2 gap-4 text-sm">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="font-semibold">Full Name</div>
+          <div>{{student.fullName}}</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div class="font-semibold">Gender</div>
+          <div>{{student.gender}}</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div class="font-semibold">Class</div>
+          <div>{{student.className}}</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div class="font-semibold">Contact No.</div>
+          <div>{{student.phoneNumber}}</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div class="font-semibold">Email</div>
+          <div>{{student.email}}</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div class="font-semibold">Birthday</div>
+          <div>{{student.dob | date: 'dd-MM-yyyy'}}</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div class="font-semibold">Course</div>
+          <div>{{student.courses}}</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div class="font-semibold">Status</div>
+          <div>{{student.status}}</div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="font-semibold">Address</div>
+          <div>{{student.address}}</div>
+        </div>
+      </div>
+
+      <div class="guardian-info mt-6">
+        <h3 class="font-bold text-lg mb-3 border-b pb-2">Guardian Information</h3>
+        <div class="grid md:grid-cols-2 gap-4 text-sm">
+          <div class="grid grid-cols-2 gap-2">
+            <div class="font-semibold">Full Name</div>
+            <div>{{student.parentFullName}}</div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div class="font-semibold">Gender</div>
+            <div>{{student.parentGender}}</div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div class="font-semibold">Phone Number</div>
+            <div>{{student.parentPhone}}</div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div class="font-semibold">Relationship</div>
+            <div>{{student.studentRelation}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

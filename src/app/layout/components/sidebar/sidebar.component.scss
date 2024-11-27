@@ -1,69 +1,138 @@
-ul {
-    padding-left: 10px;
-    padding-right: 10px;
-
-}
-
-button {
-    margin-left: 10px;
-}
-
-.active-link {
-    background-color: #d3d3d3;
-}
-
+/* Sidebar Container */
 nav {
-    // transition: width 0.3s, padding 0.3s;
-    width: 12rem; /* Default width */
-  }
-  
-  nav.sidebar-collapsed {
-    width: 3rem; /* Collapsed width */
-    padding-top: 52px;
-  }
-  
-  nav .flex {
-    display: flex;
-    align-items: center;
-  }
-  
-  nav .p-2 {
-    padding: 0.5rem;
-  }
-  
-  nav .text-gray-700 {
-    color: #4a4a4a;
-  }
-  
-  nav .hover\:bg-gray-200:hover {
-    background-color: #e2e2e2;
-    color: #3fc6d5;
-  }
-  
-  nav .rounded-lg {
-    border-radius: 0.5rem;
-  }
-  
-  nav .space-y-2 {
-    margin-top: 1rem;
-  }
-  
-//   nav img {
-//     transition: opacity 0.3s;
-//   }
-  
-  nav.sidebar-collapsed img {
-    opacity: 0;
-  }
-  
-  nav span {
-    // transition: opacity 0.3s;
-  }
-  
-  nav.sidebar-collapsed span {
-    opacity: 0;
-  }
-  .color-bg-dark {
-    background-color: #1E1E1E;
-  }
-  
+  width: 12rem;
+  padding-top: 52px;
+  transition: width 0.3s ease-in-out; /* Smooth transition for expanding/collapsing */
+}
+
+nav.sidebar-collapsed {
+  width: 3rem; /* Collapsed width */
+  padding-top: 52px;
+  transition: width 0.3s ease-in-out; /* Maintain smooth transition */
+}
+
+/* Sidebar Menu List */
+nav ul {
+  padding: 0;
+  margin-top: 1rem;
+}
+
+nav ul li {
+  margin-bottom: 0.5rem;
+}
+
+nav ul li a, nav ul li button {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  color: #4a4a4a;
+  border-radius: 0.5rem;
+  gap: 0.75rem; /* Consistent spacing between icon and text */
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+nav ul li a:hover, nav ul li button:hover {
+  color: #1f2937; /* Darker hover text */
+}
+
+nav ul li.active a {
+  background-color: #e5e7eb; /* Active background color */
+  color: #2563eb; /* Active text color */
+}
+
+nav ul li a.active-link {
+  background-color: #d1d5db; /* Slightly darker on hover */
+}
+
+/* If you want to add hover effects on active items */
+nav ul li a.active-link:hover {
+  background-color: #d1d5db; /* Slightly darker on hover */
+}
+nav.sidebar-collapsed ul li a {
+  justify-content: center; /* Center icons when sidebar is collapsed */
+  padding: 0.75rem; /* Adjusted padding */
+}
+
+nav.sidebar-collapsed ul li a .icon {
+  margin-right: 0; /* Remove spacing when only displaying icons */
+}
+
+/* Sidebar Logo */
+nav .logo-container img {
+  width: 9rem; /* Adjusted logo size */
+  transition: opacity 0.3s ease-in-out; /* Smooth fade for logo */
+}
+
+nav.sidebar-collapsed img {
+  opacity: 0; /* Hide logo in collapsed state */
+}
+
+/* Sidebar Menu Dropdown */
+nav ul li > ul {
+  margin-left: 1.5rem; /* Adjusted indentation */
+  display: none; /* Hide dropdown by default */
+}
+
+nav ul li button {
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+.fa-chevron-right:before {
+  content: "\f054";
+  padding-left: 28px;
+}
+
+.fa-chevron-down:before {
+  content: "\f078";
+  padding-left: 28px;
+}
+nav.sidebar-collapsed ul li > ul {
+  display: none; /* Ensure dropdown is hidden when collapsed */
+}
+
+nav .chevron-icon {
+  margin-left: auto; /* Push chevron to the far right */
+  transition: transform 0.3s ease-in-out; /* Smooth rotation effect */
+}
+
+
+nav.sidebar-collapsed .chevron-icon {
+  display: none; /* Hide dropdown icon when collapsed */
+}
+
+/* Sidebar Toggle Button */
+nav .toggle-btn {
+  padding: 0.5rem;
+  transition: background-color 0.3s ease-in-out;
+}
+
+nav .toggle-btn:hover {
+  background-color: #f1f5f9; /* Hover effect for toggle button */
+}
+
+/* Icon Hover Effect */
+nav.sidebar-collapsed ul li a:hover > i {
+  transform: translateX(10px); /* Move icon slightly on hover */
+  transition: transform 0.3s ease-in-out; /* Smooth icon movement */
+}
+
+/* Scrollbar Styling */
+nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+nav::-webkit-scrollbar-thumb {
+  background-color: #a0aec0; /* Custom thumb color */
+  border-radius: 10px;
+}
+
+nav::-webkit-scrollbar-thumb:hover {
+  background-color: #718096; /* Darker thumb color on hover */
+}
+
+nav::-webkit-scrollbar-track {
+  background-color: #edf2f7; /* Scrollbar track color */
+}

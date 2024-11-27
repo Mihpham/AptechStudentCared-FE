@@ -1,0 +1,220 @@
+<div class="container mx-auto p-6 bg-white rounded-lg shadow-md w-[180vh] ">
+    <!-- Title Section -->
+    <div class="flex items-center justify-start mb-6">
+        <h1 class="text-3xl font-bold text-gray-700">Manage Student Attendance</h1>
+        <small class="px-4 pb-3 text-gray-500 text-sm"
+            *ngIf="classDetails && classDetails.course && schedules.length > 0 && attendances">
+            {{ classDetails?.className }} - {{ classDetails.course?.courseName }} -
+            ({{ schedules[0].startDate | date: 'dd-MM-yyyy' }} - {{ schedules[schedules.length - 1].endDate | date:
+            'dd-MM-yyyy' }}) -
+            {{ schedules[0].subjectCode }} - {{ getTeacherName(schedules[0].subjectCode) }}
+        </small>
+    </div>
+
+    <!-- Table Container -->
+    <div class="overflow-auto rounded-lg shadow-sm max-h-[calc(100vh-220px)] z-1">
+        <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+            <thead class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal sticky top-0 z-10">
+                <tr class="border-b border-gray-300">
+                    <th class="py-3 px-4 text-left bg-gray-100 border border-gray-300 sticky left-[-4px] z-20"
+                        rowspan="2">Name</th>
+                    <th class="py-3 px-4 text-center bg-gray-100 border border-gray-300 sticky left-[135px] z-20"
+                        rowspan="2">Class</th>
+                    <th class="py-3 px-4 text-center bg-gray-100 border border-gray-300 sticky left-[220px] z-20"
+                        rowspan="2">Module</th>
+                    <th class="py-3 px-4 text-center bg-gray-100 border border-gray-300 sticky left-[309px] z-20"
+                        rowspan="2">Status</th>
+                    <th class="py-3 px-4 text-center bg-gray-100 border border-gray-300 sticky left-[418px] z-20"
+                        rowspan="2">Type</th>
+
+                    <ng-container *ngFor="let schedule of schedules; let i = index">
+                        <th class="py-3 px-4 text-center bg-gray-100 border border-gray-300" colspan="2"
+                            [ngClass]="{'bg-gray-400': schedule.isHoliday}">
+                            <span [ngClass]="{'text-gray-800': schedule.isHoliday, 'text-black': !schedule.isHoliday}">
+                                Session {{ i + 1 }}<br>{{ schedule.startDate | date: 'dd/MM/yyyy' }}
+                            </span>
+                            <button class="ml-2 text-sm text-yellow-500 hover:underline" (click)="toggleHoliday(i)">
+                                {{ schedule.isHoliday ? 'Remove Holiday' : 'Mark as Holiday' }}
+                            </button>
+                        </th>
+                    </ng-container>
+
+
+                </tr>
+                <tr class="border-b border-gray-300">
+                    <ng-container *ngFor="let schedule of schedules; let i = index">
+                        <!-- SchoolShift 1 -->
+                        <th class="py-3 px-4 text-center bg-gray-100 border border-gray-300 relative"
+                            [ngClass]="{'bg-gray-200': schedule.isHoliday}">
+                            <i class="fa fa-star cursor-pointer" (mouseenter)="openDropdown(i, 'shift1')"
+                                (mouseleave)="closeDropdown('shift1')" [ngClass]="{
+                                   'text-green-500': selectedStatus[i] === 'P',
+                                   'text-red-500': selectedStatus[i] === 'A',
+                                   'text-orange-500': selectedStatus[i] === 'PA'
+                               }">
+                            </i>
+                            SchoolShift 1
+
+                            <!-- Dropdown Menu for Shift 1 -->
+                            <div *ngIf="dropdownOpenIndex1 === i" (mouseenter)="openDropdown(i, 'shift1')"
+                                (mouseleave)="closeDropdown('shift1')"
+                                class="absolute top-6 right-0 bg-white border border-gray-300 rounded-md shadow-lg z-50">
+                                <ul>
+                                    <li *ngFor="let status of ['P', 'A', 'PA']"
+                                        (click)="applyStatusToAll(status, i, 'shift1')"
+                                        [class.bg-gray-300]="selectedStatus[i] === status"
+                                        class="px-4 py-2 cursor-pointer hover:bg-gray-200">
+                                        {{ status }}
+                                    </li>
+                                </ul>
+                            </div>
+                        </th>
+
+                        <!-- SchoolShift 2 -->
+                        <th class="py-3 px-4 text-center bg-gray-100 border border-gray-300 relative"
+                            [ngClass]="{'bg-gray-200': schedule.isHoliday}">
+                            <i class="fa fa-star cursor-pointer" (mouseenter)="openDropdown(i, 'shift2')"
+                                (mouseleave)="closeDropdown('shift2')" [ngClass]="{
+                                   'text-green-500': selectedStatus[i] === 'P',
+                                   'text-red-500': selectedStatus[i] === 'A',
+                                   'text-orange-500': selectedStatus[i] === 'PA'
+                               }">
+                            </i>
+                            SchoolShift 2
+
+                            <!-- Dropdown Menu for Shift 2 -->
+                            <div *ngIf="dropdownOpenIndex2 === i" (mouseenter)="openDropdown(i, 'shift2')"
+                                (mouseleave)="closeDropdown('shift2')"
+                                class="absolute top-6 right-0 bg-white border border-gray-300 rounded-md shadow-lg z-50">
+                                <ul>
+                                    <li *ngFor="let status of ['P', 'A', 'PA']"
+                                        (click)="applyStatusToAll(status, i, 'shift2')"
+                                        [class.bg-gray-300]="selectedStatus[i] === status"
+                                        class="px-4 py-2 cursor-pointer hover:bg-gray-200">
+                                        {{ status }}
+                                    </li>
+                                </ul>
+                            </div>
+                        </th>
+                    </ng-container>
+
+
+                </tr>
+            </thead>
+
+            <tbody *ngIf="students && students.length > 0" class="text-gray-700">
+                <tr *ngFor="let student of students" class="border-b border-gray-300 hover:bg-gray-50"
+                    [ngClass]="{ 'line-through': student.status !== 'STUDYING' }">
+                    <td class="px-4 py-3 sticky left-[-4px] whitespace-nowrap bg-white z-10">{{ student.fullName }}</td>
+                    <td class="px-4 py-3 sticky left-[135px] bg-white z-10">{{ classDetails.className }}</td>
+                    <td class="px-4 py-3 sticky left-[220px] bg-white z-10" *ngIf="schedules.length > 0">{{
+                        schedules[0].subjectCode }}</td>
+                    <td class="px-4 py-3 sticky left-[309px] bg-white z-10">
+                        <span class="rounded px-2 py-1 text-xs text-white" [ngClass]="{
+                            'bg-green-500': student.status === 'STUDYING',
+                            'bg-yellow-500': student.status === 'DELAY',
+                            'bg-red-500': student.status === 'DROPPED',
+                            'bg-orange-500': student.status === 'GRADUATED'
+                        }">{{ student.status }}</span>
+                    </td>
+                    <td class="px-4 py-3 sticky left-[418px] bg-white z-10">
+                        <span class="bg-green-500 text-white rounded px-2 py-1 text-xs">Official</span>
+                    </td>
+
+                    <ng-container *ngFor="let schedule of schedules, let i = index">
+                        <!-- Attendance for SchoolShift 1 -->
+                        <td class="relative px-2 border border-gray-300 bg-gray-100 rounded-md "
+                            [ngClass]="{'bg-gray-200': schedule.isHoliday}">
+                            <button
+                                class="bg-gray-200 p-2 rounded-md w-full text-center transition duration-200 hover:bg-gray-300 relative"
+                                [ngClass]="{
+                                'bg-green-500': getAttendanceStatus1(student.userId, schedule.scheduleId) === 'P',
+                                'bg-orange-500': getAttendanceStatus1(student.userId, schedule.scheduleId) === 'PA',
+                                'bg-red-500': getAttendanceStatus1(student.userId, schedule.scheduleId) === 'A',
+                                'bg-gray-200': !getAttendanceStatus1(student.userId, schedule.scheduleId)
+                            }" (mouseenter)="toggleDropdown(true, student.userId, schedule.scheduleId, 'ca1')"
+                                (mouseleave)="toggleDropdown(false, student.userId, schedule.scheduleId, 'ca1')"
+                                [title]="attendanceComments[student.userId] && attendanceComments[student.userId][schedule.scheduleId] || 'No comments'">
+                                <span
+                                    *ngIf="getAttendanceStatus1(student.userId, schedule.scheduleId); else iconTemplate">
+                                    {{ getAttendanceStatus1(student.userId, schedule.scheduleId) }}
+                                </span>
+                                <ng-template #iconTemplate>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </ng-template>
+                                <span *ngIf="attendanceComments[student.userId]?.[schedule.scheduleId]"
+                                    class="absolute top-0 right-0 w-2 h-2 bg-black rounded-tr-md"
+                                    style="clip-path: polygon(100% , 100% 100%, 0 100%);">
+                                </span>
+                            </button>
+
+                            <div *ngIf="isDropdownOpen && openDropdownInfo?.studentId === student.userId && 
+                            openDropdownInfo?.scheduleId === schedule.scheduleId && 
+                            openDropdownInfo?.attendanceStatus === 'ca1'"
+                                (mouseenter)="toggleDropdown(true, student.userId, schedule.scheduleId, 'ca1')"
+                                (mouseleave)="toggleDropdown(false, student.userId, schedule.scheduleId, 'ca1')"
+                                class="absolute mt-2 bottom-[70%] bg-white border border-gray-300 rounded-md shadow-lg z-50 whitespace-nowrap">
+                                <ul>
+                                    <li *ngFor="let status of ['P', 'A', 'PA']"
+                                        (click)="selectStatus(student.userId, schedule.scheduleId, status, true)"
+                                        [class.bg-gray-300]="getAttendanceStatus1(student.userId, schedule.scheduleId) === status"
+                                        class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
+                                        {{ status }}
+                                    </li>
+                                    <li class="px-4 py-2 cursor-pointer hover:bg-gray-200 border-t transition duration-200"
+                                        (click)="openCommentDialog(student.userId, schedule.scheduleId)">
+                                        Comment
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+
+                        <!-- Attendance for SchoolShift 2 -->
+                        <td class="relative px-2 border border-gray-300 bg-gray-100"
+                            [ngClass]="{'bg-gray-200': schedule.isHoliday}">
+                            <button class="bg-gray-200 p-2 rounded-md w-full text-center" [ngClass]="{
+                                'bg-green-500': getAttendanceStatus2(student.userId, schedule.scheduleId) === 'P',
+                                'bg-orange-500': getAttendanceStatus2(student.userId, schedule.scheduleId) === 'PA',
+                                'bg-red-500': getAttendanceStatus2(student.userId, schedule.scheduleId) === 'A',
+                                'bg-gray-200': !getAttendanceStatus2(student.userId, schedule.scheduleId)
+                            }" (mouseenter)="toggleDropdown(true, student.userId, schedule.scheduleId, 'ca2')"
+                                (mouseleave)="toggleDropdown(false, student.userId, schedule.scheduleId, 'ca2')">
+                                <span
+                                    *ngIf="getAttendanceStatus2(student.userId, schedule.scheduleId); else iconTemplate">
+                                    {{ getAttendanceStatus2(student.userId, schedule.scheduleId) }}
+                                </span>
+                                <ng-template #iconTemplate>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </ng-template>
+                            </button>
+
+                            <div *ngIf="isDropdownOpen && openDropdownInfo?.studentId === student.userId && 
+                            openDropdownInfo?.scheduleId === schedule.scheduleId && 
+                            openDropdownInfo?.attendanceStatus === 'ca2'"
+                                (mouseenter)="toggleDropdown(true, student.userId, schedule.scheduleId, 'ca2')"
+                                (mouseleave)="toggleDropdown(false, student.userId, schedule.scheduleId, 'ca22')"
+                                class="absolute mt-1 bottom-[70%] bg-white border border-gray-300 rounded-md shadow-lg z-50 whitespace-nowrap">
+                                <ul>
+                                    <li *ngFor="let status of ['P', 'A', 'PA']"
+                                        (click)="selectStatus(student.userId, schedule.scheduleId, status, false)"
+                                        [class.bg-gray-300]="getAttendanceStatus2(student.userId, schedule.scheduleId) === status"
+                                        class="px-4 py-2 cursor-pointer hover:bg-gray-200">
+                                        {{ status }}
+                                    </li>
+                                    <li class="px-4 py-2 cursor-pointer hover:bg-gray-200 border-t"
+                                        (click)="openCommentDialog(student.userId, schedule.scheduleId)">
+                                        Comment
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </ng-container>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div *ngIf="students.length === 0" class="text-center py-4 text-gray-600">
+        No students found.
+    </div>
+</div>

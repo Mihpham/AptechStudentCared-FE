@@ -1,0 +1,331 @@
+<form
+  [formGroup]="studentForm"
+  (ngSubmit)="onSubmit()"
+  class="p-6 pt-5 h-auto bg-white shadow-md rounded"
+>
+  <h2 class="text-2xl font-bold mb-4">Add Student</h2>
+  <hr class />
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 pb-5">
+    <!-- Full Name -->
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Full Name</label>
+      <input
+        formControlName="fullName"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="text"
+      />
+      <div
+        *ngIf="
+          studentForm.get('fullName')?.invalid &&
+          studentForm.get('fullName')?.touched
+        "
+        class="text-red-500 text-xs mt-1"
+      >
+        Full Name is required and must be at least 2 characters long.
+      </div>
+    </div>
+    <!-- Gender -->
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Gender</label>
+      <div class="flex items-center">
+        <label class="inline-flex items-center mr-2">
+          <input
+            formControlName="gender"
+            type="radio"
+            value="Male"
+            class="form-radio text-blue-600"
+          />
+          <span class="ml-2">Male</span>
+        </label>
+        <label class="inline-flex items-center mr-4">
+          <input
+            formControlName="gender"
+            type="radio"
+            value="Female"
+            class="form-radio text-blue-600"
+          />
+          <span class="ml-2">Female</span>
+        </label>
+        <label class="inline-flex items-center">
+          <input
+            formControlName="gender"
+            type="radio"
+            value="Other"
+            class="form-radio text-blue-600"
+          />
+          <span class="ml-2">Other</span>
+        </label>
+      </div>
+      <div
+        *ngIf="
+          studentForm.get('gender')?.invalid &&
+          studentForm.get('gender')?.touched
+        "
+        class="text-red-500 text-xs mt-1"
+      >
+        Gender is required.
+      </div>
+    </div>
+  </div>
+  <!-- Second row: Date of Birth, Phone Number -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
+    <!-- Date of Birth -->
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Date of Birth</label>
+      <input
+        formControlName="dob"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="date"
+      />
+      <div
+        *ngIf="
+          studentForm.get('dob')?.hasError('invalidAge') &&
+          studentForm.get('dob')?.touched
+        "
+      >
+        <small class="text-danger text-red-500"
+          >Student must be at least 18 years old.</small
+        >
+      </div>
+      <div
+        *ngIf="
+          studentForm.get('dob')?.hasError('invalidDate') &&
+          studentForm.get('dob')?.touched
+        "
+      >
+        <small class="text-danger text-red-500"
+          >Date of birth cannot be in the future.</small
+        >
+      </div>
+    </div>
+
+    <!-- Phone Number -->
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Phone Number</label>
+      <input
+        formControlName="phoneNumber"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="tel"
+      />
+      <div
+        *ngIf="
+          studentForm.get('phoneNumber')?.invalid &&
+          studentForm.get('phoneNumber')?.touched
+        "
+        class="text-red-500 text-xs mt-1"
+      >
+        Phone Number is required.
+      </div>
+    </div>
+  </div>
+
+  <!-- Address -->
+  <div class>
+    <app-location-selector
+      [provinces]="provinces"
+      [districts]="districts"
+      [communes]="communes"
+      (locationChanged)="onLocationChange($event)"
+    >
+    </app-location-selector>
+  </div>
+
+  <!-- Class and Courses -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-5">
+    <!-- Class Name -->
+    <div class="relative">
+      <label class="block text-gray-700 text-sm mb-2">Class</label>
+      <button
+        type="button"
+        (click)="dropdownOpen = !dropdownOpen"
+        class="w-full bg-white border rounded py-2 px-3 text-left text-gray-700"
+      >
+        {{ selectedClass ? selectedClass : "Select Class" }}
+      </button>
+      <div
+        *ngIf="dropdownOpen"
+        class="absolute z-10 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-full"
+      >
+        <ul>
+          <li
+            *ngFor="let class of availableClasses"
+            (click)="selectClass(class)"
+            class="cursor-pointer py-2 px-4 hover:bg-gray-100"
+          >
+            {{ class.className }}
+          </li>
+        </ul>
+      </div>
+      <div
+        class="absolute inset-y-0 right-0 pr-3 pt-7 flex items-center pointer-events-none"
+      >
+        <i class="fas fa-chevron-down text-gray-500"></i>
+      </div>
+    </div>
+
+    <!-- Courses -->
+    <div class="relative">
+      <label class="block text-gray-700 text-sm mb-2">Course</label>
+      <button
+        type="button"
+        (click)="courseDropdownOpen = !courseDropdownOpen"
+        class="w-full bg-white border rounded py-2 px-3 text-left text-gray-700"
+      >
+        {{ getFormattedCourses() || "Select Courses" }}
+      </button>
+      <div
+        *ngIf="courseDropdownOpen"
+        class="absolute z-10 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-full"
+      >
+        <ul>
+          <li
+            *ngFor="let course of availableCourses"
+            (click)="onCourseToggle(course.courseCode)"
+            class="cursor-pointer py-2 px-4 hover:bg-gray-100"
+          >
+            <input
+              type="checkbox"
+              [checked]="selectedCourses.includes(course.courseCode)"
+              (click)="$event.stopPropagation()"
+            />
+            {{ course.courseCode }}
+          </li>
+        </ul>
+      </div>
+      <div
+        class="absolute inset-y-0 right-0 pr-3 pt-7 flex items-center pointer-events-none"
+      >
+        <i class="fas fa-chevron-down text-gray-500"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Parent Information -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-5">
+    <!-- Parent's Full Name -->
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Parent's Full Name</label>
+      <input
+        formControlName="parentFullName"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="text"
+      />
+      <div
+        *ngIf="
+          studentForm.get('parentFullName')?.invalid &&
+          studentForm.get('parentFullName')?.touched
+        "
+        class="text-red-500 text-xs mt-1"
+      >
+        Parent's Full Name is required and must be at least 2 characters long.
+      </div>
+    </div>
+
+    <!-- Relation to Student -->
+    <div>
+      <label class="block text-gray-700 text-sm mb-2"
+        >Relation to Student</label
+      >
+      <select
+        formControlName="studentRelation"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      >
+        <option value disabled>Select Relationship</option>
+        <option value="Father">Father</option>
+        <option value="Mother">Mother</option>
+        <option value="Guardian">Guardian</option>
+      </select>
+      <div
+        *ngIf="
+          studentForm.get('studentRelation')?.invalid &&
+          studentForm.get('studentRelation')?.touched
+        "
+        class="text-red-500 text-xs mt-1"
+      >
+        Relation to Student is required.
+      </div>
+    </div>
+
+    <!-- Parent's Phone Number -->
+    <div>
+      <label class="block text-gray-700 text-sm mb-2"
+        >Parent's Phone Number</label
+      >
+      <input
+        formControlName="parentPhone"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="tel"
+      />
+      <div
+        *ngIf="
+          studentForm.get('parentPhone')?.invalid &&
+          studentForm.get('parentPhone')?.touched
+        "
+        class="text-red-500 text-xs mt-1"
+      >
+        Parent's Phone Number is required.
+      </div>
+    </div>
+
+    <!-- Parent's Gender -->
+    <div>
+      <label class="block text-gray-700 text-sm mb-2">Parent's Gender</label>
+      <div class="flex items-center">
+        <label class="inline-flex items-center mr-4">
+          <input
+            formControlName="parentGender"
+            type="radio"
+            value="Male"
+            class="form-radio text-blue-600"
+          />
+          <span class="ml-2">Male</span>
+        </label>
+        <label class="inline-flex items-center mr-4">
+          <input
+            formControlName="parentGender"
+            type="radio"
+            value="Female"
+            class="form-radio text-blue-600"
+          />
+          <span class="ml-2">Female</span>
+        </label>
+        <label class="inline-flex items-center">
+          <input
+            formControlName="parentGender"
+            type="radio"
+            value="Other"
+            class="form-radio text-blue-600"
+          />
+          <span class="ml-2">Other</span>
+        </label>
+      </div>
+      <div
+        *ngIf="
+          studentForm.get('parentGender')?.invalid &&
+          studentForm.get('parentGender')?.touched
+        "
+        class="text-red-500 text-xs mt-1"
+      >
+        Parent's Gender is required.
+      </div>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="flex justify-between gap-4 pt-6">
+    <button
+      type="submit"
+      class="bg-blue-500 right-0 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+    >
+      Submit
+    </button>
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 focus:outline-none focus:shadow-outline"
+    >
+      Cancel
+    </button>
+  </div>
+</form>

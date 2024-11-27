@@ -19,8 +19,8 @@
               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
               placeholder="Username@gmail.com" required>
             <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="absolute top-full left-0 mt-1 text-red-500 text-sm">
-              <div *ngIf="email?.errors?.['required']">Email is required.</div>
-              <div *ngIf="email?.errors?.['email']">Invalid email format.</div>
+              <small *ngIf="email?.errors?.['required']">Email is required.</small>
+              <small *ngIf="email?.errors?.['email']">Invalid email format.</small>
             </div>
           </div>
           <div class="relative mb-6">
@@ -29,7 +29,7 @@
               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
               placeholder="Password" required>
             <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="absolute top-full left-0 mt-1 text-red-500 text-sm">
-              <div *ngIf="password?.errors?.['required']">Password is required.</div>
+              <small *ngIf="password?.errors?.['required']">Password is required.</small>
             </div>
             <span (click)="togglePasswordVisibility()"
               class="absolute inset-y-0 right-3 flex items-center cursor-pointer"

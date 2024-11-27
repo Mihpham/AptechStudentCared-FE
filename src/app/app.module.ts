@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,6 +13,12 @@ import { SidebarComponent } from './layout/components/sidebar/sidebar.component'
 import { PagesModule } from './features/pages/pages.module';
 import { SharedModule } from './shared/shared.module';
 import { ProfileModule } from './features/profile/profile.module';
+import { BreadcrumbsComponent } from './layout/components/breadcrumbs/breadcrumbs.component';
+
+import {  LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { StudentPerformanceModule } from './features/student-performance/student-performance.module';
+import { AuthModule } from './auth/auth.module';
+import { StudentComponent } from './features/student-management/student.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -23,9 +29,12 @@ export function tokenGetter() {
     AppComponent,
     NavbarComponent,
     SidebarComponent,
+    BreadcrumbsComponent,
+    StudentComponent
   ],
   imports: [
     BrowserModule,
+    AuthModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
@@ -33,6 +42,7 @@ export function tokenGetter() {
     PagesModule,
     SharedModule,
     ProfileModule,
+    StudentPerformanceModule,
     ToastrModule.forRoot({
       positionClass: 'toast-top-right',
       preventDuplicates: true,
@@ -49,7 +59,10 @@ export function tokenGetter() {
     }),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [],
+  providers: [
+   
+    { provide: LocationStrategy, useClass: PathLocationStrategy  }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

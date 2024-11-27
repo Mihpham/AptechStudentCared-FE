@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccountsComponent } from './accounts.component';
+import { SroDialogComponent } from './sro-dialog.component';
 
-describe('AccountsComponent', () => {
-  let component: AccountsComponent;
-  let fixture: ComponentFixture<AccountsComponent>;
+describe('SroDialogComponent', () => {
+  let component: SroDialogComponent;
+  let fixture: ComponentFixture<SroDialogComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AccountsComponent]
+      declarations: [SroDialogComponent]
     });
-    fixture = TestBed.createComponent(AccountsComponent);
+    fixture = TestBed.createComponent(SroDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

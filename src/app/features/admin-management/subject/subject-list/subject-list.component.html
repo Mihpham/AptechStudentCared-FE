@@ -1,0 +1,95 @@
+<div class="p-4 space-y-6 ">
+    <!-- Total Subjects Display -->
+    <div class="total-subjects text-lg font-semibold text-gray-800">
+        Total Subjects: <span>{{ totalSubjects }}</span>
+    </div>
+
+    <!-- Header with Search and Action Buttons -->
+    <div class="header">
+        <div class="header-actions flex flex-wrap items-center justify-between gap-4">
+            <!-- Search Input -->
+            <div class="relative w-full sm:w-1/2 lg:w-1/3">
+                <input id="searchInput" type="text" placeholder=" " [(ngModel)]="searchTerm"
+                    (ngModelChange)="applyFilter($event)"
+                    class="peer w-full h-12 px-4 py-2 dark:bg-gray-800 bg-white placeholder-transparent text-gray-700 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300 ease-in-out" />
+                <label for="searchInput"
+                    class="absolute left-4 top-2 text-gray-500 dark:text-gray-400 text-sm transition-all duration-300 transform peer-placeholder-shown:top-1/4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-gray-500 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-blue-500 peer-focus:text-xs">Search</label>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="actions flex flex-wrap space-x-2 ml-auto">
+                <button
+                    class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow"
+                    (click)="triggerFileInput()">
+                    <i class="fa-solid fa-file-import"></i> Import
+                </button>
+                <button
+                    class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow"
+                    (click)="onExport()">
+                    <i class="fa-solid fa-file-export"></i> Export
+                </button>
+                <button
+                    class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow"
+                    (click)="onAdd()">
+                    <i class="fa-solid fa-plus"></i> Add
+                </button>
+                <button
+                    class="bg-white text-gray-700 hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 py-2 px-4 rounded shadow">
+                    <i class="fa-solid fa-filter"></i> Filter
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Results Message -->
+    <div *ngIf="dataSource.filteredData.length === 0 && dataSource.data.length > 0"
+        class="no-results text-gray-600 text-center py-4">
+        No results found.
+    </div>
+    <div *ngIf="dataSource.data.length === 0" class="no-results text-gray-600 text-center py-4">
+        There are no subjects.
+    </div>
+
+    <!-- Responsive Table Wrapper -->
+    <div class="overflow-x-auto rounded-lg border border-gray-300">
+        <mat-table *ngIf="dataSource.data.length > 0" [dataSource]="dataSource"
+            class="min-w-full table-auto w-full bg-white">
+            <!-- Subject Name Column -->
+            <ng-container matColumnDef="subjectName">
+                <mat-header-cell *matHeaderCellDef class="px-4 py-2 text-left"> Subject Name </mat-header-cell>
+                <mat-cell *matCellDef="let subject" class="px-4 py-2"> {{subject.subjectName}} </mat-cell>
+            </ng-container>
+
+            <!-- Subject Code Column -->
+            <ng-container matColumnDef="subjectCode">
+                <mat-header-cell *matHeaderCellDef class="px-4 py-2 text-left"> Subject Code </mat-header-cell>
+                <mat-cell *matCellDef="let subject" class="px-4 py-2"> {{subject.subjectCode}} </mat-cell>
+            </ng-container>
+
+            <!-- Subject Hour Column -->
+            <ng-container matColumnDef="totalHours">
+                <mat-header-cell *matHeaderCellDef class="px-4 py-2 text-left"> Hour </mat-header-cell>
+                <mat-cell *matCellDef="let subject" class="px-4 py-2"> {{subject.totalHours}} </mat-cell>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+                <mat-header-cell *matHeaderCellDef class="px-4 py-2 text-left"> Actions </mat-header-cell>
+                <mat-cell *matCellDef="let subject" class="px-4 py-2 flex space-x-2">
+                    <button class="text-blue-400 hover:text-blue-600" (click)="onUpdate(subject)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button class="text-red-400 hover:text-red-600" (click)="onDelete(subject.id)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+    </div>
+
+    <!-- Paginator -->
+    <mat-paginator pageSize="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons class="mt-4"></mat-paginator>
+</div>

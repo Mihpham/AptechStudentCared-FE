@@ -1,0 +1,84 @@
+.account-table {
+  table {
+    width: 100%;
+    border-collapse: collapse; // Tạo sự liền mạch giữa các ô
+
+    th,
+    td {
+      text-align: left;
+      padding: 12px; // Tăng khoảng cách giữa nội dung và viền
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1); // Thêm đường viền dưới cho mỗi ô
+      overflow: hidden; // Ngăn chặn text overflow
+      text-overflow: ellipsis; // Hiển thị dấu ba chấm
+      white-space: nowrap; // Ngăn chặn text wrapping
+    }
+
+    th {
+      background-color: #ffffff; // Màu nền cho tiêu đề
+      color: rgb(17, 4, 4); // Màu chữ cho tiêu đề
+    }
+
+    tr:hover {
+      background-color: #edf2f7; // Màu nền cho hàng khi hover
+    }
+
+    .stt {
+      width: auto; // Căn chỉnh chiều rộng tự động với số
+      min-width: 30px; // Thiết lập chiều rộng tối thiểu để đảm bảo không gian
+      text-align: center; // Căn giữa cho cột STT
+      align-items: center;
+    }
+
+    .email-label .mat-cell {
+      padding-left: 0;
+      /* Adjust or remove padding if it's too large */
+      text-align: left;
+      /* Ensure text is aligned to the left */
+    }
+
+    .email {
+      white-space: nowrap;
+      /* Prevent line breaks */
+      overflow: hidden;
+      /* Hide overflow */
+      text-overflow: ellipsis;
+      /* Add ellipsis when the text is too long */
+      display: inline-block;
+      /* Ensure the block formatting */
+      max-width: 130px;
+      /* Limit the width */
+    }
+
+    .username {
+      width: 35%; // Đặt chiều rộng cho cột Username
+    }
+
+    .role,
+    .createdAt {
+      width: 20%; // Đặt chiều rộng cho các cột Role và Created At
+    }
+
+    .status {
+      width: 15%; // Đặt chiều rộng cho cột Status
+    }
+
+    .action {
+      width: 15%;
+      text-align: center;
+    }
+
+    button.mat-icon-button {
+      transition: color 0.3s ease;
+    }
+
+    // Colors based on status
+    .text-green-500 {
+      color: #48bb78; // Green for unlocked
+    }
+
+    .text-red-500 {
+      color: #f56565; // Red for locked
+    }
+
+  }
+}

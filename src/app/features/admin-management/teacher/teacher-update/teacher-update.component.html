@@ -1,0 +1,111 @@
+<form [formGroup]="teacherForm" (ngSubmit)="onSubmit()" class="p-6 pt-5 h-auto bg-white shadow-md rounded">
+    <h2 class="text-2xl font-bold mb-4">Update Teacher</h2>
+    <hr class="mb-4">
+  
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 pb-2">
+      <!-- Full Name -->
+      <div>
+        <label class="block text-gray-700 text-sm">Full Name</label>
+        <input formControlName="fullName"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          type="text" />
+        <div *ngIf="teacherForm.get('fullName')?.invalid && teacherForm.get('fullName')?.touched"
+          class="text-red-500 text-xs mt-1">
+          Full Name is required and must be at least 2 characters long.
+        </div>
+      </div>
+  
+      <!-- Gender -->
+      <div>
+        <label class="block text-gray-700 text-sm pb-2">Gender</label>
+        <div class="flex items-center">
+          <label class="inline-flex items-center mr-2">
+            <input formControlName="gender" type="radio" value="MALE" class="form-radio text-blue-600" />
+            <span class="ml-2">Male</span>
+          </label>
+          <label class="inline-flex items-center mr-4">
+            <input formControlName="gender" type="radio" value="FEMALE" class="form-radio text-blue-600" />
+            <span class="ml-2">Female</span>
+          </label>
+          <label class="inline-flex items-center">
+            <input formControlName="gender" type="radio" value="OTHER" class="form-radio text-blue-600" />
+            <span class="ml-2">Other</span>
+          </label>
+        </div>
+        <div *ngIf="teacherForm.get('gender')?.invalid && teacherForm.get('gender')?.touched"
+          class="text-red-500 text-xs mt-1">
+          Gender is required.
+        </div>
+      </div>
+    </div>
+  
+    <!-- Date of Birth and Phone Number -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
+      <!-- Date of Birth -->
+      <div>
+        <label class="block text-gray-700 text-sm">Date of Birth</label>
+        <input formControlName="dob"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          type="date" />
+        <div *ngIf="teacherForm.get('dob')?.hasError('invalidAge') && teacherForm.get('dob')?.touched">
+          <small class="text-red-500">Teacher must be at least 18 years old.</small>
+        </div>
+        <div *ngIf="teacherForm.get('dob')?.hasError('invalidDate') && teacherForm.get('dob')?.touched">
+          <small class="text-red-500">Date of birth cannot be in the future.</small>
+        </div>
+      </div>
+  
+      <!-- Phone Number -->
+      <div>
+        <label class="block text-gray-700 text-sm">Phone Number</label>
+        <input formControlName="phoneNumber"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          type="tel" />
+        <div *ngIf="teacherForm.get('phoneNumber')?.invalid && teacherForm.get('phoneNumber')?.touched"
+          class="text-red-500 text-xs mt-1">
+          Phone Number is required.
+        </div>
+      </div>
+    </div>
+  
+    <!-- Address -->
+    <div class="pt-2 pb-2">
+      <label class="block text-gray-700 text-sm">Address</label>
+      <input formControlName="address"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        type="text" />
+      <div *ngIf="teacherForm.get('address')?.invalid && teacherForm.get('address')?.touched"
+        class="text-red-500 text-xs mt-1">
+        Address is required.
+      </div>
+    </div>
+  
+    <!-- Status -->
+    <div class="pt-2 pb-2">
+      <label class="block text-gray-700 text-sm">Status</label>
+      <select formControlName="status"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        <option value="" disabled>Select Status</option>
+        <option value="TEACHING">Teaching</option>
+        <option value="ONLEAVE">On Leave</option>
+        <option value="LEAVE">Leave</option>
+      </select>
+      <div *ngIf="teacherForm.get('status')?.invalid && teacherForm.get('status')?.touched"
+        class="text-red-500 text-xs mt-1">
+        Status is required.
+      </div>
+    </div>
+  
+    <!-- Buttons -->
+    <div class="flex justify-between gap-4 pt-2">
+      <button type="submit"
+        class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline">
+        Submit
+      </button>
+      <button type="button" (click)="onCancel()"
+        class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 focus:outline-none focus:shadow-outline">
+        Cancel
+      </button>
+    </div>
+  </form>
+  

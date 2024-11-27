@@ -1,0 +1,195 @@
+<div class="container mx-auto max-w-2xl bg-slate-200">
+  <form
+    (ngSubmit)="saveClass()"
+    #classForm="ngForm"
+    class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 "
+  >
+    <h2 class="text-3xl font-semibold text-center text-gray-800 mb-6">
+      Add Class
+    </h2>
+
+    <!-- Class Name -->
+    <div class="relative z-0 w-full mb-4 group">
+      <input
+        type="text"
+        id="className"
+        [(ngModel)]="class.className"
+        name="className"
+        required
+        minlength="3"
+        maxlength="50"
+        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+        placeholder=" "
+        #className="ngModel"
+      />
+      <label
+        for="className"
+        class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+      >Class Name</label>
+      <div *ngIf="className.invalid && (className.dirty || className.touched)" class="text-red-500 text-sm mt-1">
+        <small *ngIf="className.errors?.['required']">Class Name is required.</small>
+        <small *ngIf="className.errors?.['minlength']">Class Name must be at least 3 characters long.</small>
+        <small *ngIf="className.errors?.['maxlength']">Class Name cannot be more than 50 characters long.</small>
+      </div>
+    </div>
+
+    <!-- Center -->
+    <div class="relative z-0 w-full mb-4 group">
+      <input
+        type="text"
+        id="center"
+        [(ngModel)]="class.center"
+        name="center"
+        required
+        minlength="3"
+        maxlength="50"
+        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+        placeholder=" "
+        #center="ngModel"
+      />
+      <label
+        for="center"
+        class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+      >Center</label>
+      <div *ngIf="center.invalid && (center.dirty || center.touched)" class="text-red-500 text-sm mt-1">
+        <small *ngIf="center.errors?.['required']">Center is required.</small>
+        <small *ngIf="center.errors?.['minlength']">Center must be at least 3 characters long.</small>
+        <small *ngIf="center.errors?.['maxlength']">Center cannot be more than 50 characters long.</small>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 md:gap-6">
+      <!-- Start Hour -->
+      <div class="relative z-0 w-full mb-4 group">
+        <input
+          type="time"
+          id="startHour"
+          [(ngModel)]="startHour"
+          name="startHour"
+          required
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+          placeholder=" "
+          #startHourInput="ngModel"
+        />
+        <label
+          for="startHour"
+          class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+        >Start Hour</label>
+        <div *ngIf="startHourInput.invalid && (startHourInput.dirty || startHourInput.touched)" class="text-red-500 text-sm mt-1">
+          <small *ngIf="startHourInput.errors?.['required']">Start Hour is required.</small>
+        </div>
+      </div>
+
+      <!-- Finish Hour -->
+      <div class="relative z-0 w-full mb-4 group">
+        <input
+          type="time"
+          id="finishHour"
+          [(ngModel)]="finishHour"
+          name="finishHour"
+          required
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+          placeholder=" "
+          #finishHourInput="ngModel"
+        />
+        <label
+          for="finishHour"
+          class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+        >Finish Hour</label>
+        <div *ngIf="finishHourInput.invalid && (finishHourInput.dirty || finishHourInput.touched)" class="text-red-500 text-sm mt-1">
+          <small *ngIf="finishHourInput.errors?.['required']">Finish Hour is required.</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Course -->
+    <div class="relative z-0 w-full mb-4 group">
+      <select
+        id="courseCode"
+        [(ngModel)]="class.courseCode"
+        name="courseCode"
+        required
+        class="block py-2.5 w-full text-sm text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-600"
+        #courseCodeInput="ngModel"
+      >
+        <option *ngFor="let course of courses" [value]="course.courseCode">{{ course.courseCode }}</option>
+      </select>
+      <label
+        for="courseCode"
+        class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+      >Course</label>
+      <div *ngIf="courseCodeInput.invalid && (courseCodeInput.dirty || courseCodeInput.touched)" class="text-red-500 text-sm mt-1">
+        <small *ngIf="courseCodeInput.errors?.['required']">Please select a course.</small>
+      </div>
+    </div>
+
+    <!-- Days -->
+    <div class="relative z-0 w-full mb-4 group">
+      <input
+        type="text"
+        id="days"
+        [(ngModel)]="class.days"
+        name="days"
+        required
+        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+        placeholder=" "
+        readonly
+        #daysInput="ngModel"
+      />
+      <label
+        for="days"
+        class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+      >Days</label>
+
+      <!-- Checkbox days -->
+      <div class="mt-2 mr-2 flex flex-wrap">
+        <label class="inline-flex mr-2 items-center">
+          <input type="checkbox" [value]="DayOfWeek.MONDAY" (change)="toggleDay($event)" />
+          <span class="ml-2">Monday</span>
+        </label>
+        <label class="inline-flex  mr-6 items-center">
+          <input type="checkbox" [value]="DayOfWeek.TUESDAY" (change)="toggleDay($event)" />
+          <span class="ml-2">Tuesday</span>
+        </label>
+        <label class="inline-flex  mr-6 items-center">
+          <input type="checkbox" [value]="DayOfWeek.WEDNESDAY" (change)="toggleDay($event)" />
+          <span class="ml-2">Wednesday</span>
+        </label>
+        <label class="inline-flex  mr-6 items-center">
+          <input type="checkbox" [value]="DayOfWeek.THURSDAY" (change)="toggleDay($event)" />
+          <span class="ml-2">Thursday</span>
+        </label>
+        <label class="inline-flex  mr-6 items-center">
+          <input type="checkbox" [value]="DayOfWeek.FRIDAY" (change)="toggleDay($event)" />
+          <span class="ml-2">Friday</span>
+        </label>
+        <label class="inline-flex  mr-6 items-center">
+          <input type="checkbox" [value]="DayOfWeek.SATURDAY" (change)="toggleDay($event)" />
+          <span class="ml-2">Saturday</span>
+        </label>
+      </div>
+
+      <div *ngIf="daysInput.invalid && (daysInput.dirty || daysInput.touched)" class="text-red-500 text-sm mt-1">
+        <small *ngIf="daysInput.errors?.['required']">Please select at least one day.</small>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="flex items-center justify-between">
+      <button
+        type="submit"
+        [disabled]="classForm.invalid || isLoading"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+      >
+        {{ isLoading ? "Saving..." : "Save Class" }}
+      </button>
+      <button
+        type="button"
+        (click)="onClosed()"
+        class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

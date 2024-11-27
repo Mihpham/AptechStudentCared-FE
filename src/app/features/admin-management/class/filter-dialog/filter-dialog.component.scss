@@ -1,0 +1,124 @@
+/* Style for the dialog title */
+h1[mat-dialog-title] {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #3f51b5; /* Material primary color */
+  text-align: center;
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: slideIn 0.5s ease forwards;
+}
+
+/* Style for the dialog content */
+.mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Add space between form fields */
+  padding: 15px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.6s ease forwards 0.2s;
+}
+
+/* Style for form fields */
+.mat-form-field {
+  width: 100%; /* Ensure form fields take full width */
+  transition: all 0.3s ease;
+}
+
+.mat-form-field:hover {
+  transform: scale(1.02); /* Small hover effect */
+}
+
+/* Label customization */
+.mat-form-field .mat-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #616161; /* Grey color for label */
+  transition: color 0.3s ease;
+}
+
+.mat-form-field .mat-label:focus-within {
+  color: #3f51b5; /* Change label color on focus */
+}
+
+/* Style for the dialog actions */
+.mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.6s ease forwards 0.4s;
+}
+
+/* Button styling */
+button.mat-button {
+  font-weight: 500;
+  color: #616161; /* Grey color for button text */
+  margin-left: 10px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+/* Cancel button */
+button.mat-button {
+  background-color: #e0e0e0; /* Light grey for Cancel button */
+}
+
+button.mat-button:hover {
+  background-color: #bdbdbd; /* Darker grey on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Hover shadow effect */
+}
+
+/* Apply button */
+button.mat-button.color-primary {
+  color: #ffffff; /* White text for primary button */
+  background-color: #3f51b5; /* Primary color for Apply button */
+}
+
+button.mat-button.color-primary:hover {
+  background-color: #303f9f; /* Darker primary color on hover */
+  transform: translateY(-2px); /* Lift on hover */
+  box-shadow: 0 4px 12px rgba(63, 81, 181, 0.4); /* Hover shadow effect for primary button */
+}
+
+/* Subtle hover effect on all buttons */
+button.mat-button:hover {
+  transform: translateY(-2px);
+}
+
+/* Active (clicked) button effect */
+button.mat-button:active {
+  transform: translateY(0); /* Return to normal position */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Reduce shadow on click */
+}
+
+/* Add smooth transition to the dialog opening */
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Make sure the dialog content looks good on small screens */
+@media (max-width: 600px) {
+  .mat-dialog-content {
+    padding: 10px;
+  }
+
+  .mat-dialog-actions {
+    justify-content: space-between;
+  }
+}

@@ -1,0 +1,60 @@
+.side-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem; // Khoảng cách giữa các card
+}
+.mat-mdc-card-header {
+  padding: 10px;
+}
+.menu-card {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 5px; // Tạo các góc tròn cho card
+
+  &:hover {
+    transform: scale(1.05); // Tăng kích thước nhẹ khi hover
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); // Tạo bóng đổ đẹp khi hover
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+  }
+
+  .role-icon {
+    background-color: #1976d2; // Màu nền cho icon
+    color: #fff;
+    border-radius: 50%;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+  }
+
+  .card-title-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  mat-card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  mat-card-subtitle {
+    font-size: 0.85rem;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .card-content {
+    background-color: #f1f1f1; // Tạo nền sáng cho content
+    padding: 8px;
+  }
+
+  .account-details {
+    font-weight: 500;
+    color: #555;
+  }
+}

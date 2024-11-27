@@ -1,0 +1,34 @@
+<form [formGroup]="form" (ngSubmit)="save()" class="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-semibold mb-4">Assign Teacher</h2>
+
+    <div class="mb-4">
+        <label for="subject" class="block text-sm font-medium text-gray-700">Subject:</label>
+        <input id="subject" formControlName="subject" readonly class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500 p-2" />
+    </div>
+
+    <div class="mb-4">
+        <label for="teacherName" class="block text-sm font-medium text-gray-700">Teacher:</label>
+        <select id="teacherName" formControlName="teacherName" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500 p-2">
+      <option *ngFor="let teacher of teachers" [ngValue]="teacher.fullName">
+        {{ teacher.fullName }}
+      </option>
+    </select>
+    </div>
+
+    <div class="mb-4">
+        <label for="status" class="block text-sm font-medium text-gray-700">Status:</label>
+        <select id="status" formControlName="status" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500 p-2">
+      <option value="ACTIVE">ACTIVE</option>
+      <option value="LOCK">LOCK</option>
+    </select>
+    </div>
+
+    <div class="flex justify-between mt-6">
+        <button type="submit" [disabled]="form.invalid" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50">
+      Save
+    </button>
+        <button type="button" (click)="close()" class="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded hover:bg-gray-400">
+      Close
+    </button>
+    </div>
+</form>

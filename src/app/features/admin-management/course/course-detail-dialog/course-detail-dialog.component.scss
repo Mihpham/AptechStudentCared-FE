@@ -1,0 +1,37 @@
+/* Add general styling for the dialog content */
+.bg-white {
+  background-color: #fff;
+}
+
+.p-6 {
+  padding: 1.5rem; /* Adjust padding */
+}
+
+.text-2xl {
+  font-size: 1.5rem; /* Larger font size for title */
+}
+
+.font-bold {
+  font-weight: bold;
+}
+
+.mb-4 {
+  margin-bottom: 1rem; /* Adjust bottom margin */
+}
+
+.text-gray-700 {
+  color: #4a5568;
+}
+
+.text-gray-900 {
+  color: #1a202c; /* Darker color for strong text */
+}
+
+.mt-4 {
+  margin-top: 1rem; /* Space above the close button */
+}
+
+button {
+  display: block;
+  width: 100%; /* Make the button take full width */
+}

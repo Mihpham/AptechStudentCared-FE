@@ -1,0 +1,56 @@
+<div class="container mx-auto mt-6 p-8 bg-white dark:bg-gray-900 rounded-xl shadow-lg relative">
+  <button (click)="goBack()" class="absolute top-4 right-4 p-3 text-gray-500 hover:text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none rounded-full">
+    <i class="fas fa-times fa-lg"></i>
+  </button>
+
+  <h2 class="text-4xl font-bold mb-8 text-gray-900 dark:text-gray-100">
+    Manage Class Schedule
+  </h2>
+
+  <div class="bg-white dark:bg-gray-800 dark:border-gray-700">
+    <div class="overflow-x-auto sm:rounded-lg">
+      <table class="min-w-full table-auto text-left border border-gray-300 dark:border-gray-600 rounded-lg">
+        <thead>
+          <tr class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-semibold">
+            <th class="w-1/5 px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">Semester</th>
+            <th class="w-1/5 px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">Subject</th>
+            <th class="w-1/5 px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">Class Name</th>
+            <th class="w-1/5 px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">Teacher Name</th>
+            <th class="w-1/5 px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">Status</th>
+            <th class="w-1/5 px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">Action</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-300 text-sm">
+          <ng-container *ngFor="let semester of semesters">
+            <tr *ngFor="let detail of getCourseDetails(semester)" class="hover:bg-gray-100 dark:hover:bg-gray-700">
+              <td class="px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">{{ semester }}</td>
+              <td class="px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">{{ detail.subject }}</td>
+              <td class="px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">{{ classDetails?.className }}</td>
+              <td class="px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">{{ detail?.teacherName }}</td>
+              <td class="px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600">
+                <span [ngClass]="{ 'text-green-600 font-bold': detail.status === 'ACTIVE', 'text-red-600 font-bold': detail.status === 'Inactive' }">
+                  {{ detail.status }}
+                </span>
+              </td>
+              <td class="px-4 sm:px-6 py-4 text-center border-b border-gray-300 dark:border-gray-600 flex justify-center space-x-4">
+                <button 
+                  (click)="openEditDialog(detail.subject, detail.teacherName, detail.status)" 
+                  class="px-4 py-2 text-gray-700 bg-white rounded-lg shadow-lg border-none" 
+                  title="Assign Teacher">
+                  <i class="fas fa-edit "></i>
+                </button>
+                <button 
+                  (click)="loadSchedule(detail)" 
+                  [disabled]="detail.status !== 'ACTIVE'" 
+                  class="px-4 py-2 bg-white text-gray-700 rounded-lg shadow border-none disabled:opacity-50 disabled:cursor-not-allowed" 
+                  title="Manage Schedule">
+                  <i class="fas fa-calendar"></i>
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

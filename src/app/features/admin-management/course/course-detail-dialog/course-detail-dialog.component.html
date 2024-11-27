@@ -1,0 +1,15 @@
+<div class="p-4">
+    <div class="bg-white p-4 rounded-lg shadow-lg">
+        <div class="text-lg font-semibold mb-4">
+            {{course.courseName}} ({{course.courseCode}})
+        </div>
+        <div class="text-gray-700 mb-4">
+            <div><strong>Completion Time:</strong> {{course.courseCompTime}} months</div>
+            <div><strong>Semester 1:</strong> {{course.semesters.Sem1?.join(', ') || 'N/A'}}</div>
+            <div><strong>Semester 2:</strong> {{course.semesters.Sem2?.join(', ') || 'N/A'}}</div>
+            <div><strong>Semester 3:</strong> {{course.semesters.Sem3?.join(', ') || 'N/A'}}</div>
+            <div><strong>Semester 4:</strong> {{course.semesters.Sem4?.join(', ') || 'N/A'}}</div>
+        </div>
+        <button mat-button (click)="onClose()">Close</button>
+    </div>
+</div>

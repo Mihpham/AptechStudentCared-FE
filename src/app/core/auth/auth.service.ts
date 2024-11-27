@@ -10,6 +10,8 @@ import { AuthEnvironment } from "src/app/environments/environment";
   providedIn: 'root'
 })
 export class AuthService {
+ 
+  
   private token: string | null = null;
   private role: string | null = null;
   private baseUrl = AuthEnvironment.apiUrl;
@@ -20,6 +22,10 @@ export class AuthService {
     private jwtHelper: JwtHelperService,
     private toastr: ToastrService
   ) {}
+
+  public decodeToken(token: string): any {
+    return this.jwtHelper.decodeToken(token);
+  }
 
   login(credentials: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/login`, credentials).pipe(
@@ -41,6 +47,10 @@ export class AuthService {
     );
   }
 
+  changePassword(currentPassword: string, newPassword: string): Observable<any> {
+    const payload = { currentPassword, newPassword };
+    return this.http.post('/api/change-password', payload); // Replace with your API endpoint
+  }
 
   resetPasswordOtp(otp: string, email: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/reset-password-otp`, { otp, email });
@@ -53,6 +63,7 @@ export class AuthService {
   forgotPassword(email: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/forgot-password`, { email });
   }
+  
 
   setToken(token: string) {
     this.token = token;
@@ -64,14 +75,23 @@ export class AuthService {
     localStorage.setItem('role', role);
   }
 
+  hasRole(expectedRole: string): boolean {
+    const role = this.getRole();
+    return role === expectedRole;
+  }
+  
+
   getToken(): string | null {
     return localStorage.getItem('token');
   }
 
   isAuthenticated(): boolean {
     const token = this.getToken();
-    return token != null && !this.jwtHelper.isTokenExpired(token);
+    const role = this.getRole();
+    return token != null && !this.jwtHelper.isTokenExpired(token) && role != null;
+    
   }
+  
 
   getRole(): string | null {
     return localStorage.getItem('role');

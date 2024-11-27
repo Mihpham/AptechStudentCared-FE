@@ -22,16 +22,14 @@ export class AuthGuard implements CanActivate {
     const isLoggedIn = this.authService.isAuthenticated();
     const userRole = this.authService.getRole();
     const expectedRole = route.data['role'] as string;
+  
 
-    // Nếu người dùng đã đăng nhập và cố gắng truy cập trang login, chuyển hướng đến dashboard
     if (isLoggedIn && state.url.includes('auth/login')) {
       this.router.navigate(['/admin/dashboard']);
       return false;
     }
-
-    // Kiểm tra xem người dùng có đăng nhập hay không
+  
     if (isLoggedIn) {
-      // Kiểm tra vai trò của người dùng
       if (userRole && userRole === expectedRole) {
         return true;
       } else {
@@ -40,10 +38,9 @@ export class AuthGuard implements CanActivate {
         return false;
       }
     } else {
-      // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
       this.toastr.warning('Please log in to access this page');
       this.router.navigate(['/auth/login']);
       return false;
     }
-  }
+  }  
 }

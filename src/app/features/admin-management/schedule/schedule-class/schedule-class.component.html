@@ -1,0 +1,84 @@
+<div class="overflow-x-auto bg-white shadow-md space-y-6 mx-5 rounded-lg p-4 dark:bg-gray-800">
+    <div class="flex justify-between items-center">
+        <div class="flex items-center">
+            <div class="text-lg font-sm mr-4">Manage Class Day</div>
+            <div *ngIf="classDetails">
+                {{ classDetails.className }} - {{ getSubjectCode() }} ({{ getNumberOfSessions() }} sessions) - {{ getTeacherName() }}
+            </div>
+            <div *ngIf="!classDetails" class="text-red-500 ml-2">
+                No class details available.
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="flex space-x-2">
+            <button (click)="navigateToAddSchedule()" class="bg-blue-500 text-white py-2 px-4 rounded shadow hover:bg-blue-600 transition duration-150">
+                <i class="fa-solid fa-plus"></i> Add Schedule
+            </button>
+            <button (click)="navigateToAttendance()" class="bg-green-500 text-white py-2 px-4 rounded shadow hover:bg-green-600 transition duration-150">
+                <i class="fa-solid fa-clipboard-user"></i> Attendance
+            </button>
+            <button (click)="openRegenerateDialog()" class="bg-yellow-500 text-white py-2 px-4 rounded shadow hover:bg-yellow-600 transition duration-150">
+                <i class="fa-solid fa-sync"></i> Re-generate
+            </button>
+        </div>
+    </div>
+
+    <table class="min-w-full bg-white dark:bg-gray-700">
+        <thead class="dark:bg-gray-900">
+            <tr class="text-gray-800 dark:text-gray-200">
+                <th class="py-3 px-4 text-left whitespace-nowrap">Class Name</th>
+                <th class="py-3 px-4 text-left whitespace-nowrap">Batch</th>
+                <th class="py-3 px-4 text-left whitespace-nowrap">Hour</th>
+                <th class="py-3 px-4 text-left whitespace-nowrap">Date</th>
+                <th class="py-3 px-4 text-left whitespace-nowrap">Module</th>
+                <th class="py-3 px-4 text-left whitespace-nowrap">Sem</th>
+                <th class="py-3 px-4 text-left whitespace-nowrap">Status</th>
+                <th class="py-3 px-4 text-left whitespace-nowrap">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngIf="classDetails">
+                <ng-container *ngIf="paginatedSchedules.length > 0; else noSchedules">
+                    <ng-container *ngFor="let schedule of paginatedSchedules">
+                        <tr class="cursor-pointer border-b hover:bg-gray-100 dark:hover:bg-gray-600">
+                            <td class="py-3 px-4 whitespace-nowrap">{{ classDetails.className }}</td>
+                            <td class="py-3 px-4 whitespace-nowrap">{{ getDaysAsNumbers(classDetails.days) }}</td>
+                            <td class="py-3 px-4 whitespace-nowrap">{{ classDetails.startHour.substring(0, 5) + "h - " + classDetails.endHour.substring(0, 5) + "h" }}</td>
+                            <td class="py-3 px-4 whitespace-nowrap">{{ schedule.startDate | date : "dd-MM-yyyy" }}</td>
+                            <td class="py-3 px-4 whitespace-nowrap">{{ getSubjectCode() }}</td>
+                            <td class="py-3 px-4 whitespace-nowrap">{{ classDetails.sem }}</td>
+                            <td class="py-3 px-4 whitespace-nowrap">{{ schedule.status }}</td>
+                            <td class="py-3 px-4 whitespace-nowrap">
+                                <button (click)="openEditSchedule(schedule)" class="text-blue-400 hover:text-blue-600">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button (click)="deleteSchedule(schedule.scheduleId)" class="text-red-400 hover:text-red-600 p-2">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+                <ng-template #noSchedules>
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-red-400 dark:text-gray-200 font-bold">
+                            No schedule details available.
+                        </td>
+                    </tr>
+                </ng-template>
+            </ng-container>
+        </tbody>
+    </table>
+
+    <!-- Paginator and Total Records -->
+    <div class="flex justify-between items-center mt-4">
+        <span class="text-sm font-bold text-gray-600 dark:text-gray-200">Total Records: {{ schedules.length }}</span>
+        <mat-paginator [length]="schedules.length" [pageSize]="itemsPerPage" [pageSizeOptions]="[5, 10, 20]" (page)="onPageChange($event)" class="ml-4"></mat-paginator>
+    </div>
+
+    <!-- No Class Details Available -->
+    <div *ngIf="!classDetails" class="text-center text-lg p-4 text-gray-600 dark:text-gray-200 font-bold">
+        No class details available.
+    </div>
+</div>

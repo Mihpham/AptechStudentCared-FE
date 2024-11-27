@@ -1,0 +1,25 @@
+<div class="flex items-center justify-center bg-gray-100">
+    <div class="bg-white shadow-xl rounded-lg p-6 max-w-md w-full">
+        <h2 class="text-2xl font-semibold text-center mb-4">Add Schedule</h2>
+        <form (ngSubmit)="submitSchedule()">
+            <div class="mb-4">
+                <label for="startDate" class="block text-gray-700 mb-1">Start Date:</label>
+                <input type="date" id="startDate" [(ngModel)]="scheduleRequest.startDate" name="startDate" required class="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+            </div>
+            <div class="mb-4">
+                <label for="status" class="block text-gray-700 mb-1">Status:</label>
+                <select id="status" [(ngModel)]="scheduleRequest.status" name="status" required class="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                    <option value="SCHEDULED">SCHEDULED</option>
+                    <option value="NOTSCHEDULED">NOT SCHEDULED</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="note" class="block text-gray-700 mb-1">Note:</label>
+                <textarea id="note" [(ngModel)]="scheduleRequest.note" name="note" class="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring focus:ring-blue-300" rows="3"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition duration-150">
+                Create Schedule
+            </button>
+        </form>
+    </div>
+</div>

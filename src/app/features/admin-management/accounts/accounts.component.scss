@@ -1,0 +1,15 @@
+/* CSS for container layout */
+/* accounts.component.scss */
+.accounts-container {
+  display: flex;
+}
+
+.sidebar {
+  width: 250px;
+  border-right: 1px solid #ddd;
+}
+
+.content {
+  flex: 1;
+  padding: 17px;
+}

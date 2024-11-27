@@ -1,0 +1,16 @@
+<div class="side-menu">
+  <mat-card *ngFor="let role of roles" class="menu-card" (click)="selectRole(role.name)">
+    <mat-card-header class="card-header">
+      <div class="role-icon">
+        <mat-icon>account_circle</mat-icon> <!-- Thêm icon cho từng role -->
+      </div>
+      <div class="card-title-content">
+        <mat-card-title>{{ role.name }} </mat-card-title>
+        <mat-card-subtitle>Total Accounts: {{ role.total }}</mat-card-subtitle>
+      </div>
+    </mat-card-header>
+    <mat-card-content class="card-content rounded-b">
+      <p class="account-details">Active Accounts: {{ role.total }}</p>
+    </mat-card-content>
+  </mat-card>
+</div>
