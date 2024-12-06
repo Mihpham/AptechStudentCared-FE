@@ -39,7 +39,7 @@ export class SroComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.loadSros();
+    this.loadSros();
   }
 
   loadSros(): void {
@@ -132,7 +132,6 @@ export class SroComponent implements OnInit {
   }
 
   exportToExcel(): void {
-    // Create a new worksheet
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(
       this.dataSource.data.map((sro) => ({
         'Full Name': sro.fullName,

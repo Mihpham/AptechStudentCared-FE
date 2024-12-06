@@ -1,32 +1,31 @@
 // sidebar.component.ts
 
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Router} from '@angular/router';
-import {AuthService} from 'src/app/core/auth/auth.service';
-import {ClassService} from 'src/app/core/services/admin/class.service';
-import {UserProfileService} from 'src/app/core/services/profile.service';
-import {ClassResponse} from 'src/app/features/admin-management/model/class/class-response.model';
-import {UserProfile} from 'src/app/shared/models/user-profile.model';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/core/auth/auth.service';
+import { ClassService } from 'src/app/core/services/admin/class.service';
+import { UserProfileService } from 'src/app/core/services/profile.service';
+import { ClassResponse } from 'src/app/features/admin-management/model/class/class-response.model';
+import { UserProfile } from 'src/app/shared/models/user-profile.model';
 
 interface SidebarItem {
   route?: string;
   label: string;
   icon: string;
-  children?: SidebarItem[]; // Optional for dropdowns
-  isOpen?: boolean; // Added to track dropdown state
+  children?: SidebarItem[]; 
+  isOpen?: boolean; 
 }
 
 @Component({
   selector: 'app-sidebar',
-  templateUrl: './sidebar.component.html', // Ensure correct path
-  styleUrls: ['./sidebar.component.scss'], // If needed
+  templateUrl: './sidebar.component.html', 
+  styleUrls: ['./sidebar.component.scss'], 
 })
 export class SidebarComponent {
-  
   role: string = '';
   sidebarItems: SidebarItem[] = [];
   userProfile: UserProfile | undefined;
-  userId: number | null = null;  // giả sử userId lấy từ session hoặc từ route
+  userId: number | null = null; 
   classes: ClassResponse[] = [];
   @Input() collapsed: boolean = false;
   @Output() toggle = new EventEmitter<void>();
@@ -37,19 +36,13 @@ export class SidebarComponent {
     private router: Router,
     private profileService: UserProfileService
   ) {
-    this.role = this.authService.getRole()!; // Assert not null
+    this.role = this.authService.getRole()!; 
     this.setSidebarItems();
   }
-  
-
 
   ngOnInit(): void {
     this.loadUserProfile();
-    // this.getClassesByUser(this.userId);
   }
-
-  
-
 
   loadUserProfile(): void {
     this.profileService.getUserProfile().subscribe(
@@ -68,15 +61,14 @@ export class SidebarComponent {
     this.classService.getClassesByUser(userId).subscribe({
       next: (data) => {
         this.classes = data;
-        this.setSidebarItems(); // Ensure this is called here
+        this.setSidebarItems(); 
       },
       error: (err) => {
         console.error('Error fetching classes for user', err);
-      }
+      },
     });
   }
 
-  // Set sidebarItems based on role
   private setSidebarItems() {
     const adminItems: SidebarItem[] = [
       {
@@ -122,16 +114,16 @@ export class SidebarComponent {
           },
         ],
       },
-      {route: '/admin/teacher', label: 'Teacher', icon: 'fas fa-chalkboard'},
-      {route: '/admin/sro', label: 'SRO', icon: 'fas fa-id-badge'},
-      {route: '/admin/accounts', label: 'Accounts', icon: 'fas fa-book'},
-      {
-        route: '/admin/calendar',
-        label: 'Calendar',
-        icon: 'fas fa-calendar-alt',
-      },
-      {route: '/admin/course', label: 'Course', icon: 'fas fa-book-open'},
-      {route: '/admin/subject', label: 'Subject', icon: 'fas fa-book-reader'},
+      { route: '/admin/teacher', label: 'Teacher', icon: 'fas fa-chalkboard' },
+      { route: '/admin/sro', label: 'SRO', icon: 'fas fa-id-badge' },
+      { route: '/admin/accounts', label: 'Accounts', icon: 'fas fa-book' },
+      // {
+      //   route: '/admin/calendar',
+      //   label: 'Calendar',
+      //   icon: 'fas fa-calendar-alt',
+      // },
+      { route: '/admin/course', label: 'Course', icon: 'fas fa-book-open' },
+      { route: '/admin/subject', label: 'Subject', icon: 'fas fa-book-reader' },
     ];
 
     const sroItems: SidebarItem[] = [
@@ -178,13 +170,12 @@ export class SidebarComponent {
           },
         ],
       },
-      {route: '/sro/teacher', label: 'Teacher', icon: 'fas fa-chalkboard'},
+      { route: '/sro/teacher', label: 'Teacher', icon: 'fas fa-chalkboard' },
       {
         route: '/sro/calendar',
         label: 'Calendar',
         icon: 'fas fa-calendar-alt',
       },
-
     ];
 
     const teacherItems: SidebarItem[] = [
@@ -216,7 +207,7 @@ export class SidebarComponent {
         icon: 'fa-solid fa-circle-check',
         isOpen: false,
         children: [
-          ...this.classes.map(classItem => ({
+          ...this.classes.map((classItem) => ({
             route: `/student/class-student-detail/${classItem.id}`,
             label: classItem.className,
             icon: 'fas fa-school',
@@ -229,7 +220,6 @@ export class SidebarComponent {
         label: 'Assignments',
         icon: 'fas fa-tasks',
       },
-
     ];
 
     switch (this.role) {
@@ -258,17 +248,18 @@ export class SidebarComponent {
 
   isChildActive(children: SidebarItem[] | undefined): boolean {
     if (!children) return false;
-    return children.some(child => 
-      child.route && this.router.isActive(child.route, { 
-        paths: 'exact', 
-        queryParams: 'ignored', 
-        fragment: 'ignored', 
-        matrixParams: 'ignored'  // Add this line
-      })
+    return children.some(
+      (child) =>
+        child.route &&
+        this.router.isActive(child.route, {
+          paths: 'exact',
+          queryParams: 'ignored',
+          fragment: 'ignored',
+          matrixParams: 'ignored', // Add this line
+        })
     );
   }
-  
-  
+
   // Method to toggle dropdowns
   toggleDropdown(item: SidebarItem) {
     if (item.children) {

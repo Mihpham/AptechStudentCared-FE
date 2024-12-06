@@ -68,26 +68,27 @@ export class AllAccountComponent implements OnInit, AfterViewInit {
       }
     );
   }
-  loadAccounts(): void {
+  loadAccounts(page: number = 0, size: number = 10): void {
     if (this.selectedRole) {
-      this.accountService.getAccountsByRole(this.selectedRole).subscribe(
-        (data) => {
-          console.log('Data received for role:', data);
-          this.accounts = data;
-          this.dataSource.data = this.accounts;
-          this.totalItems = this.accounts.length; // Update totalItems for pagination
-          this.dataSource.paginator = this.paginator;
-        },
-        (error) => {
-          this.toastr.error('Failed to load accounts', 'Error');
-          console.error('Error fetching accounts by role', error);
-        }
-      );
+        this.accountService.getAccountsByRole(this.selectedRole, page, size).subscribe(
+            (response) => {
+                console.log('Data received for role:', response);
+                this.accounts = response.content; // Extract accounts from response
+                this.totalItems = response.totalElements; // Total number of items for pagination
+                this.dataSource.data = this.accounts; // Update the data source with accounts
+                this.dataSource.paginator = this.paginator; // Attach the paginator
+            },
+            (error) => {
+                this.toastr.error('Failed to load accounts', 'Error');
+                console.error('Error fetching accounts by role', error);
+            }
+        );
     } else {
-      // If no role is selected, you might want to load all accounts or show an empty state.
-      this.dataSource.data = [];
+        this.dataSource.data = []; // Clear the data if no role is selected
+        this.totalItems = 0;
     }
-  }
+}
+
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;

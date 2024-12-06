@@ -312,7 +312,7 @@ export class ClassComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error details:', error.message);
-            Swal.fire('Error!', 'Failed to delete class.', 'error');
+            Swal.fire('Error!', 'Failed to delete class because the class has students ....', 'error');
           },
         });
       }

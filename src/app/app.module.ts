@@ -15,7 +15,7 @@ import { SharedModule } from './shared/shared.module';
 import { ProfileModule } from './features/profile/profile.module';
 import { BreadcrumbsComponent } from './layout/components/breadcrumbs/breadcrumbs.component';
 
-import {  LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { StudentPerformanceModule } from './features/student-performance/student-performance.module';
 import { AuthModule } from './auth/auth.module';
 import { StudentComponent } from './features/student-management/student.component';
@@ -30,7 +30,7 @@ export function tokenGetter() {
     NavbarComponent,
     SidebarComponent,
     BreadcrumbsComponent,
-    StudentComponent
+    StudentComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,15 +54,12 @@ export function tokenGetter() {
       config: {
         tokenGetter: tokenGetter,
         allowedDomains: ['localhost:1010'],
-        disallowedRoutes: ['localhost:1010/api/auth']
-      }
+        disallowedRoutes: ['localhost:1010/api/auth'],
+      },
     }),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [
-   
-    { provide: LocationStrategy, useClass: PathLocationStrategy  }
-  ],
-  bootstrap: [AppComponent]
+  providers: [{ provide: LocationStrategy, useClass: PathLocationStrategy }],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
